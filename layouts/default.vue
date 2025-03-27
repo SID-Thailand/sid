@@ -19,18 +19,12 @@ useHead({
     id: 'scroll-container',
   },
 })
-
-const { toast } = useToasts()
-
-onMounted(() => {
-  toast.success('Welcome to Emotion template!')
-})
 </script>
 
 <template>
   <div id="app">
     <Head>
-      <Title>Emotion</Title>
+      <Title>SID</Title>
       <Meta
         name="viewport"
         content="width=device-width, initial-scale=1"

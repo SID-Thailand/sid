@@ -12,9 +12,9 @@ import Tooltip from '~/components/headless/Tooltip/Tooltip.vue'
       margin: 0 auto;
     "
   >
-    <h1 class="22">Hello from Emotion!</h1>
+    <h1 class="main_title">Hello from Emotion!</h1>
 
-    <ExamplesDialog />
+    <!-- <ExamplesDialog />
     <ExamplesTabs />
     <ExamplesField />
     <ExamplesPasswordField />
@@ -38,6 +38,12 @@ import Tooltip from '~/components/headless/Tooltip/Tooltip.vue'
       Tooltip content
     </Tooltip>
 
-    <ExamplesAccordion />
+    <ExamplesAccordion /> -->
   </main>
 </template>
+
+<style scoped lang="scss">
+.main_title {
+  @include med;
+}
+</style>
