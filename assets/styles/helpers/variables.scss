@@ -1,0 +1,42 @@
+:root {
+  --black: #212022;
+  --bg: #f4f4f4;
+  --white: #ffffff;
+  --red: #e73737;
+  --accent: #9047ff;
+  --vh: 100vh;
+
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #ced4da;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+  --status-success: #28a745;
+  --status-danger: #dc3545;
+  --status-warning: #ffc107;
+  --status-info: #3e3e3e;
+}
+
+//screen config
+$maxWidth: 1920;
+$minWidth: 375;
+
+//breakpoints
+$uls: 2100px;
+$ls: 1366px;
+$br1: 1060px;
+$br2: 960px;
+$br3: 768px;
+$br4: 460px;
+
+//easings
+$easing: cubic-bezier(0.16, 1, 0.3, 1);
+
+// layouts
+$g-offset: vw(56);
+$g-sm: 32px;
+$g-s: 20px;

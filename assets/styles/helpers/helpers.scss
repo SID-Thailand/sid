@@ -1,0 +1,118 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use 'sass:string';
+@use 'sass:math';
+
+@function str-replace($string, $search, $replace: '') {
+  $index: string.index($string, $search);
+
+  @if $index {
+    @return string.slice($string, 1, $index - 1) + $replace +
+      str-replace(
+        string.slice($string, $index + string.length($search)),
+        $search,
+        $replace
+      );
+  }
+
+  @return $string;
+}
+
+@function transform-number-to-string($value) {
+  @if meta.type-of($value) == 'number' {
+    @return #{$value};
+  } @else if meta.type-of($value) == 'string' {
+    @return $value;
+  } @else {
+    @error 'Input #{$value} is no number or string';
+  }
+}
+
+@function number($value) {
+  @if meta.type-of($value) == 'number' {
+    @return $value;
+  } @else if meta.type-of($value) != 'string' {
+    $_: log('Value for `to-number` should be a number or a string.');
+  }
+
+  $result: 0;
+  $digits: 0;
+  $minus: string.slice($value, 1, 1) == '-';
+  $numbers: (
+    '0': 0,
+    '1': 1,
+    '2': 2,
+    '3': 3,
+    '4': 4,
+    '5': 5,
+    '6': 6,
+    '7': 7,
+    '8': 8,
+    '9': 9,
+  );
+
+  @for $i from if($minus, 2, 1) through string.length($value) {
+    $character: string.slice($value, $i, $i);
+
+    @if not(list.index(map.keys($numbers), $character) or $character == '.') {
+      @return to-length(
+        if($minus, -$result, $result),
+        string.slice($value, $i)
+      );
+    }
+
+    @if $character == '.' {
+      $digits: 1;
+    } @else if $digits == 0 {
+      $result: $result * 10 + map.get($numbers, $character);
+    } @else {
+      $digits: $digits * 10;
+      $result: $result + map.get($numbers, $character) / $digits;
+    }
+  }
+
+  @return if($minus, -$result, $result);
+}
+
+@function em($size, $context: 16) {
+  @return (math.div($size, $context)) * 1em;
+}
+
+@mixin smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+@mixin smooth-font {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@function size($pcSize, $mobSize) {
+  $addSize: $pcSize - $mobSize;
+  $maxWidth: $maxWidth - $minWidth;
+  @return calc(
+    #{$mobSize + px} + #{$addSize} *
+      ((100vw - #{$minWidth + px}) / #{$maxWidth})
+  );
+}
+
+@function vw($px, $screen: 1920) {
+  $inVW: math.div(
+      $px,
+      number(str-replace(transform-number-to-string($screen), 'px', ''))
+    ) * 100;
+  @return #{$inVW}vw;
+}
+
+@function vh($px, $screen: 1080) {
+  $inVH: math.div(
+      $px,
+      number(str-replace(transform-number-to-string($screen), 'px', ''))
+    ) * 100;
+  @return #{$inVH}vh;
+}
+
+@function aspect($width, $height) {
+  @return math.div($width, $height);
+}

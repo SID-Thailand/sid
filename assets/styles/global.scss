@@ -1,0 +1,118 @@
+* {
+  &::selection {
+    color: white;
+    background: #ece5df;
+  }
+}
+
+html {
+  font-size: vw(24);
+  height: 100vh;
+  height: 100dvh;
+}
+
+body {
+  color: var(--black);
+  font-size: 1rem;
+  padding-bottom: 200px;
+  overflow: hidden;
+  position: relative;
+  font-family: sans-serif;
+  overscroll-behavior-y: none;
+  height: fit-content;
+  @include smooth-font;
+
+  @media (max-width: $br1) {
+    font-size: 16px;
+  }
+}
+
+h1 {
+  font-size: vw(52);
+  margin-top: vw(100);
+}
+
+.e-landscape {
+  @include coverdiv(fixed);
+  z-index: 100000;
+  background: var(--bg);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  p {
+    font-size: 1.5rem;
+    text-align: center;
+    max-width: 80%;
+    @media (max-width: $br1) {
+      max-width: size(900, 320);
+    }
+  }
+}
+
+.landscape {
+  .e-landscape {
+    display: flex;
+  }
+}
+
+.e-fixed {
+  overflow: hidden !important;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.2s;
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-from {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  font-size: 1rem;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+
+  &:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2);
+  }
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.validation-message {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
