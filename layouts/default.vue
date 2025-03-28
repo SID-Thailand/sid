@@ -32,10 +32,28 @@ useHead({
       <Link rel="icon" type="image/x-icon" href="/favicon.ico"></Link>
     </Head>
     <AppGrid />
-    <Landscape />
+    <!-- <Landscape /> -->
     <SmoothScroll>
-      <slot />
+      <div class="app">
+        <Header />
+        <main class="main-content">
+          <slot />
+        </main>
+        <Footer />
+      </div>
     </SmoothScroll>
     <ToastGroup />
   </div>
 </template>
+
+<style scoped lang="scss">
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+</style>
