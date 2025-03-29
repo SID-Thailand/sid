@@ -17,7 +17,7 @@ definePageMeta({
       <div class="home__bottom">
         <p class="home__scroll-text">
           <span>scroll down</span>
-          <ArrowDown :size="18" />
+          <ArrowDown class="home__arrow" />
         </p>
         <p class="home__scroll-text">
           <span />
@@ -36,17 +36,22 @@ definePageMeta({
 .home__middle {
   width: 100%;
   height: 100%;
-
-  @media (min-width: $br1) {
-    padding: vw(155);
-  }
 }
 
 .home__img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: block;
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+
+  @media (min-width: $br1) {
+    width: 85vw;
+    height: 70vh;
+  }
 }
 
 .home__title {
@@ -100,6 +105,17 @@ definePageMeta({
 
   @media (max-width: $br1) {
     font-size: 14px;
+    column-gap: 12px;
+  }
+
+  .home__arrow {
+    width: vw(18);
+    height: vw(18);
+
+    @media (max-width: $br1) {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   &:first-child {
