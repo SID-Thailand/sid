@@ -40,10 +40,6 @@ onBeforeUnmount(() => {
     opacity 0.5s ease;
 
   @media (max-width: $br1) {
-    padding: size(55, 32) 0;
-  }
-
-  @media (max-width: $br4) {
     padding: 32px 0;
   }
 }
@@ -66,10 +62,6 @@ onBeforeUnmount(() => {
   height: auto;
 
   @media (max-width: $br1) {
-    width: size(64, 40);
-  }
-
-  @media (max-width: $br4) {
     width: 40px;
   }
 }

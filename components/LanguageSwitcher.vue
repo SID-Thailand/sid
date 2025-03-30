@@ -50,10 +50,6 @@ const changeLanguage = (lang: string) => {
   font-size: vw(16);
 
   @media (max-width: $br1) {
-    font-size: size(16, 16);
-  }
-
-  @media (max-width: $br4) {
     font-size: 16px;
   }
 }
@@ -73,12 +69,8 @@ const changeLanguage = (lang: string) => {
   color: var(--basic-white);
 
   @media (max-width: $br1) {
-    font-size: size(16, 16);
-    transform: translateY(14px);
-  }
-
-  @media (max-width: $br4) {
     font-size: 16px;
+    transform: translateY(14px);
   }
 
   &--opened {

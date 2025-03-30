@@ -81,12 +81,8 @@ import { ArrowDown } from 'lucide-vue-next'
   }
 
   @media (max-width: $br1) {
-    bottom: size(64, 36);
-    justify-content: center;
-  }
-
-  @media (max-width: $br4) {
     bottom: 36px;
+    justify-content: center;
   }
 }
 

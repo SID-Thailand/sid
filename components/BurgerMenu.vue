@@ -71,10 +71,6 @@ watch(isOpen, () => {
   transition: all 0.3s ease;
 
   @media (max-width: $br1) {
-    width: size(38, 30);
-  }
-
-  @media (max-width: $br4) {
     width: 30px;
   }
 

@@ -62,11 +62,6 @@ withDefaults(defineProps<IProps>(), {
   }
 
   @media (max-width: $br1) {
-    padding: size(24, 19) size(20, 16);
-    border-radius: size(20, 16);
-  }
-
-  @media (max-width: $br4) {
     padding: 19px 16px;
     border-radius: 16px;
   }
@@ -81,10 +76,6 @@ withDefaults(defineProps<IProps>(), {
   gap: vw(7);
 
   @media (max-width: $br1) {
-    gap: size(7, 9);
-  }
-
-  @media (max-width: $br4) {
     gap: 9px;
   }
 }
