@@ -24,6 +24,10 @@ body {
   @include med;
   letter-spacing: -0.02em;
 
+  @media (max-width: $br1) {
+    overflow: auto;
+  }
+
   @media (max-width: $br4) {
     font-size: 14px;
   }
