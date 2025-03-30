@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { ArrowDown } from 'lucide-vue-next'
+
+const images = [
+  { url: '/images/home/slider/1.png', alt: 'Slider image' },
+  { url: '/images/home/slider/2.png', alt: 'Slider image' },
+  { url: '/images/home/slider/3.png', alt: 'Slider image' },
+  { url: '/images/home/slider/1.png', alt: 'Slider image' },
+  { url: '/images/home/slider/2.png', alt: 'Slider image' },
+  { url: '/images/home/slider/3.png', alt: 'Slider image' },
+]
 </script>
 
 <template>
@@ -12,7 +21,7 @@ import { ArrowDown } from 'lucide-vue-next'
         >connect with us</Button
       >
     </div>
-    <div class="connect__slider">Slider</div>
+    <AutoScrollingSlider :items="images" />
     <div class="connect__bottom">
       <div class="connect__bottom-wrapper">
         <p class="connect__scroll-text">
