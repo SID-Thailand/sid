@@ -2,11 +2,11 @@
 import type { iInputData } from '~/types/headless/input'
 
 const input = reactive({
-  id: 'name',
-  name: 'name',
-  type: 'text',
+  id: 'subscribe-email',
+  name: 'email',
+  type: 'email',
   value: '',
-  placeholder: 'Enter your name',
+  placeholder: 'Your email',
   required: true,
   error: true,
   validators: [Validation.email('Please enter a valid email address')],
@@ -22,7 +22,6 @@ const onInput = (data: iInputData) => {
 
 <template>
   <HeadlessInputField v-slot="field">
-    <HeadlessInputLabel>{{ input.name }}</HeadlessInputLabel>
     <HeadlessInput
       :id="input.id"
       v-model="input.value"
@@ -31,7 +30,6 @@ const onInput = (data: iInputData) => {
       :placeholder="input.placeholder"
       :required="input.required"
       :validators="input.validators"
-      class="input"
       @input="onInput"
     />
     <HeadlessInputValidationMessage
@@ -43,5 +41,8 @@ const onInput = (data: iInputData) => {
   </HeadlessInputField>
 </template>
 
-<!-- <style lang="scss">
-</style> -->
+<style scoped lang="scss">
+.validation-message {
+  @include caption-c3;
+}
+</style>

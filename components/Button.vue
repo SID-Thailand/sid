@@ -33,7 +33,7 @@ withDefaults(defineProps<IProps>(), {
   overflow: hidden;
   border-radius: vw(20);
   height: fit-content;
-  padding: vw(24) vw(20);
+  padding: vw(20);
   text-transform: uppercase;
   transition: all 0.3s $easing;
   @include caption-c2;
@@ -62,7 +62,7 @@ withDefaults(defineProps<IProps>(), {
   }
 
   @media (max-width: $br1) {
-    padding: 19px 16px;
+    padding: 16px;
     border-radius: 16px;
   }
 }
@@ -74,6 +74,22 @@ withDefaults(defineProps<IProps>(), {
   position: relative;
   z-index: 1;
   gap: vw(7);
+
+  :global(svg) {
+    display: block;
+    width: vw(24);
+    height: vw(24);
+
+    @media (max-width: $br1) {
+      width: size(24, 18);
+      height: size(24, 18);
+    }
+
+    @media (max-width: $br4) {
+      width: 18px;
+      height: 18px;
+    }
+  }
 
   @media (max-width: $br1) {
     gap: 9px;

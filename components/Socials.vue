@@ -1,22 +1,5 @@
 <script lang="ts" setup>
-const socials = [
-  {
-    title: 'whatsapp',
-    link: 'https://www.whatsapp.com/',
-  },
-  {
-    title: 'instagram',
-    link: 'https://www.instagram.com/',
-  },
-  {
-    title: 'linkedin',
-    link: 'https://www.linkedin.com/',
-  },
-  {
-    title: 'facebook',
-    link: 'https://www.facebook.com/',
-  },
-]
+const { socials } = useSocials()
 </script>
 
 <template>
