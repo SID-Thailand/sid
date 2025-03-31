@@ -10,6 +10,7 @@ definePageMeta({
   <div>
     <HomeHeroSection />
     <HomeConnectSection />
+    <HomeInterviewSection />
   </div>
 </template>
 

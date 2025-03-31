@@ -1,0 +1,328 @@
+<script setup lang="ts">
+const interviewItems = [
+  {
+    title: 'SID Thailand',
+    text: "Development company specializing in the creation of residential and commercial real estate in Phuket. Since 2016, the company has been implementing projects that develop the island's infrastructure, combining innovation, quality and practicality.",
+    textBy: {
+      url: '/images/interview/1.png',
+      alt: 'Interview image',
+      title: 'INTERVIEW WITH FREDERICK CARLSON',
+      description: 'Co-founder of SID Thailand',
+    },
+  },
+  {
+    title: 'SID Construction',
+    text: 'A construction company that plays a key role in the successful implementation of the vision of SID Development, turning concepts and projects into reality. We specifically created our own construction company so as not to depend on third-party contractors in the implementation of our projects.',
+    textBy: {
+      url: '/images/interview/1.png',
+      alt: 'Interview image',
+      title: 'INTERVIEW WITH EMILY ROBERTS',
+      description: 'CEO of Tech Innovations',
+    },
+  },
+  {
+    title: 'SID Marketing',
+    text: 'Is a new generation marketing agency that not only promotes real estate projects, but also educates market participants by creating educational content for investors, buyers and professionals.',
+    textBy: {
+      url: '/images/interview/1.png',
+      alt: 'Interview image',
+      title: 'INTERVIEW WITH ALEXANDER SMITH',
+      description: 'Lead Engineer at Creative Solutions',
+    },
+  },
+  {
+    title: 'SID Property Management',
+    text: 'Is a consultancy company specializing in professional support for clients, developers and agencies in the real estate sector in Phuket. Since 2016, SID Consultancy has been helping to make informed decisions based on practical experience and a 360° understanding of the real estate market. Unlike traditional agencies, the company focuses on providing expert advice rather than direct sales.',
+    textBy: {
+      url: '/images/interview/1.png',
+      alt: 'Interview image',
+      title: 'INTERVIEW WITH SOPHIA MILLER',
+      description: 'Product Manager at FutureWorks',
+    },
+  },
+  {
+    title: 'SID Consultancy',
+    text: 'Is a consultancy company specializing in professional support for clients, developers and agencies in the real estate sector in Phuket. Since 2016, SID Consultancy has been helping to make informed decisions based on practical experience and a 360° understanding of the real estate market. Unlike traditional agencies, the company focuses on providing expert advice rather than direct sales.',
+    textBy: {
+      url: '/images/interview/1.png',
+      alt: 'Interview image',
+      title: 'INTERVIEW WITH MICHAEL JOHNSON',
+      description: 'CTO at Global Tech',
+    },
+  },
+]
+const contentRef = ref<HTMLElement | null>(null)
+const updateActiveHeight = () => {
+  const activeEl = document.querySelector(
+    '.interview__content-wrapper--active'
+  ) as HTMLElement
+  activeEl &&
+    contentRef.value?.style.setProperty(
+      '--active-height',
+      `${activeEl.offsetHeight}px`
+    )
+}
+
+let observer: MutationObserver
+
+onMounted(() => {
+  updateActiveHeight()
+  window.addEventListener('resize', updateActiveHeight)
+  observer = new MutationObserver(updateActiveHeight)
+  contentRef.value &&
+    observer.observe(contentRef.value, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateActiveHeight)
+  observer.disconnect()
+})
+</script>
+
+<template>
+  <section class="interview container">
+    <div class="interview__wrapper">
+      <div class="interview__title-wrapper">
+        <h2 class="interview__title">WE ARE MORE than one COMPANY</h2>
+      </div>
+      <div ref="contentRef" class="interview__content">
+        <div
+          v-for="(item, idx) in interviewItems"
+          :key="idx"
+          class="interview__content-wrapper"
+          :class="idx === 0 && 'interview__content-wrapper--active'"
+        >
+          <div class="interview__image-item">
+            <img
+              :src="item.textBy.url"
+              :alt="item.textBy.alt"
+              class="interview__img"
+            />
+            <div class="interview__desc-wrapper">
+              <p class="interview__name">{{ item.textBy.title }}</p>
+              <p class="interview__description">
+                {{ item.textBy.description }}
+              </p>
+            </div>
+          </div>
+
+          <div class="interview__item">
+            <div class="interview__line" />
+            <div class="interview__info">
+              <h3 class="interview__item-title">{{ item.title }}</h3>
+              <p class="interview__item-text">{{ item.text }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped lang="scss">
+.interview {
+  position: relative;
+  height: 100%;
+  padding-top: vw(40);
+  padding-bottom: vw(100);
+
+  @media (max-width: $br1) {
+    padding-top: 24px;
+    padding-bottom: 60px;
+  }
+}
+
+.interview__wrapper {
+  height: 100%;
+}
+
+.interview__title-wrapper {
+  @media (min-width: $br1) {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(24, 1fr);
+    column-gap: vw(20);
+    grid-auto-flow: row;
+  }
+}
+
+.interview__title {
+  font-size: vw(88);
+  text-transform: uppercase;
+  line-height: 1em;
+  @include med;
+
+  @media (min-width: $br1) {
+    @include col(11, 21);
+  }
+
+  @media (max-width: $br1) {
+    font-size: size(88, 36);
+  }
+
+  @media (max-width: $br4) {
+    font-size: 36px;
+  }
+}
+
+.interview__content {
+  position: relative;
+  margin-top: vw(200);
+  height: fit-content;
+
+  @media (max-width: $br1) {
+    margin-top: 40px;
+    height: var(--active-height);
+  }
+}
+
+.interview__block {
+  position: relative;
+}
+
+.interview__content-wrapper {
+  @media (min-width: $br1) {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(24, 1fr);
+    column-gap: vw(20);
+    grid-auto-flow: row;
+  }
+  @media (max-width: $br1) {
+    position: absolute;
+  }
+
+  &--active {
+    .interview__image-item {
+      opacity: 1;
+    }
+
+    .interview__item {
+      color: var(--basic-white);
+
+      .interview__line {
+        background-color: var(--basic-white);
+      }
+    }
+
+    @media (max-width: $br1) {
+      .interview__item {
+        opacity: 1;
+        color: var(--basic-white);
+
+        .interview__line {
+          background-color: var(--basic-white);
+        }
+      }
+    }
+  }
+}
+
+.interview__image-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  text-transform: uppercase;
+  transition: opacity 0.3s $easing;
+  opacity: 0;
+
+  @include subheading-h5;
+
+  @media (min-width: $br1) {
+    @include col(1, 8);
+    width: fit-content;
+    max-width: vw(600);
+  }
+
+  @media (max-width: $br1) {
+    position: relative;
+    max-height: auto;
+    height: 100%;
+    line-height: 1.5em;
+  }
+}
+
+.interview__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.interview__name {
+  margin-top: vw(16);
+
+  @media (max-width: $br1) {
+    margin-top: 16px;
+  }
+}
+
+.interview__description {
+  color: var(--neutral-300);
+}
+
+.interview__item {
+  color: var(--neutral-300);
+  transition: opacity 0.3s $easing;
+
+  @media (min-width: $br1) {
+    @include col(11, 24);
+    width: 100%;
+    min-height: vw(220);
+    padding-bottom: vw(20);
+  }
+
+  @media (max-width: $br1) {
+    opacity: 0;
+    margin-top: 40px;
+  }
+}
+
+.interview__line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: var(--neutral-300);
+  transition: background-color 0.3s $easing;
+}
+
+.interview__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: vw(16);
+  gap: vw(20);
+
+  @media (max-width: $br1) {
+    flex-direction: column;
+    margin-top: 16px;
+    gap: 12px;
+    max-width: 80%;
+  }
+
+  @media (max-width: $br4) {
+    max-width: 100%;
+  }
+}
+
+.interview__item-title {
+  text-transform: uppercase;
+  transition: color 0.3s $easing;
+  width: 100%;
+  flex: 1 0 auto;
+  @include subheading-h1;
+
+  @media (min-width: $br1) {
+    max-width: vw(268);
+  }
+}
+
+.interview__item-text {
+  transition: color 0.3s $easing;
+  @include text-t4;
+}
+</style>
