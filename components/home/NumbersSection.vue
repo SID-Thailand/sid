@@ -1,63 +1,40 @@
 <script setup lang="ts">
-const cards = [
-  {
-    number: '1000+',
-    description: `sold units <br/> in Phuket`,
-    img: {
-      url: '/images/numbers/1.png',
-      alt: 'Card image',
-    },
-  },
-  {
-    number: '8',
-    description: 'YEARS of experience <br/> in development',
-    img: {
-      url: '/images/numbers/2.png',
-      alt: 'Card image',
-    },
-  },
-  {
-    number: '9+',
-    description: 'PROJEcts <br/> in portfolio',
-    img: {
-      url: '/images/numbers/3.png',
-      alt: 'Card image',
-    },
-  },
-  {
-    number: '3 ',
-    description: 'OFFICES <br/> in Phuket',
-    img: {
-      url: '/images/numbers/4.png',
-      alt: 'Card image',
-    },
-  },
-]
+import type { iHomeNumbers } from '~/types/story'
+
+interface IProps {
+  content: iHomeNumbers
+}
+
+defineProps<IProps>()
 </script>
 
 <template>
   <section class="numbers-stat container">
     <div class="numbers-stat__wrapper">
       <div class="numbers-stat__top">
-        <h2 class="numbers-stat__title">WE ARE IN NUMBERS</h2>
-        <BuildAddress />
+        <h2 class="numbers-stat__title">{{ content.title }}</h2>
+        <BuildAddress :text="content.address" />
       </div>
       <ul class="numbers-stat__cards">
-        <li v-for="(card, idx) in cards" :key="idx" class="numbers-stat__card">
+        <li
+          v-for="(card, idx) in content.numbers"
+          :key="idx"
+          class="numbers-stat__card"
+        >
           <div class="numbers-stat__info">
-            <h3 class="numbers-stat__number">{{ card.number }}</h3>
+            <h3 class="numbers-stat__number">{{ card.value }}</h3>
             <p class="numbers-stat__desc" v-html="card.description" />
           </div>
 
           <img
-            :src="card.img.url"
-            :alt="card.img.alt"
+            :src="card.asset.filename"
+            :alt="card.asset.alt"
             class="numbers-stat__img"
           />
         </li>
       </ul>
       <Button type="button" class="numbers-stat__btn">
-        connect with us
+        {{ content.button_text }}
         <LucidePlus />
       </Button>
     </div>

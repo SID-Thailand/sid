@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
+import type { iImage } from '~/types/story'
 
 interface IProps {
-  items: { url: string; alt: string }[]
+  items: iImage[]
   duration?: number
 }
 
@@ -156,7 +157,7 @@ onUnmounted(() => {
           :key="idx"
           class="scrolling-slider__item"
         >
-          <img :src="item.url" :alt="item.alt" />
+          <img :src="item.filename" :alt="item.alt" />
         </div>
       </div>
       <div ref="dragIndicator" class="scrolling-slider__drag">drag</div>

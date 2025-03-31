@@ -1,20 +1,31 @@
 <script setup lang="ts">
 import { ArrowDown } from 'lucide-vue-next'
+import type { iHomeHero } from '~/types/story'
+
+interface IProps {
+  content: iHomeHero
+}
+
+defineProps<IProps>()
 </script>
 
 <template>
   <section class="hero">
     <div class="hero__wrapper">
       <div class="hero__middle">
-        <img src="/images/home/1.png" alt="Home image" class="hero__img" />
-        <h1 class="hero__title">We are building the future of Phuket</h1>
+        <img
+          :src="content.asset.filename"
+          :alt="content.asset.alt"
+          class="hero__img"
+        />
+        <h1 class="hero__title">{{ content.title }}</h1>
       </div>
       <div class="hero__bottom">
         <p class="hero__scroll-text">
           <span>scroll down</span>
           <ArrowDown class="hero__arrow" />
         </p>
-        <BuildAddress />
+        <BuildAddress :text="content.address" />
       </div>
     </div>
   </section>

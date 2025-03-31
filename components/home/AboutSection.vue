@@ -1,27 +1,25 @@
 <script setup lang="ts">
 import { ArrowDown } from 'lucide-vue-next'
+import type { iHomeAbout } from '~/types/story'
 
-const images = [
-  { url: '/images/home/slider/1.png', alt: 'Slider image' },
-  { url: '/images/home/slider/2.png', alt: 'Slider image' },
-  { url: '/images/home/slider/3.png', alt: 'Slider image' },
-  { url: '/images/home/slider/1.png', alt: 'Slider image' },
-  { url: '/images/home/slider/2.png', alt: 'Slider image' },
-  { url: '/images/home/slider/3.png', alt: 'Slider image' },
-]
+interface IProps {
+  content: iHomeAbout
+}
+
+defineProps<IProps>()
 </script>
 
 <template>
   <section class="connect container">
     <div class="connect__top">
       <h2 class="connect__title">
-        We are company of the future that covers Phuket property market ON 360°
+        {{ content.title }}
       </h2>
-      <Button type="button" view="dark" class="connect__btn"
-        >connect with us</Button
-      >
+      <Button type="button" view="dark" class="connect__btn">
+        {{ content.button_text }}
+      </Button>
     </div>
-    <AutoScrollingSlider :items="images" />
+    <AutoScrollingSlider :items="content.gallery" />
     <div class="connect__bottom">
       <div class="connect__bottom-wrapper">
         <p class="connect__scroll-text">
@@ -29,12 +27,10 @@ const images = [
           <ArrowDown class="connect__arrow" />
         </p>
         <p class="connect__description">
-          We dont just build, but also manage, consult, train market
-          participants and create educational content for investors and property
-          buyers
+          {{ content.text }}
         </p>
       </div>
-      <BuildAddress color="dark" />
+      <BuildAddress color="dark" :text="content.address" />
     </div>
   </section>
 </template>

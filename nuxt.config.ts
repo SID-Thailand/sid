@@ -30,5 +30,15 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@vueuse/nuxt', '@nuxt/eslint', 'nuxt-lucide-icons'],
+  modules: [
+    '@vueuse/nuxt',
+    '@nuxt/eslint',
+    'nuxt-lucide-icons',
+    [
+      '@storyblok/nuxt',
+      {
+        accessToken: process.env.STORYBLOK_TOKEN,
+      },
+    ],
+  ],
 })

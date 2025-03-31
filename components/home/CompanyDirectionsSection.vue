@@ -1,56 +1,12 @@
 <script setup lang="ts">
-const interviewItems = [
-  {
-    title: 'SID Thailand',
-    text: "Development company specializing in the creation of residential and commercial real estate in Phuket. Since 2016, the company has been implementing projects that develop the island's infrastructure, combining innovation, quality and practicality.",
-    textBy: {
-      url: '/images/interview/1.png',
-      alt: 'Interview image',
-      title: 'INTERVIEW WITH FREDERICK CARLSON',
-      description: 'Co-founder of SID Thailand',
-    },
-  },
-  {
-    title: 'SID Construction',
-    text: 'A construction company that plays a key role in the successful implementation of the vision of SID Development, turning concepts and projects into reality. We specifically created our own construction company so as not to depend on third-party contractors in the implementation of our projects.',
-    textBy: {
-      url: '/images/interview/1.png',
-      alt: 'Interview image',
-      title: 'INTERVIEW WITH EMILY ROBERTS',
-      description: 'CEO of Tech Innovations',
-    },
-  },
-  {
-    title: 'SID Marketing',
-    text: 'Is a new generation marketing agency that not only promotes real estate projects, but also educates market participants by creating educational content for investors, buyers and professionals.',
-    textBy: {
-      url: '/images/interview/1.png',
-      alt: 'Interview image',
-      title: 'INTERVIEW WITH ALEXANDER SMITH',
-      description: 'Lead Engineer at Creative Solutions',
-    },
-  },
-  {
-    title: 'SID Property Management',
-    text: 'Is a consultancy company specializing in professional support for clients, developers and agencies in the real estate sector in Phuket. Since 2016, SID Consultancy has been helping to make informed decisions based on practical experience and a 360° understanding of the real estate market. Unlike traditional agencies, the company focuses on providing expert advice rather than direct sales.',
-    textBy: {
-      url: '/images/interview/1.png',
-      alt: 'Interview image',
-      title: 'INTERVIEW WITH SOPHIA MILLER',
-      description: 'Product Manager at FutureWorks',
-    },
-  },
-  {
-    title: 'SID Consultancy',
-    text: 'Is a consultancy company specializing in professional support for clients, developers and agencies in the real estate sector in Phuket. Since 2016, SID Consultancy has been helping to make informed decisions based on practical experience and a 360° understanding of the real estate market. Unlike traditional agencies, the company focuses on providing expert advice rather than direct sales.',
-    textBy: {
-      url: '/images/interview/1.png',
-      alt: 'Interview image',
-      title: 'INTERVIEW WITH MICHAEL JOHNSON',
-      description: 'CTO at Global Tech',
-    },
-  },
-]
+import type { iHomeCompanyDirections } from '~/types/story'
+
+interface IProps {
+  content: iHomeCompanyDirections
+}
+
+defineProps<IProps>()
+
 const contentRef = ref<HTMLElement | null>(null)
 const updateActiveHeight = () => {
   const activeEl = document.querySelector(
@@ -88,25 +44,25 @@ onBeforeUnmount(() => {
   <section class="interview container">
     <div class="interview__wrapper">
       <div class="interview__title-wrapper">
-        <h2 class="interview__title">WE ARE MORE than one COMPANY</h2>
+        <h2 class="interview__title">{{ content.title }}</h2>
       </div>
       <div ref="contentRef" class="interview__content">
         <div
-          v-for="(item, idx) in interviewItems"
+          v-for="(item, idx) in content.directions"
           :key="idx"
           class="interview__content-wrapper"
           :class="idx === 0 && 'interview__content-wrapper--active'"
         >
           <div class="interview__image-item">
             <img
-              :src="item.textBy.url"
-              :alt="item.textBy.alt"
+              :src="item.person_asset.filename"
+              :alt="item.person_asset.alt"
               class="interview__img"
             />
             <div class="interview__desc-wrapper">
-              <p class="interview__name">{{ item.textBy.title }}</p>
+              <p class="interview__name">{{ item.person_title }}</p>
               <p class="interview__description">
-                {{ item.textBy.description }}
+                {{ item.person_description }}
               </p>
             </div>
           </div>
@@ -115,7 +71,7 @@ onBeforeUnmount(() => {
             <div class="interview__line" />
             <div class="interview__info">
               <h3 class="interview__item-title">{{ item.title }}</h3>
-              <p class="interview__item-text">{{ item.text }}</p>
+              <p class="interview__item-text">{{ item.description }}</p>
             </div>
           </div>
         </div>

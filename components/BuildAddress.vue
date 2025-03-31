@@ -1,6 +1,7 @@
 <script setup lang="ts">
 interface IProps {
   color?: 'light' | 'dark'
+  text: string
 }
 
 withDefaults(defineProps<IProps>(), {
@@ -14,7 +15,7 @@ withDefaults(defineProps<IProps>(), {
     :class="color === 'light' ? 'build-address--light' : 'build-address--dark'"
   >
     <span />
-    2490 sq. m built in Phuket
+    {{ text }}
   </p>
 </template>
 

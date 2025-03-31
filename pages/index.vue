@@ -1,17 +1,35 @@
 <script setup lang="ts">
+import { useHomeStory } from '~/composables/stories/homeStory'
 import { pageTransition } from '~/transitions/base'
+import type { iHomeBody } from '~/types/story'
 
 definePageMeta({
   pageTransition,
+})
+
+const { story } = await useHomeStory()
+
+const homeSections = computed((): iHomeBody => {
+  const body = story.value.content.body as any[]
+
+  return {
+    about: body.find(item => item.component === 'home_about'),
+    hero: body.find(item => item.component === 'home_hero'),
+    company_directions: body.find(
+      item => item.component === 'company_directions'
+    ),
+    numbers: body.find(item => item.component === 'home_numbers'),
+    video: body.find(item => item.component === 'home_video'),
+  }
 })
 </script>
 
 <template>
   <div>
-    <HomeHeroSection />
-    <HomeConnectSection />
-    <HomeInterviewSection />
-    <HomeNumbersStatisticsSection />
+    <HomeHeroSection :content="homeSections?.hero" />
+    <HomeAboutSection :content="homeSections?.about" />
+    <HomeCompanyDirectionsSection :content="homeSections?.company_directions" />
+    <HomeNumbersSection :content="homeSections?.numbers" />
   </div>
 </template>
 
