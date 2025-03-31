@@ -14,10 +14,7 @@ import { ArrowDown } from 'lucide-vue-next'
           <span>scroll down</span>
           <ArrowDown class="hero__arrow" />
         </p>
-        <p class="hero__scroll-text">
-          <span />
-          2490 sq. m built in Phuket
-        </p>
+        <BuildAddress />
       </div>
     </div>
   </section>
@@ -117,20 +114,6 @@ import { ArrowDown } from 'lucide-vue-next'
       @media (min-width: $br1) {
         top: vw(2);
       }
-    }
-  }
-
-  &:last-child {
-    span {
-      display: block;
-      width: vw(8);
-      height: vw(8);
-      background-color: var(--basic-white);
-      border-radius: 100%;
-    }
-
-    @media (max-width: $br1) {
-      display: none;
     }
   }
 }

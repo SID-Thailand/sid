@@ -11,6 +11,7 @@ definePageMeta({
     <HomeHeroSection />
     <HomeConnectSection />
     <HomeInterviewSection />
+    <HomeNumbersStatisticsSection />
   </div>
 </template>
 

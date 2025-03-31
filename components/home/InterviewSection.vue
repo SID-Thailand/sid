@@ -130,6 +130,7 @@ onBeforeUnmount(() => {
   height: 100%;
   padding-top: vw(40);
   padding-bottom: vw(100);
+  background-color: var(--neutral-600);
 
   @media (max-width: $br1) {
     padding-top: 24px;
@@ -323,6 +324,7 @@ onBeforeUnmount(() => {
 
 .interview__item-text {
   transition: color 0.3s $easing;
+  line-height: 1.25em !important;
   @include text-t4;
 }
 </style>

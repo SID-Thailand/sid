@@ -34,10 +34,7 @@ const images = [
           buyers
         </p>
       </div>
-      <p class="connect__place">
-        <span />
-        2490 sq. m built in Phuket
-      </p>
+      <BuildAddress color="dark" />
     </div>
   </section>
 </template>
