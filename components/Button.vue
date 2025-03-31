@@ -36,6 +36,7 @@ withDefaults(defineProps<IProps>(), {
   padding: vw(20);
   text-transform: uppercase;
   transition: all 0.3s $easing;
+  text-align: start;
   @include caption-c2;
 
   &--primary {

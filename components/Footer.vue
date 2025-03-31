@@ -8,6 +8,7 @@ const filteredSocials = computed(() =>
 
 <template>
   <footer class="footer container">
+    <BookTheMeetings />
     <div class="footer__wrapper">
       <div class="footer__content">
         <ul class="footer__list">
