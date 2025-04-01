@@ -157,7 +157,15 @@ onUnmounted(() => {
           :key="idx"
           class="scrolling-slider__item"
         >
-          <img :src="item.filename" :alt="item.alt" />
+          <CustomImage
+            :src="item.filename"
+            :alt="item.alt"
+            draggable="false"
+            data-gl="1"
+            :is-storyblok="true"
+            :is-webgl="true"
+            :width="500"
+          />
         </div>
       </div>
       <div ref="dragIndicator" class="scrolling-slider__drag">drag</div>

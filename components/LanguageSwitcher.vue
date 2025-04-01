@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 const isOpen = ref(false)
 const languages = ['EN', 'UA']
-const selectedLang = ref('EN')
+const { selectedLang } = useLang()
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value

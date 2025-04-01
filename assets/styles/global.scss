@@ -156,6 +156,7 @@ label {
     height: 1px;
     background: var(--basic-white);
     transition: width 0.3s ease;
+    pointer-events: none;
   }
 
   &:hover::before,

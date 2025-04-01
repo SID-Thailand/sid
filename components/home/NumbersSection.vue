@@ -25,11 +25,14 @@ defineProps<IProps>()
             <h3 class="numbers-stat__number">{{ card.value }}</h3>
             <p class="numbers-stat__desc" v-html="card.description" />
           </div>
-
-          <img
+          <CustomImage
             :src="card.asset.filename"
             :alt="card.asset.alt"
             class="numbers-stat__img"
+            draggable="false"
+            data-gl="1"
+            :is-storyblok="true"
+            :is-webgl="true"
           />
         </li>
       </ul>

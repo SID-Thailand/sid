@@ -24,6 +24,11 @@ export const useGetStory = async (route: string) => {
               ? 'draft'
               : 'published',
           cv: Date.now(),
+          language: 'en',
+          resolve_relations: [
+            'home.cta',
+            'featured_projects.featured_projects',
+          ],
         })
 
         response.value = data.story

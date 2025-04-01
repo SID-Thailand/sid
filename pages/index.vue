@@ -30,6 +30,7 @@ const homeSections = computed((): iHomeBody => {
     <HomeAboutSection :content="homeSections?.about" />
     <HomeCompanyDirectionsSection :content="homeSections?.company_directions" />
     <HomeNumbersSection :content="homeSections?.numbers" />
+    <HomeVideoSection :content="homeSections?.video" />
   </div>
 </template>
 
