@@ -164,7 +164,6 @@ onUnmounted(() => {
             data-gl="1"
             :is-storyblok="true"
             :is-webgl="true"
-            :width="500"
           />
         </div>
       </div>
