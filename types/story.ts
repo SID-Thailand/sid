@@ -79,16 +79,48 @@ export interface iHomeVideo {
   component: string
 }
 
+interface iFeaturedProject {
+  name: string
+  content: {
+    component: string
+    cover: iImage
+    name: string
+    small_description: string
+    spec_1: string
+    spec_2: string
+    spec_3: string
+  }
+}
+
+export interface iHomeFeaturedProjects {
+  title: string
+  component: string
+  text: string
+  button_text: string
+  featured_projects: iFeaturedProject[]
+}
+
 export interface iHomeBody {
   about: iHomeAbout
   hero: iHomeHero
   company_directions: iHomeCompanyDirections
   numbers: iHomeNumbers
   video: iHomeVideo
+  featured_projects: iHomeFeaturedProjects
+}
+
+interface iHomeCTA {
+  content: {
+    backdrop_asset: iImage
+    button_text: string
+    component: string
+    title: string
+  }
 }
 
 export interface iHomeContent {
   body: iHomeBody[]
   meta: iMeta[]
+  cta: iHomeCTA
   scroll_down_text: string
 }

@@ -60,8 +60,6 @@ onBeforeUnmount(() => {
               class="interview__img"
               draggable="false"
               data-gl="1"
-              :is-storyblok="true"
-              :is-webgl="true"
             />
             <div class="interview__desc-wrapper">
               <p class="interview__name">{{ item.person_title }}</p>

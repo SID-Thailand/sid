@@ -31,8 +31,6 @@ defineProps<IProps>()
             class="numbers-stat__img"
             draggable="false"
             data-gl="1"
-            :is-storyblok="true"
-            :is-webgl="true"
           />
         </li>
       </ul>

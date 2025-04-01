@@ -162,8 +162,6 @@ onUnmounted(() => {
             :alt="item.alt"
             draggable="false"
             data-gl="1"
-            :is-storyblok="true"
-            :is-webgl="true"
           />
         </div>
       </div>

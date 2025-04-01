@@ -12,6 +12,8 @@ const { story } = await useHomeStory()
 const homeSections = computed((): iHomeBody => {
   const body = story.value.content.body as any[]
 
+  console.log({ body, story: story.value })
+
   return {
     about: body.find(item => item.component === 'home_about'),
     hero: body.find(item => item.component === 'home_hero'),
@@ -20,6 +22,9 @@ const homeSections = computed((): iHomeBody => {
     ),
     numbers: body.find(item => item.component === 'home_numbers'),
     video: body.find(item => item.component === 'home_video'),
+    featured_projects: body.find(
+      item => item.component === 'featured_projects'
+    ),
   }
 })
 </script>
@@ -31,6 +36,7 @@ const homeSections = computed((): iHomeBody => {
     <HomeCompanyDirectionsSection :content="homeSections?.company_directions" />
     <HomeNumbersSection :content="homeSections?.numbers" />
     <HomeVideoSection :content="homeSections?.video" />
+    <HomeFeaturedProjects :content="homeSections?.featured_projects" />
   </div>
 </template>
 
