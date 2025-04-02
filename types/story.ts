@@ -97,7 +97,38 @@ export interface iHomeFeaturedProjects {
   component: string
   text: string
   button_text: string
+  backdrop_asset: iImage
   featured_projects: iFeaturedProject[]
+}
+
+export interface iQuizStep {
+  title: string
+  component: string
+  items: {
+    asset: iImage
+    component: string
+    label: string
+  }[]
+}
+
+export interface iQuiz {
+  back_button: string
+  component: string
+  form_email_label: string
+  form_name_label: string
+  form_phone_label: string
+  form_title: string
+  next_button: string
+  send_button: string
+  title: string
+  steps: iQuizStep[]
+}
+
+export interface iHomeQuiz {
+  component: string
+  quiz: {
+    content: iQuiz
+  }
 }
 
 export interface iHomeBody {
@@ -107,6 +138,7 @@ export interface iHomeBody {
   numbers: iHomeNumbers
   video: iHomeVideo
   featured_projects: iHomeFeaturedProjects
+  quiz_block: iHomeQuiz
 }
 
 interface iHomeCTA {

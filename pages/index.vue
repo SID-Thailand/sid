@@ -25,6 +25,7 @@ const homeSections = computed((): iHomeBody => {
     featured_projects: body.find(
       item => item.component === 'featured_projects'
     ),
+    quiz_block: body.find(item => item.component === 'quiz_block'),
   }
 })
 </script>
@@ -37,6 +38,7 @@ const homeSections = computed((): iHomeBody => {
     <HomeNumbersSection :content="homeSections?.numbers" />
     <HomeVideoSection :content="homeSections?.video" />
     <HomeFeaturedProjects :content="homeSections?.featured_projects" />
+    <HomeQuizSection :content="homeSections?.quiz_block" />
   </div>
 </template>
 

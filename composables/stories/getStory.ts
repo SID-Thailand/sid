@@ -28,6 +28,7 @@ export const useGetStory = async (route: string) => {
           resolve_relations: [
             'home.cta',
             'featured_projects.featured_projects',
+            'quiz_block.quiz',
           ],
         })
 

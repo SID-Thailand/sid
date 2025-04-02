@@ -42,13 +42,13 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="featured-projects">
-    <!-- <CustomImage
-      :src="content.cover.filename"
-      :alt="content.cover.alt"
+    <CustomImage
+      :src="content.backdrop_asset.filename"
+      :alt="content.backdrop_asset.alt"
       draggable="false"
       data-gl="1"
       class="featured-projects__bg"
-    /> -->
+    />
     <div class="featured-projects__wrapper">
       <h2 class="featured-projects__title featured-projects__title--mob">
         {{ content.title }}
@@ -106,6 +106,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .featured-projects {
+  position: relative;
   padding: vw(200) 0;
   padding-left: vw(155);
   padding-right: vw(97);
@@ -123,7 +124,17 @@ onBeforeUnmount(() => {
   }
 }
 
+.featured-projects__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .featured-projects__wrapper {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
