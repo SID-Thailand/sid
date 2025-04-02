@@ -10,7 +10,7 @@ definePageMeta({
 const { story } = await useHomeStory()
 
 const homeSections = computed((): iHomeBody => {
-  const body = story.value.content.body as any[]
+  const body = story?.value?.content?.body as any[]
 
   console.log({ body, story: story.value })
 
@@ -39,6 +39,7 @@ const homeSections = computed((): iHomeBody => {
     <HomeVideoSection :content="homeSections?.video" />
     <HomeFeaturedProjects :content="homeSections?.featured_projects" />
     <HomeQuizSection :content="homeSections?.quiz_block" />
+    <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
 

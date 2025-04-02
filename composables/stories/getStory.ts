@@ -26,6 +26,7 @@ export const useGetStory = async (route: string) => {
           cv: Date.now(),
           language: 'en',
           resolve_relations: [
+            'cta_block.manager',
             'home.cta',
             'featured_projects.featured_projects',
             'quiz_block.quiz',

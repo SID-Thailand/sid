@@ -141,18 +141,30 @@ export interface iHomeBody {
   quiz_block: iHomeQuiz
 }
 
-interface iHomeCTA {
+export interface iManager {
+  content: {
+    component: string
+    masked_photo: iImage
+    photo: iImage
+    name: string
+    position: string
+  }
+}
+
+export interface iCTA {
   content: {
     backdrop_asset: iImage
     button_text: string
     component: string
     title: string
+    manager: iManager
+    link: { label: string; link: string }
   }
 }
 
 export interface iHomeContent {
   body: iHomeBody[]
   meta: iMeta[]
-  cta: iHomeCTA
+  cta: iCTA
   scroll_down_text: string
 }

@@ -1,34 +1,47 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import type { iCTA } from '~/types/story'
+
+interface IProps {
+  cta: iCTA
+}
+
+defineProps<IProps>()
+</script>
 
 <template>
-  <div class="meetings">
+  <div class="meetings container">
     <div class="meetings__wrapper">
       <div class="meetings__bar">
         <span />
       </div>
-      <img
-        src="/images/footer/1.png"
-        alt="Meeting image"
+
+      <CustomImage
+        :src="cta.content.backdrop_asset.filename"
+        :alt="cta.content.backdrop_asset.alt"
+        draggable="false"
+        data-gl="1"
         class="meetings__bg"
       />
-      <img
-        src="/images/footer/2.png"
-        alt="Meeting image"
+      <CustomImage
+        :src="cta?.content?.manager?.content.masked_photo?.filename"
+        :alt="cta?.content?.manager?.content.masked_photo?.alt"
+        draggable="false"
+        data-gl="1"
         class="meetings__people"
       />
-
       <div class="meetings__content">
         <img src="/logo.png" alt="Logotype" class="meetings__logo" />
         <h2 class="meetings__title">
-          We know <br />
-          EVERYTHING YOU NEED ABOUT PHUKET PROPERTY
+          {{ cta.content.title }}
         </h2>
         <div class="meetings__about">
-          <h3 class="meetings__name">Roman VASYLENKO</h3>
-          <p class="meetings__position">Head of Sales</p>
+          <h3 class="meetings__name">{{ cta.content.manager.content.name }}</h3>
+          <p class="meetings__position">
+            {{ cta.content.manager.content.position }}
+          </p>
         </div>
         <Button type="button" class="meetings__btn">
-          Book the meeting
+          {{ cta.content.button_text }}
           <LucideArrowUpRight />
         </Button>
       </div>
