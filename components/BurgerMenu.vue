@@ -1,4 +1,12 @@
 <script lang="ts" setup>
+import type { iMenuContent } from '~/types/story'
+
+interface iProps {
+  content: iMenuContent
+}
+
+defineProps<iProps>()
+
 const isOpen = ref(false)
 
 const toggleMenu = () => {
@@ -18,7 +26,7 @@ watch(isOpen, () => {
 <template>
   <div class="burger-menu">
     <button type="button" class="burger-menu__btn" @click="toggleMenu">
-      <span>Menu</span>
+      <span>{{ content.menu_button_text }}</span>
       <div
         class="burger-menu__lines"
         :class="isOpen && 'burger-menu__lines--opened'"
@@ -32,8 +40,8 @@ watch(isOpen, () => {
         class="burger-menu__content"
         :class="isOpen && 'burger-menu__content--opened'"
       >
-        <Navigation @close="toggleMenu" />
-        <Socials />
+        <Navigation :links="content.links" @close="toggleMenu" />
+        <Socials :socials="content.socials" />
       </div>
     </Teleport>
   </div>

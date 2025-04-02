@@ -1,27 +1,13 @@
 <script lang="ts" setup>
+import type { iMenuLink } from '~/types/story'
+
+interface iProps {
+  links: iMenuLink[]
+}
+
+defineProps<iProps>()
+
 const emit = defineEmits(['close'])
-const links = [
-  {
-    title: 'our projects',
-    link: '/projects',
-  },
-  {
-    title: 'about us',
-    link: '/about',
-  },
-  {
-    title: 'consulting',
-    link: '/consulting',
-  },
-  {
-    title: 'news',
-    link: '/news',
-  },
-  {
-    title: 'contact',
-    link: '/contact',
-  },
-]
 </script>
 
 <template>
@@ -29,11 +15,11 @@ const links = [
     <NuxtLink
       v-for="(item, idx) in links"
       :key="idx"
-      :to="item.link"
+      :to="removeSlashes(item.link.cached_url)"
       class="navigation__link"
       @click="emit('close')"
     >
-      {{ item.title }}
+      {{ item.label }}
     </NuxtLink>
   </nav>
 </template>

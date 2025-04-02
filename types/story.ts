@@ -170,13 +170,6 @@ export interface iCTA {
   }
 }
 
-export interface iHomeContent {
-  body: iHomeBody[]
-  meta: iMeta[]
-  cta: iCTA
-  scroll_down_text: string
-}
-
 export interface iContactItem {
   component: string
   label: string
@@ -198,10 +191,37 @@ export interface iContacts {
   }
 }
 
+export interface iMenuLink {
+  asset: iImage
+  component: string
+  label: string
+  link: iLink
+}
+
+export interface iMenuSocial {
+  component: string
+  label: string
+  link: iLink
+}
+
+export interface iHomeContent {
+  body: iHomeBody[]
+  meta: iMeta[]
+  cta: iCTA
+  scroll_down_text: string
+}
+
 export interface iFooterContent {
   button: string
   component: string
   email_label: string
   newsletter_title: string
   contacts: iContacts
+}
+
+export interface iMenuContent {
+  component: string
+  menu_button_text: string
+  links: iMenuLink[]
+  socials: iMenuSocial[]
 }

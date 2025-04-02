@@ -1,17 +1,23 @@
 <script lang="ts" setup>
-const { socials } = useSocials()
+import type { iMenuSocial } from '~/types/story'
+
+interface iProps {
+  socials: iMenuSocial[]
+}
+
+defineProps<iProps>()
 </script>
 
 <template>
   <ul class="socials">
     <li v-for="(item, idx) in socials" :key="idx" class="socials__item">
       <a
-        :href="item.link"
+        :href="item.link.url"
         target="_blank"
         rel="noopener noreferrer"
         class="socials__link underline-reverse"
       >
-        {{ item.title }}
+        {{ item.label }}
       </a>
     </li>
   </ul>

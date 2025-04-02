@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-const $el = ref(null)
+import { useMenuStory } from '~/composables/stories/menuStory'
 
+const { story } = await useMenuStory()
+
+const $el = ref(null)
 let navbarPos
 
 onMounted(async () => {
@@ -21,7 +24,7 @@ onBeforeUnmount(() => {
       <NuxtLink to="/" class="header__link">
         <img src="/logo.png" alt="Logotype" class="header__logo" />
       </NuxtLink>
-      <BurgerMenu />
+      <BurgerMenu :content="story?.content" />
     </div>
   </header>
 </template>
