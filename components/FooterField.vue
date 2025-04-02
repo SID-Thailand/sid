@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import type { iInputData } from '~/types/headless/input'
 
+interface iProps {
+  label: string
+}
+
+const props = defineProps<iProps>()
+
 const input = reactive({
   id: 'subscribe-email',
   name: 'email',
   type: 'email',
   value: '',
-  placeholder: 'Your email',
+  placeholder: props.label,
   required: true,
   error: true,
   validators: [Validation.email('Please enter a valid email address')],

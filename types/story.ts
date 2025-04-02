@@ -28,6 +28,14 @@ export interface iImage {
   alt?: string
 }
 
+export interface iLink {
+  id: string
+  fieldtype: string
+  linktype: string
+  cached_url: string
+  url: string
+}
+
 export interface iHomeHero {
   address: string
   title: string
@@ -158,7 +166,7 @@ export interface iCTA {
     component: string
     title: string
     manager: iManager
-    link: { label: string; link: string }
+    link: iLink
   }
 }
 
@@ -167,4 +175,33 @@ export interface iHomeContent {
   meta: iMeta[]
   cta: iCTA
   scroll_down_text: string
+}
+
+export interface iContactItem {
+  component: string
+  label: string
+  link: iLink
+}
+
+export interface iContact {
+  title: string
+  component: string
+  item: iContactItem[]
+}
+
+export interface iContacts {
+  content: {
+    asset: iImage
+    component: string
+    title: string
+    items: iContact[]
+  }
+}
+
+export interface iFooterContent {
+  button: string
+  component: string
+  email_label: string
+  newsletter_title: string
+  contacts: iContacts
 }

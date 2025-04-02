@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-const { socials } = useSocials()
+import { useFooterStory } from '~/composables/stories/footerStory'
 
-const filteredSocials = computed(() =>
-  socials.filter(item => item.title.toUpperCase() !== 'whatsapp'.toUpperCase())
-)
+const { story } = await useFooterStory()
 </script>
 
 <template>
@@ -12,60 +10,83 @@ const filteredSocials = computed(() =>
       <div class="footer__content">
         <ul class="footer__list">
           <li class="footer__item">
-            <h3 class="footer__label">OUR WORK SHEDULE:</h3>
-            <p class="footer__text">Monday–Friday, 10 - 18</p>
+            <h3 class="footer__label">
+              {{ story.content.contacts.content.items[0].title }}:
+            </h3>
+            <p class="footer__text">
+              {{ story.content.contacts.content.items[0].item[0].label }}
+            </p>
           </li>
           <li class="footer__item">
-            <h3 class="footer__label">HOW TO FIND US IN</h3>
+            <h3 class="footer__label">
+              {{ story.content.contacts.content.items[1].title }}
+            </h3>
             <a
-              href="http://maps.google.com/?q=1200 Pennsylvania Ave SE, Washington, District of Columbia, 20003"
+              :href="story.content.contacts.content.items[1].item[0].link.url"
               target="_blank"
               rel="noopener noreferrer"
               class="footer__text underline-reverse"
             >
-              GOOGLE MAPS
+              {{ story.content.contacts.content.items[1].item[0].label }}
             </a>
           </li>
         </ul>
         <ul class="footer__list">
           <li class="footer__item">
-            <h3 class="footer__label">EMAIL</h3>
+            <h3 class="footer__label">
+              {{ story.content.contacts.content.items[2].title }}
+            </h3>
             <a
-              href="mailto:info@sidthailand.com"
+              :href="
+                'mailto:' +
+                story.content.contacts.content.items[2].item[0].link.url
+              "
               target="_blank"
               class="footer__text underline-reverse"
             >
-              info@sidthailand.com
+              {{ story.content.contacts.content.items[2].item[0].label }}
             </a>
           </li>
           <li class="footer__item">
-            <h3 class="footer__label">whatsapp</h3>
+            <h3 class="footer__label">
+              {{ story.content.contacts.content.items[3].title }}
+            </h3>
             <a
-              href="tel:+66 93 579 76 77"
+              :href="
+                'tel:' + story.content.contacts.content.items[3].item[0].label
+              "
               class="footer__text underline-reverse"
             >
-              +66 93 579 76 77
+              {{ story.content.contacts.content.items[3].item[0].label }}
             </a>
           </li>
           <li class="footer__item">
-            <h3 class="footer__label">join our socials:</h3>
+            <h3 class="footer__label">
+              {{ story.content.contacts.content.items[4].title }}:
+            </h3>
             <a
-              v-for="(item, idx) in filteredSocials"
+              v-for="(item, idx) in story.content.contacts.content.items[4]
+                .item"
               :key="idx"
               target="_blank"
               rel="noopener noreferrer"
-              :href="item.link"
+              :href="item.link.url"
               class="footer__text underline-reverse"
             >
-              {{ item.title }}
+              {{ item.label }}
             </a>
           </li>
         </ul>
         <form class="footer__form">
-          <legend class="footer__title">Subscribe to our newsletter</legend>
-          <FooterField class="footer__input" />
+          <legend class="footer__title">
+            {{ story.content.newsletter_title }}
+          </legend>
+          <FooterField
+            class="footer__input"
+            :label="story.content.email_label"
+          />
           <Button type="submit" class="footer__form-btn">
-            SUBSCRIBE
+            {{ story.content.button }}
             <LucideArrowUpRight />
           </Button>
         </form>

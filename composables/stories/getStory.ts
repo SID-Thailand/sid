@@ -30,6 +30,7 @@ export const useGetStory = async (route: string) => {
             'home.cta',
             'featured_projects.featured_projects',
             'quiz_block.quiz',
+            'footer.contacts',
           ],
         })
 

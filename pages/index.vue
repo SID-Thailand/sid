@@ -12,8 +12,6 @@ const { story } = await useHomeStory()
 const homeSections = computed((): iHomeBody => {
   const body = story?.value?.content?.body as any[]
 
-  console.log({ body, story: story.value })
-
   return {
     about: body.find(item => item.component === 'home_about'),
     hero: body.find(item => item.component === 'home_hero'),
