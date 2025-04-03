@@ -15,7 +15,7 @@ const emit = defineEmits(['close'])
     <NuxtLink
       v-for="(item, idx) in links"
       :key="idx"
-      :to="removeSlashes(item.link.cached_url)"
+      :to="`/${item.link.cached_url.replace(/^\/+/, '')}`"
       class="navigation__link"
       @click="emit('close')"
     >

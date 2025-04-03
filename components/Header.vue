@@ -4,6 +4,7 @@ import { useMenuStory } from '~/composables/stories/menuStory'
 const { story } = await useMenuStory()
 
 const $el = ref(null)
+const { selectedLang } = useLang()
 let navbarPos
 
 onMounted(async () => {
@@ -21,7 +22,7 @@ onBeforeUnmount(() => {
   <header ref="$el" class="header container">
     <div class="header__wrapper container">
       <LanguageSwitcher />
-      <NuxtLink to="/" class="header__link">
+      <NuxtLink :to="'/' + selectedLang" class="header__link">
         <img src="/logo.png" alt="Logotype" class="header__logo" />
       </NuxtLink>
       <BurgerMenu :content="story?.content" />

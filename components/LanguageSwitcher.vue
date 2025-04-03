@@ -1,23 +1,26 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 const isOpen = ref(false)
-const languages = ['EN', 'UA']
-const { selectedLang } = useLang()
+const { selectedLang, languages, setLang } = useLang()
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
-const changeLanguage = (lang: string) => {
-  selectedLang.value = lang
+const changeLanguage = async (lang: string) => {
+  if (lang === selectedLang.value) return
+
   isOpen.value = false
+  await setLang(lang)
+
+  window.location.reload()
 }
 </script>
 
 <template>
   <div class="lang-switch">
     <button class="lang-switch__btn underline-reverse" @click="toggleDropdown">
-      {{ selectedLang }}
+      {{ selectedLang.toUpperCase() }}
     </button>
 
     <ul
@@ -31,7 +34,7 @@ const changeLanguage = (lang: string) => {
         @click="changeLanguage(lang)"
       >
         <button type="button" class="lang-switch__item-btn">
-          {{ lang }}
+          {{ lang.toUpperCase() }}
         </button>
       </li>
     </ul>

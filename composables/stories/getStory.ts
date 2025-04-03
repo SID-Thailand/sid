@@ -10,8 +10,9 @@ export const useGetStory = async (route: string) => {
   const response = ref<iStory>(null)
   const retryCounter = ref(0)
   const config = useRuntimeConfig()
-
   const storyapi = useStoryblokApi()
+
+  const { selectedLang } = useLang()
   const { isInEditor } = useAppState()
   const { addToast } = useToasts()
 
@@ -24,7 +25,7 @@ export const useGetStory = async (route: string) => {
               ? 'draft'
               : 'published',
           cv: Date.now(),
-          language: 'en',
+          language: selectedLang.value,
           resolve_relations: [
             'cta_block.manager',
             'home.cta',
