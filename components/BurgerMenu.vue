@@ -7,14 +7,14 @@ interface iProps {
 
 defineProps<iProps>()
 
-const isOpen = ref(false)
+const { isMenuOpened } = useAppState()
 
 const toggleMenu = () => {
-  isOpen.value = !isOpen.value
+  isMenuOpened.value = !isMenuOpened.value
 }
 
-watch(isOpen, () => {
-  if (isOpen.value) {
+watch(isMenuOpened, () => {
+  if (isMenuOpened.value) {
     window.escroll.disabled = true
     return
   } else {
@@ -29,7 +29,7 @@ watch(isOpen, () => {
       <span>{{ content.menu_button_text }}</span>
       <div
         class="burger-menu__lines"
-        :class="isOpen && 'burger-menu__lines--opened'"
+        :class="isMenuOpened && 'burger-menu__lines--opened'"
       >
         <span />
         <span />
@@ -38,7 +38,7 @@ watch(isOpen, () => {
     <Teleport to="#teleports">
       <div
         class="burger-menu__content"
-        :class="isOpen && 'burger-menu__content--opened'"
+        :class="isMenuOpened && 'burger-menu__content--opened'"
       >
         <Navigation :links="content.links" @close="toggleMenu" />
         <Socials :socials="content.socials" />
