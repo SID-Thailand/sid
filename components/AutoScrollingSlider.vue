@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import type { iImage } from '~/types/story'
 
@@ -9,124 +9,106 @@ interface IProps {
 }
 
 const props = withDefaults(defineProps<IProps>(), {
-  duration: 22,
+  duration: 20,
 })
 
 const slider = ref<HTMLElement | null>(null)
 const dragIndicator = ref<HTMLElement | null>(null)
+const sliderKey = ref(Date.now())
+
 let tl: gsap.core.Timeline
 let totalWidth = 0
 let isDragging = false
 let startX = 0
 let holdTimeout: number | null = null
 
-const createInfiniteScroll = () => {
+const cloneItems = (items: HTMLElement[]) =>
+  items.forEach(i => slider.value?.appendChild(i.cloneNode(true)))
+
+const initTimeline = () => {
   if (!slider.value) return
-
-  const items = Array.from(slider.value.children) as HTMLElement[]
-
-  totalWidth = items.reduce((acc, item) => {
-    const computed = window.getComputedStyle(item)
-    const marginRight = parseFloat(computed.marginRight) || 0
-
-    return acc + item.offsetWidth + marginRight
+  const items = [...slider.value.children] as HTMLElement[]
+  totalWidth = items.reduce((sum, i) => {
+    const style = getComputedStyle(i)
+    return sum + i.offsetWidth + parseFloat(style.marginRight || '0')
   }, 0)
-
-  items.forEach(item => {
-    const clone = item.cloneNode(true) as HTMLElement
-    slider.value?.appendChild(clone)
-  })
-
+  cloneItems(items)
+  cloneItems(items)
   tl = gsap.timeline({ repeat: -1, defaults: { ease: 'linear' } })
   tl.to(slider.value, {
     x: -totalWidth,
     duration: props.duration,
-    modifiers: {
-      x: x => `${parseFloat(x) % -totalWidth}px`,
-    },
+    modifiers: { x: x => `${parseFloat(x) % -totalWidth}px` },
   })
 }
 
-const handleDragStart = (e: MouseEvent | TouchEvent) => {
-  if (!slider.value) return
-
+const startDrag = (e: MouseEvent | TouchEvent) => {
   isDragging = true
   startX = 'touches' in e ? e.touches[0].clientX : e.clientX
   tl.pause()
 }
 
-const handleDragMove = (e: MouseEvent | TouchEvent) => {
+const onDrag = (e: MouseEvent | TouchEvent) => {
   if (!isDragging || !slider.value) return
-
-  const currentX = 'touches' in e ? e.touches[0].clientX : e.clientX
-  const deltaX = currentX - startX
-  const progressDelta = (deltaX * 1.2) / totalWidth
-
-  let newProgress = tl.progress() - progressDelta
-  newProgress = ((newProgress % 1) + 1) % 1
-  tl.progress(newProgress)
-  startX = currentX
+  const x = 'touches' in e ? e.touches[0].clientX : e.clientX
+  const delta = x - startX
+  const progress = (((tl.progress() - (delta * 1.2) / totalWidth) % 1) + 1) % 1
+  tl.progress(progress)
+  startX = x
 }
 
-const handleDragEnd = () => {
-  if (!slider.value) return
-
+const endDrag = () => {
   isDragging = false
   tl.resume()
   gsap.to(tl, { timeScale: 1, duration: 1, ease: 'power2.out' })
 }
 
-const handleMouseMove = (e: MouseEvent) => {
-  const target = e.currentTarget as HTMLElement
-  const rect = target.getBoundingClientRect()
+const setIndicator = (x: number, y: number, el: HTMLElement) => {
+  const rect = el.getBoundingClientRect()
+  dragIndicator.value?.style.setProperty('--indicator-x', `${x - rect.left}px`)
+  dragIndicator.value?.style.setProperty('--indicator-y', `${y - rect.top}px`)
+}
 
-  if (dragIndicator.value) {
-    dragIndicator.value.style.setProperty(
-      '--indicator-x',
-      e.clientX - rect.left + 'px'
-    )
-    dragIndicator.value.style.setProperty(
-      '--indicator-y',
-      e.clientY - rect.top + 'px'
-    )
-  }
+const showIndicator = () =>
+  dragIndicator.value && (dragIndicator.value.style.opacity = '1')
+const hideIndicator = () =>
+  dragIndicator.value && (dragIndicator.value.style.opacity = '0')
+
+const holdStart = () => {
+  holdTimeout = window.setTimeout(
+    () => dragIndicator.value?.classList.add('active'),
+    100
+  )
 }
-const showDragIndicator = () => {
-  if (dragIndicator.value) dragIndicator.value.style.opacity = '1'
+const holdEnd = () => {
+  holdTimeout && clearTimeout(holdTimeout)
+  dragIndicator.value?.classList.remove('active')
+  holdTimeout = null
 }
-const hideDragIndicator = () => {
-  if (dragIndicator.value) dragIndicator.value.style.opacity = '0'
+
+const onResize = () => {
+  tl && tl.kill()
+  sliderKey.value = Date.now()
+  nextTick(() => initTimeline())
 }
-const handleHoldStart = () => {
-  holdTimeout = window.setTimeout(() => {
-    if (dragIndicator.value) dragIndicator.value.classList.add('active')
-  }, 100)
-}
-const handleHoldEnd = () => {
-  if (holdTimeout) {
-    clearTimeout(holdTimeout)
-    holdTimeout = null
-  }
-  if (dragIndicator.value) dragIndicator.value.classList.remove('active')
-}
+
+const debouncedResize = debounce(onResize, 300)
 
 onMounted(() => {
-  createInfiniteScroll()
-  slider.value?.addEventListener('mousedown', handleDragStart)
-  slider.value?.addEventListener('touchstart', handleDragStart)
-  window.addEventListener('mousemove', handleDragMove)
-  window.addEventListener('touchmove', handleDragMove)
-  window.addEventListener('mouseup', handleDragEnd)
-  window.addEventListener('touchend', handleDragEnd)
+  initTimeline()
+  window.addEventListener('mousemove', onDrag)
+  window.addEventListener('touchmove', onDrag)
+  window.addEventListener('mouseup', endDrag)
+  window.addEventListener('touchend', endDrag)
+  window.addEventListener('resize', debouncedResize)
 })
 
 onUnmounted(() => {
-  slider.value?.removeEventListener('mousedown', handleDragStart)
-  slider.value?.removeEventListener('touchstart', handleDragStart)
-  window.removeEventListener('mousemove', handleDragMove)
-  window.removeEventListener('touchmove', handleDragMove)
-  window.removeEventListener('mouseup', handleDragEnd)
-  window.removeEventListener('touchend', handleDragEnd)
+  window.removeEventListener('mousemove', onDrag)
+  window.removeEventListener('touchmove', onDrag)
+  window.removeEventListener('mouseup', endDrag)
+  window.removeEventListener('touchend', endDrag)
+  window.removeEventListener('resize', debouncedResize)
 })
 </script>
 
@@ -138,20 +120,32 @@ onUnmounted(() => {
     </div>
     <div
       class="scrolling-slider__content"
-      @mousemove="handleMouseMove"
-      @mouseenter="showDragIndicator"
+      @mousemove="
+        e => setIndicator(e.clientX, e.clientY, e.currentTarget as HTMLElement)
+      "
+      @mouseenter="showIndicator"
       @mouseleave="
         () => {
-          hideDragIndicator()
-          handleHoldEnd()
+          hideIndicator()
+          holdEnd()
         }
       "
-      @mousedown="handleHoldStart"
-      @mouseup="handleHoldEnd"
-      @touchstart="handleHoldStart"
-      @touchend="handleHoldEnd"
+      @mousedown="
+        e => {
+          startDrag(e)
+          holdStart()
+        }
+      "
+      @mouseup="holdEnd"
+      @touchstart="
+        e => {
+          startDrag(e)
+          holdStart()
+        }
+      "
+      @touchend="holdEnd"
     >
-      <div ref="slider" class="scrolling-slider__wrapper">
+      <div ref="slider" :key="sliderKey" class="scrolling-slider__wrapper">
         <div
           v-for="(item, idx) in items"
           :key="idx"
@@ -191,8 +185,8 @@ onUnmounted(() => {
 .scrolling-slider__plus-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   height: 100%;
   margin-right: vw(20);
 
@@ -202,9 +196,10 @@ onUnmounted(() => {
 
   svg {
     display: block;
-    color: var(--basic-black);
     width: vw(22);
     height: vw(22);
+    color: var(--basic-black);
+
     @media (max-width: $br1) {
       width: 20px;
       height: 20px;
@@ -213,26 +208,26 @@ onUnmounted(() => {
 }
 
 .scrolling-slider__content {
-  overflow: hidden;
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative;
+  overflow: hidden;
 }
 
 .scrolling-slider__wrapper {
   display: flex;
   width: fit-content;
-  will-change: transform;
   height: 100%;
+  will-change: transform;
 }
 
 .scrolling-slider__item {
+  flex-shrink: 0;
   width: vw(497);
   height: 100%;
-  flex-shrink: 0;
   margin-right: vw(20);
-  pointer-events: none;
   user-select: none;
+  pointer-events: none;
 
   @media (max-width: $br1) {
     width: size(497, 343);
@@ -253,31 +248,29 @@ onUnmounted(() => {
 
 .scrolling-slider__drag {
   position: absolute;
-  pointer-events: none;
+  z-index: 1000;
   width: vw(48);
   height: vw(48);
-  border-radius: 50%;
-  background-color: var(--basic-black);
-  color: var(--basic-white);
+  top: calc(var(--indicator-y, 0px) - vw(35));
+  left: calc(var(--indicator-x, 0px) + vw(4));
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background-color: var(--basic-black);
+  color: var(--basic-white);
   font-size: vw(14);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1);
   transition:
     transform 0.15s ease,
     opacity 0.15s ease;
-  opacity: 0;
-  transform: scale(1);
-  z-index: 1000;
-  left: calc(var(--indicator-x, 0px) + vw(4));
-  top: calc(var(--indicator-y, 0px) - vw(35));
 
   @media (max-width: $br1) {
     display: none;
   }
-}
 
-.scrolling-slider__drag {
   &.active {
     transform: scale(0.8);
   }
