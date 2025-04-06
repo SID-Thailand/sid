@@ -20,18 +20,17 @@ onMounted(() => {
   const wrappers = contentRef.value.querySelectorAll(
     '.interview__content-wrapper'
   )
-
-  // const contentInterviewHeight = interviewContentRef.value?.scrollHeight || 0
-
+  const itemsCount = wrappers.length
+  const interval = 1 / itemsCount
   const tl = gsap.timeline({
     paused: true,
   })
+  // const contentInterviewHeight = interviewContentRef.value?.scrollHeight || 0
 
   // tl.to(interviewContentRef.value, {
   //   y: -contentInterviewHeight,
   //   duration: 1,
   // })
-  const interval = 1 / wrappers.length
 
   ScrollTrigger.create({
     trigger: contentRef.value,
@@ -41,17 +40,23 @@ onMounted(() => {
     // markers: true,
     animation: tl,
 
-    onUpdate: self => {
-      const progress = self.progress
+    onUpdate: ({ progress }) => {
+      const activeIndex =
+        progress < interval
+          ? 0
+          : progress >= 1 - interval
+            ? itemsCount - 1
+            : Math.floor(progress / interval)
 
       wrappers.forEach((wrapper, index) => {
-        const offset = index * interval
-
-        if (progress >= offset && progress < offset + interval) {
-          wrapper.classList.add('interview__content-wrapper--active')
-        } else {
-          wrapper.classList.remove('interview__content-wrapper--active')
-        }
+        wrapper.classList.toggle(
+          'interview__img-wrapper--active',
+          progress >= index * interval
+        )
+        wrapper.classList.toggle(
+          'interview__content-wrapper--active',
+          index === activeIndex
+        )
       })
     },
   })
@@ -76,9 +81,13 @@ onBeforeUnmount(() => {
               :key="idx"
               class="interview__content-wrapper"
               :class="idx === 0 && 'interview__content-wrapper--active'"
+              :style="{ zIndex: idx + 1 }"
             >
               <div class="interview__image-item">
-                <div class="interview__img-wrapper">
+                <div
+                  class="interview__img-wrapper"
+                  :class="idx === 0 && 'interview__img-wrapper--active'"
+                >
                   <CustomImage
                     :src="item?.person?.content?.photo?.filename"
                     :alt="item?.person?.content?.photo?.alt"
@@ -193,14 +202,8 @@ onBeforeUnmount(() => {
   }
 
   &--active {
-    .interview__image-item {
-      .interview__img {
-        transform: translateY(0);
-      }
-
-      .interview__desc-wrapper {
-        opacity: 1;
-      }
+    .interview__desc-wrapper {
+      opacity: 1;
     }
 
     .interview__item {
@@ -214,11 +217,6 @@ onBeforeUnmount(() => {
     @media (max-width: $br1) {
       .interview__item {
         opacity: 1;
-        color: var(--basic-white);
-
-        .interview__line {
-          background-color: var(--basic-white);
-        }
       }
     }
   }
@@ -251,6 +249,12 @@ onBeforeUnmount(() => {
   overflow: hidden;
   width: 100%;
   height: 100%;
+
+  &--active {
+    .interview__img {
+      transform: translateY(0);
+    }
+  }
 }
 
 .interview__img {
