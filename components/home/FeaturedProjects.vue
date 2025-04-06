@@ -43,43 +43,43 @@ onBeforeUnmount(() => {
 <template>
   <section class="featured-projects">
     <CustomImage
-      :src="content.backdrop_asset.filename"
-      :alt="content.backdrop_asset.alt"
+      :src="content?.backdrop_asset?.filename"
+      :alt="content?.backdrop_asset?.alt"
       draggable="false"
       data-gl="1"
       class="featured-projects__bg"
     />
     <div class="featured-projects__wrapper">
       <h2 class="featured-projects__title featured-projects__title--mob">
-        {{ content.title }}
+        {{ content?.title }}
       </h2>
       <div ref="contentRef" class="featured-projects__card">
         <div
-          v-for="(project, idx) in content.featured_projects"
+          v-for="(project, idx) in content?.featured_projects"
           :key="idx"
           class="featured-projects__card-wrapper"
           :class="idx === 1 && 'featured-projects__card-wrapper--active'"
         >
           <div class="featured-projects__plug">
             <CustomImage
-              :src="project.content.cover.filename"
-              :alt="project.content.cover.alt"
+              :src="project?.content?.cover?.filename"
+              :alt="project?.content?.cover?.alt"
               draggable="false"
               data-gl="1"
               class="featured-projects__card-img"
             />
             <h3 class="featured-projects__name">
-              {{ project.content.name }}
+              {{ project?.content?.name }}
             </h3>
             <div class="featured-projects__text-wrapper">
               <p class="featured-projects__small-text">
-                {{ project.content.spec_1 }}
+                {{ project?.content?.spec_1 }}
               </p>
               <p class="featured-projects__small-text">
-                {{ project.content.spec_2 }}
+                {{ project?.content?.spec_2 }}
               </p>
               <p class="featured-projects__small-text">
-                {{ project.content.spec_3 }}
+                {{ project?.content?.spec_3 }}
               </p>
             </div>
             <div class="featured-projects__plus">
@@ -91,13 +91,13 @@ onBeforeUnmount(() => {
       </div>
       <div class="featured-projects__info">
         <h2 class="featured-projects__title">
-          {{ content.title }}
+          {{ content?.title }}
         </h2>
         <p class="featured-projects__desc">
-          {{ content.text }}
+          {{ content?.text }}
         </p>
         <NuxtLink :to="'/'" class="featured-projects__link underline-reverse">
-          {{ content.button_text }}
+          {{ content?.button_text }}
         </NuxtLink>
       </div>
     </div>

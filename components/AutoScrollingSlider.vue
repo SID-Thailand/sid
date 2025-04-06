@@ -152,8 +152,8 @@ onUnmounted(() => {
           class="scrolling-slider__item"
         >
           <CustomImage
-            :src="item.filename"
-            :alt="item.alt"
+            :src="item?.filename"
+            :alt="item?.alt"
             draggable="false"
             data-gl="1"
           />

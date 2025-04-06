@@ -11,10 +11,10 @@ defineProps<IProps>()
 <template>
   <section class="quiz">
     <div class="quiz__wrapper">
-      <h2 class="quiz__title">{{ content.quiz.content.title }}</h2>
+      <h2 class="quiz__title">{{ content?.quiz?.content?.title }}</h2>
       <div class="quiz__step-tab">
         <QuizStep
-          v-for="(step, idx) in content.quiz.content.steps"
+          v-for="(step, idx) in content?.quiz?.content?.steps"
           :key="idx"
           :quiz-step="step"
           class="quiz__item"
@@ -23,10 +23,10 @@ defineProps<IProps>()
       <div class="quiz__btn-wrapper">
         <Button type="button" class="quiz__btn">
           <LucideArrowUpLeft />
-          {{ content.quiz.content.back_button }}
+          {{ content?.quiz?.content?.back_button }}
         </Button>
         <Button type="button" class="quiz__btn">
-          {{ content.quiz.content.next_button }}
+          {{ content?.quiz?.content?.next_button }}
           <LucideArrowUpRight />
         </Button>
       </div>

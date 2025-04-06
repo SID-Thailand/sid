@@ -14,18 +14,18 @@ defineProps<IProps>()
       <div class="quiz-step__content">
         <p class="quiz-step__count"><span>1</span>/<span>4</span></p>
         <h3 class="quiz-step__quiz-name">
-          {{ quizStep.title }}
+          {{ quizStep?.title }}
         </h3>
         <ul class="quiz-step__list">
           <li
-            v-for="(step, idx) in quizStep.items"
+            v-for="(step, idx) in quizStep?.items"
             :key="idx"
             class="quiz-step__item"
           >
             <div class="quiz-step__image-container">
               <CustomImage
-                :src="step.asset.filename"
-                :alt="step.asset.alt"
+                :src="step?.asset?.filename"
+                :alt="step?.asset?.alt"
                 draggable="false"
                 data-gl="1"
                 class="quiz-step__img"
@@ -35,7 +35,7 @@ defineProps<IProps>()
                 <span />
               </button>
             </div>
-            <p class="quiz-step__desc">{{ step.label }}</p>
+            <p class="quiz-step__desc">{{ step?.label }}</p>
           </li>
         </ul>
       </div>

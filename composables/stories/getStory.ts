@@ -32,6 +32,7 @@ export const useGetStory = async (route: string) => {
             'featured_projects.featured_projects',
             'quiz_block.quiz',
             'footer.contacts',
+            'company_direction.person',
           ],
         })
 

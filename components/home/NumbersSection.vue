@@ -12,22 +12,22 @@ defineProps<IProps>()
   <section class="numbers-stat container">
     <div class="numbers-stat__wrapper">
       <div class="numbers-stat__top">
-        <h2 class="numbers-stat__title">{{ content.title }}</h2>
-        <BuildAddress :text="content.address" />
+        <h2 class="numbers-stat__title">{{ content?.title }}</h2>
+        <BuildAddress :text="content?.address" />
       </div>
       <ul class="numbers-stat__cards">
         <li
-          v-for="(card, idx) in content.numbers"
+          v-for="(card, idx) in content?.numbers"
           :key="idx"
           class="numbers-stat__card"
         >
           <div class="numbers-stat__info">
-            <h3 class="numbers-stat__number">{{ card.value }}</h3>
-            <p class="numbers-stat__desc" v-html="card.description" />
+            <h3 class="numbers-stat__number">{{ card?.value }}</h3>
+            <p class="numbers-stat__desc" v-html="card?.description" />
           </div>
           <CustomImage
-            :src="card.asset.filename"
-            :alt="card.asset.alt"
+            :src="card?.asset?.filename"
+            :alt="card?.asset?.alt"
             class="numbers-stat__img"
             draggable="false"
             data-gl="1"
@@ -35,7 +35,7 @@ defineProps<IProps>()
         </li>
       </ul>
       <Button type="button" class="numbers-stat__btn">
-        {{ content.button_text }}
+        {{ content?.button_text }}
         <LucidePlus />
       </Button>
     </div>

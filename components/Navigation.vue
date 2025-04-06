@@ -15,11 +15,11 @@ const emit = defineEmits(['close'])
     <NuxtLink
       v-for="(item, idx) in links"
       :key="idx"
-      :to="`/${item.link.cached_url.replace(/^\/+/, '')}`"
+      :to="`/${item?.link?.cached_url?.replace(/^\/+/, '')}`"
       class="navigation__link"
       @click="emit('close')"
     >
-      {{ item.label }}
+      {{ item?.label }}
     </NuxtLink>
   </nav>
 </template>

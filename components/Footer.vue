@@ -11,82 +11,85 @@ const { story } = await useFooterStory()
         <ul class="footer__list">
           <li class="footer__item">
             <h3 class="footer__label">
-              {{ story.content.contacts.content.items[0].title }}:
+              {{ story?.content?.contacts?.content?.items[0]?.title }}:
             </h3>
             <p class="footer__text">
-              {{ story.content.contacts.content.items[0].item[0].label }}
+              {{ story?.content?.contacts?.content?.items[0]?.item[0]?.label }}
             </p>
           </li>
           <li class="footer__item">
             <h3 class="footer__label">
-              {{ story.content.contacts.content.items[1].title }}
+              {{ story?.content?.contacts?.content?.items[1]?.title }}
             </h3>
             <a
-              :href="story.content.contacts.content.items[1].item[0].link.url"
+              :href="
+                story?.content?.contacts?.content?.items[1]?.item[0]?.link?.url
+              "
               target="_blank"
               rel="noopener noreferrer"
               class="footer__text underline-reverse"
             >
-              {{ story.content.contacts.content.items[1].item[0].label }}
+              {{ story?.content?.contacts?.content?.items[1]?.item[0]?.label }}
             </a>
           </li>
         </ul>
         <ul class="footer__list">
           <li class="footer__item">
             <h3 class="footer__label">
-              {{ story.content.contacts.content.items[2].title }}
+              {{ story?.content?.contacts?.content?.items[2]?.title }}
             </h3>
             <a
               :href="
                 'mailto:' +
-                story.content.contacts.content.items[2].item[0].link.url
+                story?.content?.contacts?.content?.items[2]?.item[0]?.link?.url
               "
               target="_blank"
               class="footer__text underline-reverse"
             >
-              {{ story.content.contacts.content.items[2].item[0].label }}
+              {{ story?.content?.contacts?.content?.items[2]?.item[0]?.label }}
             </a>
           </li>
           <li class="footer__item">
             <h3 class="footer__label">
-              {{ story.content.contacts.content.items[3].title }}
+              {{ story?.content?.contacts?.content?.items[3]?.title }}
             </h3>
             <a
               :href="
-                'tel:' + story.content.contacts.content.items[3].item[0].label
+                'tel:' +
+                story?.content?.contacts?.content?.items[3]?.item[0]?.label
               "
               class="footer__text underline-reverse"
             >
-              {{ story.content.contacts.content.items[3].item[0].label }}
+              {{ story?.content?.contacts?.content?.items[3]?.item[0]?.label }}
             </a>
           </li>
           <li class="footer__item">
             <h3 class="footer__label">
-              {{ story.content.contacts.content.items[4].title }}:
+              {{ story?.content?.contacts?.content?.items[4]?.title }}:
             </h3>
             <a
-              v-for="(item, idx) in story.content.contacts.content.items[4]
+              v-for="(item, idx) in story?.content?.contacts?.content?.items[4]
                 .item"
               :key="idx"
               target="_blank"
               rel="noopener noreferrer"
-              :href="item.link.url"
+              :href="item?.link?.url"
               class="footer__text underline-reverse"
             >
-              {{ item.label }}
+              {{ item?.label }}
             </a>
           </li>
         </ul>
         <form class="footer__form">
           <legend class="footer__title">
-            {{ story.content.newsletter_title }}
+            {{ story?.content?.newsletter_title }}
           </legend>
           <FooterField
             class="footer__input"
-            :label="story.content.email_label"
+            :label="story?.content?.email_label"
           />
           <Button type="submit" class="footer__form-btn">
-            {{ story.content.button }}
+            {{ story?.content?.button }}
             <LucideArrowUpRight />
           </Button>
         </form>

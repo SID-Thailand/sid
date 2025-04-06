@@ -26,7 +26,7 @@ watch(isMenuOpened, () => {
 <template>
   <div class="burger-menu">
     <button type="button" class="burger-menu__btn" @click="toggleMenu">
-      <span>{{ content.menu_button_text }}</span>
+      <span>{{ content?.menu_button_text }}</span>
       <div
         class="burger-menu__lines"
         :class="isMenuOpened && 'burger-menu__lines--opened'"
@@ -40,8 +40,8 @@ watch(isMenuOpened, () => {
         class="burger-menu__content"
         :class="isMenuOpened && 'burger-menu__content--opened'"
       >
-        <Navigation :links="content.links" @close="toggleMenu" />
-        <Socials :socials="content.socials" />
+        <Navigation :links="content?.links" @close="toggleMenu" />
+        <Socials :socials="content?.socials" />
       </div>
     </Teleport>
   </div>

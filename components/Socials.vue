@@ -12,12 +12,12 @@ defineProps<iProps>()
   <ul class="socials">
     <li v-for="(item, idx) in socials" :key="idx" class="socials__item">
       <a
-        :href="item.link.url"
+        :href="item?.link?.url"
         target="_blank"
         rel="noopener noreferrer"
         class="socials__link underline-reverse"
       >
-        {{ item.label }}
+        {{ item?.label }}
       </a>
     </li>
   </ul>

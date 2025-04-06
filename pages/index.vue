@@ -13,17 +13,17 @@ const homeSections = computed((): iHomeBody => {
   const body = story?.value?.content?.body as any[]
 
   return {
-    about: body.find(item => item.component === 'home_about'),
-    hero: body.find(item => item.component === 'home_hero'),
+    about: body.find(item => item?.component === 'home_about'),
+    hero: body.find(item => item?.component === 'home_hero'),
     company_directions: body.find(
-      item => item.component === 'company_directions'
+      item => item?.component === 'company_directions'
     ),
-    numbers: body.find(item => item.component === 'home_numbers'),
-    video: body.find(item => item.component === 'home_video'),
+    numbers: body.find(item => item?.component === 'home_numbers'),
+    video: body.find(item => item?.component === 'home_video'),
     featured_projects: body.find(
-      item => item.component === 'featured_projects'
+      item => item?.component === 'featured_projects'
     ),
-    quiz_block: body.find(item => item.component === 'quiz_block'),
+    quiz_block: body.find(item => item?.component === 'quiz_block'),
   }
 })
 </script>

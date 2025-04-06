@@ -16,8 +16,8 @@ defineProps<IProps>()
       </div>
 
       <CustomImage
-        :src="cta.content.backdrop_asset.filename"
-        :alt="cta.content.backdrop_asset.alt"
+        :src="cta?.content?.backdrop_asset?.filename"
+        :alt="cta?.content?.backdrop_asset?.alt"
         draggable="false"
         data-gl="1"
         class="meetings__bg"
@@ -32,16 +32,18 @@ defineProps<IProps>()
       <div class="meetings__content">
         <img src="/logo.png" alt="Logotype" class="meetings__logo" />
         <h2 class="meetings__title">
-          {{ cta.content.title }}
+          {{ cta?.content?.title }}
         </h2>
         <div class="meetings__about">
-          <h3 class="meetings__name">{{ cta.content.manager.content.name }}</h3>
+          <h3 class="meetings__name">
+            {{ cta?.content?.manager?.content?.name }}
+          </h3>
           <p class="meetings__position">
-            {{ cta.content.manager.content.position }}
+            {{ cta?.content?.manager?.content?.position }}
           </p>
         </div>
         <Button type="button" class="meetings__btn">
-          {{ cta.content.button_text }}
+          {{ cta?.content?.button_text }}
           <LucideArrowUpRight />
         </Button>
       </div>

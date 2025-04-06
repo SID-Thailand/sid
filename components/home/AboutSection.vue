@@ -13,13 +13,13 @@ defineProps<IProps>()
   <section class="connect container">
     <div class="connect__top">
       <h2 class="connect__title">
-        {{ content.title }}
+        {{ content?.title }}
       </h2>
       <Button type="button" view="dark" class="connect__btn">
-        {{ content.button_text }}
+        {{ content?.button_text }}
       </Button>
     </div>
-    <AutoScrollingSlider :items="content.gallery" />
+    <AutoScrollingSlider :items="content?.gallery" />
     <div class="connect__bottom">
       <div class="connect__bottom-wrapper">
         <p class="connect__scroll-text">
@@ -27,10 +27,10 @@ defineProps<IProps>()
           <ArrowDown class="connect__arrow" />
         </p>
         <p class="connect__description">
-          {{ content.text }}
+          {{ content?.text }}
         </p>
       </div>
-      <BuildAddress color="dark" :text="content.address" />
+      <BuildAddress color="dark" :text="content?.address" />
     </div>
   </section>
 </template>

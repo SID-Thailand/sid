@@ -54,10 +54,12 @@ export interface iHomeAbout {
 
 interface iHomeCompanyDirection {
   description: string
-  person_asset: iImage
-  person_description: string
-  person_title: string
+  person: iMember
+  component: string
   title: string
+  // person_asset: iImage
+  // person_description: string
+  // person_title: string
 }
 
 export interface iHomeCompanyDirections {
@@ -149,13 +151,14 @@ export interface iHomeBody {
   quiz_block: iHomeQuiz
 }
 
-export interface iManager {
+export interface iMember {
   content: {
     component: string
     masked_photo: iImage
     photo: iImage
     name: string
     position: string
+    links: { labek: string; component: string; link: iLink }[]
   }
 }
 
@@ -165,7 +168,7 @@ export interface iCTA {
     button_text: string
     component: string
     title: string
-    manager: iManager
+    manager: iMember
     link: iLink
   }
 }

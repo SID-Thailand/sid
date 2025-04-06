@@ -27,7 +27,11 @@ onBeforeUnmount(() => {
   <header ref="$el" class="header container">
     <div class="header__wrapper container">
       <LanguageSwitcher />
-      <NuxtLink :to="'/' + selectedLang" class="header__link" @click="onClick">
+      <NuxtLink
+        :to="selectedLang === 'en' ? '/' : '/' + selectedLang"
+        class="header__link"
+        @click="onClick"
+      >
         <img src="/logo.png" alt="Logotype" class="header__logo" />
       </NuxtLink>
       <BurgerMenu :content="story?.content" />

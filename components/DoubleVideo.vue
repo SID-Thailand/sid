@@ -17,7 +17,7 @@ defineProps<IProps>()
       <div class="d-video__videos">
         <div class="d-video__landscape">
           <CustomVideo
-            :url="asset.filename"
+            :url="asset?.filename"
             :video-attributes="{
               'data-parallax': '0.2',
               'data-parallax-dir': '1',
@@ -34,7 +34,7 @@ defineProps<IProps>()
                 'data-parallax-dir': '1',
                 'data-scale': '1.03',
               }"
-              :url="asset.filename"
+              :url="asset?.filename"
             />
             <button type="button" class="d-video__phone-btn">
               <span>REC</span>

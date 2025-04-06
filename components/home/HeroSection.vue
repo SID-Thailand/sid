@@ -14,18 +14,18 @@ defineProps<IProps>()
     <div class="hero__wrapper">
       <div class="hero__middle">
         <img
-          :src="content.asset.filename"
-          :alt="content.asset.alt"
+          :src="content?.asset?.filename"
+          :alt="content?.asset?.alt"
           class="hero__img"
         />
-        <h1 class="hero__title">{{ content.title }}</h1>
+        <h1 class="hero__title">{{ content?.title }}</h1>
       </div>
       <div class="hero__bottom">
         <p class="hero__scroll-text">
           <span>scroll down</span>
           <ArrowDown class="hero__arrow" />
         </p>
-        <BuildAddress :text="content.address" />
+        <BuildAddress :text="content?.address" />
       </div>
     </div>
   </section>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 import type { iHomeCompanyDirections } from '~/types/story'
 
 interface IProps {
@@ -7,36 +10,55 @@ interface IProps {
 
 defineProps<IProps>()
 
-const contentRef = ref<HTMLElement | null>(null)
-const updateActiveHeight = () => {
-  const activeEl = document.querySelector(
-    '.interview__content-wrapper--active'
-  ) as HTMLElement
-  activeEl &&
-    contentRef.value?.style.setProperty(
-      '--active-height',
-      `${activeEl.offsetHeight}px`
-    )
-}
+gsap.registerPlugin(ScrollTrigger)
 
-let observer: MutationObserver
+const contentRef = ref<HTMLElement | null>(null)
+const interviewContentRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  updateActiveHeight()
-  window.addEventListener('resize', updateActiveHeight)
-  observer = new MutationObserver(updateActiveHeight)
-  contentRef.value &&
-    observer.observe(contentRef.value, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['class'],
-    })
+  if (!contentRef.value) return
+  const wrappers = contentRef.value.querySelectorAll(
+    '.interview__content-wrapper'
+  )
+
+  // const contentInterviewHeight = interviewContentRef.value?.scrollHeight || 0
+
+  const tl = gsap.timeline({
+    paused: true,
+  })
+
+  // tl.to(interviewContentRef.value, {
+  //   y: -contentInterviewHeight,
+  //   duration: 1,
+  // })
+  const interval = 1 / wrappers.length
+
+  ScrollTrigger.create({
+    trigger: contentRef.value,
+    start: () => 'top top',
+    end: () => 'bottom bottom',
+    scrub: true,
+    // markers: true,
+    animation: tl,
+
+    onUpdate: self => {
+      const progress = self.progress
+
+      wrappers.forEach((wrapper, index) => {
+        const offset = index * interval
+
+        if (progress >= offset && progress < offset + interval) {
+          wrapper.classList.add('interview__content-wrapper--active')
+        } else {
+          wrapper.classList.remove('interview__content-wrapper--active')
+        }
+      })
+    },
+  })
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateActiveHeight)
-  observer.disconnect()
+  ScrollTrigger.getAll().forEach(trigger => trigger.kill())
 })
 </script>
 
@@ -44,36 +66,45 @@ onBeforeUnmount(() => {
   <section class="interview container">
     <div class="interview__wrapper">
       <div class="interview__title-wrapper">
-        <h2 class="interview__title">{{ content.title }}</h2>
+        <h2 class="interview__title">{{ content?.title }}</h2>
       </div>
-      <div ref="contentRef" class="interview__content">
-        <div
-          v-for="(item, idx) in content.directions"
-          :key="idx"
-          class="interview__content-wrapper"
-          :class="idx === 0 && 'interview__content-wrapper--active'"
-        >
-          <div class="interview__image-item">
-            <CustomImage
-              :src="item.person_asset.filename"
-              :alt="item.person_asset.alt"
-              class="interview__img"
-              draggable="false"
-              data-gl="1"
-            />
-            <div class="interview__desc-wrapper">
-              <p class="interview__name">{{ item.person_title }}</p>
-              <p class="interview__description">
-                {{ item.person_description }}
-              </p>
-            </div>
-          </div>
+      <div ref="contentRef" class="interview__block">
+        <div class="interview__block-wrapper">
+          <div ref="interviewContentRef" class="interview__content">
+            <div
+              v-for="(item, idx) in content?.directions"
+              :key="idx"
+              class="interview__content-wrapper"
+              :class="idx === 0 && 'interview__content-wrapper--active'"
+            >
+              <div class="interview__image-item">
+                <div class="interview__img-wrapper">
+                  <CustomImage
+                    :src="item?.person?.content?.photo?.filename"
+                    :alt="item?.person?.content?.photo?.alt"
+                    class="interview__img"
+                    draggable="false"
+                    data-gl="1"
+                  />
+                </div>
 
-          <div class="interview__item">
-            <div class="interview__line" />
-            <div class="interview__info">
-              <h3 class="interview__item-title">{{ item.title }}</h3>
-              <p class="interview__item-text">{{ item.description }}</p>
+                <div class="interview__desc-wrapper">
+                  <p class="interview__name">
+                    {{ item?.person?.content?.name }}
+                  </p>
+                  <p class="interview__description">
+                    {{ item?.person?.content?.position }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="interview__item">
+                <div class="interview__line" />
+                <div class="interview__info">
+                  <h3 class="interview__item-title">{{ item?.title }}</h3>
+                  <p class="interview__item-text">{{ item?.description }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -102,11 +133,9 @@ onBeforeUnmount(() => {
 
 .interview__title-wrapper {
   @media (min-width: $br1) {
-    display: grid;
+    display: flex;
+    justify-content: flex-end;
     width: 100%;
-    grid-template-columns: repeat(24, 1fr);
-    column-gap: vw(20);
-    grid-auto-flow: row;
   }
 }
 
@@ -117,7 +146,7 @@ onBeforeUnmount(() => {
   @include med;
 
   @media (min-width: $br1) {
-    @include col(11, 21);
+    width: vw(785);
   }
 
   @media (max-width: $br1) {
@@ -129,36 +158,49 @@ onBeforeUnmount(() => {
   }
 }
 
-.interview__content {
+.interview__block {
   position: relative;
-  margin-top: vw(200);
+  height: 300vh;
+}
+
+.interview__block-wrapper {
+  position: sticky;
+  top: 0;
   height: fit-content;
+  padding-top: vw(60);
 
   @media (max-width: $br1) {
     margin-top: 40px;
+    padding-top: 16px;
     height: var(--active-height);
   }
 }
 
-.interview__block {
+.interview__content {
   position: relative;
 }
 
 .interview__content-wrapper {
   @media (min-width: $br1) {
-    display: grid;
+    display: flex;
+    justify-content: flex-end;
     width: 100%;
-    grid-template-columns: repeat(24, 1fr);
     column-gap: vw(20);
-    grid-auto-flow: row;
   }
+
   @media (max-width: $br1) {
     position: absolute;
   }
 
   &--active {
     .interview__image-item {
-      opacity: 1;
+      .interview__img {
+        transform: translateY(0);
+      }
+
+      .interview__desc-wrapper {
+        opacity: 1;
+      }
     }
 
     .interview__item {
@@ -187,9 +229,6 @@ onBeforeUnmount(() => {
   left: 0;
   top: 0;
   text-transform: uppercase;
-  transition: opacity 0.3s $easing;
-  opacity: 0;
-
   @include subheading-h5;
 
   @media (min-width: $br1) {
@@ -206,10 +245,26 @@ onBeforeUnmount(() => {
   }
 }
 
+.interview__img-wrapper {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
 .interview__img {
+  position: relative;
   display: block;
   width: 100%;
   height: auto;
+  transition: transform 3s $easing;
+  transform: translateY(100%);
+}
+
+.interview__desc-wrapper {
+  opacity: 0;
+  transition: opacity 2s $easing;
 }
 
 .interview__name {
@@ -226,13 +281,10 @@ onBeforeUnmount(() => {
 
 .interview__item {
   color: var(--neutral-300);
-  transition: opacity 0.3s $easing;
 
   @media (min-width: $br1) {
-    @include col(11, 24);
-    width: 100%;
-    min-height: vw(220);
-    padding-bottom: vw(20);
+    width: vw(785);
+    padding-bottom: vw(124);
   }
 
   @media (max-width: $br1) {
@@ -246,7 +298,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 1px;
   background-color: var(--neutral-300);
-  transition: background-color 0.3s $easing;
+  transition: background-color 2s $easing;
 }
 
 .interview__info {
@@ -270,7 +322,7 @@ onBeforeUnmount(() => {
 
 .interview__item-title {
   text-transform: uppercase;
-  transition: color 0.3s $easing;
+  transition: color 2s $easing;
   width: 100%;
   flex: 1 0 auto;
   @include subheading-h1;
@@ -281,7 +333,7 @@ onBeforeUnmount(() => {
 }
 
 .interview__item-text {
-  transition: color 0.3s $easing;
+  transition: color 2s $easing;
   line-height: 1.25em !important;
   @include text-t4;
 }
