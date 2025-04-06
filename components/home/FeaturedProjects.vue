@@ -45,8 +45,6 @@ onBeforeUnmount(() => {
     <CustomImage
       :src="content?.backdrop_asset?.filename"
       :alt="content?.backdrop_asset?.alt"
-      draggable="false"
-      data-gl="1"
       class="featured-projects__bg"
     />
     <div class="featured-projects__wrapper">
@@ -64,8 +62,6 @@ onBeforeUnmount(() => {
             <CustomImage
               :src="project?.content?.cover?.filename"
               :alt="project?.content?.cover?.alt"
-              draggable="false"
-              data-gl="1"
               class="featured-projects__card-img"
             />
             <h3 class="featured-projects__name">

@@ -26,8 +26,6 @@ defineProps<IProps>()
               <CustomImage
                 :src="step?.asset?.filename"
                 :alt="step?.asset?.alt"
-                draggable="false"
-                data-gl="1"
                 class="quiz-step__img"
               />
               <button type="button" class="quiz-step__circled-btn">

@@ -92,8 +92,6 @@ onBeforeUnmount(() => {
                     :src="item?.person?.content?.photo?.filename"
                     :alt="item?.person?.content?.photo?.alt"
                     class="interview__img"
-                    draggable="false"
-                    data-gl="1"
                   />
                 </div>
 

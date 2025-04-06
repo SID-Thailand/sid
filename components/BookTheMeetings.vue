@@ -18,15 +18,11 @@ defineProps<IProps>()
       <CustomImage
         :src="cta?.content?.backdrop_asset?.filename"
         :alt="cta?.content?.backdrop_asset?.alt"
-        draggable="false"
-        data-gl="1"
         class="meetings__bg"
       />
       <CustomImage
         :src="cta?.content?.manager?.content.masked_photo?.filename"
         :alt="cta?.content?.manager?.content.masked_photo?.alt"
-        draggable="false"
-        data-gl="1"
         class="meetings__people"
       />
       <div class="meetings__content">

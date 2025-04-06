@@ -18,6 +18,10 @@ const props = withDefaults(defineProps<iProps>(), {
   preload: false,
 })
 
+const imgRef = ref<HTMLImageElement | null>(null)
+
+defineExpose({ imgRef })
+
 const currentSrc = computed(() => {
   return useStoryblokImage(props.src, {
     format: 'webp',
@@ -41,7 +45,7 @@ if (props.preload) {
 
 <template>
   <img
-    ref="$el"
+    ref="imgRef"
     :src="currentSrc"
     :alt="alt"
     class="custom-image"
