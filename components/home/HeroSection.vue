@@ -4,6 +4,7 @@ import type { iHomeHero } from '~/types/story'
 
 interface IProps {
   content: iHomeHero
+  arrow: string
 }
 
 defineProps<IProps>()
@@ -22,7 +23,7 @@ defineProps<IProps>()
       </div>
       <div class="hero__bottom">
         <p class="hero__scroll-text">
-          <span>scroll down</span>
+          <span>{{ arrow }}</span>
           <ArrowDown class="hero__arrow" />
         </p>
         <BuildAddress :text="content?.address" />

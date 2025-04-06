@@ -4,6 +4,7 @@ import type { iHomeAbout } from '~/types/story'
 
 interface IProps {
   content: iHomeAbout
+  arrow: string
 }
 
 defineProps<IProps>()
@@ -23,7 +24,7 @@ defineProps<IProps>()
     <div class="connect__bottom">
       <div class="connect__bottom-wrapper">
         <p class="connect__scroll-text">
-          <span>scroll down</span>
+          <span>{{ arrow }}</span>
           <ArrowDown class="connect__arrow" />
         </p>
         <p class="connect__description">

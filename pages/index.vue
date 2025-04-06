@@ -26,12 +26,13 @@ const homeSections = computed((): iHomeBody => {
     quiz_block: body.find(item => item?.component === 'quiz_block'),
   }
 })
+const arrowDown = story?.value?.content?.scroll_down_text
 </script>
 
 <template>
   <div>
-    <HomeHeroSection :content="homeSections?.hero" />
-    <HomeAboutSection :content="homeSections?.about" />
+    <HomeHeroSection :content="homeSections?.hero" :arrow="arrowDown" />
+    <HomeAboutSection :content="homeSections?.about" :arrow="arrowDown" />
     <HomeCompanyDirectionsSection :content="homeSections?.company_directions" />
     <HomeNumbersSection :content="homeSections?.numbers" />
     <HomeVideoSection :content="homeSections?.video" />
