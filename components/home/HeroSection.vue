@@ -87,7 +87,7 @@ defineProps<IProps>()
   justify-content: space-between;
   width: 100%;
   position: absolute;
-  bottom: vw(64);
+  bottom: vh(60);
 
   @media (min-width: $br1) {
     padding: 0 vw(40);
