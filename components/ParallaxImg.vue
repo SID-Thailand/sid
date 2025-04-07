@@ -23,6 +23,8 @@ const imgContainer = ref<HTMLDivElement | null>(null)
 onMounted(() => {
   if (!imgWrapper.value || !imgContainer.value) return
 
+  ScrollTrigger.refresh()
+
   gsap.fromTo(
     imgContainer.value,
     { y: '-20%' },
