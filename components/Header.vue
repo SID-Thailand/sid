@@ -32,7 +32,7 @@ onBeforeUnmount(() => {
         class="header__link"
         @click="onClick"
       >
-        <img src="/logo.png" alt="Logotype" class="header__logo" />
+        <IconsLogo class="header__logo" />
       </NuxtLink>
       <BurgerMenu :content="story?.content" />
     </div>
