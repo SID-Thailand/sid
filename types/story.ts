@@ -124,10 +124,6 @@ export interface iQuizStep {
 export interface iQuiz {
   back_button: string
   component: string
-  form_email_label: string
-  form_name_label: string
-  form_phone_label: string
-  form_title: string
   next_button: string
   send_button: string
   title: string
@@ -227,4 +223,11 @@ export interface iMenuContent {
   menu_button_text: string
   links: iMenuLink[]
   socials: iMenuSocial[]
+}
+
+export interface iFormContent {
+  component: string
+  email_label: string
+  full_name_label: string
+  phone_label: string
 }
