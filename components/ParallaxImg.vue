@@ -29,7 +29,7 @@ onMounted(() => {
     imgContainer.value,
     { y: '-20%' },
     {
-      y: '0',
+      y: '5%',
       ease: 'none',
       scrollTrigger: {
         trigger: imgWrapper.value,
