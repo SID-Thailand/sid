@@ -66,10 +66,14 @@ defineProps<IProps>()
   transform: translate(-50%, -50%);
   text-align: center;
   text-transform: uppercase;
+  width: 100%;
   @include heading-h1;
 
+  @media (min-width: $br1) {
+    max-width: vw(954);
+  }
+
   @media (max-width: $br1) {
-    width: 100%;
     padding: 0 $g-sm;
   }
 
