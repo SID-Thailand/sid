@@ -50,10 +50,25 @@ withDefaults(defineProps<IProps>(), {
     width: vw(8);
     height: vw(8);
     border-radius: 100%;
+    animation: build-address 2s linear forwards infinite;
   }
 
   @media (max-width: $br1) {
     display: none;
+  }
+}
+
+@keyframes build-address {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
 </style>
