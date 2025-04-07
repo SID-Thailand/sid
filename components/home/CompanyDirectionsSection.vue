@@ -25,19 +25,23 @@ onMounted(() => {
   const tl = gsap.timeline({
     paused: true,
   })
-  // const contentInterviewHeight = interviewContentRef.value?.scrollHeight || 0
 
-  // tl.to(interviewContentRef.value, {
-  //   y: -contentInterviewHeight,
-  //   duration: 1,
-  // })
+  tl.to(
+    interviewContentRef.value,
+    {
+      duration: 1,
+      ease: 'none',
+      yPercent: -100,
+    },
+    0
+  )
 
   ScrollTrigger.create({
     trigger: contentRef.value,
     start: () => 'top top',
     end: () => 'bottom bottom',
     scrub: true,
-    // markers: true,
+
     animation: tl,
 
     onUpdate: ({ progress }) => {
@@ -49,14 +53,13 @@ onMounted(() => {
             : Math.floor(progress / interval)
 
       wrappers.forEach((wrapper, index) => {
-        wrapper.classList.toggle(
-          'interview__img-wrapper--active',
-          progress >= index * interval
-        )
-        wrapper.classList.toggle(
-          'interview__content-wrapper--active',
-          index === activeIndex
-        )
+        const bounds = wrapper.getBoundingClientRect()
+
+        if (bounds.top < 100) {
+          wrapper.classList.add('interview__content-wrapper--active')
+        } else {
+          wrapper.classList.remove('interview__content-wrapper--active')
+        }
       })
     },
   })
@@ -75,6 +78,33 @@ onBeforeUnmount(() => {
       </div>
       <div ref="contentRef" class="interview__block">
         <div class="interview__block-wrapper">
+          <div class="interview__assets">
+            <div
+              v-for="(item, idx) in content?.directions"
+              :key="idx"
+              class="interview__image-item"
+            >
+              <div
+                class="interview__img-wrapper"
+                :class="idx === 0 && 'interview__img-wrapper--active'"
+              >
+                <CustomImage
+                  :src="item?.person?.content?.photo?.filename"
+                  :alt="item?.person?.content?.photo?.alt"
+                  class="interview__img"
+                />
+              </div>
+
+              <div class="interview__desc-wrapper">
+                <p class="interview__name">
+                  {{ item?.person?.content?.name }}
+                </p>
+                <p class="interview__description">
+                  {{ item?.person?.content?.position }}
+                </p>
+              </div>
+            </div>
+          </div>
           <div ref="interviewContentRef" class="interview__content">
             <div
               v-for="(item, idx) in content?.directions"
@@ -83,28 +113,6 @@ onBeforeUnmount(() => {
               :class="idx === 0 && 'interview__content-wrapper--active'"
               :style="{ zIndex: idx + 1 }"
             >
-              <div class="interview__image-item">
-                <div
-                  class="interview__img-wrapper"
-                  :class="idx === 0 && 'interview__img-wrapper--active'"
-                >
-                  <CustomImage
-                    :src="item?.person?.content?.photo?.filename"
-                    :alt="item?.person?.content?.photo?.alt"
-                    class="interview__img"
-                  />
-                </div>
-
-                <div class="interview__desc-wrapper">
-                  <p class="interview__name">
-                    {{ item?.person?.content?.name }}
-                  </p>
-                  <p class="interview__description">
-                    {{ item?.person?.content?.position }}
-                  </p>
-                </div>
-              </div>
-
               <div class="interview__item">
                 <div class="interview__line" />
                 <div class="interview__info">
@@ -143,6 +151,7 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: flex-end;
     width: 100%;
+    margin-bottom: vw(200);
   }
 }
 
@@ -175,6 +184,8 @@ onBeforeUnmount(() => {
   top: 0;
   height: fit-content;
   padding-top: vw(60);
+  display: flex;
+  justify-content: space-between;
 
   @media (max-width: $br1) {
     margin-top: 40px;
@@ -183,8 +194,15 @@ onBeforeUnmount(() => {
   }
 }
 
+.interview__assets {
+  width: vw(440);
+  height: vw(496);
+  position: relative;
+}
+
 .interview__content {
   position: relative;
+  width: vw(785);
 }
 
 .interview__content-wrapper {
