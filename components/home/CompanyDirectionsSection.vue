@@ -15,6 +15,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const contentRef = ref<HTMLElement | null>(null)
 const interviewContentRef = ref<HTMLElement | null>(null)
+const assetsRef = ref<HTMLElement | null>(null)
 const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
 const activeIdx = ref(0)
@@ -59,8 +60,16 @@ const makeAnimation = () => {
       dir.value = direction
       $wrappers.value.forEach((wrapper, index) => {
         const bounds = wrapper.getBoundingClientRect()
+        const assetsBounds = assetsRef.value.getBoundingClientRect()
 
-        if (bounds.top < 100) {
+        if (bounds.top < 100 && window.innerWidth > 1060) {
+          activeIdx.value = index
+        }
+
+        if (
+          bounds.top - 100 < assetsBounds.bottom &&
+          window.innerWidth < 1060
+        ) {
           activeIdx.value = index
         }
       })
@@ -95,7 +104,7 @@ onBeforeUnmount(() => {
         :style="{ '--direction': dir === 1 ? 'normal' : 'reverse' }"
       >
         <div class="interview__block-wrapper">
-          <div class="interview__assets">
+          <div ref="assetsRef" class="interview__assets">
             <div
               v-for="(item, idx) in content?.directions"
               :key="idx"
@@ -116,12 +125,18 @@ onBeforeUnmount(() => {
               <div class="interview__desc-wrapper">
                 <p class="interview__name">
                   <span class="interview__text-line">
-                    {{ item?.person?.content?.name }}
+                    {{
+                      item?.person?.content?.interview_title ||
+                      item?.person?.content?.name
+                    }}
                   </span>
                 </p>
                 <p class="interview__description">
                   <span class="interview__text-line">
-                    {{ item?.person?.content?.position }}
+                    {{
+                      item?.person?.content?.interview_position ||
+                      item?.person?.content?.position
+                    }}
                   </span>
                 </p>
               </div>
@@ -211,7 +226,7 @@ onBeforeUnmount(() => {
 
   @media (max-width: $br1) {
     margin-top: 40px;
-    padding-top: 16px;
+    padding-top: 0px;
   }
 }
 
@@ -220,10 +235,13 @@ onBeforeUnmount(() => {
   width: vw(440);
   height: vw(496);
   @media (max-width: $br1) {
+    margin-top: 16px;
+
     width: 100%;
     aspect-ratio: 440 / 496;
     height: auto;
     z-index: 10;
+    background-color: var(--neutral-600);
   }
 }
 
