@@ -21,7 +21,7 @@ const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 const activeIdx = ref(0)
 const dir = ref(1)
 const height = ref(0)
-const st = ref<ScrollTrigger>(null)
+const st = ref<ScrollTrigger | null>(null)
 
 const itemsCount = computed(() => {
   if (!$wrappers.value) return 0
@@ -50,8 +50,8 @@ const makeAnimation = () => {
     y: -height,
   })
 
-  st.value = ScrollTrigger.create({
-    trigger: contentRef.value,
+  ScrollTrigger.create({
+    trigger: contentRef.value as HTMLElement,
     start: () => 'top top',
     end: () => 'bottom bottom',
     scrub: true,
@@ -82,7 +82,8 @@ const makeAnimation = () => {
 onMounted(() => {
   $wrappers.value = contentRef.value.querySelectorAll(
     '.interview__content-wrapper'
-  )
+  ) as NodeListOf<HTMLElement>
+
   resize.on(calcHeight)
 
   makeAnimation()

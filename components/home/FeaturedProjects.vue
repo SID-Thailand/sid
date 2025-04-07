@@ -26,7 +26,7 @@ onMounted(() => {
   window.addEventListener('resize', updateActiveHeight)
   observer = new MutationObserver(updateActiveHeight)
   contentRef.value &&
-    observer.observe(contentRef.value, {
+    observer.observe(contentRef.value as HTMLElement, {
       childList: true,
       subtree: true,
       attributes: true,

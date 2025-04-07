@@ -35,7 +35,7 @@ onMounted(() => {
   videoElements.value = Array.from(videos)
 
   st.value = ScrollTrigger.create({
-    trigger: sectionRef.value,
+    trigger: sectionRef.value as HTMLElement,
     start: 'center center',
     end: 'bottom top',
     onUpdate: self => {
