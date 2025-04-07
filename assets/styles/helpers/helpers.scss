@@ -97,7 +97,7 @@
   );
 }
 
-@function vw($px, $screen: 1920) {
+@function vw($px, $screen: 1440) {
   $inVW: math.div(
       $px,
       number(str-replace(transform-number-to-string($screen), 'px', ''))
