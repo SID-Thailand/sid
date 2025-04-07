@@ -7,7 +7,18 @@ interface IProps {
   content: iHomeQuiz
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+const steps = computed(() => {
+  return [
+    ...(props.content?.quiz?.content?.steps || []),
+    {
+      component: 'final_step',
+      title: 'fill out the form',
+      btnText: 'Send',
+    },
+  ]
+})
 </script>
 
 <template>
@@ -16,7 +27,7 @@ defineProps<IProps>()
       <h2 class="quiz__title">{{ content?.quiz?.content?.title }}</h2>
       <div class="quiz__step-tab">
         <QuizStep
-          v-for="(step, idx) in content?.quiz?.content?.steps"
+          v-for="(step, idx) in steps"
           :key="idx"
           :quiz-step="step"
           class="quiz__item"
@@ -32,7 +43,6 @@ defineProps<IProps>()
           <LucideArrowUpRight />
         </Button>
       </div>
-      <!-- <Form /> -->
     </div>
   </section>
 </template>

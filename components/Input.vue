@@ -1,22 +1,20 @@
 <script lang="ts" setup>
 import type { iInputData } from '~/types/headless/input'
 
+type ValidatorFn = (value: string) => string | false
+
 interface iProps {
-  label: string
+  id: string
+  name: string
+  type: string
+  value: string
+  placeholder: string
+  required: boolean
+  error: boolean
+  validators: ValidatorFn[]
 }
 
-const props = defineProps<iProps>()
-
-const input = reactive({
-  id: 'subscribe-email',
-  name: 'email',
-  type: 'email',
-  value: '',
-  placeholder: props.label,
-  required: true,
-  error: true,
-  validators: [Validation.email('Please enter a valid email address')],
-})
+defineProps<iProps>()
 
 // const inputValue = ref('')
 
@@ -29,13 +27,12 @@ const onInput = (data: iInputData) => {
 <template>
   <HeadlessInputField v-slot="field">
     <HeadlessInput
-      :id="input.id"
-      v-model="input.value"
-      :name="input.name"
-      :type="input.type"
-      :placeholder="input.placeholder"
-      :required="input.required"
-      :validators="input.validators"
+      :id="id"
+      :name="name"
+      :type="type"
+      :placeholder="placeholder"
+      :required="required"
+      :validators="validators"
       @input="onInput"
     />
     <HeadlessInputValidationMessage

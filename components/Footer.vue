@@ -85,9 +85,18 @@ const { story } = await useFooterStory()
           <legend class="footer__title">
             {{ story?.content?.newsletter_title }}
           </legend>
-          <FooterField
+          <Input
+            id="subscribe-email"
             class="footer__input"
-            :label="story?.content?.email_label"
+            name="email"
+            type="email"
+            value=""
+            placeholder="YOUR EMAIL"
+            :required="true"
+            :error="true"
+            :validators="[
+              Validation.email('Please enter a valid email address'),
+            ]"
           />
           <Button type="submit" class="footer__form-btn">
             {{ story?.content?.button }}

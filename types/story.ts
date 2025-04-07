@@ -114,7 +114,7 @@ export interface iHomeFeaturedProjects {
 export interface iQuizStep {
   title: string
   component: string
-  items: {
+  items?: {
     asset: iImage
     component: string
     label: string
