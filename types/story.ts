@@ -234,4 +234,5 @@ export interface iFormContent {
   email_label: string
   full_name_label: string
   phone_label: string
+  thankyou_text: string
 }

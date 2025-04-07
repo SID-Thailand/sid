@@ -3,6 +3,7 @@ export const useAppState = () => {
   const isLoaded = useState('inLoaded', () => false)
   const isWaiting = useState('isWaiting', () => false)
   const isMenuOpened = useState('isMenuOpened', () => false)
+  const isModalOpened = useState('isModalOpened', () => false)
 
-  return { isInEditor, isLoaded, isWaiting, isMenuOpened }
+  return { isInEditor, isLoaded, isWaiting, isMenuOpened, isModalOpened }
 }
