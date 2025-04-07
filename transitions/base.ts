@@ -1,14 +1,18 @@
 import type { TransitionProps } from 'vue'
+import gsap from 'gsap'
 
 export const pageTransition: TransitionProps = {
-  duration: 250,
   mode: 'out-in',
   css: false,
   appear: true,
-  onEnter(_, done) {
-    done()
+  onEnter(el, done) {
+    gsap.fromTo(
+      el,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.25, onComplete: done }
+    )
   },
-  onLeave(_, done) {
-    done()
+  onLeave(el, done) {
+    gsap.to(el, { opacity: 0, duration: 0.25, onComplete: done })
   },
 }
