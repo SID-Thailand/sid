@@ -29,6 +29,7 @@ const itemsCount = computed(() => {
 
 const calcHeight = () => {
   const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
+
   height.value = interviewContentRef.value?.scrollHeight - lastItemHeight
 }
 
