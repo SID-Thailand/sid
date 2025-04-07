@@ -91,6 +91,8 @@ export interface iHomeVideo {
 
 interface iFeaturedProject {
   name: string
+  slug: string
+  full_slug: string
   content: {
     component: string
     cover: iImage

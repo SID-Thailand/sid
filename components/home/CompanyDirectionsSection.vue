@@ -307,7 +307,7 @@ onBeforeUnmount(() => {
 
   &--active {
     .interview__img {
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
   }
 }
@@ -318,7 +318,8 @@ onBeforeUnmount(() => {
   width: 100%;
   height: auto;
   transition: transform 3s $easing;
-  transform: translateY(100%);
+  transform-origin: center top;
+  transform: translateY(100%) scale(1.3);
 }
 
 .interview__text-line {

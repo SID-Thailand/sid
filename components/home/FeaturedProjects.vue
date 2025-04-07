@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LucidePlus } from 'lucide-vue-next'
 import type { iHomeFeaturedProjects } from '~/types/story'
 
 interface IProps {
@@ -7,94 +8,63 @@ interface IProps {
 
 defineProps<IProps>()
 
-const contentRef = ref<HTMLElement | null>(null)
-const updateActiveHeight = () => {
-  const activeEl = document.querySelector(
-    '.featured-projects__card-wrapper--active'
-  ) as HTMLElement
-  activeEl &&
-    contentRef.value?.style.setProperty(
-      '--active-height',
-      `${activeEl.offsetHeight}px`
-    )
-}
-
-let observer: MutationObserver
-
-onMounted(() => {
-  updateActiveHeight()
-  window.addEventListener('resize', updateActiveHeight)
-  observer = new MutationObserver(updateActiveHeight)
-  contentRef.value &&
-    observer.observe(contentRef.value as HTMLElement, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['class'],
-    })
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateActiveHeight)
-  observer.disconnect()
-})
+const activeProject = ref(0)
 </script>
 
 <template>
   <section class="featured-projects">
-    <CustomImage
-      :src="content?.backdrop_asset?.filename"
-      :alt="content?.backdrop_asset?.alt"
-      class="featured-projects__bg"
-    />
-    <div class="featured-projects__wrapper">
-      <h2 class="featured-projects__title featured-projects__title--mob">
-        {{ content?.title }}
-      </h2>
-      <div ref="contentRef" class="featured-projects__card">
-        <div
-          v-for="(project, idx) in content?.featured_projects"
-          :key="idx"
-          class="featured-projects__card-wrapper"
-          :class="idx === 1 && 'featured-projects__card-wrapper--active'"
-        >
-          <div class="featured-projects__plug">
-            <CustomImage
-              :src="project?.content?.cover?.filename"
-              :alt="project?.content?.cover?.alt"
-              class="featured-projects__card-img"
-            />
-            <h3 class="featured-projects__name">
-              {{ project?.content?.name }}
-            </h3>
-            <div class="featured-projects__text-wrapper">
-              <p class="featured-projects__small-text">
-                {{ project?.content?.spec_1 }}
-              </p>
-              <p class="featured-projects__small-text">
-                {{ project?.content?.spec_2 }}
-              </p>
-              <p class="featured-projects__small-text">
-                {{ project?.content?.spec_3 }}
-              </p>
+    <div class="featured-projects__scroll-wrapper">
+      <div class="featured-projects__content">
+        <CustomImage
+          :src="
+            content?.featured_projects[activeProject]?.content?.cover?.filename
+          "
+          :alt="content?.featured_projects[activeProject]?.content?.cover?.alt"
+          class="featured-projects__bg"
+        />
+        <div class="featured-projects__card fpc">
+          <div class="fpc__assets">
+            <div
+              v-for="(item, idx) in content?.featured_projects"
+              :key="idx"
+              class="fpc__image-item"
+            >
+              <div class="fpc__img-wrapper">
+                <CustomImage
+                  :src="item?.content?.cover?.filename"
+                  :alt="item?.content?.cover?.alt"
+                  class="fpc__img"
+                />
+              </div>
             </div>
-            <div class="featured-projects__plus">
-              <span />
-              <span />
+          </div>
+          <div class="fpc__specs-wrapper">
+            <div
+              v-for="(item, idx) in content?.featured_projects"
+              :key="idx"
+              class="fpc__specs"
+            >
+              <h2 class="fpc__title">
+                {{ item?.content?.name }}
+              </h2>
+              <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
+              <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
+              <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
+              <NuxtLink :to="`/${item.full_slug}`" class="fpc__link"
+                ><LucidePlus
+              /></NuxtLink>
             </div>
           </div>
         </div>
-      </div>
-      <div class="featured-projects__info">
-        <h2 class="featured-projects__title">
-          {{ content?.title }}
-        </h2>
-        <p class="featured-projects__desc">
-          {{ content?.text }}
-        </p>
-        <NuxtLink :to="'/'" class="featured-projects__link underline-reverse">
-          {{ content?.button_text }}
-        </NuxtLink>
+        <div class="featured-projects__text">
+          <h2 class="featured-projects__title">{{ content?.title }}</h2>
+          <div class="featured-projects__desc">{{ content?.text }}</div>
+          <NuxtLink
+            class="featured-projects__link underline-reverse"
+            to="/projects/"
+            >{{ content?.button_text }}</NuxtLink
+          >
+        </div>
       </div>
     </div>
   </section>
@@ -103,202 +73,122 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .featured-projects {
   position: relative;
-  padding: vw(200) 0;
-  padding-left: vw(155);
-  padding-right: vw(97);
-
-  @media (max-width: $br1) {
-    padding-left: $g-sm;
-    padding-right: $g-sm;
-    padding-top: 100px;
-    padding-bottom: 100px;
-  }
-
-  @media (max-width: $br3) {
-    padding-left: $g-s;
-    padding-right: $g-s;
-  }
 }
 
 .featured-projects__bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  inset: 0;
+  z-index: 0;
 }
 
-.featured-projects__wrapper {
+.featured-projects__scroll-wrapper {
   position: relative;
+  height: 300vh;
+}
+
+.featured-projects__content {
+  height: 100vh;
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-
-  @media (max-width: $br1) {
-    flex-direction: column;
-  }
+  padding: vh(100) 0;
+  padding-left: vw(155);
+  padding-right: vw(97);
 }
 
-.featured-projects__card {
-  position: relative;
-  max-width: vw(496);
-  width: 100%;
+.fpc {
+  width: vh(496);
+  height: vh(684);
   background-color: var(--neutral-400);
+  position: relative;
+  z-index: 2;
+  padding: vw(16);
+  display: flex;
+  flex-direction: column;
+}
 
-  height: var(--active-height);
+.fpc__assets {
+  flex: 0 1 auto;
 
-  @media (max-width: $br1) {
-    max-width: 100%;
-    margin-top: 32px;
+  position: relative;
+  height: 100%;
+}
+
+.fpc__image-item {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  &:first-child {
+    position: relative;
+    opacity: 1;
   }
 }
 
-.featured-projects__card-wrapper {
+.fpc__img-wrapper {
+  width: 100%;
+  height: 100%;
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.fpc__specs-wrapper {
+  position: relative;
+  flex: 1 0 auto;
+}
+
+.fpc__specs {
   position: absolute;
   top: 0;
   left: 0;
-  padding: vw(16);
-  width: 100%;
-
-  @media (max-width: $br1) {
-    padding: 16px;
-  }
-
-  &--active {
-    .featured-projects__card-img {
-      opacity: 1;
-    }
-
-    .featured-projects__name {
-      opacity: 1;
-    }
-
-    .featured-projects__text-wrapper {
-      opacity: 1;
-    }
-
-    .featured-projects__plus {
-      opacity: 1;
-    }
-  }
-}
-
-.featured-projects__plug {
-  position: relative;
-  pointer-events: none;
-}
-
-.featured-projects__card-img {
-  width: 100%;
-  height: vw(464);
-  object-fit: cover;
   opacity: 0;
-  transition: opacity 0.3s $easing;
-
-  @media (max-width: $br1) {
-    height: 312px;
-  }
-}
-
-.featured-projects__name {
   margin-top: vw(24);
-  font-size: vw(24);
+
+  &:first-child {
+    position: relative;
+    opacity: 1;
+  }
+}
+
+.fpc__title {
   text-transform: uppercase;
-  line-height: 1em;
-  opacity: 0;
-  transition: opacity 0.3s $easing;
-  @include med;
-
-  @media (max-width: $br1) {
-    margin-top: 20px;
-    font-size: 24px;
-  }
+  margin-bottom: vw(16);
+  @include subheading-h2;
 }
 
-.featured-projects__text-wrapper {
-  margin-top: vw(16);
+.fpc__spec {
   color: var(--neutral-200);
-  opacity: 0;
-  transition: opacity 0.3s $easing;
   @include text-t4;
-
-  @media (max-width: $br1) {
-    margin-top: 8px;
-  }
 }
 
-.featured-projects__plus {
+.fpc__link {
+  display: block;
+  color: var(--accent-primary);
+  margin-top: vw(16);
+}
+
+.featured-projects__text {
+  width: vw(440);
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: vw(22);
-  height: vw(22);
-  margin-top: vw(17);
-  opacity: 0;
-  transition: opacity 0.3s $easing;
-
-  @media (max-width: $br1) {
-    width: 18px;
-    height: 18px;
-    margin-top: 12px;
-  }
-
-  span {
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: vw(2);
-    background-image: var(--accent-primary);
-
-    &:first-child {
-      transform: rotate(90deg);
-    }
-
-    @media (max-width: $br1) {
-      height: 2px;
-    }
-  }
-}
-
-.featured-projects__info {
-  max-width: vw(440);
-
-  @media (max-width: $br1) {
-    max-width: 100%;
-    width: 100%;
-  }
+  z-index: 2;
 }
 
 .featured-projects__title {
   text-transform: uppercase;
   @include heading-h3;
-
   @media (max-width: $br1) {
     display: none;
-  }
-
-  &--mob {
-    display: none;
-
-    @media (max-width: $br1) {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-    }
   }
 }
-
 .featured-projects__desc {
-  color: var(--neutral-200);
   margin-top: vw(16);
-  line-height: 1.2em !important;
   @include text-t3;
-
-  @media (max-width: $br1) {
-    display: none;
-  }
 }
 
 .featured-projects__link {
