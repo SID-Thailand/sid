@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { LucideChevronsUpDown, LucideX } from 'lucide-vue-next'
+
 import type { IOption } from '~/types/headless/input'
 
 const selectedOption = ref<IOption>(null)

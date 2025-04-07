@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { iCTA } from '~/types/story'
+import { LucideArrowUpRight } from 'lucide-vue-next'
 
 interface IProps {
   cta: iCTA

@@ -41,7 +41,6 @@ export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
     '@nuxt/eslint',
-    'nuxt-lucide-icons',
     'nuxt-i18n-micro',
     [
       '@storyblok/nuxt',

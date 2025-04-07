@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { LucideCheck } from 'lucide-vue-next'
+
 const checked = ref(false)
 </script>
 

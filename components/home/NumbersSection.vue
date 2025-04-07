@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LucidePlus } from 'lucide-vue-next'
+
 import type { iHomeNumbers } from '~/types/story'
 
 interface IProps {

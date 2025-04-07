@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useFooterStory } from '~/composables/stories/footerStory'
+import { LucideArrowUpRight } from 'lucide-vue-next'
 
 const { story } = await useFooterStory()
 </script>

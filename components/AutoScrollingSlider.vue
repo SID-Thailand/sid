@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import type { iImage } from '~/types/story'
+import { LucidePlus } from 'lucide-vue-next'
 
 interface IProps {
   items: iImage[]

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LucideArrowUpLeft, LucideArrowUpRight } from 'lucide-vue-next'
+
 import type { iHomeQuiz } from '~/types/story'
 
 interface IProps {
