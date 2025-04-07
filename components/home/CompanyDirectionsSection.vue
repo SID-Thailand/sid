@@ -21,6 +21,7 @@ const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 const activeIdx = ref(0)
 const dir = ref(1)
 const height = ref(0)
+const st = ref<ScrollTrigger>(null)
 
 const itemsCount = computed(() => {
   if (!$wrappers.value) return 0
@@ -49,7 +50,7 @@ const makeAnimation = () => {
     y: -height,
   })
 
-  ScrollTrigger.create({
+  st.value = ScrollTrigger.create({
     trigger: contentRef.value,
     start: () => 'top top',
     end: () => 'bottom bottom',
@@ -88,7 +89,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+  st.value?.kill()
   resize.off(calcHeight)
 })
 </script>
