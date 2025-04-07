@@ -9,11 +9,7 @@
 
   @if $index {
     @return string.slice($string, 1, $index - 1) + $replace +
-      str-replace(
-        string.slice($string, $index + string.length($search)),
-        $search,
-        $replace
-      );
+      str-replace(string.slice($string, $index + string.length($search)), $search, $replace);
   }
 
   @return $string;
@@ -49,17 +45,14 @@
     '6': 6,
     '7': 7,
     '8': 8,
-    '9': 9,
+    '9': 9
   );
 
   @for $i from if($minus, 2, 1) through string.length($value) {
     $character: string.slice($value, $i, $i);
 
     @if not(list.index(map.keys($numbers), $character) or $character == '.') {
-      @return to-length(
-        if($minus, -$result, $result),
-        string.slice($value, $i)
-      );
+      @return to-length(if($minus, -$result, $result), string.slice($value, $i));
     }
 
     @if $character == '.' {
@@ -91,25 +84,16 @@
 @function size($pcSize, $mobSize) {
   $addSize: $pcSize - $mobSize;
   $maxWidth: $maxWidth - $minWidth;
-  @return calc(
-    #{$mobSize + px} + #{$addSize} *
-      ((100vw - #{$minWidth + px}) / #{$maxWidth})
-  );
+  @return calc(#{$mobSize + px} + #{$addSize} * ((100vw - #{$minWidth + px}) / #{$maxWidth}));
 }
 
-@function vw($px, $screen: 1920) {
-  $inVW: math.div(
-      $px,
-      number(str-replace(transform-number-to-string($screen), 'px', ''))
-    ) * 100;
+@function vw($px, $screen: $maxWidth) {
+  $inVW: math.div($px, number(str-replace(transform-number-to-string($screen), 'px', ''))) * 100;
   @return #{$inVW}vw;
 }
 
-@function vh($px, $screen: 1080) {
-  $inVH: math.div(
-      $px,
-      number(str-replace(transform-number-to-string($screen), 'px', ''))
-    ) * 100;
+@function vh($px, $screen: $maxHeight) {
+  $inVH: math.div($px, number(str-replace(transform-number-to-string($screen), 'px', ''))) * 100;
   @return #{$inVH}vh;
 }
 

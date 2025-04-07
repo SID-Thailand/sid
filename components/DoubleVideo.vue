@@ -13,15 +13,19 @@ defineProps<IProps>()
 
 gsap.registerPlugin(ScrollTrigger)
 
-const isPlaying = ref(true)
+const isPlaying = ref(false)
+const isClicked = ref(false)
 const sectionRef = ref<HTMLElement | null>(null)
 const videoElements = ref<HTMLVideoElement[]>([])
+
+const st = ref<ScrollTrigger>(null)
 
 const togglePlay = () => {
   isPlaying.value = !isPlaying.value
   videoElements.value.forEach(video => {
     isPlaying.value ? video.play() : video.pause()
   })
+  isClicked.value = true
 }
 
 onMounted(() => {
@@ -30,13 +34,17 @@ onMounted(() => {
   const videos = sectionRef.value.querySelectorAll('video')
   videoElements.value = Array.from(videos)
 
-  ScrollTrigger.create({
-    trigger: sectionRef.value,
+  st.value = ScrollTrigger.create({
+    trigger: sectionRef.value as HTMLElement,
     start: 'center center',
     end: 'bottom top',
     onUpdate: self => {
       const inView = self.isActive
+      if (isClicked.value) {
+        return
+      }
       videoElements.value.forEach(video => {
+        isPlaying.value = inView
         inView ? video.play() : video.pause()
       })
     },
@@ -44,7 +52,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+  st.value?.kill()
 })
 </script>
 
@@ -79,7 +87,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .d-video {
-  padding: vw(100) vw(112) vw(65);
+  padding: vw(100) 0 vw(65);
   border-radius: vw(148) vw(148) 0 0;
   background-image: var(--gradient-primary);
 
@@ -94,6 +102,9 @@ onBeforeUnmount(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (min-width: $br1) {
+    padding: 0 vw(100);
+  }
 }
 
 .d-video__title {
@@ -161,7 +172,8 @@ onBeforeUnmount(() => {
 .d-video__phone {
   position: relative;
   height: vw(822);
-  width: vw(451);
+
+  aspect-ratio: 451 / 822;
   border-radius: vw(40);
   overflow: hidden;
   z-index: 2;
@@ -175,6 +187,11 @@ onBeforeUnmount(() => {
     @media (max-width: $br1) {
       border-radius: 32px;
     }
+  }
+
+  @media (min-width: $br1) {
+    height: clamp(vw(700), vw(822), 100vh);
+    aspect-ratio: 451 / 822;
   }
 
   @media (max-width: $br1) {

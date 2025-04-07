@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import type { iHomeCompanyDirections } from '~/types/story'
+import { resize } from '@emotionagency/utils'
 
 interface IProps {
   content: iHomeCompanyDirections
@@ -14,59 +15,83 @@ gsap.registerPlugin(ScrollTrigger)
 
 const contentRef = ref<HTMLElement | null>(null)
 const interviewContentRef = ref<HTMLElement | null>(null)
+const assetsRef = ref<HTMLElement | null>(null)
+const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
-onMounted(() => {
+const activeIdx = ref(0)
+const dir = ref(1)
+const height = ref(0)
+const st = ref<ScrollTrigger | null>(null)
+
+const itemsCount = computed(() => {
+  if (!$wrappers.value) return 0
+  return $wrappers.value.length
+})
+
+const calcHeight = () => {
+  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
+
+  height.value = interviewContentRef.value?.scrollHeight - lastItemHeight
+}
+
+const makeAnimation = () => {
   if (!contentRef.value) return
-  const wrappers = contentRef.value.querySelectorAll(
-    '.interview__content-wrapper'
-  )
-  const itemsCount = wrappers.length
-  const interval = 1 / itemsCount
+
   const tl = gsap.timeline({
     paused: true,
   })
 
-  tl.to(
-    interviewContentRef.value,
-    {
-      duration: 1,
-      ease: 'none',
-      yPercent: -100,
-    },
-    0
-  )
+  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
+  const height = interviewContentRef.value?.scrollHeight - lastItemHeight
+
+  tl.to(interviewContentRef.value, {
+    duration: 1,
+    ease: 'none',
+    y: -height,
+  })
 
   ScrollTrigger.create({
-    trigger: contentRef.value,
+    trigger: contentRef.value as HTMLElement,
     start: () => 'top top',
     end: () => 'bottom bottom',
     scrub: true,
 
     animation: tl,
 
-    onUpdate: ({ progress }) => {
-      const activeIndex =
-        progress < interval
-          ? 0
-          : progress >= 1 - interval
-            ? itemsCount - 1
-            : Math.floor(progress / interval)
-
-      wrappers.forEach((wrapper, index) => {
+    onUpdate: ({ direction }) => {
+      dir.value = direction
+      $wrappers.value.forEach((wrapper, index) => {
         const bounds = wrapper.getBoundingClientRect()
+        const assetsBounds = assetsRef.value.getBoundingClientRect()
 
-        if (bounds.top < 100) {
-          wrapper.classList.add('interview__content-wrapper--active')
-        } else {
-          wrapper.classList.remove('interview__content-wrapper--active')
+        if (bounds.top < 150 && window.innerWidth > 1060) {
+          activeIdx.value = index
+        }
+
+        if (
+          bounds.top - 100 < assetsBounds.bottom &&
+          window.innerWidth < 1060
+        ) {
+          activeIdx.value = index
         }
       })
     },
   })
+}
+
+onMounted(() => {
+  $wrappers.value = contentRef.value.querySelectorAll(
+    '.interview__content-wrapper'
+  ) as NodeListOf<HTMLElement>
+
+  resize.on(calcHeight)
+
+  makeAnimation()
 })
 
 onBeforeUnmount(() => {
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+  st.value?.kill()
+  resize.off(calcHeight)
 })
 </script>
 
@@ -76,17 +101,22 @@ onBeforeUnmount(() => {
       <div class="interview__title-wrapper">
         <h2 class="interview__title">{{ content?.title }}</h2>
       </div>
-      <div ref="contentRef" class="interview__block">
+      <div
+        ref="contentRef"
+        class="interview__block"
+        :style="{ '--direction': dir === 1 ? 'normal' : 'reverse' }"
+      >
         <div class="interview__block-wrapper">
-          <div class="interview__assets">
+          <div ref="assetsRef" class="interview__assets">
             <div
               v-for="(item, idx) in content?.directions"
               :key="idx"
               class="interview__image-item"
+              :class="idx === activeIdx && 'interview__image-item--active'"
             >
               <div
                 class="interview__img-wrapper"
-                :class="idx === 0 && 'interview__img-wrapper--active'"
+                :class="idx <= activeIdx && 'interview__img-wrapper--active'"
               >
                 <CustomImage
                   :src="item?.person?.content?.photo?.filename"
@@ -97,10 +127,20 @@ onBeforeUnmount(() => {
 
               <div class="interview__desc-wrapper">
                 <p class="interview__name">
-                  {{ item?.person?.content?.name }}
+                  <span class="interview__text-line">
+                    {{
+                      item?.person?.content?.interview_title ||
+                      item?.person?.content?.name
+                    }}
+                  </span>
                 </p>
                 <p class="interview__description">
-                  {{ item?.person?.content?.position }}
+                  <span class="interview__text-line">
+                    {{
+                      item?.person?.content?.interview_position ||
+                      item?.person?.content?.position
+                    }}
+                  </span>
                 </p>
               </div>
             </div>
@@ -110,7 +150,7 @@ onBeforeUnmount(() => {
               v-for="(item, idx) in content?.directions"
               :key="idx"
               class="interview__content-wrapper"
-              :class="idx === 0 && 'interview__content-wrapper--active'"
+              :class="idx === activeIdx && 'interview__content-wrapper--active'"
               :style="{ zIndex: idx + 1 }"
             >
               <div class="interview__item">
@@ -133,17 +173,13 @@ onBeforeUnmount(() => {
   position: relative;
   height: 100%;
   padding-top: vw(40);
-  padding-bottom: vw(100);
+
   background-color: var(--neutral-600);
 
   @media (max-width: $br1) {
     padding-top: 24px;
     padding-bottom: 60px;
   }
-}
-
-.interview__wrapper {
-  height: 100%;
 }
 
 .interview__title-wrapper {
@@ -182,27 +218,41 @@ onBeforeUnmount(() => {
 .interview__block-wrapper {
   position: sticky;
   top: 0;
-  height: fit-content;
+  height: 100vh;
+  overflow: hidden;
   padding-top: vw(60);
-  display: flex;
-  justify-content: space-between;
+
+  @media (min-width: $br1) {
+    display: flex;
+    justify-content: space-between;
+  }
 
   @media (max-width: $br1) {
     margin-top: 40px;
-    padding-top: 16px;
-    height: var(--active-height);
+    padding-top: 0px;
   }
 }
 
 .interview__assets {
+  position: relative;
   width: vw(440);
   height: vw(496);
-  position: relative;
+  @media (max-width: $br1) {
+    margin-top: 16px;
+
+    width: 100%;
+    aspect-ratio: 440 / 496;
+    height: auto;
+    z-index: 10;
+    background-color: var(--neutral-600);
+  }
 }
 
 .interview__content {
   position: relative;
-  width: vw(785);
+  @media (min-width: $br1) {
+    width: vw(785);
+  }
 }
 
 .interview__content-wrapper {
@@ -213,15 +263,7 @@ onBeforeUnmount(() => {
     column-gap: vw(20);
   }
 
-  @media (max-width: $br1) {
-    position: absolute;
-  }
-
   &--active {
-    .interview__desc-wrapper {
-      opacity: 1;
-    }
-
     .interview__item {
       color: var(--basic-white);
 
@@ -230,11 +272,11 @@ onBeforeUnmount(() => {
       }
     }
 
-    @media (max-width: $br1) {
-      .interview__item {
-        opacity: 1;
-      }
-    }
+    // @media (max-width: $br1) {
+    //   .interview__item {
+    //     opacity: 1;
+    //   }
+    // }
   }
 }
 
@@ -244,18 +286,15 @@ onBeforeUnmount(() => {
   top: 0;
   text-transform: uppercase;
   @include subheading-h5;
-
-  @media (min-width: $br1) {
-    @include col(1, 8);
-    width: fit-content;
-    max-width: vw(600);
+  &--active {
+    .interview__text-line {
+      transform: translateY(0%);
+    }
   }
 
-  @media (max-width: $br1) {
-    position: relative;
-    max-height: auto;
-    height: 100%;
-    line-height: 1.5em;
+  @media (min-width: $br1) {
+    width: fit-content;
+    max-width: vw(600);
   }
 }
 
@@ -268,7 +307,7 @@ onBeforeUnmount(() => {
 
   &--active {
     .interview__img {
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
   }
 }
@@ -279,16 +318,25 @@ onBeforeUnmount(() => {
   width: 100%;
   height: auto;
   transition: transform 3s $easing;
-  transform: translateY(100%);
+  transform-origin: center top;
+  transform: translateY(100%) scale(1.3);
 }
 
-.interview__desc-wrapper {
-  opacity: 0;
-  transition: opacity 2s $easing;
+.interview__text-line {
+  display: inline-block;
+  transform: translateY(100%);
+  transition: transform 0.5s $easing;
+}
+
+.reverse {
+  .interview__text-line {
+    transform: translateY(-100%);
+  }
 }
 
 .interview__name {
   margin-top: vw(16);
+  overflow: hidden;
 
   @media (max-width: $br1) {
     margin-top: 16px;
@@ -297,6 +345,7 @@ onBeforeUnmount(() => {
 
 .interview__description {
   color: var(--neutral-300);
+  overflow: hidden;
 }
 
 .interview__item {
@@ -308,7 +357,7 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $br1) {
-    opacity: 0;
+    // opacity: 0;
     margin-top: 40px;
   }
 }

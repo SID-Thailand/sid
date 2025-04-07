@@ -32,7 +32,7 @@ onMounted(() => {
       y: '5%',
       ease: 'none',
       scrollTrigger: {
-        trigger: imgWrapper.value,
+        trigger: imgWrapper.value as HTMLDivElement,
 
         start: () => 'top bottom',
         end: () => `bottom+=${window.innerHeight} bottom`,

@@ -91,6 +91,8 @@ export interface iHomeVideo {
 
 interface iFeaturedProject {
   name: string
+  slug: string
+  full_slug: string
   content: {
     component: string
     cover: iImage
@@ -154,6 +156,8 @@ export interface iMember {
     photo: iImage
     name: string
     position: string
+    interview_title?: string
+    interview_position?: string
     links: { labek: string; component: string; link: iLink }[]
   }
 }
