@@ -11,7 +11,6 @@ defineProps<IProps>()
   <div class="video">
     <video
       lazy
-      autoplay
       loop
       muted
       playsinline="true"

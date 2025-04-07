@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 
 interface IProps {
   title: string
@@ -8,35 +10,61 @@ interface IProps {
 }
 
 defineProps<IProps>()
+
+gsap.registerPlugin(ScrollTrigger)
+
+const isPlaying = ref(true)
+const sectionRef = ref<HTMLElement | null>(null)
+const videoElements = ref<HTMLVideoElement[]>([])
+
+const togglePlay = () => {
+  isPlaying.value = !isPlaying.value
+  videoElements.value.forEach(video => {
+    isPlaying.value ? video.play() : video.pause()
+  })
+}
+
+onMounted(() => {
+  if (!sectionRef.value) return
+
+  const videos = sectionRef.value.querySelectorAll('video')
+  videoElements.value = Array.from(videos)
+
+  ScrollTrigger.create({
+    trigger: sectionRef.value,
+    start: 'center center',
+    end: 'bottom top',
+    onUpdate: self => {
+      const inView = self.isActive
+      videoElements.value.forEach(video => {
+        inView ? video.play() : video.pause()
+      })
+    },
+  })
+})
+
+onBeforeUnmount(() => {
+  ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+})
 </script>
 
 <template>
-  <section class="d-video">
+  <section ref="sectionRef" class="d-video">
     <div class="d-video__wrapper">
       <h2 class="d-video__title">{{ title }}</h2>
       <div class="d-video__videos">
         <div class="d-video__landscape">
-          <CustomVideo
-            :url="asset?.filename"
-            :video-attributes="{
-              'data-parallax': '0.2',
-              'data-parallax-dir': '1',
-              'data-scale': '1.03',
-            }"
-          />
+          <CustomVideo :url="asset?.filename" />
         </div>
         <div class="d-video__phone">
           <div class="d-video__phone-wrapper">
             <div class="d-video__phone-camera" />
-            <CustomVideo
-              :video-attributes="{
-                'data-parallax': '0.2',
-                'data-parallax-dir': '1',
-                'data-scale': '1.03',
-              }"
-              :url="asset?.filename"
-            />
-            <button type="button" class="d-video__phone-btn">
+            <CustomVideo :url="asset?.filename" />
+            <button
+              type="button"
+              class="d-video__phone-btn"
+              @click="togglePlay"
+            >
               <span>REC</span>
             </button>
           </div>
