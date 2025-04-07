@@ -33,8 +33,9 @@ onMounted(() => {
       ease: 'none',
       scrollTrigger: {
         trigger: imgWrapper.value,
-        start: 'top bottom',
-        end: 'center center',
+        markers: true,
+        start: () => 'top bottom',
+        end: () => `bottom+=${window.innerHeight} bottom`,
         scrub: true,
       },
     }
