@@ -6,12 +6,28 @@ interface IProps {
 }
 
 defineProps<IProps>()
+
+const onSubmit = data => {
+  console.log(data)
+}
 </script>
 
 <template>
   <div class="quiz-step">
     <div class="quiz-step__wrapper">
-      <div class="quiz-step__content">
+      <div
+        v-if="quizStep.component === 'final_step'"
+        class="quiz-step__content"
+      >
+        <Form
+          class="quiz__form"
+          btn-text="SEND"
+          title="fill out the form"
+          @submit="onSubmit"
+        />
+      </div>
+
+      <div v-else class="quiz-step__content">
         <p class="quiz-step__count"><span>1</span>/<span>4</span></p>
         <h3 class="quiz-step__quiz-name">
           {{ quizStep?.title }}
