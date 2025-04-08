@@ -313,7 +313,6 @@ onBeforeUnmount(() => {
   height: clamp(50%, vh(684), vw(684));
   aspect-ratio: 0.72;
   max-width: 100%;
-
   background-color: var(--neutral-400);
   position: relative;
   z-index: 2;
@@ -368,19 +367,21 @@ onBeforeUnmount(() => {
 .fpc__specs-wrapper {
   position: relative;
   flex: 1 0 auto;
+  margin-top: vw(24);
+  @media (max-width: $br1) {
+    margin-top: 20px;
+  }
 }
 
 .fpc__specs {
   position: absolute;
   top: 0;
   left: 0;
-  margin-top: vw(24);
+  height: 100%;
+  width: 100%;
 
   &:first-child {
     position: relative;
-  }
-  @media (max-width: $br1) {
-    margin-top: 20px;
   }
 }
 
