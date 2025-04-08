@@ -44,7 +44,7 @@ const animate = async () => {
   const wasActive = props.prevIdx === props.idx
   const distance = distanceFromActive.value
 
-  const zBase = 100
+  const zBase = 20
   const targetScale = 1 - distance * 0.07
 
   if (isActive) {
@@ -80,7 +80,6 @@ const animate = async () => {
       },
     })
   } else {
-    // Other inactive cards → set zIndex based on distance
     el.style.zIndex = `${zBase - distance - 2}`
 
     tl.to(el, {
