@@ -90,7 +90,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  st.value?.kill()
+  st.value?.kill(true)
   resize.off(calcHeight)
 })
 </script>
@@ -320,6 +320,7 @@ onBeforeUnmount(() => {
   transition: transform 3s $easing;
   transform-origin: center top;
   transform: translateY(100%) scale(1.3);
+  will-change: transform;
 }
 
 .interview__text-line {
