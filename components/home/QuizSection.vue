@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { LucideArrowUpLeft, LucideArrowUpRight } from 'lucide-vue-next'
-
 import type { iHomeQuiz } from '~/types/story'
 
 interface IProps {
@@ -19,6 +17,24 @@ const steps = computed(() => {
     },
   ]
 })
+
+const activeIdx = ref(0)
+
+const next = () => {
+  if (activeIdx.value < steps.value.length - 1) {
+    activeIdx.value++
+  }
+}
+
+const prev = () => {
+  if (activeIdx.value > 0) {
+    activeIdx.value--
+  }
+}
+
+watch(activeIdx, () => {
+  console.log(activeIdx.value)
+})
 </script>
 
 <template>
@@ -31,12 +47,13 @@ const steps = computed(() => {
           :key="idx"
           :quiz-step="step"
           :idx="idx"
+          :active-idx="activeIdx"
           :size="steps?.length"
           class="quiz__item"
         />
       </div>
       <div class="quiz__btn-wrapper">
-        <Button type="button" class="quiz__btn">
+        <Button type="button" class="quiz__btn" @click="prev">
           <svg
             width="20"
             height="20"
@@ -52,7 +69,7 @@ const steps = computed(() => {
 
           {{ content?.quiz?.content?.back_button }}
         </Button>
-        <Button type="button" class="quiz__btn">
+        <Button type="button" class="quiz__btn" @click="next">
           {{ content?.quiz?.content?.next_button }}
           <svg
             width="20"

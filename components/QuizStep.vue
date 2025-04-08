@@ -5,21 +5,34 @@ interface IProps {
   quizStep: iQuizStep
   idx: number
   size: number
+  activeIdx: number
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const onSubmit = data => {
   console.log(data)
 }
+
+const distanceFromActive = computed(() => {
+  const distance = Math.abs(props.activeIdx - props.idx)
+  return distance
+})
+
+console.log(distanceFromActive.value)
 </script>
 
 <template>
   <div
     class="quiz-step"
     :style="{
-      zIndex: size - idx,
-      transform: `translateY(${-idx * 14}px) scale(${1 - idx * 0.07})`,
+      zIndex: activeIdx === idx ? size + 1 : size - distanceFromActive + 1,
+      transform:
+        activeIdx === idx
+          ? `translateY(0px) scale(1)`
+          : `translateY(${-distanceFromActive * 20}px) scale(${1 - distanceFromActive * 0.07})`,
+      display: distanceFromActive > 2 ? 'none' : 'block',
+      position: activeIdx === idx ? 'relative' : 'absolute',
     }"
   >
     <div class="quiz-step__wrapper">
@@ -77,21 +90,21 @@ const onSubmit = data => {
   padding: vw(60) vw(50);
 
   position: absolute;
-  background-color: var(--accent-quaternary);
+  // background-color: var(--accent-quaternary);
+  background-image: var(--gradient-secondary);
   transform-origin: top;
 
-  &:first-child {
-    position: relative;
-    background-image: var(--gradient-secondary);
-  }
+  // &:first-child {
+  //   position: relative;
+  // }
 
-  &:nth-child(3) {
-    background-color: var(--accent-tertiary);
-  }
+  // &:nth-child(3) {
+  //   background-color: var(--accent-tertiary);
+  // }
 
-  &:nth-child(4) {
-    display: none;
-  }
+  // &:nth-child(4) {
+  //   display: none;
+  // }
 
   @media (max-width: $br1) {
     border-radius: 20px 20px 0 0;
