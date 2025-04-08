@@ -19,15 +19,18 @@ const steps = computed(() => {
 })
 
 const activeIdx = ref(0)
+const prevIdx = ref(0)
 
 const next = () => {
   if (activeIdx.value < steps.value.length - 1) {
+    prevIdx.value = activeIdx.value
     activeIdx.value++
   }
 }
 
 const prev = () => {
   if (activeIdx.value > 0) {
+    prevIdx.value = activeIdx.value
     activeIdx.value--
   }
 }
@@ -48,6 +51,7 @@ watch(activeIdx, () => {
           :quiz-step="step"
           :idx="idx"
           :active-idx="activeIdx"
+          :prev-idx="prevIdx"
           :size="steps?.length"
           class="quiz__item"
         />

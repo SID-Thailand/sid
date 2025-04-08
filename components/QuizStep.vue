@@ -7,6 +7,7 @@ interface IProps {
   idx: number
   size: number
   activeIdx: number
+  prevIdx: number
 }
 
 const props = defineProps<IProps>()
@@ -35,35 +36,59 @@ const background = computed(() => {
 })
 
 const animate = async () => {
-  const tl = gsap.timeline()
+  const el = itemRef.value
+  if (!el) return
 
-  if (distanceFromActive.value >= 1) {
-    tl.to(itemRef.value, {
-      duration: 0.5,
-      y: -distanceFromActive.value * 20,
-      scale: 1 - distanceFromActive.value * 0.07,
-      ease: 'power2.out',
-      onComplete: () => {
-        tl.clear()
-      },
-    })
-  } else {
+  const tl = gsap.timeline()
+  const isActive = props.activeIdx === props.idx
+  const wasActive = props.prevIdx === props.idx
+  const distance = distanceFromActive.value
+
+  const zBase = 100
+  const targetScale = 1 - distance * 0.07
+
+  if (isActive) {
+    el.style.zIndex = `${zBase}`
+
     tl.fromTo(
-      itemRef.value,
+      el,
       {
-        y: '100%',
-        scale: 1 - distanceFromActive.value * 0.07,
+        y: props.activeIdx > props.prevIdx ? '100%' : '-100%',
+        scale: targetScale,
       },
       {
         duration: 0.5,
         y: 0,
         scale: 1,
         ease: 'power2.out',
-        onComplete: () => {
-          tl.clear()
-        },
       }
     )
+  } else if (wasActive) {
+    el.style.zIndex = `${zBase - 1}`
+
+    const newDistance = Math.abs(props.activeIdx - props.idx)
+    const newScale = 1 - newDistance * 0.07
+    const newY = -newDistance * 20
+
+    tl.to(el, {
+      duration: 0.5,
+      y: newY,
+      scale: newScale,
+      ease: 'power2.out',
+      onComplete: () => {
+        el.style.zIndex = `${zBase - newDistance - 2}`
+      },
+    })
+  } else {
+    // Other inactive cards → set zIndex based on distance
+    el.style.zIndex = `${zBase - distance - 2}`
+
+    tl.to(el, {
+      duration: 0.5,
+      y: -distance * 20,
+      scale: targetScale,
+      ease: 'power2.out',
+    })
   }
 }
 
@@ -77,21 +102,14 @@ watch(
 onMounted(() => {
   animate()
 })
-
-// transform:
-//         activeIdx === idx
-//           ? `translateY(0px) scale(1)`
-//           : `translateY(${-distanceFromActive * 20}px) scale(${1 - distanceFromActive * 0.07})`,
 </script>
 
 <template>
   <div
+    v-show="distanceFromActive <= 2"
     ref="itemRef"
     class="quiz-step"
     :style="{
-      zIndex: activeIdx === idx ? size + 1 : size - distanceFromActive + 1,
-
-      // display: distanceFromActive > 2 ? 'none' : 'block',
       position: activeIdx === idx ? 'relative' : 'absolute',
       background,
     }"
