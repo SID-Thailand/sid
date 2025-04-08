@@ -3,6 +3,8 @@ import type { iQuizStep } from '~/types/story'
 
 interface IProps {
   quizStep: iQuizStep
+  idx: number
+  size: number
 }
 
 defineProps<IProps>()
@@ -13,7 +15,13 @@ const onSubmit = data => {
 </script>
 
 <template>
-  <div class="quiz-step">
+  <div
+    class="quiz-step"
+    :style="{
+      zIndex: size - idx,
+      transform: `translateY(${-idx * 14}px) scale(${1 - idx * 0.07})`,
+    }"
+  >
     <div class="quiz-step__wrapper">
       <div
         v-if="quizStep.component === 'final_step'"
@@ -28,7 +36,10 @@ const onSubmit = data => {
       </div>
 
       <div v-else class="quiz-step__content">
-        <p class="quiz-step__count"><span>1</span>/<span>4</span></p>
+        <p class="quiz-step__count">
+          <span>{{ idx + 1 }}</span
+          >/<span>{{ size }}</span>
+        </p>
         <h3 class="quiz-step__quiz-name">
           {{ quizStep?.title }}
         </h3>
@@ -64,7 +75,23 @@ const onSubmit = data => {
   height: 100%;
   border-radius: vw(20) vw(20) 0 0;
   padding: vw(60) vw(50);
-  background-image: var(--gradient-secondary);
+
+  position: absolute;
+  background-color: var(--accent-quaternary);
+  transform-origin: top;
+
+  &:first-child {
+    position: relative;
+    background-image: var(--gradient-secondary);
+  }
+
+  &:nth-child(3) {
+    background-color: var(--accent-tertiary);
+  }
+
+  &:nth-child(4) {
+    display: none;
+  }
 
   @media (max-width: $br1) {
     border-radius: 20px 20px 0 0;
@@ -97,6 +124,7 @@ const onSubmit = data => {
   text-transform: uppercase;
   text-align: center;
   margin-top: vw(12);
+  max-width: vw(580);
   @include med;
 
   @media (max-width: $br1) {
@@ -129,6 +157,7 @@ const onSubmit = data => {
   position: relative;
   width: 100%;
   height: 100%;
+  max-width: vh(244);
 }
 
 .quiz-step__image-container {
@@ -140,11 +169,11 @@ const onSubmit = data => {
   display: block;
   height: 100%;
   width: 100%;
-  border-radius: vw(10);
   border: 1px solid var(--basic-black);
   object-fit: cover;
   aspect-ratio: 1;
-
+  border-radius: 10px;
+  overflow: hidden;
   @media (max-width: $br1) {
     border-radius: 12px;
   }

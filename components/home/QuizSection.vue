@@ -30,17 +30,42 @@ const steps = computed(() => {
           v-for="(step, idx) in steps"
           :key="idx"
           :quiz-step="step"
+          :idx="idx"
+          :size="steps?.length"
           class="quiz__item"
         />
       </div>
       <div class="quiz__btn-wrapper">
         <Button type="button" class="quiz__btn">
-          <LucideArrowUpLeft />
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16.469 3.52659L4.67422 3.51869L4.67285 3.51732L4.67147 3.51869L3.49327 3.51791L3.50186 16.4913L5.16963 16.4924L5.16293 6.36442L15.8685 17.07L17.047 15.8915L6.34319 5.18766L16.4701 5.19436L16.469 3.52659Z"
+              fill="#46361C"
+            />
+          </svg>
+
           {{ content?.quiz?.content?.back_button }}
         </Button>
         <Button type="button" class="quiz__btn">
           {{ content?.quiz?.content?.next_button }}
-          <LucideArrowUpRight />
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.53102 3.52659L15.3258 3.51869L15.3272 3.51732L15.3285 3.51869L16.5067 3.51791L16.4981 16.4913L14.8304 16.4924L14.8371 6.36442L4.13151 17.07L2.953 15.8915L13.6568 5.18766L3.52992 5.19436L3.53102 3.52659Z"
+              fill="#46361C"
+            />
+          </svg>
         </Button>
       </div>
     </div>
