@@ -2,7 +2,7 @@
 import { useMenuStory } from '~/composables/stories/menuStory'
 
 const { story } = await useMenuStory()
-const { selectedLang } = useLang()
+const { selectedLang, defaultLocale } = useLang()
 const { isMenuOpened } = useAppState()
 
 const $el = ref(null)
@@ -28,7 +28,7 @@ onBeforeUnmount(() => {
     <div class="header__wrapper container">
       <LanguageSwitcher />
       <NuxtLink
-        :to="selectedLang === 'en' ? '/' : '/' + selectedLang"
+        :to="selectedLang === defaultLocale() ? '/' : '/' + selectedLang"
         class="header__link"
         @click="onClick"
       >

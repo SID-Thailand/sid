@@ -18,31 +18,133 @@ const projectCount = computed(() => {
   return content?.featured_projects.length || 0
 })
 
+const duration = 1 / projectCount.value
+
 const contentRef = ref<HTMLElement | null>(null)
 
 const st = ref<ScrollTrigger | null>(null)
 const dir = ref(1)
 
+const imageRevealAnimation = (
+  tl: GSAPTimeline,
+  index: number,
+  item: HTMLElement
+) => {
+  const dur = index === 0 ? 0 : duration
+
+  const idx = Math.max(0, index - 1)
+
+  const delay = dur * idx
+
+  tl.to(
+    item,
+    {
+      duration: dur,
+      y: '0%',
+    },
+    delay
+  )
+
+  tl.to(
+    item,
+    {
+      duration: dur,
+      scale: 1,
+    },
+    delay + 0.05
+  )
+}
+
+const specAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
+  const dur = index === 0 ? 0 : duration
+
+  const idx = Math.max(0, index - 1)
+
+  const delay = dur * idx
+
+  const $prevItem = getPreviousSibling(item) as HTMLElement | null
+
+  const $curTitle = item.querySelector('.fpc__title') as HTMLElement
+  const $curSpecs = item.querySelectorAll('.fpc__spec')
+
+  const $prevTitle = $prevItem?.querySelector('.fpc__title') as HTMLElement
+  const $prevSpecs = $prevItem?.querySelectorAll('.fpc__spec')
+
+  new TextSplitter($curTitle, {
+    splitTypeTypes: 'lines,words',
+  })
+
+  $curSpecs?.forEach(spec => {
+    new TextSplitter(spec as HTMLElement, {
+      splitTypeTypes: 'lines,words',
+    })
+    gsap.set(spec.querySelectorAll('.word'), { y: '100%' })
+  })
+
+  gsap.set(item, { pointerEvents: 'none' })
+  gsap.set($curTitle.querySelectorAll('.word'), { y: '100%' })
+
+  $prevItem && tl.to($prevItem, { duration: dur, pointerEvents: 'none' }, delay)
+  tl.to(item, { duration: dur, pointerEvents: 'auto' }, delay)
+
+  const tl2 = gsap.timeline()
+
+  $prevTitle &&
+    tl2.to($prevTitle?.querySelectorAll('.word'), {
+      duration: dur / 2,
+      y: '-100%',
+    })
+
+  tl2.to($curTitle.querySelectorAll('.word'), {
+    duration: dur / 2,
+    y: '0%',
+  })
+
+  tl.add(tl2, delay)
+
+  $curSpecs?.forEach((spec, idx) => {
+    const tl3 = gsap.timeline()
+
+    $prevSpecs &&
+      tl3.to($prevSpecs?.[idx]?.querySelectorAll('.word'), {
+        duration: dur / 2,
+        y: '-100%',
+      })
+
+    tl3.to(spec.querySelectorAll('.word'), {
+      duration: dur / 2,
+      y: '0%',
+    })
+
+    tl.add(tl3, delay)
+  })
+}
+
 const makeAnimation = () => {
-  const interval = 1 / projectCount.value
+  const $bgs = contentRef.value?.querySelectorAll('.featured-projects__bg')
+  const $items = contentRef.value?.querySelectorAll('.fpc__image-item')
+  const $specs = contentRef.value?.querySelectorAll('.fpc__specs')
+
+  const tl = gsap.timeline({
+    paused: true,
+  })
+
+  $bgs.forEach((bg, index) => {
+    imageRevealAnimation(tl, index, bg as HTMLElement)
+    imageRevealAnimation(tl, index, $items[index] as HTMLElement)
+
+    specAnimation(tl, index, $specs[index] as HTMLElement)
+  })
 
   st.value = ScrollTrigger.create({
     trigger: contentRef.value as HTMLElement,
     start: () => 'top top',
-    end: () => 'bottom bottom',
+    end: () => 'bottom-=5% bottom',
     scrub: true,
+    animation: tl,
 
-    onUpdate: ({ direction, progress }) => {
+    onUpdate: ({ direction }) => {
       dir.value = direction
-
-      const activeIndex =
-        progress < interval
-          ? 0
-          : progress >= 1 - interval
-            ? projectCount.value - 1
-            : Math.floor(progress / interval)
-
-      activeProject.value = activeIndex
     },
   })
 }
@@ -68,7 +170,6 @@ onBeforeUnmount(() => {
             :alt="item?.content?.cover?.alt"
             class="featured-projects__bg"
             :style="{ zIndex: idx + 1 }"
-            :class="{ active: activeProject >= idx }"
           />
         </div>
         <NuxtLink
@@ -95,12 +196,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div class="fpc__specs-wrapper">
-            <div
-              v-for="(item, idx) in projects"
-              :key="idx"
-              class="fpc__specs"
-              :class="{ active: activeProject === idx }"
-            >
+            <div v-for="(item, idx) in projects" :key="idx" class="fpc__specs">
               <h2 class="fpc__title">
                 {{ item?.content?.name }}
               </h2>
@@ -173,19 +269,21 @@ onBeforeUnmount(() => {
   height: 100%;
   z-index: 0;
   object-fit: cover;
-  transition: transform 3s $easing;
+
   transform-origin: center top;
   transform: translateY(100%) scale(1.3);
   will-change: transform;
 
-  &.active {
+  filter: brightness(0.7) contrast(1.2) saturate(0);
+
+  &:first-child {
     transform: translateY(0) scale(1);
   }
 }
 
 .featured-projects__scroll-wrapper {
   position: relative;
-  height: 500vh;
+  height: 600vh;
 }
 
 .featured-projects__content {
@@ -244,7 +342,6 @@ onBeforeUnmount(() => {
   top: 0;
   left: 0;
 
-  transition: transform 3s $easing;
   transform-origin: center top;
   transform: translateY(100%) scale(1.3);
   will-change: transform;
@@ -277,12 +374,10 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0;
   margin-top: vw(24);
 
-  &.active {
+  &:first-child {
     position: relative;
-    opacity: 1;
   }
   @media (max-width: $br1) {
     margin-top: 20px;
@@ -300,17 +395,7 @@ onBeforeUnmount(() => {
 
 .fpc__spec {
   color: var(--neutral-200);
-  @include med;
-  font-size: vw(16);
-  line-height: 1.3em;
-
-  @media (max-width: $br1) {
-    font-size: size(16, 14);
-  }
-
-  @media (max-width: $br4) {
-    font-size: 14px;
-  }
+  @include text-t4;
 }
 
 .fpc__link {
@@ -340,6 +425,7 @@ onBeforeUnmount(() => {
 }
 .featured-projects__desc {
   margin-top: vw(16);
+  color: var(--neutral-200);
 
   @include text-t3;
   @media (max-width: $br1) {

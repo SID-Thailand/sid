@@ -53,7 +53,7 @@ const makeAnimation = () => {
   ScrollTrigger.create({
     trigger: contentRef.value as HTMLElement,
     start: () => 'top top',
-    end: () => 'bottom bottom',
+    end: () => 'bottom-=5% bottom',
     scrub: true,
 
     animation: tl,

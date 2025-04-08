@@ -221,7 +221,7 @@
 @mixin text-t3 {
   @include med;
   font-size: vw(18);
-  line-height: 1em;
+  line-height: 1.22em;
 
   @media (max-width: $br1) {
     font-size: size(18, 16);
@@ -235,7 +235,7 @@
 @mixin text-t4 {
   @include med;
   font-size: vw(16);
-  line-height: 1em;
+  line-height: 1.25em;
 
   @media (max-width: $br1) {
     font-size: size(16, 14);

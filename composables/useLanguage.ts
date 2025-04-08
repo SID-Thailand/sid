@@ -1,5 +1,5 @@
 export const useLang = () => {
-  const { getLocales, switchLocale, getLocale } = useI18n()
+  const { getLocales, switchLocale, getLocale, defaultLocale } = useI18n()
   const selectedLang = useState<string>('lang', () => getLocale())
 
   watchEffect(() => {
@@ -15,5 +15,5 @@ export const useLang = () => {
 
   const languages = computed(() => getLocales().map(locale => locale.code))
 
-  return { selectedLang, languages, setLang }
+  return { selectedLang, languages, setLang, defaultLocale }
 }
