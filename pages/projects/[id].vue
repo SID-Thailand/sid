@@ -9,7 +9,10 @@ const { params } = useRoute()
 </script>
 
 <template>
-  <section>Current Project {{ params.id }}</section>
+  <div>
+    <ProjectHeroSection />
+    Current Project {{ params.id }}
+  </div>
 </template>
 
 <style scoped lang="scss"></style>
