@@ -34,7 +34,7 @@ const background = computed(() => {
   return 'var(--accent-tertiary)'
 })
 
-const initialAnimation = async () => {
+const animate = async () => {
   const tl = gsap.timeline()
 
   if (distanceFromActive.value >= 1) {
@@ -65,34 +65,17 @@ const initialAnimation = async () => {
       }
     )
   }
-
-  // if (props.activeIdx === props.idx) {
-  //   tl.fromTo(
-  //     itemRef.value,
-  //     { yPercent: 100, scale: 0.93 },
-  //     {
-  //       duration: 0.5,
-  //       yPercent: 0,
-  //       scale: 1,
-
-  //       ease: 'power2.out',
-  //       onComplete: () => {
-  //         tl.clear()
-  //       },
-  //     }
-  //   )
-  // }
 }
 
 watch(
   () => props.activeIdx,
   () => {
-    initialAnimation()
+    animate()
   }
 )
 
 onMounted(() => {
-  initialAnimation()
+  animate()
 })
 
 // transform:
@@ -108,7 +91,7 @@ onMounted(() => {
     :style="{
       zIndex: activeIdx === idx ? size + 1 : size - distanceFromActive + 1,
 
-      display: distanceFromActive > 2 ? 'none' : 'block',
+      // display: distanceFromActive > 2 ? 'none' : 'block',
       position: activeIdx === idx ? 'relative' : 'absolute',
       background,
     }"

@@ -53,7 +53,12 @@ watch(activeIdx, () => {
         />
       </div>
       <div class="quiz__btn-wrapper">
-        <Button type="button" class="quiz__btn" @click="prev">
+        <Button
+          v-if="activeIdx > 0"
+          type="button"
+          class="quiz__btn"
+          @click="prev"
+        >
           <svg
             width="20"
             height="20"
