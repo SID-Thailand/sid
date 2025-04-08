@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import gsap from 'gsap'
 import type { iQuizStep } from '~/types/story'
 
 interface IProps {
@@ -10,6 +11,8 @@ interface IProps {
 
 const props = defineProps<IProps>()
 
+const itemRef = ref<HTMLElement | null>(null)
+
 const onSubmit = data => {
   console.log(data)
 }
@@ -19,11 +22,47 @@ const distanceFromActive = computed(() => {
   return distance
 })
 
-console.log(distanceFromActive.value)
+const background = computed(() => {
+  if (props.activeIdx === props.idx) {
+    return 'var(--gradient-secondary)'
+  }
+
+  if (distanceFromActive.value === 2) {
+    return 'var(--accent-quaternary)'
+  }
+
+  return 'var(--accent-tertiary)'
+})
+
+watch(
+  () => props.activeIdx,
+  () => {
+    nextTick(() => {
+      if (props.activeIdx === props.idx) {
+        const tl = gsap.timeline()
+        tl.fromTo(
+          itemRef.value,
+          { yPercent: 100, scale: 0.93 },
+          {
+            duration: 0.5,
+            yPercent: 0,
+            scale: 1,
+
+            ease: 'power2.out',
+            onComplete: () => {
+              tl.revert()
+            },
+          }
+        )
+      }
+    })
+  }
+)
 </script>
 
 <template>
   <div
+    ref="itemRef"
     class="quiz-step"
     :style="{
       zIndex: activeIdx === idx ? size + 1 : size - distanceFromActive + 1,
@@ -33,6 +72,7 @@ console.log(distanceFromActive.value)
           : `translateY(${-distanceFromActive * 20}px) scale(${1 - distanceFromActive * 0.07})`,
       display: distanceFromActive > 2 ? 'none' : 'block',
       position: activeIdx === idx ? 'relative' : 'absolute',
+      background,
     }"
   >
     <div class="quiz-step__wrapper">
@@ -58,8 +98,8 @@ console.log(distanceFromActive.value)
         </h3>
         <ul class="quiz-step__list">
           <li
-            v-for="(step, idx) in quizStep?.items"
-            :key="idx"
+            v-for="(step, index) in quizStep?.items"
+            :key="index"
             class="quiz-step__item"
           >
             <div class="quiz-step__image-container">
@@ -90,21 +130,9 @@ console.log(distanceFromActive.value)
   padding: vw(60) vw(50);
 
   position: absolute;
-  // background-color: var(--accent-quaternary);
-  background-image: var(--gradient-secondary);
+
+  background: var(--gradient-secondary);
   transform-origin: top;
-
-  // &:first-child {
-  //   position: relative;
-  // }
-
-  // &:nth-child(3) {
-  //   background-color: var(--accent-tertiary);
-  // }
-
-  // &:nth-child(4) {
-  //   display: none;
-  // }
 
   @media (max-width: $br1) {
     border-radius: 20px 20px 0 0;
@@ -170,7 +198,7 @@ console.log(distanceFromActive.value)
   position: relative;
   width: 100%;
   height: 100%;
-  max-width: vh(244);
+  // max-width: vh(244);
 }
 
 .quiz-step__image-container {
