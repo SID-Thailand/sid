@@ -34,30 +34,71 @@ const background = computed(() => {
   return 'var(--accent-tertiary)'
 })
 
+const initialAnimation = async () => {
+  const tl = gsap.timeline()
+
+  if (distanceFromActive.value >= 1) {
+    tl.to(itemRef.value, {
+      duration: 0.5,
+      y: -distanceFromActive.value * 20,
+      scale: 1 - distanceFromActive.value * 0.07,
+      ease: 'power2.out',
+      onComplete: () => {
+        tl.clear()
+      },
+    })
+  } else {
+    tl.fromTo(
+      itemRef.value,
+      {
+        y: '100%',
+        scale: 1 - distanceFromActive.value * 0.07,
+      },
+      {
+        duration: 0.5,
+        y: 0,
+        scale: 1,
+        ease: 'power2.out',
+        onComplete: () => {
+          tl.clear()
+        },
+      }
+    )
+  }
+
+  // if (props.activeIdx === props.idx) {
+  //   tl.fromTo(
+  //     itemRef.value,
+  //     { yPercent: 100, scale: 0.93 },
+  //     {
+  //       duration: 0.5,
+  //       yPercent: 0,
+  //       scale: 1,
+
+  //       ease: 'power2.out',
+  //       onComplete: () => {
+  //         tl.clear()
+  //       },
+  //     }
+  //   )
+  // }
+}
+
 watch(
   () => props.activeIdx,
   () => {
-    nextTick(() => {
-      if (props.activeIdx === props.idx) {
-        const tl = gsap.timeline()
-        tl.fromTo(
-          itemRef.value,
-          { yPercent: 100, scale: 0.93 },
-          {
-            duration: 0.5,
-            yPercent: 0,
-            scale: 1,
-
-            ease: 'power2.out',
-            onComplete: () => {
-              tl.revert()
-            },
-          }
-        )
-      }
-    })
+    initialAnimation()
   }
 )
+
+onMounted(() => {
+  initialAnimation()
+})
+
+// transform:
+//         activeIdx === idx
+//           ? `translateY(0px) scale(1)`
+//           : `translateY(${-distanceFromActive * 20}px) scale(${1 - distanceFromActive * 0.07})`,
 </script>
 
 <template>
@@ -66,10 +107,7 @@ watch(
     class="quiz-step"
     :style="{
       zIndex: activeIdx === idx ? size + 1 : size - distanceFromActive + 1,
-      transform:
-        activeIdx === idx
-          ? `translateY(0px) scale(1)`
-          : `translateY(${-distanceFromActive * 20}px) scale(${1 - distanceFromActive * 0.07})`,
+
       display: distanceFromActive > 2 ? 'none' : 'block',
       position: activeIdx === idx ? 'relative' : 'absolute',
       background,
