@@ -1,12 +1,49 @@
 <script lang="ts" setup>
 import type { iCTA } from '~/types/story'
 import { LucideArrowUpRight } from 'lucide-vue-next'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import gsap from 'gsap'
 
 interface IProps {
   cta: iCTA
 }
 
 defineProps<IProps>()
+
+const imgRef = ref<HTMLElement | null>(null)
+
+const st = ref<ScrollTrigger | null>(null)
+
+const animate = () => {
+  const tl = gsap.timeline()
+
+  tl.fromTo(
+    imgRef.value,
+    { y: '-5%' },
+    {
+      y: '5%',
+      ease: 'none',
+    }
+  )
+
+  st.value = ScrollTrigger.create({
+    trigger: imgRef.value as HTMLElement,
+    animation: tl,
+    start: () => 'top bottom',
+    end: () => `bottom+=${window.innerHeight} bottom`,
+    scrub: true,
+  })
+}
+
+onMounted(() => {
+  animate()
+})
+
+onBeforeUnmount(() => {
+  if (st.value) {
+    st.value.kill()
+  }
+})
 </script>
 
 <template>
@@ -21,11 +58,12 @@ defineProps<IProps>()
         :alt="cta?.content?.backdrop_asset?.alt"
         class="meetings__bg"
       />
-      <CustomImage
-        :src="cta?.content?.manager?.content.masked_photo?.filename"
-        :alt="cta?.content?.manager?.content.masked_photo?.alt"
-        class="meetings__people"
-      />
+      <div ref="imgRef" class="meetings__people">
+        <CustomImage
+          :src="cta?.content?.manager?.content.masked_photo?.filename"
+          :alt="cta?.content?.manager?.content.masked_photo?.alt"
+        />
+      </div>
       <div class="meetings__content">
         <img src="/logo.png" alt="Logotype" class="meetings__logo" />
         <h2 class="meetings__title">
@@ -61,6 +99,7 @@ defineProps<IProps>()
   position: relative;
   min-height: vw(893);
   padding: vw(100);
+  overflow: hidden;
 
   @media (max-width: $br1) {
     min-height: fit-content;
