@@ -67,14 +67,15 @@ defineProps<IProps>()
 }
 
 .project-concept__top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
   width: 100%;
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  column-gap: vw(20);
+  grid-auto-flow: row;
 
   @media (max-width: $br1) {
-    flex-direction: column;
-    justify-content: center;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 16px;
   }
 }
 
@@ -84,8 +85,13 @@ defineProps<IProps>()
   text-transform: uppercase;
   @include med;
 
+  @media (min-width: $br1) {
+    @include col(1, 6);
+  }
+
   @media (max-width: $br1) {
     font-size: size(20, 14);
+    @include col(1, 4);
   }
 
   @media (max-width: $br4) {
@@ -94,7 +100,12 @@ defineProps<IProps>()
 }
 
 .project-concept__text-content {
+  @media (min-width: $br1) {
+    @include col(9, 24);
+  }
+
   @media (max-width: $br1) {
+    @include col(1, 4);
     margin-top: 48px;
   }
 }
@@ -137,7 +148,8 @@ defineProps<IProps>()
 
   @media (max-width: $br1) {
     grid-template-columns: repeat(4, 1fr);
-    gap: 48px;
+    column-gap: 16px;
+    row-gap: 48px;
     margin-top: 48px;
   }
 }
