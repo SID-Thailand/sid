@@ -132,6 +132,7 @@ export interface iQuiz {
   send_button: string
   title: string
   steps: iQuizStep[]
+  form_title: string
 }
 
 export interface iHomeQuiz {

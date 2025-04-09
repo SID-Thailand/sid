@@ -6,6 +6,7 @@ interface IProps {
   size: number
   activeIdx: number
   prevIdx: number
+  title?: string
 }
 
 const props = defineProps<IProps>()
@@ -109,6 +110,13 @@ onMounted(() => {
   >
     <div class="quiz-step__wrapper">
       <div class="quiz-step__content">
+        <p class="quiz-step__count">
+          <span>{{ idx + 1 }}</span
+          >/<span>{{ size }}</span>
+        </p>
+        <h3 class="quiz-step__quiz-name">
+          {{ title }}
+        </h3>
         <slot />
       </div>
     </div>

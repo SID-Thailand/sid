@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { IForm } from '~/types/form'
+
 interface IProps {
   idx: number
   size: number
@@ -12,11 +14,7 @@ const onSubmit = (data: any) => {
   console.log(data)
 }
 
-const formData = defineModel<{
-  name: string
-  email: string
-  phone: string
-}>()
+const formData = defineModel<IForm>()
 </script>
 
 <template>
@@ -25,12 +23,13 @@ const formData = defineModel<{
     :size="size"
     :active-idx="activeIdx"
     :prev-idx="prevIdx"
+    :title="'Fill out the form'"
   >
     <AppForm
       v-model="formData"
       class="quiz__form"
-      btn-text="SEND"
       title="fill out the form"
+      :show-button="false"
       @submit="onSubmit"
     />
   </QuizStepWrapper>

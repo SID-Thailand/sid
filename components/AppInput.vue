@@ -16,11 +16,13 @@ interface iProps {
 
 defineProps<iProps>()
 
-// const inputValue = ref('')
+const model = defineModel<string>()
+const errorModel = defineModel<boolean>('errors')
 
 const onInput = (data: iInputData) => {
-  // input.value = data.value
   console.log(data)
+
+  errorModel.value = !!data.error
 }
 </script>
 
@@ -28,6 +30,7 @@ const onInput = (data: iInputData) => {
   <HeadlessInputField v-slot="field">
     <HeadlessInput
       :id="id"
+      v-model="model"
       :name="name"
       :type="type"
       :placeholder="placeholder"

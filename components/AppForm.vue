@@ -1,82 +1,67 @@
 <script setup lang="ts">
 import { LucideArrowUpRight } from 'lucide-vue-next'
 import { useFormStory } from '~/composables/stories/formStory'
+import type { IForm } from '~/types/form'
 
 interface IProps {
   title?: string
   description?: string
   btnText?: string
+  showButton?: boolean
 }
 
-defineProps<IProps>()
-
-const emit = defineEmits(['submit'])
+withDefaults(defineProps<IProps>(), {
+  showButton: true,
+})
 
 const { story } = await useFormStory()
 
-const model = defineModel<{
-  name: string
-  email: string
-  phone: string
-}>()
+const model = defineModel<IForm>()
 
-const inputs = computed(() => [
+const inputs = reactiveComputed(() => [
   {
     id: 'feedback-name',
     name: 'name',
     type: 'text',
-    value: model.value?.name,
     placeholder: story?.value?.content?.full_name_label || 'Name',
     required: true,
-    error: true,
+    value: model.value?.name.value,
+    error: model.value?.name?.error,
     validators: [Validation.min(2, 'Please enter at least 2 characters')],
   },
   {
     id: 'feedback-number',
-    name: 'number',
+    name: 'phone',
     type: 'text',
-    value: model.value?.phone,
+
     placeholder: story?.value?.content?.phone_label || 'Number',
     required: true,
-    error: true,
+    value: model.value?.phone.value,
+    error: model.value?.phone?.error,
     validators: [Validation.phone('Please enter a valid phone number')],
   },
   {
     id: 'feedback-email',
     name: 'email',
     type: 'email',
-    value: model.value?.email,
     placeholder: story?.value?.content?.email_label || 'Email',
     required: true,
-    error: true,
+    value: model.value?.email.value,
+    error: model.value?.email?.error,
     validators: [Validation.email('Please enter a valid email address')],
   },
 ])
-
-const onSubmit = (e: Event) => {
-  e.preventDefault()
-
-  const formData = {
-    feedbackName: e.target['feedback-name'].value,
-    feedbackNumber: e.target['feedback-number'].value,
-    feedbackEmail: e.target['feedback-email'].value,
-  }
-
-  emit('submit', formData)
-}
 </script>
 
 <template>
-  <form class="form" novalidate @submit.prevent="onSubmit">
+  <form class="form" novalidate @submit.prevent>
     <div class="form__wrapper">
-      <div v-if="title || description" class="form__top">
-        <legend v-if="title" class="form__title">{{ title }}</legend>
-        <p v-if="description" class="form__description">{{ description }}</p>
-      </div>
       <ul class="form__fields">
         <li v-for="(input, idx) in inputs" :key="idx" class="form__field">
           <AppInput
             :id="input.id"
+            v-model="model[input.name].value"
+            v-model:errors="model[input.name].error"
             class="form__input"
             :name="input.name"
             :type="input.type"
@@ -88,7 +73,7 @@ const onSubmit = (e: Event) => {
           />
         </li>
       </ul>
-      <Button type="submit" class="form__btn">
+      <Button v-if="showButton" type="submit" class="form__btn">
         <span>{{ btnText }}</span>
         <LucideArrowUpRight />
       </Button>

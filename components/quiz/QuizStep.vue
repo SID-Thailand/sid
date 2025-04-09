@@ -20,14 +20,8 @@ const answer = defineModel<string | null>()
     :size="size"
     :active-idx="activeIdx"
     :prev-idx="prevIdx"
+    :title="quizStep?.title"
   >
-    <p class="quiz-step__count">
-      <span>{{ idx + 1 }}</span
-      >/<span>{{ size }}</span>
-    </p>
-    <h3 class="quiz-step__quiz-name">
-      {{ quizStep?.title }}
-    </h3>
     <ul class="quiz-step__list">
       <QuizRadio
         v-for="(step, index) in quizStep?.items"

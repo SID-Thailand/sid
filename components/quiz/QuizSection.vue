@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { IForm } from '~/types/form'
 import type { iHomeQuiz } from '~/types/story'
 
 interface IProps {
@@ -29,19 +30,40 @@ const prev = () => {
 }
 
 const answers = reactiveComputed(() => {
-  return steps.value?.map(step => {
-    return {
-      question: step?.title,
-      answer: null,
-    }
-  })
+  return {
+    value: steps.value?.map(step => {
+      return {
+        question: step?.title,
+        answer: null,
+      }
+    }),
+  }
 })
 
-const formData = reactive({
-  name: '',
-  email: '',
-  phone: '',
+const formData = reactive<IForm>({
+  name: {
+    value: '',
+    error: true,
+  },
+  email: {
+    value: '',
+    error: true,
+  },
+  phone: {
+    value: '',
+    error: true,
+  },
 })
+
+const hasError = computed(() => {
+  return (
+    formData?.name?.error || formData?.email?.error || formData?.phone?.error
+  )
+})
+
+const onSubmit = () => {
+  console.log(answers.value, formData)
+}
 </script>
 
 <template>
@@ -52,7 +74,7 @@ const formData = reactive({
         <QuizStep
           v-for="(step, idx) in steps"
           :key="idx"
-          v-model="answers[idx].answer"
+          v-model="answers.value[idx].answer"
           :quiz-step="step"
           :idx="idx"
           :active-idx="activeIdx"
@@ -62,10 +84,11 @@ const formData = reactive({
         />
         <QuizForm
           v-model="formData"
-          :idx="steps?.length"
+          :idx="steps.length"
           :active-idx="activeIdx"
           :prev-idx="prevIdx"
           :size="steps?.length + 1"
+          :title="content?.quiz?.content?.form_title"
           class="quiz__item"
         />
       </div>
@@ -81,9 +104,21 @@ const formData = reactive({
           <span>{{ content?.quiz?.content?.back_button }}</span>
         </Button>
         <Button
+          v-if="activeIdx === steps.length"
           type="button"
           class="quiz__btn"
-          :disabled="!answers[activeIdx]?.answer"
+          :disabled="hasError"
+          @click="onSubmit"
+        >
+          <span>{{ content?.quiz?.content?.send_button }}</span>
+
+          <IconsArrowTopRight />
+        </Button>
+        <Button
+          v-else
+          type="button"
+          class="quiz__btn"
+          :disabled="!answers.value[activeIdx]?.answer"
           @click="next"
         >
           <span>{{ content?.quiz?.content?.next_button }}</span>
