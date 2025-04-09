@@ -17,7 +17,7 @@ defineProps<IProps>()
         {{ content?.title }}
       </h2>
       <Button type="button" view="dark" class="connect__btn">
-        {{ content?.button_text }}
+        <span>{{ content?.button_text }}</span>
       </Button>
     </div>
     <AutoScrollingSlider :items="content?.gallery" />

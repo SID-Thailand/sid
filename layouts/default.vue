@@ -39,7 +39,7 @@ useHead({
         <main class="main-content">
           <slot />
         </main>
-        <Footer />
+        <AppFooter />
       </div>
     </SmoothScroll>
     <ToastGroup />
