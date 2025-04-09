@@ -57,6 +57,6 @@ $br4: 460px;
 $easing: cubic-bezier(0.16, 1, 0.3, 1);
 
 // layouts
-$g-offset: vw(40);
+$g-offset: #{vw(40)};
 $g-sm: 32px;
 $g-s: 16px;

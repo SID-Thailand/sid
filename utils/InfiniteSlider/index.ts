@@ -6,10 +6,12 @@ import { resetState, state } from './state'
 import { DraggableController } from './controllers/Draggable'
 
 import { KeyboardController } from './controllers/Keyboard'
+import { AutoController } from './controllers/Auto'
 
 interface IControllers {
   draggable: typeof DraggableController.prototype
   keyboard: typeof KeyboardController.prototype
+  auto: typeof AutoController.prototype
 }
 
 export class Slider {
@@ -19,9 +21,13 @@ export class Slider {
   controllers: IControllers = {
     draggable: null,
     keyboard: null,
+    auto: null,
   }
 
-  constructor(readonly $el: HTMLElement) {
+  constructor(
+    readonly $el: HTMLElement,
+    readonly duration: number
+  ) {
     this.$sliderInner = this.$el?.querySelector('[data-slider-inner]')
 
     this.$slides = this.$el?.querySelectorAll('[data-slide]')
@@ -35,6 +41,7 @@ export class Slider {
 
     this.controllers.draggable = new DraggableController(this.$el)
     this.controllers.keyboard = new KeyboardController(this.$el)
+    this.controllers.auto = new AutoController(this.$el, this.duration)
 
     Object.keys(this.controllers).forEach(key => {
       this.controllers[key].subscribe()
@@ -42,21 +49,12 @@ export class Slider {
 
     this.animate = this.animate.bind(this)
     this.resize = this.resize.bind(this)
-    this.onVariantChange = this.onVariantChange.bind(this)
 
     raf.on(this.animate)
     resize.on(this.resize)
-
-    emitter.on('variant:change', this.onVariantChange)
-
-    this.startSetup()
   }
 
   startSetup() {
-    this.moveOneCirlce()
-  }
-
-  onVariantChange() {
     this.moveOneCirlce()
   }
 
@@ -118,8 +116,6 @@ export class Slider {
 
     raf.off(this.animate)
     resize.off(this.resize)
-
-    emitter.off('variant:change', this.onVariantChange)
 
     resetState()
   }
