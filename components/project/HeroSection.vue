@@ -1,45 +1,49 @@
 <script lang="ts" setup>
+import { LucidePlus } from 'lucide-vue-next'
 import { pageTransition } from '~/transitions/base'
+import type { iProjectContent } from '~/types/story'
+
+interface IProps {
+  content: iProjectContent
+}
+
+const props = defineProps<IProps>()
 
 definePageMeta({
   pageTransition,
 })
 
-const textList = [
-  {
-    text: '295 units',
-  },
-  {
-    text: '500м till Bang Tao beach',
-  },
-  {
-    text: 'Status: Done 2021 ',
-  },
-]
+const { spec_1, spec_2, spec_3 } = props.content
+
+const specs = computed(() => [spec_1, spec_2, spec_3].filter(Boolean))
 </script>
 
 <template>
   <section class="project-hero">
     <div class="project-hero__wrapper container">
       <img
-        src="/images/project/1.png"
-        alt="Project Main Image"
+        :src="content?.cover?.filename"
+        :alt="content?.cover?.alt"
         class="project-hero__img"
       />
       <div class="project-hero__content">
-        <h1 class="project-hero__title">Terra Grove Layan</h1>
+        <h1 class="project-hero__title">{{ content?.name }}</h1>
         <ul class="project-hero__list">
           <li
-            v-for="(item, idx) in textList"
+            v-for="(item, idx) in specs"
             :key="idx"
             class="project-hero__item"
           >
             <p class="project-hero__text">
-              {{ item?.text }}
+              {{ item }}
             </p>
-            <span v-if="textList.length - 1 !== idx">|</span>
+            <span v-if="specs?.length - 1 !== idx">|</span>
           </li>
         </ul>
+        <Button type="button" class="project-hero__btn">
+          <span>WHATSAPP</span>
+          <LucidePlus />
+        </Button>
       </div>
     </div>
   </section>
@@ -125,6 +129,15 @@ const textList = [
 
   @media (max-width: $br4) {
     font-size: 14px;
+  }
+}
+
+.project-hero__btn {
+  position: absolute !important;
+  bottom: vw(85);
+
+  @media (max-width: $br1) {
+    bottom: 48px;
   }
 }
 </style>

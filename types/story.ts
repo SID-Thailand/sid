@@ -173,6 +173,26 @@ export interface iCTA {
   }
 }
 
+export interface iProjectCategory {
+  component: string
+  name: string
+}
+
+export interface iProjectConcept {
+  big_asset: iImage
+  big_asset_description: string
+  component: string
+  small_asset: iImage
+  small_asset_description: string
+  subtitle: string
+  text: string
+  title: string
+}
+
+export interface iProjectBody {
+  concept: iProjectConcept
+}
+
 export interface iContactItem {
   component: string
   label: string
@@ -235,4 +255,16 @@ export interface iFormContent {
   full_name_label: string
   phone_label: string
   thankyou_text: string
+}
+
+export interface iProjectContent {
+  body: iProjectBody[]
+  category: iProjectCategory
+  component: string
+  cover: iImage
+  cta: iCTA
+  name: string
+  spec_1: string
+  spec_2: string
+  spec_3: string
 }
