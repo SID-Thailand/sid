@@ -64,7 +64,7 @@ const makeAnimation = () => {
       dir.value = direction
       $wrappers.value.forEach((wrapper, index) => {
         const bounds = wrapper.getBoundingClientRect()
-        const assetsBounds = assetsRef.value.getBoundingClientRect()
+        const assetsBounds = assetsRef.value?.getBoundingClientRect()
 
         if (bounds.top < 150 && window.innerWidth > 1060) {
           activeIdx.value = index

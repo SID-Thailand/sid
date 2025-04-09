@@ -1,30 +1,43 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import ConceptSection from '~/components/project/ConceptSection.vue'
 import { useProjectStory } from '~/composables/stories/projectStory'
-import { pageTransition } from '~/transitions/base'
-import type { iProjectBody } from '~/types/story'
-
-definePageMeta({
-  pageTransition,
-})
 
 const { params } = useRoute()
 const { story } = await useProjectStory(params?.id as string)
 
-const projectSections = computed((): iProjectBody => {
-  const body = story?.value?.content?.body as any[]
-
-  return {
-    concept: body.find(item => item?.component === 'project_concept'),
-  }
+const hero = computed(() => {
+  return story?.value?.content
 })
+
+const body = computed(() => {
+  return story?.value?.content?.body
+})
+
+const resolveSectionByName = (name: string) => {
+  const sections = {
+    project_concept: ConceptSection,
+  }
+
+  return sections[name]
+}
 </script>
 
 <template>
   <div>
-    <ProjectHeroSection :content="story?.content" />
-    <ProjectConceptSection :content="projectSections?.concept" />
-    Current Project {{ params?.id }}
+    <ProjectHeroSection :content="hero" />
+
+    <template v-for="item in body" :key="item._uid">
+      <component
+        :is="resolveSectionByName(item.component)"
+        v-if="resolveSectionByName(item.component)"
+        v-editable="item"
+        :content="item"
+      />
+      <div v-else>
+        <p>Unknown component: {{ item.component }}</p>
+      </div>
+    </template>
+
+    <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
-
-<style scoped lang="scss"></style>

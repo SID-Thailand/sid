@@ -162,6 +162,8 @@ export type iHomeBody =
   | iHomeFeaturedProjects
   | iHomeQuiz
 
+export type iProjectBody = iProjectConcept
+
 export interface iMember {
   content: {
     component: string
@@ -200,10 +202,7 @@ export interface iProjectConcept {
   subtitle: string
   text: string
   title: string
-}
-
-export interface iProjectBody {
-  concept: iProjectConcept
+  _uid: string
 }
 
 export interface iContactItem {
