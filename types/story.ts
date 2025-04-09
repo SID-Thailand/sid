@@ -142,15 +142,14 @@ export interface iHomeQuiz {
   }
 }
 
-export interface iHomeBody {
-  about: iHomeAbout
-  hero: iHomeHero
-  company_directions: iHomeCompanyDirections
-  numbers: iHomeNumbers
-  video: iHomeVideo
-  featured_projects: iHomeFeaturedProjects
-  quiz_block: iHomeQuiz
-}
+export type iHomeBody =
+  | iHomeAbout
+  | iHomeHero
+  | iHomeCompanyDirections
+  | iHomeNumbers
+  | iHomeVideo
+  | iHomeFeaturedProjects
+  | iHomeQuiz
 
 export interface iMember {
   content: {

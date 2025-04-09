@@ -11,7 +11,7 @@ defineProps<IProps>()
 </script>
 
 <template>
-  <section class="connect container">
+  <section v-editable="content" class="connect container">
     <div class="connect__top">
       <h2 class="connect__title">
         {{ content?.title }}

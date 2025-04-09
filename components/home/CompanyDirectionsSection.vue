@@ -29,13 +29,15 @@ const itemsCount = computed(() => {
 })
 
 const calcHeight = () => {
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
+  const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
 
   height.value = interviewContentRef.value?.scrollHeight - lastItemHeight
 }
 
 const makeAnimation = () => {
   if (!contentRef.value) return
+
+  if (!$wrappers.value?.length) return
 
   const tl = gsap.timeline({
     paused: true,

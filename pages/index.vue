@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import AboutSection from '~/components/home/AboutSection.vue'
+import CompanyDirectionsSection from '~/components/home/CompanyDirectionsSection.vue'
+import FeaturedProjects from '~/components/home/FeaturedProjects.vue'
+import HeroSection from '~/components/home/HeroSection.vue'
+import NumbersSection from '~/components/home/NumbersSection.vue'
+import VideoSection from '~/components/home/VideoSection.vue'
+import QuizSection from '~/components/quiz/QuizSection.vue'
 import { useHomeStory } from '~/composables/stories/homeStory'
 import { pageTransition } from '~/transitions/base'
-import type { iHomeBody } from '~/types/story'
 
 definePageMeta({
   pageTransition,
@@ -9,35 +15,37 @@ definePageMeta({
 
 const { story } = await useHomeStory()
 
-const homeSections = computed((): iHomeBody => {
-  const body = story?.value?.content?.body as any[]
-
-  return {
-    about: body.find(item => item?.component === 'home_about'),
-    hero: body.find(item => item?.component === 'home_hero'),
-    company_directions: body.find(
-      item => item?.component === 'company_directions'
-    ),
-    numbers: body.find(item => item?.component === 'home_numbers'),
-    video: body.find(item => item?.component === 'home_video'),
-    featured_projects: body.find(
-      item => item?.component === 'featured_projects'
-    ),
-    quiz_block: body.find(item => item?.component === 'quiz_block'),
-  }
+const body = computed(() => {
+  return story?.value?.content?.body
 })
+
+const resolveSectionByName = (name: string) => {
+  const sections = {
+    home_hero: HeroSection,
+    home_about: AboutSection,
+    company_directions: CompanyDirectionsSection,
+    home_numbers: NumbersSection,
+    home_video: VideoSection,
+    featured_projects: FeaturedProjects,
+    quiz_block: QuizSection,
+  }
+
+  return sections[name]
+}
+
 const arrowDown = story?.value?.content?.scroll_down_text
 </script>
 
 <template>
   <div>
-    <HomeHeroSection :content="homeSections?.hero" :arrow="arrowDown" />
-    <HomeAboutSection :content="homeSections?.about" :arrow="arrowDown" />
-    <HomeCompanyDirectionsSection :content="homeSections?.company_directions" />
-    <HomeNumbersSection :content="homeSections?.numbers" />
-    <HomeVideoSection :content="homeSections?.video" />
-    <HomeFeaturedProjects :content="homeSections?.featured_projects" />
-    <QuizSection :content="homeSections?.quiz_block" />
+    <template v-for="item in body" :key="item.component">
+      <component
+        :is="resolveSectionByName(item.component)"
+        :content="item"
+        :arrow="arrowDown"
+      />
+    </template>
+
     <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>

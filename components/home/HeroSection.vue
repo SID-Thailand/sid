@@ -11,7 +11,7 @@ defineProps<IProps>()
 </script>
 
 <template>
-  <section class="hero">
+  <section v-editable="content" class="hero">
     <div class="hero__wrapper">
       <div class="hero__middle">
         <ParallaxImg
