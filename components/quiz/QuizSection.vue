@@ -34,10 +34,6 @@ const prev = () => {
     activeIdx.value--
   }
 }
-
-watch(activeIdx, () => {
-  console.log(activeIdx.value)
-})
 </script>
 
 <template>

@@ -142,6 +142,7 @@ const makeAnimation = () => {
     end: () => 'bottom-=5% bottom',
     scrub: true,
     animation: tl,
+    invalidateOnRefresh: true,
 
     onUpdate: ({ direction }) => {
       dir.value = direction

@@ -113,14 +113,16 @@ export interface iHomeFeaturedProjects {
   featured_projects: iFeaturedProject[]
 }
 
+export interface iQuizStepItem {
+  asset: iImage
+  component: string
+  label: string
+}
+
 export interface iQuizStep {
   title: string
   component: string
-  items?: {
-    asset: iImage
-    component: string
-    label: string
-  }[]
+  items?: iQuizStepItem[]
 }
 
 export interface iQuiz {

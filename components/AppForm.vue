@@ -69,7 +69,7 @@ const onSubmit = (e: Event) => {
       </div>
       <ul class="form__fields">
         <li v-for="(input, idx) in inputs" :key="idx" class="form__field">
-          <Input
+          <AppInput
             :id="input.id"
             class="form__input"
             :name="input.name"

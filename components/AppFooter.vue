@@ -85,7 +85,7 @@ const { story } = await useFooterStory()
           <legend class="footer__title">
             {{ story?.content?.newsletter_title }}
           </legend>
-          <Input
+          <AppInput
             id="subscribe-email"
             class="footer__input"
             name="email"
