@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { LucidePlus } from 'lucide-vue-next'
-import { pageTransition } from '~/transitions/base'
 import type { iProjectContent } from '~/types/story'
 
 interface IProps {
@@ -8,10 +7,6 @@ interface IProps {
 }
 
 const props = defineProps<IProps>()
-
-definePageMeta({
-  pageTransition,
-})
 
 const { spec_1, spec_2, spec_3 } = props.content
 
