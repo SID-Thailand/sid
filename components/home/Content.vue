@@ -28,9 +28,7 @@ const resolveSectionByName = (name: string) => {
   return sections[name]
 }
 
-console.log(story?.value, body.value)
-
-const arrowDown = story?.value?.content?.scroll_down_text
+const arrowDown = computed(() => story?.value?.content?.scroll_down_text)
 </script>
 
 <template>
