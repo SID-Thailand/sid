@@ -116,7 +116,7 @@ watch(isMenuOpened, () => {
     window.escroll.disabled = true
     return
   } else {
-    resetScroll()
+    window.escroll.disabled = false
   }
 })
 </script>

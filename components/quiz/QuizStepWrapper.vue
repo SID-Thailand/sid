@@ -125,12 +125,10 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .quiz-step {
-  position: relative;
   inset: 0;
   height: 100%;
   border-radius: vw(20) vw(20) 0 0;
   padding: vw(60) vw(50);
-
   position: absolute;
 
   background: var(--gradient-secondary);
