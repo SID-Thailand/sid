@@ -4,6 +4,7 @@ interface IProps {
   type?: 'button' | 'submit' | 'reset'
   href?: string
   view?: 'dark' | 'primary'
+  disabled?: boolean
 }
 
 withDefaults(defineProps<IProps>(), {
@@ -18,6 +19,7 @@ withDefaults(defineProps<IProps>(), {
     :tag="tag"
     :type="type"
     :href="href"
+    :disabled="disabled"
   >
     <div class="btn__content">
       <slot />
