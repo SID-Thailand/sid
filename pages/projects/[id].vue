@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import AboutSection from '~/components/project/AboutSection.vue'
 import ConceptSection from '~/components/project/ConceptSection.vue'
+import ExteriorSection from '~/components/project/ExteriorSection.vue'
+import FacilitiesSection from '~/components/project/FacilitiesSection.vue'
+import FeaturedProjectsSection from '~/components/project/FeaturedProjectsSection.vue'
+import FormSection from '~/components/project/FormSection.vue'
+import GallerySection from '~/components/project/GallerySection.vue'
+import InteriorSection from '~/components/project/InteriorSection.vue'
 import { useProjectStory } from '~/composables/stories/projectStory'
 
 const { params } = useRoute()
@@ -16,6 +23,13 @@ const body = computed(() => {
 const resolveSectionByName = (name: string) => {
   const sections = {
     project_concept: ConceptSection,
+    project_about: AboutSection,
+    gallery: GallerySection,
+    project_facilities: FacilitiesSection,
+    project_exterior: ExteriorSection,
+    project_interior: InteriorSection,
+    form: FormSection,
+    featured_projects: FeaturedProjectsSection,
   }
 
   return sections[name]

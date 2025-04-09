@@ -162,7 +162,7 @@ export type iHomeBody =
   | iHomeFeaturedProjects
   | iHomeQuiz
 
-export type iProjectBody = iProjectConcept
+export type iProjectBody = iProjectConcept | iProjectAbout
 
 export interface iMember {
   content: {
@@ -202,6 +202,91 @@ export interface iProjectConcept {
   subtitle: string
   text: string
   title: string
+  _uid: string
+}
+
+export interface iProjectAbout {
+  component: string
+  asset_1: iImage
+  asset_2: iImage
+  text: string
+  _uid: string
+}
+
+export interface iProjectGallery {
+  component: string
+  images: iImage[]
+  _uid: string
+}
+
+export interface iSlider {
+  asset: iImage
+  component: string
+  description: string
+  title: string
+}
+
+export interface iProjectFacilities {
+  component: string
+  slider: iSlider[]
+  subtitle: string
+  title: string
+  _uid: string
+}
+
+export interface iProjectExterior {
+  component: string
+  assets: iImage[]
+  text: string
+  title: string
+  _uid: string
+}
+
+export interface iPlan {
+  component: string
+  label: string
+  link: iLink
+  _uid: string
+}
+
+export interface iApartments {
+  area: string
+  component: string
+  info: string
+  name: string
+  price: string
+  sold_out: boolean
+  assets: iImage[]
+  _uid: string
+}
+
+export interface iProjectInterior {
+  component: string
+  apartments: iImage[]
+  text: string
+  title: string
+  _uid: string
+}
+
+export interface iProjectForm {
+  component: string
+  asset: iImage
+  button_text: string
+  email_label: string
+  full_name_label: string
+  phone_label: string
+  text: string
+  title: string
+  _uid: string
+}
+
+export interface iProjectFeaturedProjects {
+  component: string
+  backdrop_asset: iImage
+  button_text: string
+  text: string
+  title: string
+  featured_projects: iFeaturedProject[]
   _uid: string
 }
 
