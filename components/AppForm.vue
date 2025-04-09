@@ -14,12 +14,18 @@ const emit = defineEmits(['submit'])
 
 const { story } = await useFormStory()
 
+const model = defineModel<{
+  name: string
+  email: string
+  phone: string
+}>()
+
 const inputs = computed(() => [
   {
     id: 'feedback-name',
     name: 'name',
     type: 'text',
-    value: '',
+    value: model.value?.name,
     placeholder: story?.value?.content?.full_name_label || 'Name',
     required: true,
     error: true,
@@ -29,7 +35,7 @@ const inputs = computed(() => [
     id: 'feedback-number',
     name: 'number',
     type: 'text',
-    value: '',
+    value: model.value?.phone,
     placeholder: story?.value?.content?.phone_label || 'Number',
     required: true,
     error: true,
@@ -39,7 +45,7 @@ const inputs = computed(() => [
     id: 'feedback-email',
     name: 'email',
     type: 'email',
-    value: '',
+    value: model.value?.email,
     placeholder: story?.value?.content?.email_label || 'Email',
     required: true,
     error: true,
@@ -69,7 +75,7 @@ const onSubmit = (e: Event) => {
       </div>
       <ul class="form__fields">
         <li v-for="(input, idx) in inputs" :key="idx" class="form__field">
-          <Input
+          <AppInput
             :id="input.id"
             class="form__input"
             :name="input.name"

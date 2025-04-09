@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useFooterStory } from '~/composables/stories/footerStory'
 import { LucideArrowUpRight } from 'lucide-vue-next'
+import Validation from '~/utils/Validation'
 
 const { story } = await useFooterStory()
 </script>
@@ -85,7 +86,7 @@ const { story } = await useFooterStory()
           <legend class="footer__title">
             {{ story?.content?.newsletter_title }}
           </legend>
-          <Input
+          <AppInput
             id="subscribe-email"
             class="footer__input"
             name="email"

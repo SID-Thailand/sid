@@ -37,7 +37,7 @@ const arrowDown = story?.value?.content?.scroll_down_text
     <HomeNumbersSection :content="homeSections?.numbers" />
     <HomeVideoSection :content="homeSections?.video" />
     <HomeFeaturedProjects :content="homeSections?.featured_projects" />
-    <HomeQuizSection :content="homeSections?.quiz_block" />
+    <QuizSection :content="homeSections?.quiz_block" />
     <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>

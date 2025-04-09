@@ -8,21 +8,14 @@ interface IProps {
 const props = defineProps<IProps>()
 
 const steps = computed(() => {
-  return [
-    ...(props.content?.quiz?.content?.steps || []),
-    {
-      component: 'final_step',
-      title: 'fill out the form',
-      btnText: 'Send',
-    },
-  ]
+  return [...(props.content?.quiz?.content?.steps || [])]
 })
 
 const activeIdx = ref(0)
 const prevIdx = ref(0)
 
 const next = () => {
-  if (activeIdx.value < steps.value.length - 1) {
+  if (activeIdx.value < steps.value.length) {
     prevIdx.value = activeIdx.value
     activeIdx.value++
   }
@@ -35,8 +28,19 @@ const prev = () => {
   }
 }
 
-watch(activeIdx, () => {
-  console.log(activeIdx.value)
+const answers = reactiveComputed(() => {
+  return steps.value?.map(step => {
+    return {
+      question: step?.title,
+      answer: null,
+    }
+  })
+})
+
+const formData = reactive({
+  name: '',
+  email: '',
+  phone: '',
 })
 </script>
 
@@ -48,11 +52,20 @@ watch(activeIdx, () => {
         <QuizStep
           v-for="(step, idx) in steps"
           :key="idx"
+          v-model="answers[idx].answer"
           :quiz-step="step"
           :idx="idx"
           :active-idx="activeIdx"
           :prev-idx="prevIdx"
-          :size="steps?.length"
+          :size="steps?.length + 1"
+          class="quiz__item"
+        />
+        <QuizForm
+          v-model="formData"
+          :idx="steps?.length"
+          :active-idx="activeIdx"
+          :prev-idx="prevIdx"
+          :size="steps?.length + 1"
           class="quiz__item"
         />
       </div>
@@ -67,7 +80,12 @@ watch(activeIdx, () => {
 
           <span>{{ content?.quiz?.content?.back_button }}</span>
         </Button>
-        <Button type="button" class="quiz__btn" @click="next">
+        <Button
+          type="button"
+          class="quiz__btn"
+          :disabled="!answers[activeIdx]?.answer"
+          @click="next"
+        >
           <span>{{ content?.quiz?.content?.next_button }}</span>
           <IconsArrowTopRight />
         </Button>
