@@ -5,7 +5,7 @@ import { useFormStory } from '~/composables/stories/formStory'
 interface IProps {
   title?: string
   description?: string
-  btnText: string
+  btnText?: string
 }
 
 defineProps<IProps>()
@@ -83,7 +83,7 @@ const onSubmit = (e: Event) => {
         </li>
       </ul>
       <Button type="submit" class="form__btn">
-        {{ btnText }}
+        <span>{{ btnText }}</span>
         <LucideArrowUpRight />
       </Button>
     </div>

@@ -40,7 +40,7 @@ defineProps<IProps>()
           </p>
         </div>
         <Button type="button" class="meetings__btn">
-          {{ cta?.content?.button_text }}
+          <span> {{ cta?.content?.button_text }}</span>
           <LucideArrowUpRight />
         </Button>
       </div>

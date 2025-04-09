@@ -35,7 +35,7 @@ defineProps<IProps>()
         </li>
       </ul>
       <Button type="button" class="numbers-stat__btn">
-        {{ content?.button_text }}
+        <span>{{ content?.button_text }}</span>
         <LucidePlus />
       </Button>
     </div>

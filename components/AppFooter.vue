@@ -99,7 +99,7 @@ const { story } = await useFooterStory()
             ]"
           />
           <Button type="submit" class="footer__form-btn">
-            {{ story?.content?.button }}
+            <span>{{ story?.content?.button }}</span>
             <LucideArrowUpRight />
           </Button>
         </form>

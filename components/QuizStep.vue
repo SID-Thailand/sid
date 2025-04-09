@@ -118,7 +118,7 @@ onMounted(() => {
         v-if="quizStep.component === 'final_step'"
         class="quiz-step__content"
       >
-        <Form
+        <AppForm
           class="quiz__form"
           btn-text="SEND"
           title="fill out the form"

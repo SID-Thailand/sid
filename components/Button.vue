@@ -75,6 +75,10 @@ withDefaults(defineProps<IProps>(), {
   position: relative;
   z-index: 1;
   gap: vw(7);
+  text-box: trim-both cap alphabetic;
+  > * {
+    text-box: trim-both cap alphabetic;
+  }
 
   :global(svg) {
     display: block;
