@@ -21,6 +21,8 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   navbarPos && navbarPos.destroy()
 })
+
+const { appear } = useLogoAnimation()
 </script>
 
 <template>
@@ -31,6 +33,7 @@ onBeforeUnmount(() => {
         :to="selectedLang === defaultLocale() ? '/' : '/' + selectedLang"
         class="header__link"
         @click="onClick"
+        @mouseenter="appear"
       >
         <Logo class="header__logo" />
       </NuxtLink>
@@ -41,7 +44,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .header {
-  padding: vw(55) 0;
+  padding: vw(40) 0;
   position: fixed;
   background-color: transparent;
   width: 100%;

@@ -8,7 +8,7 @@ type tResStory = {
 
 export const useGetStory = async (route: string) => {
   const response = ref<iStory>(null)
-  const retryCounter = ref(0)
+
   const config = useRuntimeConfig()
   const storyapi = useStoryblokApi()
 
@@ -16,7 +16,9 @@ export const useGetStory = async (route: string) => {
   const { isInEditor } = useAppState()
   const { addToast } = useToasts()
 
-  const getStory = async () => {
+  const maxRetries = 3
+
+  const getStory = async (attempt = 0) => {
     if (!response.value) {
       try {
         const { data }: tResStory = await storyapi.get(`cdn/stories/${route}`, {
@@ -40,19 +42,18 @@ export const useGetStory = async (route: string) => {
 
         response.value = data.story
       } catch (e) {
-        console.log(e.message)
+        console.error(`Story fetch failed (attempt ${attempt + 1}):`, e.message)
 
-        if (retryCounter.value > 2) {
+        if (attempt + 1 >= maxRetries) {
           addToast({
             color: ToastColor.danger,
             id: Date.now().toString(),
-            text: 'An error with our server was occurred. Try to reload page',
+            text: 'An error with our server occurred. Please try reloading the page.',
           })
           return
         }
 
-        await getStory()
-        retryCounter.value = retryCounter.value + 1
+        await getStory(attempt + 1)
       }
     }
   }

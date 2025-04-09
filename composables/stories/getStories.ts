@@ -10,13 +10,16 @@ type tResStory = {
 
 export const useGetStories = async (opts: ISbStoriesParams) => {
   const response = ref<iStory[]>(null)
-  const retryCounter = ref(0)
+
   const config = useDecocedRuntimeConfig()
 
   const storyapi = useStoryblokApi()
   const { isInEditor } = useAppState()
+  const { addToast } = useToasts()
 
-  const getStories = async () => {
+  const maxRetries = 3
+
+  const getStories = async (attempt?: number) => {
     if (!response.value) {
       try {
         const { data }: tResStory = await storyapi.get('cdn/stories/', {
@@ -31,14 +34,18 @@ export const useGetStories = async (opts: ISbStoriesParams) => {
 
         response.value = data.stories
       } catch (e) {
-        console.log(e.message)
+        console.error(`Story fetch failed (attempt ${attempt + 1}):`, e.message)
 
-        if (retryCounter.value > 2) {
-          throw new Error("Can't get story")
+        if (attempt + 1 >= maxRetries) {
+          addToast({
+            color: ToastColor.danger,
+            id: Date.now().toString(),
+            text: 'An error with our server occurred. Please try reloading the page.',
+          })
+          return
         }
 
-        await getStories()
-        retryCounter.value = retryCounter.value + 1
+        await getStories(attempt + 1)
       }
     }
   }

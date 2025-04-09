@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import gsap from 'gsap'
+import type { TransitionProps } from 'vue'
 import type { iMenuContent } from '~/types/story'
 
 interface iProps {
@@ -13,19 +15,121 @@ const toggleMenu = () => {
   isMenuOpened.value = !isMenuOpened.value
 }
 
+const fromClipPath = 'inset(100% 0 0 0)'
+const toClipPath = 'inset(0% 0 0 0)'
+
+const { appear } = useLogoAnimation()
+
+const menuTransition: TransitionProps = {
+  mode: 'out-in',
+  css: false,
+  appear: true,
+  onEnter(el, done) {
+    const $links = el.querySelectorAll('.navigation__link')
+    const $socials = el.querySelectorAll('.socials__item')
+
+    const tl = gsap.timeline({
+      onComplete: done,
+    })
+
+    tl.fromTo(
+      el,
+      { clipPath: fromClipPath },
+      { clipPath: toClipPath, duration: 1 }
+    )
+
+    tl.fromTo(
+      $links,
+      { yPercent: 100, clipPath: fromClipPath },
+      {
+        yPercent: 0,
+        clipPath: toClipPath,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power2.out',
+      },
+      0.2
+    )
+
+    tl.fromTo(
+      $socials,
+      { yPercent: 100, clipPath: fromClipPath },
+      {
+        yPercent: 0,
+        clipPath: toClipPath,
+        duration: 1,
+        stagger: 0.1,
+        ease: 'power2.out',
+      },
+      0.3
+    )
+
+    appear()
+  },
+  onLeave(el, done) {
+    const $links = el.querySelectorAll('.navigation__link')
+    const $socials = el.querySelectorAll('.socials__item')
+
+    const tl = gsap.timeline({
+      onComplete: done,
+    })
+
+    tl.fromTo(
+      $socials,
+      { yPercent: 0, clipPath: toClipPath },
+      {
+        yPercent: 100,
+        clipPath: fromClipPath,
+        duration: 0.3,
+        stagger: 0.03,
+        ease: 'power2.in',
+      }
+    )
+
+    tl.fromTo(
+      $links,
+      { yPercent: 0, clipPath: toClipPath },
+      {
+        yPercent: 100,
+        clipPath: fromClipPath,
+        duration: 0.7,
+        stagger: 0.03,
+        ease: 'power2.in',
+      },
+      0.1
+    )
+
+    tl.to(
+      el,
+      {
+        clipPath: fromClipPath,
+        duration: 1,
+        onComplete: done,
+      },
+      0.2
+    )
+  },
+}
+
 watch(isMenuOpened, () => {
   if (isMenuOpened.value) {
     window.escroll.disabled = true
     return
   } else {
-    resetScroll()
+    window.escroll.disabled = false
   }
 })
 </script>
 
 <template>
   <div class="burger-menu">
-    <button type="button" class="burger-menu__btn" @click="toggleMenu">
+    <button
+      type="button"
+      class="burger-menu__btn"
+      aria-label="Toggle menu"
+      :aria-expanded="isMenuOpened"
+      @click="toggleMenu"
+    >
       <span>{{ content?.menu_button_text }}</span>
       <div
         class="burger-menu__lines"
@@ -36,13 +140,16 @@ watch(isMenuOpened, () => {
       </div>
     </button>
     <Teleport to="#teleports">
-      <div
-        class="burger-menu__content"
-        :class="isMenuOpened && 'burger-menu__content--opened'"
-      >
-        <Navigation :links="content?.links" @close="toggleMenu" />
-        <Socials :socials="content?.socials" />
-      </div>
+      <Transition v-bind="menuTransition">
+        <div
+          v-show="isMenuOpened"
+          class="burger-menu__content"
+          :class="isMenuOpened && 'burger-menu__content--opened'"
+        >
+          <Navigation :links="content?.links" @close="toggleMenu" />
+          <Socials :socials="content?.socials" />
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -54,6 +161,7 @@ watch(isMenuOpened, () => {
   background-color: transparent;
   color: var(--basic-white);
   text-transform: uppercase;
+  padding: 10px 0;
 
   @media (min-width: $br1) {
     @include caption-c2;
@@ -116,15 +224,8 @@ watch(isMenuOpened, () => {
   width: 100%;
   height: 100dvh;
   background: var(--basic-black);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
+
   padding-top: vw(130);
   overflow-y: auto;
-
-  &--opened {
-    opacity: 1;
-    pointer-events: auto;
-  }
 }
 </style>

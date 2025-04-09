@@ -14,7 +14,7 @@ defineProps<IProps>()
   <section class="hero">
     <div class="hero__wrapper">
       <div class="hero__middle">
-        <img
+        <ParallaxImg
           :src="content?.asset?.filename"
           :alt="content?.asset?.alt"
           class="hero__img"
