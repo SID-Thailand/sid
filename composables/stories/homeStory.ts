@@ -10,7 +10,7 @@ export const useHomeStory: tHomeStory = async () => {
 
   try {
     if (!story.value) {
-      const res = await useGetStory('index')
+      const res = await useGetStory('home')
 
       story.value = res.value
     }
