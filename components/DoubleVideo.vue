@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
-import { gsap, ScrollTrigger } from '~/libs/gsap'
+import { ScrollTrigger } from '~/libs/gsap'
 
 interface IProps {
   title: string
@@ -9,8 +9,6 @@ interface IProps {
 }
 
 defineProps<IProps>()
-
-gsap.registerPlugin(ScrollTrigger)
 
 const isPlaying = ref(false)
 const isClicked = ref(false)

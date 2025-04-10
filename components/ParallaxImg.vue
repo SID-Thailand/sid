@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { gsap, ScrollTrigger } from '~/libs/gsap'
+import { gsap } from '~/libs/gsap'
 
 interface iProps {
   src: string
@@ -14,8 +14,6 @@ interface iProps {
 }
 
 defineProps<iProps>()
-
-gsap.registerPlugin(ScrollTrigger)
 
 const imgWrapper = ref<HTMLDivElement | null>(null)
 const imgContainer = ref<HTMLDivElement | null>(null)

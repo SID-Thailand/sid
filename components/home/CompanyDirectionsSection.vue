@@ -10,8 +10,6 @@ interface IProps {
 
 defineProps<IProps>()
 
-gsap.registerPlugin(ScrollTrigger)
-
 const contentRef = ref<HTMLElement | null>(null)
 const interviewContentRef = ref<HTMLElement | null>(null)
 const assetsRef = ref<HTMLElement | null>(null)
