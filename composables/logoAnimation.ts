@@ -7,43 +7,49 @@ export const useLogoAnimation = () => {
     elRef.value = el
   }
 
-  const appear = () => {
-    const paths = elRef.value?.querySelectorAll('path')
+  const appear = async () => {
+    return new Promise<void>(resolve => {
+      const paths = elRef.value?.querySelectorAll('path')
 
-    const color = getComputedStyle(elRef.value).getPropertyValue('color')
+      const color = getComputedStyle(elRef.value).getPropertyValue('color')
 
-    const tl = gsap.timeline()
+      const tl = gsap.timeline()
 
-    tl.fromTo(
-      paths,
-      {
-        strokeDashoffset: (_: number, target: SVGPathElement) => {
-          return target.getTotalLength()
+      elRef.value.style.pointerEvents = 'none'
+
+      tl.fromTo(
+        paths,
+        {
+          strokeDashoffset: (_: number, target: SVGPathElement) => {
+            return target.getTotalLength()
+          },
+          strokeDasharray: (_: number, target: SVGPathElement) => {
+            return target.getTotalLength()
+          },
+          stroke: color,
+          fill: 'transparent',
         },
-        strokeDasharray: (_: number, target: SVGPathElement) => {
-          return target.getTotalLength()
-        },
-        stroke: color,
-        fill: 'transparent',
-      },
-      {
-        duration: 2,
-        strokeDashoffset: 0,
-        stroke: 'transparent',
-        fill: color,
-        ease: 'power2.out',
-        stagger: {
-          amount: 0.5,
-          from: 'start',
-        },
-        onComplete: () => {
-          paths?.forEach(path => {
-            path.removeAttribute('stroke')
-            path.setAttribute('fill', 'currentColor')
-          })
-        },
-      }
-    )
+        {
+          duration: 2,
+          strokeDashoffset: 0,
+          stroke: 'transparent',
+          fill: color,
+          ease: 'power2.out',
+          stagger: {
+            amount: 0.5,
+            from: 'start',
+          },
+          onComplete: () => {
+            paths?.forEach(path => {
+              path.removeAttribute('stroke')
+              path.setAttribute('fill', 'currentColor')
+            })
+            elRef.value.style.pointerEvents = 'auto'
+            resolve()
+          },
+        }
+      )
+    })
   }
 
   const disappear = () => {

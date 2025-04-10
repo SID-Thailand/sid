@@ -10,6 +10,7 @@ interface iProps {
   storyblok?: boolean
   format?: 'webp' | 'jpg' | 'png' | null
   quality?: number
+  imageAttrs?: Record<string, string>
 }
 
 defineProps<iProps>()
@@ -48,6 +49,7 @@ onMounted(() => {
   <div ref="imgWrapper" class="p-img-wrapper">
     <div ref="imgContainer" class="p-img-container">
       <CustomImage
+        v-bind="imageAttrs"
         class="parallax-img"
         :src="src"
         :alt="alt"

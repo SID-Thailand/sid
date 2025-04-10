@@ -17,9 +17,10 @@ defineProps<IProps>()
         <ParallaxImg
           :src="content?.asset?.filename"
           :alt="content?.asset?.alt"
+          data-preload="true"
           class="hero__img"
         />
-        <h1 class="hero__title">{{ content?.title }}</h1>
+        <h1 data-title class="hero__title">{{ content?.title }}</h1>
       </div>
       <div class="hero__bottom">
         <p class="hero__scroll-text">
@@ -51,6 +52,7 @@ defineProps<IProps>()
   display: block;
   object-fit: cover;
   width: 100%;
+  z-index: 2;
   height: 100%;
 
   @media (min-width: $br1) {
@@ -67,6 +69,7 @@ defineProps<IProps>()
   text-align: center;
   text-transform: uppercase;
   width: 100%;
+  z-index: 3;
   @include heading-h1;
 
   @media (min-width: $br1) {

@@ -31,6 +31,7 @@
     "debounce": "^2.2.0",
     "focus-trap": "^7.6.1",
     "gsap": "^3.12.7",
+    "imagesloaded": "^5.0.0",
     "lucide-vue-next": "^0.487.0",
     "nuxt": "^3.13.2",
     "nuxt-i18n-micro": "^1.83.0",
