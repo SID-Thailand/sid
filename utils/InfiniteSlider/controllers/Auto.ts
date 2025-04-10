@@ -11,8 +11,23 @@ export class AutoController implements IController {
   }
 
   move() {
+    if (!this.isInViewport) {
+      return
+    }
+
     const dir = -state.velocity > 0 ? 1 : -1
     state.targetX -= (this.duration / 10) * dir
+  }
+
+  get isInViewport() {
+    const bounds = this.$el.getBoundingClientRect()
+
+    const treshhold = 200
+
+    const isInViewport =
+      bounds.top < window.innerHeight + treshhold && bounds.bottom > -treshhold
+
+    return isInViewport
   }
 
   subscribe() {

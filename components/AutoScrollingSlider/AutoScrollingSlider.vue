@@ -20,6 +20,15 @@ const sliderKey = ref(Date.now())
 
 let sliderInstance: Slider | null = null
 
+const isIndicatorActive = ref(false)
+const isIndicatorVisible = ref(false)
+
+const setIndicator = (x: number, y: number, el: HTMLElement) => {
+  const rect = el.getBoundingClientRect()
+  dragIndicator.value?.style.setProperty('--indicator-x', `${x - rect.left}px`)
+  dragIndicator.value?.style.setProperty('--indicator-y', `${y - rect.top}px`)
+}
+
 onMounted(async () => {
   await delayPromise(500)
 
@@ -39,7 +48,22 @@ onBeforeUnmount(() => {
       <LucidePlus />
       <LucidePlus />
     </div>
-    <div ref="el" class="scrolling-slider__content" data-slider>
+    <div
+      ref="el"
+      class="scrolling-slider__content"
+      data-slider
+      @mousemove="
+        setIndicator(
+          $event.clientX,
+          $event.clientY,
+          $event.currentTarget as HTMLElement
+        )
+      "
+      @mouseenter="isIndicatorVisible = true"
+      @mouseleave="isIndicatorVisible = false"
+      @mousedown="isIndicatorActive = true"
+      @mouseup="isIndicatorActive = false"
+    >
       <div
         ref="slider"
         :key="sliderKey"
@@ -60,7 +84,13 @@ onBeforeUnmount(() => {
           :item="item as any"
         />
       </div>
-      <div ref="dragIndicator" class="scrolling-slider__drag">drag</div>
+      <div
+        ref="dragIndicator"
+        class="scrolling-slider__drag"
+        :class="{ active: isIndicatorActive, visible: isIndicatorVisible }"
+      >
+        drag
+      </div>
     </div>
   </div>
 </template>
@@ -146,6 +176,10 @@ onBeforeUnmount(() => {
 
   @media (max-width: $br1) {
     display: none;
+  }
+
+  &.visible {
+    opacity: 1;
   }
 
   &.active {

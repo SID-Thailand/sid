@@ -56,23 +56,23 @@ const inputs = reactiveComputed(() => [
 <template>
   <form class="form" novalidate @submit.prevent>
     <div class="form__wrapper">
-      <ul class="form__fields">
-        <li v-for="(input, idx) in inputs" :key="idx" class="form__field">
-          <AppInput
-            :id="input.id"
-            v-model="model[input.name].value"
-            v-model:errors="model[input.name].error"
-            class="form__input"
-            :name="input.name"
-            :type="input.type"
-            :value="input.value"
-            :placeholder="input.placeholder"
-            :required="input.required"
-            :error="input.error"
-            :validators="input.validators"
-          />
-        </li>
-      </ul>
+      <fieldset class="form__fields">
+        <AppInput
+          v-for="(input, idx) in inputs"
+          :id="input.id"
+          :key="idx"
+          v-model="model[input.name].value"
+          v-model:errors="model[input.name].error"
+          class="form__input"
+          :name="input.name"
+          :type="input.type"
+          :value="input.value"
+          :placeholder="input.placeholder"
+          :required="input.required"
+          :error="input.error"
+          :validators="input.validators"
+        />
+      </fieldset>
       <Button v-if="showButton" type="submit" class="form__btn">
         <span>{{ btnText }}</span>
         <LucideArrowUpRight />

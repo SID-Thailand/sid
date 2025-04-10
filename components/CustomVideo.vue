@@ -2,14 +2,33 @@
 interface IProps {
   url: string
   videoAttributes?: Record<string, string>
+  isPlaying?: boolean
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+const videoRef = ref<HTMLVideoElement | null>(null)
+
+watch(
+  () => props.isPlaying,
+  newVal => {
+    if (videoRef.value) {
+      if (newVal) {
+        videoRef.value.play()
+      } else {
+        videoRef.value.pause()
+      }
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
   <div class="video">
     <video
+      ref="videoRef"
+      :autoplay="isPlaying"
       lazy
       loop
       muted

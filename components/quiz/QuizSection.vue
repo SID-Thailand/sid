@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { resize } from '@emotionagency/utils'
+
 import type { IForm } from '~/types/form'
 import type { iHomeQuiz } from '~/types/story'
 
@@ -93,13 +95,36 @@ const onSubmit = () => {
     isShowThankYou.value = false
   }, 4000)
 }
+
+const elRef = ref<HTMLElement | null>(null)
+const elHeight = ref('0')
+
+const getHeight = () => {
+  const $quizStep = elRef.value?.querySelector('.quiz-step')
+
+  const height = $quizStep?.scrollHeight + 'px'
+  elHeight.value = height
+}
+
+onMounted(() => {
+  resize.on(getHeight)
+})
+
+onBeforeUnmount(() => {
+  resize.off(getHeight)
+})
 </script>
 
 <template>
-  <section class="quiz">
+  <section ref="elRef" class="quiz">
     <div class="quiz__wrapper">
       <h2 class="quiz__title">{{ content?.quiz?.content?.title }}</h2>
-      <div class="quiz__step-tab">
+      <div
+        class="quiz__step-tab"
+        :style="{
+          '--height': `${elHeight}`,
+        }"
+      >
         <QuizStep
           v-for="(step, idx) in steps"
           :key="idx"
@@ -175,6 +200,7 @@ const onSubmit = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: vw(20);
 }
 
 .quiz__title {
@@ -198,6 +224,8 @@ const onSubmit = () => {
   position: relative;
   width: 100%;
   margin-top: vw(100);
+
+  height: var(--height);
 
   @media (max-width: $br1) {
     margin-top: 64px;

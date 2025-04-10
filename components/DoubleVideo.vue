@@ -21,9 +21,7 @@ const st = ref<ScrollTrigger>(null)
 
 const togglePlay = () => {
   isPlaying.value = !isPlaying.value
-  videoElements.value.forEach(video => {
-    isPlaying.value ? video.play() : video.pause()
-  })
+
   isClicked.value = true
 }
 
@@ -42,10 +40,7 @@ onMounted(() => {
       if (isClicked.value) {
         return
       }
-      videoElements.value.forEach(video => {
-        isPlaying.value = inView
-        inView ? video.play() : video.pause()
-      })
+      isPlaying.value = inView
     },
   })
 })
@@ -61,12 +56,12 @@ onBeforeUnmount(() => {
       <h2 class="d-video__title">{{ title }}</h2>
       <div class="d-video__videos">
         <div class="d-video__landscape">
-          <CustomVideo :url="asset?.filename" />
+          <CustomVideo :url="asset?.filename" :is-playing="isPlaying" />
         </div>
         <div class="d-video__phone">
           <div class="d-video__phone-wrapper">
             <div class="d-video__phone-camera" />
-            <CustomVideo :url="asset?.filename" />
+            <CustomVideo :url="asset?.filename" :is-playing="isPlaying" />
             <button
               type="button"
               class="d-video__phone-btn"
