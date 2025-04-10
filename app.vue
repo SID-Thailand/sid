@@ -65,7 +65,7 @@ const loadingAnimation = async () => {
       duration: 2,
       width: imageBounds.width,
       height: imageBounds.height,
-      easing: 'power4.out',
+      ease: 'power4.out',
     },
     1.7
   )
@@ -105,6 +105,11 @@ onMounted(async () => {
   } else {
     loadingAnimation()
   }
+})
+
+onErrorCaptured(error => {
+  console.error('Error in app.vue:', error)
+  return false
 })
 </script>
 

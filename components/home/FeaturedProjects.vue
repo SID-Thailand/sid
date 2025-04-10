@@ -30,9 +30,7 @@ let titleSplitter: typeof TextSplitter.prototype | null = null
 
 let specsSplitters = []
 
-let masterTl = gsap.timeline({
-  paused: true,
-})
+let masterTl
 
 let $bgs: NodeListOf<HTMLElement> = null
 let $items: NodeListOf<HTMLElement> = null
@@ -190,6 +188,10 @@ const specAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
 const makeAnimation = async () => {
   if (!contentRef.value) return
 
+  masterTl = gsap.timeline({
+    paused: true,
+  })
+
   await prepareItems()
 
   masterTl = gsap.timeline({
@@ -219,7 +221,7 @@ const makeAnimation = async () => {
 
 const onResize = () => {
   st.value?.kill(true)
-  gsap.killTweensOf(masterTl)
+  masterTl?.kill()
 
   makeAnimation()
 }
