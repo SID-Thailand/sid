@@ -1,4 +1,4 @@
-import gsap from 'gsap'
+import { gsap } from '~/libs/gsap'
 
 export const useLogoAnimation = () => {
   const elRef = useState<SVGElement | null>('elRef', () => null)

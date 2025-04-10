@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import gsap from 'gsap'
+import { gsap } from '~/libs/gsap'
 import type { iImage } from '~/types/story'
 import { LucidePlus } from 'lucide-vue-next'
 

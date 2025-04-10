@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger } from '~/libs/gsap'
 import type { iHomeCompanyDirections } from '~/types/story'
 import { resize } from '@emotionagency/utils'
 

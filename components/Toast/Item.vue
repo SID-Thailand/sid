@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import gsap from 'gsap'
+import { gsap } from '~/libs/gsap'
 import type { iToast } from '~/composables/toast'
 
 interface iProps {

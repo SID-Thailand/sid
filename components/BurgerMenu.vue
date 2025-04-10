@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import gsap from 'gsap'
+import { gsap } from '~/libs/gsap'
 import type { TransitionProps } from 'vue'
 import type { iMenuContent } from '~/types/story'
 

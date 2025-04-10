@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import gsap from 'gsap'
+import { gsap } from '~/libs/gsap'
 
 interface IProps {
   idx: number
