@@ -34,6 +34,77 @@ let masterTl = gsap.timeline({
   paused: true,
 })
 
+let $bgs: NodeListOf<HTMLElement> = null
+let $items: NodeListOf<HTMLElement> = null
+let $specs: NodeListOf<HTMLElement> = null
+
+const prepareItems = async () => {
+  $bgs = contentRef.value?.querySelectorAll('.featured-projects__bg')
+  $items = contentRef.value?.querySelectorAll('.fpc__image-item')
+  $specs = contentRef.value?.querySelectorAll('.fpc__specs')
+
+  if (!$bgs || !$items || !$specs) {
+    return
+  }
+
+  $bgs.forEach((bg, index) => {
+    if (index > 0) {
+      gsap.set(bg, {
+        scale: 1.3,
+        y: '100%',
+      })
+
+      gsap.set($items[index], {
+        scale: 1.3,
+        y: '100%',
+      })
+    }
+  })
+
+  if (titleSplitter) {
+    titleSplitter.revert()
+    titleSplitter = null
+  }
+
+  if (specsSplitters.length) {
+    specsSplitters.forEach(spec => {
+      spec.revert()
+    })
+    specsSplitters = []
+  }
+
+  await nextTick()
+
+  $specs.forEach((item: HTMLElement, idx: number) => {
+    const $curTitle = item.querySelector('.fpc__title') as HTMLElement
+    const $curSpecs = item.querySelectorAll('.fpc__spec')
+
+    titleSplitter = new TextSplitter($curTitle, {
+      splitTypeTypes: 'lines,words',
+    })
+
+    $curSpecs?.forEach(spec => {
+      const specSplitter = new TextSplitter(spec as HTMLElement, {
+        splitTypeTypes: 'lines,words',
+      })
+
+      specsSplitters.push(specSplitter)
+
+      if (idx === 0) {
+        return
+      }
+      gsap.set(spec.querySelectorAll('.word'), { y: '100%' })
+    })
+
+    if (idx === 0) {
+      return
+    }
+
+    gsap.set(item, { pointerEvents: 'none' })
+    gsap.set($curTitle.querySelectorAll('.word'), { y: '100%' })
+  })
+}
+
 const imageRevealAnimation = (
   tl: GSAPTimeline,
   index: number,
@@ -44,13 +115,6 @@ const imageRevealAnimation = (
   const idx = Math.max(0, index - 1)
 
   const delay = dur * idx
-
-  if (index > 0) {
-    gsap.set(item, {
-      scale: 1.3,
-      y: '100%',
-    })
-  }
 
   tl.to(
     item,
@@ -72,25 +136,7 @@ const imageRevealAnimation = (
   )
 }
 
-const specAnimation = async (
-  tl: GSAPTimeline,
-  index: number,
-  item: HTMLElement
-) => {
-  if (titleSplitter) {
-    titleSplitter.revert()
-    titleSplitter = null
-  }
-
-  if (specsSplitters.length) {
-    specsSplitters.forEach(spec => {
-      spec.revert()
-    })
-    specsSplitters = []
-  }
-
-  await nextTick()
-
+const specAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
   const dur = index === 0 ? 0 : duration
 
   const idx = Math.max(0, index - 1)
@@ -104,23 +150,6 @@ const specAnimation = async (
 
   const $prevTitle = $prevItem?.querySelector('.fpc__title') as HTMLElement
   const $prevSpecs = $prevItem?.querySelectorAll('.fpc__spec')
-
-  titleSplitter = new TextSplitter($curTitle, {
-    splitTypeTypes: 'lines,words',
-  })
-
-  $curSpecs?.forEach(spec => {
-    const specSplitter = new TextSplitter(spec as HTMLElement, {
-      splitTypeTypes: 'lines,words',
-    })
-
-    specsSplitters.push(specSplitter)
-
-    gsap.set(spec.querySelectorAll('.word'), { y: '100%' })
-  })
-
-  gsap.set(item, { pointerEvents: 'none' })
-  gsap.set($curTitle.querySelectorAll('.word'), { y: '100%' })
 
   $prevItem && tl.to($prevItem, { duration: dur, pointerEvents: 'none' }, delay)
   tl.to(item, { duration: dur, pointerEvents: 'auto' }, delay)
@@ -158,10 +187,10 @@ const specAnimation = async (
   })
 }
 
-const makeAnimation = () => {
-  const $bgs = contentRef.value?.querySelectorAll('.featured-projects__bg')
-  const $items = contentRef.value?.querySelectorAll('.fpc__image-item')
-  const $specs = contentRef.value?.querySelectorAll('.fpc__specs')
+const makeAnimation = async () => {
+  if (!contentRef.value) return
+
+  await prepareItems()
 
   masterTl = gsap.timeline({
     paused: true,

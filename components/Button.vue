@@ -49,7 +49,7 @@ withDefaults(defineProps<IProps>(), {
 
   &:hover:not(:disabled) {
     .btn__content {
-      transform: translateY(-110%);
+      transform: translateY(-120%);
     }
     .btn__content--duplicate {
       transform: translateY(0);
@@ -131,6 +131,6 @@ withDefaults(defineProps<IProps>(), {
   position: absolute;
   top: 0;
   left: 0;
-  transform: translateY(110%);
+  transform: translateY(120%);
 }
 </style>
