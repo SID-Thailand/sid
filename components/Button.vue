@@ -25,7 +25,7 @@ withDefaults(defineProps<IProps>(), {
       <div class="btn__content">
         <slot />
       </div>
-      <div class="btn__content btn__content--duplicate">
+      <div aria-hidden="true" class="btn__content btn__content--duplicate">
         <slot />
       </div>
     </div>

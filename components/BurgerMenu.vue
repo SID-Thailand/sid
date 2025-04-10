@@ -15,6 +15,8 @@ const toggleMenu = () => {
   isMenuOpened.value = !isMenuOpened.value
 }
 
+const elRef = ref<HTMLElement | null>(null)
+
 const fromClipPath = 'inset(100% 0 0 0)'
 const toClipPath = 'inset(0% 0 0 0)'
 
@@ -122,7 +124,7 @@ watch(isMenuOpened, () => {
 </script>
 
 <template>
-  <div class="burger-menu">
+  <div ref="elRef" class="burger-menu">
     <button
       type="button"
       class="burger-menu__btn"
@@ -135,8 +137,8 @@ watch(isMenuOpened, () => {
         class="burger-menu__lines"
         :class="isMenuOpened && 'burger-menu__lines--opened'"
       >
-        <span />
-        <span />
+        <span class="burger-menu__line" />
+        <span class="burger-menu__line" />
       </div>
     </button>
     <Teleport to="#teleports">
@@ -159,7 +161,7 @@ watch(isMenuOpened, () => {
   position: relative;
   display: block;
   background-color: transparent;
-  color: var(--basic-white);
+  color: currentColor;
   text-transform: uppercase;
   padding: 10px 0;
 
@@ -190,17 +192,8 @@ watch(isMenuOpened, () => {
     width: 30px;
   }
 
-  span {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 1.5px;
-    background-color: var(--basic-white);
-    transition: all 0.3s ease;
-  }
-
   &--opened {
-    span {
+    .burger-menu__line {
       &:first-child {
         transform: rotate(-45deg) translateY(6px);
       }
@@ -209,6 +202,15 @@ watch(isMenuOpened, () => {
       }
     }
   }
+}
+
+.burger-menu__line {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background-color: currentColor;
+  transition: all 0.3s ease;
 }
 
 .burger-menu__content {
