@@ -8,25 +8,10 @@ interface IProps {
 }
 
 defineProps<IProps>()
-
-const target = ref(null)
-const targetIsVisible = ref(false)
-
-const { setHeaderColor } = useHeaderColor()
-
-const { stop } = useIntersectionObserver(target, ([entry], observerElement) => {
-  targetIsVisible.value = entry?.isIntersecting || false
-
-  setHeaderColor(targetIsVisible.value ? 'black' : 'white')
-})
-
-onBeforeUnmount(() => {
-  stop()
-})
 </script>
 
 <template>
-  <section ref="target" class="connect container">
+  <section class="connect container">
     <div class="connect__top">
       <h2 class="connect__title">
         {{ content?.title }}

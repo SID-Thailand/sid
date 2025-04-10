@@ -49,6 +49,7 @@ const { headerColor } = useHeaderColor()
   padding: vw(40) 0;
   position: fixed;
   background-color: transparent;
+  mix-blend-mode: difference;
   width: 100%;
   z-index: 100;
   top: 0;
