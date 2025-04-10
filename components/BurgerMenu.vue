@@ -165,6 +165,10 @@ watch(isMenuOpened, () => {
   text-transform: uppercase;
   padding: 10px 0;
 
+  > span {
+    text-box: trim-both cap alphabetic;
+  }
+
   @media (min-width: $br1) {
     @include caption-c2;
     display: flex;
