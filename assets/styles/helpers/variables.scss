@@ -1,11 +1,28 @@
 :root {
-  --black: #212022;
-  --bg: #f4f4f4;
+  --basic-black: #202020;
+  --basic-white: #ffffff;
+  --neutral-100: #eaeaea;
+  --neutral-200: #d0d0d0;
+  --neutral-300: #818080;
+  --neutral-400: #4c4949;
+  --neutral-500: #343434;
+  --neutral-600: #2e2e2e;
+  --accent-primary: linear-gradient(180deg, #ffce7e 0%, #997c4b 100%);
+  --accent-secondary: #46361c;
+  --accent-tertiary: #635e50;
+  --accent-quaternary: #786f61;
+  --gradient-primary: linear-gradient(180deg, #202020 0%, #343434 80%);
+  --gradient-secondary: linear-gradient(180deg, #3a3838 0%, #202020 100%);
+  --gradient-quaternary: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
   --white: #ffffff;
   --red: #e73737;
   --accent: #9047ff;
   --vh: 100vh;
-
   --gray-100: #f8f9fa;
   --gray-200: #e9ecef;
   --gray-300: #dee2e6;
@@ -22,8 +39,11 @@
 }
 
 //screen config
-$maxWidth: 1920;
+$maxWidth: 1440;
 $minWidth: 375;
+
+$maxHeight: 900;
+$minHeight: 880;
 
 //breakpoints
 $uls: 2100px;
@@ -37,6 +57,6 @@ $br4: 460px;
 $easing: cubic-bezier(0.16, 1, 0.3, 1);
 
 // layouts
-$g-offset: vw(56);
+$g-offset: #{vw(40)};
 $g-sm: 32px;
-$g-s: 20px;
+$g-s: 16px;

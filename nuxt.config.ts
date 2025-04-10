@@ -24,11 +24,29 @@ export default defineNuxtConfig({
     },
   },
 
+  i18n: {
+    strategy: 'prefix_except_default',
+    locales: [
+      { code: 'en', iso: 'en-US', baseDefault: true },
+      { code: 'ru', iso: 'ru-RU' },
+    ],
+  },
+
   eslint: {
     config: {
       typescript: true,
     },
   },
 
-  modules: ['@vueuse/nuxt', '@nuxt/eslint', 'nuxt-lucide-icons'],
+  modules: [
+    '@vueuse/nuxt',
+    '@nuxt/eslint',
+    'nuxt-i18n-micro',
+    [
+      '@storyblok/nuxt',
+      {
+        accessToken: process.env.STORYBLOK_TOKEN,
+      },
+    ],
+  ],
 })

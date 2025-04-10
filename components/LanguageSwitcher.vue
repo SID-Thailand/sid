@@ -1,0 +1,89 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+const isOpen = ref(false)
+const { selectedLang, languages, setLang } = useLang()
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value
+}
+
+const changeLanguage = async (lang: string) => {
+  if (lang === selectedLang.value) return
+
+  isOpen.value = false
+  await setLang(lang)
+
+  window.location.reload()
+}
+</script>
+
+<template>
+  <div class="lang-switch">
+    <button class="lang-switch__btn underline-reverse" @click="toggleDropdown">
+      {{ selectedLang.toUpperCase() }}
+    </button>
+
+    <ul
+      class="lang-switch__list"
+      :class="isOpen && 'lang-switch__list--opened'"
+    >
+      <li
+        v-for="(lang, idx) in languages.filter(l => l !== selectedLang)"
+        :key="idx"
+        class="lang-switch__item"
+        @click="changeLanguage(lang)"
+      >
+        <button type="button" class="lang-switch__item-btn">
+          {{ lang.toUpperCase() }}
+        </button>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.lang-switch {
+  position: relative;
+}
+
+.lang-switch__btn {
+  position: relative;
+  background-color: transparent;
+  color: currentColor;
+  font-size: vw(16);
+
+  @media (max-width: $br1) {
+    font-size: 16px;
+  }
+}
+
+.lang-switch__list {
+  position: absolute;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(vw(18));
+  transition:
+    grid-template-rows 0.3s ease,
+    opacity 0.3s ease;
+  font-size: vw(16);
+  background: transparent;
+  color: currentColor;
+
+  @media (max-width: $br1) {
+    font-size: 16px;
+    transform: translateY(14px);
+  }
+
+  &--opened {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+.lang-switch__item-btn {
+  color: inherit;
+  background-color: transparent;
+}
+</style>

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { LucideChevronDown } from 'lucide-vue-next'
+
 const items = [
   {
     title: 'Title 1',

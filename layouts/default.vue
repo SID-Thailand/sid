@@ -19,18 +19,12 @@ useHead({
     id: 'scroll-container',
   },
 })
-
-const { toast } = useToasts()
-
-onMounted(() => {
-  toast.success('Welcome to Emotion template!')
-})
 </script>
 
 <template>
   <div id="app">
     <Head>
-      <Title>Emotion</Title>
+      <Title>SID</Title>
       <Meta
         name="viewport"
         content="width=device-width, initial-scale=1"
@@ -38,10 +32,28 @@ onMounted(() => {
       <Link rel="icon" type="image/x-icon" href="/favicon.ico"></Link>
     </Head>
     <AppGrid />
-    <Landscape />
+    <!-- <Landscape /> -->
     <SmoothScroll>
-      <slot />
+      <div class="app">
+        <AppHeader />
+        <main class="main-content">
+          <slot />
+        </main>
+        <AppFooter />
+      </div>
     </SmoothScroll>
     <ToastGroup />
   </div>
 </template>
+
+<style scoped lang="scss">
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+</style>
