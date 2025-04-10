@@ -35,7 +35,7 @@ defineProps<IProps>()
 <style scoped lang="scss">
 .hero__wrapper {
   position: relative;
-  height: 100dvh;
+  height: 100svh;
 }
 
 .hero__middle {

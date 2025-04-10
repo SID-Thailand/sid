@@ -22,7 +22,9 @@ const imgContainer = ref<HTMLDivElement | null>(null)
 onMounted(() => {
   if (!imgWrapper.value || !imgContainer.value) return
 
-  ScrollTrigger.refresh()
+  if (window.innerWidth < 1060) {
+    return
+  }
 
   gsap.fromTo(
     imgContainer.value,

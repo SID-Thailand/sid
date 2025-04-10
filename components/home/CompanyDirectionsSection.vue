@@ -18,6 +18,7 @@ const assetsRef = ref<HTMLElement | null>(null)
 const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
 const activeIdx = ref(0)
+
 const dir = ref(1)
 const height = ref(0)
 const st = ref<ScrollTrigger | null>(null)

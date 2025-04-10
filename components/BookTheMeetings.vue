@@ -64,7 +64,8 @@ onBeforeUnmount(() => {
         />
       </div>
       <div class="meetings__content">
-        <img src="/logo.png" alt="Logotype" class="meetings__logo" />
+        <Logo class="meetings__logo" />
+
         <h2 class="meetings__title">
           {{ cta?.content?.title }}
         </h2>

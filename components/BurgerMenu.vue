@@ -177,7 +177,7 @@ watch(isMenuOpened, () => {
   }
 
   @media (max-width: $br1) {
-    span {
+    > span {
       display: none;
     }
   }

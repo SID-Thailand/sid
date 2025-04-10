@@ -37,7 +37,7 @@ const { headerColor } = useHeaderColor()
         @click="onClick"
         @mouseenter="appear"
       >
-        <Logo class="header__logo" />
+        <HeaderLogo />
       </NuxtLink>
       <BurgerMenu :content="story?.content" />
     </div>
@@ -77,15 +77,5 @@ const { headerColor } = useHeaderColor()
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-}
-
-.header__logo {
-  display: block;
-  width: vw(64);
-  height: auto;
-
-  @media (max-width: $br1) {
-    width: 40px;
-  }
 }
 </style>
