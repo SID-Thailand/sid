@@ -2,25 +2,16 @@
 import { useFormStory } from '~/composables/stories/formStory'
 
 const { story } = await useFormStory()
-const { isModalOpened } = useAppState()
 
-watch(isModalOpened, () => {
-  if (isModalOpened.value) {
-    setTimeout(() => {
-      isModalOpened.value = false
-    }, 3000)
-  }
-})
+interface IProps {
+  isOpen: boolean
+}
 
-onMounted(() => {
-  setTimeout(() => {
-    isModalOpened.value = true
-  }, 3000)
-})
+const props = defineProps<IProps>()
 </script>
 
 <template>
-  <SlideModal>
+  <SlideModal :is-open="props.isOpen">
     <div class="approve-modal">
       <h2 class="approve-modal__text" v-html="story?.content?.thankyou_text" />
     </div>

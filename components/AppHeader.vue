@@ -23,10 +23,12 @@ onBeforeUnmount(() => {
 })
 
 const { appear } = useLogoAnimation()
+
+const { headerColor } = useHeaderColor()
 </script>
 
 <template>
-  <header ref="$el" class="header container">
+  <header ref="$el" class="header container" :class="`header--${headerColor}`">
     <div class="header__wrapper container">
       <LanguageSwitcher />
       <NuxtLink
@@ -47,6 +49,7 @@ const { appear } = useLogoAnimation()
   padding: vw(40) 0;
   position: fixed;
   background-color: transparent;
+  mix-blend-mode: difference;
   width: 100%;
   z-index: 100;
   top: 0;
@@ -57,6 +60,10 @@ const { appear } = useLogoAnimation()
 
   @media (max-width: $br1) {
     padding: 32px 0;
+  }
+
+  &--black {
+    color: var(--basic-black);
   }
 }
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger } from '~/libs/gsap'
 import type { iHomeCompanyDirections } from '~/types/story'
 import { resize } from '@emotionagency/utils'
 
@@ -29,13 +28,15 @@ const itemsCount = computed(() => {
 })
 
 const calcHeight = () => {
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
+  const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
 
   height.value = interviewContentRef.value?.scrollHeight - lastItemHeight
 }
 
 const makeAnimation = () => {
   if (!contentRef.value) return
+
+  if (!$wrappers.value?.length) return
 
   const tl = gsap.timeline({
     paused: true,

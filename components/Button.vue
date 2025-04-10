@@ -21,8 +21,13 @@ withDefaults(defineProps<IProps>(), {
     :href="href"
     :disabled="disabled"
   >
-    <div class="btn__content">
-      <slot />
+    <div class="btn__content-wrapper">
+      <div class="btn__content">
+        <slot />
+      </div>
+      <div aria-hidden="true" class="btn__content btn__content--duplicate">
+        <slot />
+      </div>
     </div>
   </HeadlessButton>
 </template>
@@ -38,15 +43,25 @@ withDefaults(defineProps<IProps>(), {
   padding: vw(20);
   text-transform: uppercase;
   transition: all 0.3s $easing;
+  transition-property: background-color, filter;
   text-align: start;
   @include caption-c2;
+
+  &:hover:not(:disabled) {
+    .btn__content {
+      transform: translateY(-110%);
+    }
+    .btn__content--duplicate {
+      transform: translateY(0);
+    }
+  }
 
   &--primary {
     color: var(--accent-secondary);
     background-image: var(--accent-primary);
 
     &:hover:not(:disabled) {
-      opacity: 0.9;
+      filter: brightness(1.2);
     }
   }
 
@@ -70,13 +85,22 @@ withDefaults(defineProps<IProps>(), {
   }
 }
 
+.btn__content-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
 .btn__content {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  margin-block-start: 1px;
+  margin-block-end: 1px;
   z-index: 1;
   gap: vw(7);
+  transition: transform 0.3s $easing;
+
   text-box: trim-both cap alphabetic;
   > * {
     text-box: trim-both cap alphabetic;
@@ -101,5 +125,12 @@ withDefaults(defineProps<IProps>(), {
   @media (max-width: $br1) {
     gap: 9px;
   }
+}
+
+.btn__content--duplicate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(110%);
 }
 </style>

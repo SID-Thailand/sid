@@ -7,5 +7,9 @@ definePageMeta({
 </script>
 
 <template>
-  <HomeContent />
+  <div>
+    <meta robots="noindex" />
+    <meta name="googlebot" content="noindex" />
+    <HomeContent />
+  </div>
 </template>

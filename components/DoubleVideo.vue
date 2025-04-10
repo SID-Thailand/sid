@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger } from '~/libs/gsap'
 
 interface IProps {
   title: string

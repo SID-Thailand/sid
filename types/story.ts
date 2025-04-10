@@ -41,6 +41,7 @@ export interface iHomeHero {
   title: string
   asset: iImage
   component: string
+  _uid: string
 }
 
 export interface iHomeAbout {
@@ -50,6 +51,7 @@ export interface iHomeAbout {
   title: string
   gallery: iImage[]
   component: string
+  _uid: string
 }
 
 interface iHomeCompanyDirection {
@@ -57,6 +59,7 @@ interface iHomeCompanyDirection {
   person: iMember
   component: string
   title: string
+  _uid: string
   // person_asset: iImage
   // person_description: string
   // person_title: string
@@ -66,12 +69,14 @@ export interface iHomeCompanyDirections {
   title: string
   directions: iHomeCompanyDirection[]
   component: string
+  _uid: string
 }
 
 interface iHomeNumber {
   asset: iImage
   description: string
   value: string
+  _uid: string
 }
 
 export interface iHomeNumbers {
@@ -80,6 +85,7 @@ export interface iHomeNumbers {
   numbers: iHomeNumber[]
   title: string
   component: string
+  _uid: string
 }
 
 export interface iHomeVideo {
@@ -87,12 +93,14 @@ export interface iHomeVideo {
   asset: iImage
   title: string
   component: string
+  _uid: string
 }
 
 interface iFeaturedProject {
   name: string
   slug: string
   full_slug: string
+  _uid: string
   content: {
     component: string
     cover: iImage
@@ -111,6 +119,7 @@ export interface iHomeFeaturedProjects {
   button_text: string
   backdrop_asset: iImage
   featured_projects: iFeaturedProject[]
+  _uid: string
 }
 
 export interface iQuizStepItem {
@@ -133,24 +142,25 @@ export interface iQuiz {
   title: string
   steps: iQuizStep[]
   form_title: string
+  _uid: string
 }
 
 export interface iHomeQuiz {
   component: string
+  _uid: string
   quiz: {
     content: iQuiz
   }
 }
 
-export interface iHomeBody {
-  about: iHomeAbout
-  hero: iHomeHero
-  company_directions: iHomeCompanyDirections
-  numbers: iHomeNumbers
-  video: iHomeVideo
-  featured_projects: iHomeFeaturedProjects
-  quiz_block: iHomeQuiz
-}
+export type iHomeBody =
+  | iHomeAbout
+  | iHomeHero
+  | iHomeCompanyDirections
+  | iHomeNumbers
+  | iHomeVideo
+  | iHomeFeaturedProjects
+  | iHomeQuiz
 
 export interface iMember {
   content: {

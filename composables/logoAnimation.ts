@@ -1,4 +1,4 @@
-import gsap from 'gsap'
+import { gsap } from '~/libs/gsap'
 
 export const useLogoAnimation = () => {
   const elRef = useState<SVGElement | null>('elRef', () => null)
@@ -9,6 +9,8 @@ export const useLogoAnimation = () => {
 
   const appear = () => {
     const paths = elRef.value?.querySelectorAll('path')
+
+    const color = getComputedStyle(elRef.value).getPropertyValue('color')
 
     const tl = gsap.timeline()
 
@@ -21,14 +23,14 @@ export const useLogoAnimation = () => {
         strokeDasharray: (_: number, target: SVGPathElement) => {
           return target.getTotalLength()
         },
-        stroke: 'white',
+        stroke: color,
         fill: 'transparent',
       },
       {
         duration: 2,
         strokeDashoffset: 0,
         stroke: 'transparent',
-        fill: 'white',
+        fill: color,
         ease: 'power2.out',
         stagger: {
           amount: 0.5,
@@ -37,6 +39,7 @@ export const useLogoAnimation = () => {
         onComplete: () => {
           paths?.forEach(path => {
             path.removeAttribute('stroke')
+            path.setAttribute('fill', 'currentColor')
           })
         },
       }

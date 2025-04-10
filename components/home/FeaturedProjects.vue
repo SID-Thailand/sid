@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
+import { resize } from '@emotionagency/utils'
+import { gsap, ScrollTrigger } from '~/libs/gsap'
+
 import type { iHomeFeaturedProjects } from '~/types/story'
 
 interface IProps {
@@ -25,6 +26,14 @@ const contentRef = ref<HTMLElement | null>(null)
 const st = ref<ScrollTrigger | null>(null)
 const dir = ref(1)
 
+let titleSplitter: typeof TextSplitter.prototype | null = null
+
+let specsSplitters = []
+
+let masterTl = gsap.timeline({
+  paused: true,
+})
+
 const imageRevealAnimation = (
   tl: GSAPTimeline,
   index: number,
@@ -36,8 +45,16 @@ const imageRevealAnimation = (
 
   const delay = dur * idx
 
+  if (index > 0) {
+    gsap.set(item, {
+      scale: 1.3,
+      y: '100%',
+    })
+  }
+
   tl.to(
     item,
+
     {
       duration: dur,
       y: '0%',
@@ -55,7 +72,25 @@ const imageRevealAnimation = (
   )
 }
 
-const specAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
+const specAnimation = async (
+  tl: GSAPTimeline,
+  index: number,
+  item: HTMLElement
+) => {
+  if (titleSplitter) {
+    titleSplitter.revert()
+    titleSplitter = null
+  }
+
+  if (specsSplitters.length) {
+    specsSplitters.forEach(spec => {
+      spec.revert()
+    })
+    specsSplitters = []
+  }
+
+  await nextTick()
+
   const dur = index === 0 ? 0 : duration
 
   const idx = Math.max(0, index - 1)
@@ -70,14 +105,17 @@ const specAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
   const $prevTitle = $prevItem?.querySelector('.fpc__title') as HTMLElement
   const $prevSpecs = $prevItem?.querySelectorAll('.fpc__spec')
 
-  new TextSplitter($curTitle, {
+  titleSplitter = new TextSplitter($curTitle, {
     splitTypeTypes: 'lines,words',
   })
 
   $curSpecs?.forEach(spec => {
-    new TextSplitter(spec as HTMLElement, {
+    const specSplitter = new TextSplitter(spec as HTMLElement, {
       splitTypeTypes: 'lines,words',
     })
+
+    specsSplitters.push(specSplitter)
+
     gsap.set(spec.querySelectorAll('.word'), { y: '100%' })
   })
 
@@ -125,15 +163,15 @@ const makeAnimation = () => {
   const $items = contentRef.value?.querySelectorAll('.fpc__image-item')
   const $specs = contentRef.value?.querySelectorAll('.fpc__specs')
 
-  const tl = gsap.timeline({
+  masterTl = gsap.timeline({
     paused: true,
   })
 
   $bgs.forEach((bg, index) => {
-    imageRevealAnimation(tl, index, bg as HTMLElement)
-    imageRevealAnimation(tl, index, $items[index] as HTMLElement)
+    imageRevealAnimation(masterTl, index, bg as HTMLElement)
+    imageRevealAnimation(masterTl, index, $items[index] as HTMLElement)
 
-    specAnimation(tl, index, $specs[index] as HTMLElement)
+    specAnimation(masterTl, index, $specs[index] as HTMLElement)
   })
 
   st.value = ScrollTrigger.create({
@@ -141,7 +179,7 @@ const makeAnimation = () => {
     start: () => 'top top',
     end: () => 'bottom-=5% bottom',
     scrub: true,
-    animation: tl,
+    animation: masterTl,
     invalidateOnRefresh: true,
 
     onUpdate: ({ direction }) => {
@@ -150,11 +188,20 @@ const makeAnimation = () => {
   })
 }
 
-onMounted(() => {
+const onResize = () => {
+  st.value?.kill(true)
+  gsap.killTweensOf(masterTl)
+
   makeAnimation()
+}
+
+onMounted(() => {
+  resize.on(onResize)
 })
 
 onBeforeUnmount(() => {
+  resize.off(onResize)
+
   st.value?.kill(true)
 })
 </script>
@@ -270,16 +317,14 @@ onBeforeUnmount(() => {
   height: 100%;
   z-index: 0;
   object-fit: cover;
-
   transform-origin: center top;
-  transform: translateY(100%) scale(1.3);
   will-change: transform;
 
   filter: brightness(0.7) contrast(1.2) saturate(0);
 
-  &:first-child {
+  /*&:first-child {
     transform: translateY(0) scale(1);
-  }
+  }*/
 }
 
 .featured-projects__scroll-wrapper {

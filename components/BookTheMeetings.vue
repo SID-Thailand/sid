@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import type { iCTA } from '~/types/story'
 import { LucideArrowUpRight } from 'lucide-vue-next'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import gsap from 'gsap'
+import { gsap, ScrollTrigger } from '~/libs/gsap'
 
 interface IProps {
   cta: iCTA

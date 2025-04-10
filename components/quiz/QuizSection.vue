@@ -40,7 +40,7 @@ const answers = reactiveComputed(() => {
   }
 })
 
-const formData = reactive<IForm>({
+const initialFormValue = {
   name: {
     value: '',
     error: true,
@@ -53,7 +53,9 @@ const formData = reactive<IForm>({
     value: '',
     error: true,
   },
-})
+}
+
+const formData = reactive<IForm>(deepClone(initialFormValue))
 
 const hasError = computed(() => {
   return (
@@ -61,8 +63,35 @@ const hasError = computed(() => {
   )
 })
 
+const isShowThankYou = ref(false)
 const onSubmit = () => {
   console.log(answers.value, formData)
+
+  if (hasError.value) {
+    return
+  }
+
+  isShowThankYou.value = true
+
+  formData.name = initialFormValue.name
+  formData.email = initialFormValue.email
+  formData.phone = initialFormValue.phone
+
+  answers.value = steps.value?.map(step => {
+    return {
+      question: step?.title,
+      answer: null,
+    }
+  })
+
+  setTimeout(() => {
+    activeIdx.value = 0
+    prevIdx.value = 0
+  }, 1000)
+
+  setTimeout(() => {
+    isShowThankYou.value = false
+  }, 4000)
 }
 </script>
 
@@ -126,7 +155,7 @@ const onSubmit = () => {
         </Button>
       </div>
     </div>
-    <!-- <ApproveSlideModal /> -->
+    <ModalsApproveSlideModal :is-open="isShowThankYou" />
   </section>
 </template>
 

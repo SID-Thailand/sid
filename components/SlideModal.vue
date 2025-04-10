@@ -1,19 +1,25 @@
 <script setup lang="ts">
-const { isModalOpened } = useAppState()
+interface IProps {
+  isOpen: boolean
+}
+const props = defineProps<IProps>()
 
-watch(isModalOpened, () => {
-  if (isModalOpened.value) {
-    window.escroll.disabled = true
-    return
-  } else {
-    resetScroll()
+watch(
+  () => props.isOpen,
+  val => {
+    if (val) {
+      window.escroll.disabled = true
+      return
+    } else {
+      window.escroll.disabled = false
+    }
   }
-})
+)
 </script>
 
 <template>
   <Teleport to="#teleports">
-    <div class="slide-modal" :class="{ 'slide-modal--open': isModalOpened }">
+    <div class="slide-modal" :class="{ 'slide-modal--open': isOpen }">
       <div class="slide-modal__wrapper">
         <div class="slide-modal__content">
           <slot />
@@ -32,7 +38,7 @@ watch(isModalOpened, () => {
   height: 95vh;
   width: 100%;
   z-index: 100;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 1s $easing;
 
   &--open {
     transform: translate(-50%, 0);
