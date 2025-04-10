@@ -54,7 +54,7 @@ const loadingAnimation = async () => {
       y: 0,
       scale: 1,
       opacity: 1,
-      ease: 'power4.out',
+      ease: 'power2.out',
     },
     1.7
   )
@@ -65,7 +65,7 @@ const loadingAnimation = async () => {
       duration: 2,
       width: imageBounds.width,
       height: imageBounds.height,
-      ease: 'power4.out',
+      ease: 'power2.out',
     },
     1.7
   )
@@ -79,7 +79,7 @@ const loadingAnimation = async () => {
         clipPath: 'inset(0 0 -110% 0)',
         stagger: 0.1,
         opacity: 1,
-        ease: 'power4.out',
+        ease: 'power2.out',
         overwrite: true,
         onComplete: () => {
           titleSplitter.revert()
