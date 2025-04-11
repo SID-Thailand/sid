@@ -10,8 +10,10 @@ const { isInEditor, isUseLoader } = useAppState()
 const isLoading = ref(true)
 
 const loadingAnimation = async () => {
+  window.escroll.disabled = true
   await delayPromise(200)
   isLoading.value = false
+
   const $image = document.querySelector('[data-preload]') as HTMLElement
   const $title = document.querySelector('[data-title]') as HTMLElement
 
@@ -28,6 +30,7 @@ const loadingAnimation = async () => {
 
   let titleSplitter = null
   let $lines = null
+
   if ($title) {
     titleSplitter = new TextSplitter($title, {
       splitTypeTypes: 'lines,words',
@@ -38,8 +41,15 @@ const loadingAnimation = async () => {
 
   const imageBounds = $image?.getBoundingClientRect()
 
-  const tl = gsap.timeline()
-  tl.set($image, { width: '100vw', height: '100vh' })
+  const tl = gsap.timeline({
+    onComplete: () => {
+      window.escroll.disabled = false
+
+      titleSplitter.revert()
+      tl.revert()
+    },
+  })
+  $image && tl.set($image, { width: '100vw', height: '100vh' })
 
   tl.set($logo, {
     x: offsetX,
@@ -85,10 +95,6 @@ const loadingAnimation = async () => {
         opacity: 1,
         ease: 'power2.out',
         overwrite: true,
-        onComplete: () => {
-          titleSplitter.revert()
-          tl.revert()
-        },
       },
       1.7
     )
