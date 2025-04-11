@@ -2,6 +2,7 @@
 import type { iProjectFacilities } from '~/types/story'
 import { gsap, ScrollTrigger } from '~/libs/gsap'
 import { resize } from '@emotionagency/utils'
+import { LucidePlus } from 'lucide-vue-next'
 
 interface IProps {
   content: iProjectFacilities
@@ -144,13 +145,16 @@ onBeforeUnmount(() => {
             >
               <div class="project-facilities__item">
                 <div class="project-facilities__line" />
-                <div class="project-facilities__info">
-                  <h3 class="project-facilities__item-title">
-                    {{ item?.title }}
-                  </h3>
-                  <p class="project-facilities__item-text">
-                    {{ item?.description }}
-                  </p>
+                <div class="project-facilities__item-wrapper">
+                  <LucidePlus class="project-facilities__plus" />
+                  <div class="project-facilities__info">
+                    <h3 class="project-facilities__item-title">
+                      {{ item?.title }}
+                    </h3>
+                    <p class="project-facilities__item-text">
+                      {{ item?.description }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -174,14 +178,14 @@ onBeforeUnmount(() => {
 }
 
 .project-facilities__top {
-  display: grid;
-  grid-template-columns: repeat(24, 1fr);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   column-gap: vw(20);
-  grid-auto-flow: row;
   width: 100%;
 
   @media (max-width: $br1) {
-    grid-template-columns: repeat(4, 1fr);
+    flex-direction: column;
     column-gap: 16px;
   }
 }
@@ -192,13 +196,8 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   @include med;
 
-  @media (min-width: $br1) {
-    @include col(1, 8);
-  }
-
   @media (max-width: $br1) {
     font-size: size(20, 14);
-    @include col(1, 4);
   }
 
   @media (max-width: $br4) {
@@ -213,12 +212,7 @@ onBeforeUnmount(() => {
   max-width: vw(630);
   @include med;
 
-  @media (min-width: $br1) {
-    @include col(13, 24);
-  }
-
   @media (max-width: $br1) {
-    @include col(1, 4);
     max-width: 100%;
     margin-top: 40px;
     font-size: size(50, 36);
@@ -229,11 +223,10 @@ onBeforeUnmount(() => {
   }
 }
 
-// New code
-
 .project-facilities__block {
   position: relative;
   height: 300vh;
+  color: var(--basic-black);
 }
 
 .project-facilities__block-wrapper {
@@ -257,12 +250,12 @@ onBeforeUnmount(() => {
 .project-facilities__assets {
   position: relative;
   width: vw(440);
-  height: vw(496);
+  height: vw(440);
 
   @media (max-width: $br1) {
     margin-top: 16px;
     width: 100%;
-    aspect-ratio: 440 / 496;
+    aspect-ratio: 440 / 440;
     height: auto;
     z-index: 10;
     background-color: var(--neutral-100);
@@ -271,10 +264,6 @@ onBeforeUnmount(() => {
 
 .project-facilities__content {
   position: relative;
-
-  @media (min-width: $br1) {
-    width: vw(785);
-  }
 }
 
 .project-facilities__content-wrapper {
@@ -287,24 +276,14 @@ onBeforeUnmount(() => {
 
   @media (max-width: $br1) {
     &:not(:first-child) {
-      margin-top: 40px;
+      margin-top: 24px;
     }
   }
 
   &--active {
-    .project-facilities__item {
-      color: var(--basic-white);
-
-      .project-facilities__line {
-        background-color: var(--basic-white);
-      }
+    .project-facilities__plus {
+      opacity: 1;
     }
-
-    // @media (max-width: $br1) {
-    //   .project-facilities__item {
-    //     opacity: 1;
-    //   }
-    // }
   }
 }
 
@@ -353,11 +332,9 @@ onBeforeUnmount(() => {
 }
 
 .project-facilities__item {
-  color: var(--neutral-300);
-
   @media (min-width: $br1) {
-    width: vw(785);
-    padding-bottom: vw(124);
+    width: vw(630);
+    padding-bottom: vw(24);
   }
 }
 
@@ -365,22 +342,44 @@ onBeforeUnmount(() => {
   display: block;
   width: 100%;
   height: 1px;
-  background-color: var(--neutral-300);
-  transition: background-color 2s $easing;
+  background-color: var(--basic-black);
+}
+
+.project-facilities__item-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: vw(12);
+  margin-top: vw(24);
+
+  @media (max-width: $br1) {
+    gap: 16px;
+    margin-top: 20px;
+  }
+}
+
+.project-facilities__plus {
+  display: block;
+  color: var(--basic-black);
+  width: vw(20);
+  height: vw(20);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  @media (max-width: $br1) {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .project-facilities__info {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
-  margin-top: vw(16);
-  gap: vw(20);
+  flex-direction: column;
+  gap: vw(8);
 
   @media (max-width: $br1) {
-    flex-direction: column;
-    margin-top: 16px;
-    gap: 12px;
-    max-width: 80%;
+    gap: 4px;
   }
 
   @media (max-width: $br4) {
@@ -390,19 +389,23 @@ onBeforeUnmount(() => {
 
 .project-facilities__item-title {
   text-transform: uppercase;
-  transition: color 2s $easing;
-  width: 100%;
   flex: 1 0 auto;
-  @include subheading-h1;
+  font-size: vw(24);
+  line-height: 1em;
+  @include med;
 
-  @media (min-width: $br1) {
-    max-width: vw(268);
+  @media (max-width: $br1) {
+    font-size: size(24, 18);
+  }
+
+  @media (max-width: $br4) {
+    font-size: 18px;
   }
 }
 
 .project-facilities__item-text {
-  transition: color 2s $easing;
   line-height: 1.25em !important;
+  color: var(--neutral-300);
   @include text-t4;
 }
 </style>
