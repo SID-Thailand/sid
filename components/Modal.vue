@@ -42,12 +42,10 @@ watch(
   z-index: 99;
   opacity: 0;
   pointer-events: none;
-  visibility: hidden;
   transition: opacity 0.3s ease;
 
   &--open {
     pointer-events: auto;
-    visibility: visible;
     opacity: 1;
   }
 }
