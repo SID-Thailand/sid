@@ -114,16 +114,28 @@ defineProps<IProps>()
 .project-exterior__item {
   pointer-events: none;
   user-select: none;
+  height: vw(224);
+  width: vw(336);
+
+  @media (max-width: $br1) {
+    height: 109px;
+    width: 164px;
+  }
+
+  &--active {
+    height: vw(600);
+    width: vw(600);
+
+    @media (max-width: $br1) {
+      height: 285px;
+      width: 285px;
+    }
+  }
 }
 
 .project-exterior__img {
   display: block;
-  height: vw(224);
-  aspect-ratio: 336 / 224;
-
-  @media (max-width: $br1) {
-    height: 109px;
-    aspect-ratio: 164 / 109;
-  }
+  width: 100%;
+  height: 100%;
 }
 </style>
