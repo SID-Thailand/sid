@@ -17,7 +17,7 @@ export class AutoController implements IController {
 
     const dir = -state.velocity > 0 ? 1 : -1
 
-    const speed = this.duration * 10
+    const speed = this.duration * 5
     state.targetX -= speed * (delta / 1000) * dir
   }
 
