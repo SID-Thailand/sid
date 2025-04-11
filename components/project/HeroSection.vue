@@ -16,13 +16,14 @@ const specs = computed(() => [spec_1, spec_2, spec_3].filter(Boolean))
 <template>
   <section class="project-hero">
     <div class="project-hero__wrapper container">
-      <img
+      <ParallaxImg
         :src="content?.cover?.filename"
         :alt="content?.cover?.alt"
+        data-preload="true"
         class="project-hero__img"
       />
       <div class="project-hero__content">
-        <h1 class="project-hero__title">{{ content?.name }}</h1>
+        <h1 data-title class="project-hero__title">{{ content?.name }}</h1>
         <ul class="project-hero__list">
           <li
             v-for="(item, idx) in specs"

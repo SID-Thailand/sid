@@ -14,7 +14,7 @@ const imgRef = ref<HTMLElement | null>(null)
 const st = ref<ScrollTrigger | null>(null)
 
 const animate = () => {
-  if (!imgRef.value || !st.value) return
+  if (!imgRef.value) return
   const tl = gsap.timeline()
 
   tl.fromTo(
