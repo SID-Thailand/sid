@@ -59,14 +59,6 @@ const prepareItems = async () => {
     }
   })
 
-  $wrappers.value.forEach((item, index) => {
-    if (index > 0) {
-      gsap.set(item, {
-        color: '#818080',
-      })
-    }
-  })
-
   await nextTick()
 
   $assets.value.forEach((item: HTMLElement, idx: number) => {
@@ -200,9 +192,8 @@ const textAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
 
   const $prevItem = getPreviousSibling(item) as HTMLElement | null
 
-  $prevItem &&
-    tl.to($prevItem, { duration: dur, opacity: 0, color: '#818080' }, delay)
-  tl.to(item, { duration: dur, opacity: 1, color: '#fff' }, delay)
+  $prevItem && tl.to($prevItem, { duration: dur, opacity: 0 }, delay)
+  tl.to(item, { duration: dur, opacity: 1 }, delay)
 }
 
 const calcHeight = () => {
@@ -255,6 +246,24 @@ const makeAnimation = async () => {
     scrub: true,
     animation: masterTl,
     invalidateOnRefresh: true,
+
+    onUpdate: () => {
+      $wrappers.value.forEach((wrapper, index) => {
+        const bounds = wrapper.getBoundingClientRect()
+        const assetsBounds = assetsRef.value.getBoundingClientRect()
+
+        if (bounds.top < 150 && window.innerWidth > 1060) {
+          activeIdx.value = index
+        }
+
+        if (
+          bounds.top - 100 < assetsBounds.bottom &&
+          window.innerWidth < 1060
+        ) {
+          activeIdx.value = index
+        }
+      })
+    },
   })
 }
 
@@ -438,7 +447,7 @@ onBeforeUnmount(() => {
 }
 
 .interview__content-wrapper {
-  color: var(--basic-white);
+  color: var(--neutral-300);
   @media (min-width: $br1) {
     display: flex;
     justify-content: flex-end;
@@ -446,21 +455,9 @@ onBeforeUnmount(() => {
     column-gap: vw(20);
   }
 
-  // &--active {
-  //   .interview__item {
-  //     color: var(--basic-white);
-
-  //     .interview__line {
-  //       background-color: var(--basic-white);
-  //     }
-  //   }
-
-  //   // @media (max-width: $br1) {
-  //   //   .interview__item {
-  //   //     opacity: 1;
-  //   //   }
-  //   // }
-  // }
+  &--active {
+    color: var(--basic-white);
+  }
 }
 
 .interview__image-item {
