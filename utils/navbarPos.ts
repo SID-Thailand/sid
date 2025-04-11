@@ -21,7 +21,7 @@ export default class NavbarPos {
   }
 
   mouseHandler(e) {
-    if (e.screenY <= 300) {
+    if (e.screenY <= 200) {
       document.body.classList.remove('nav-hidden')
       this.hovered = true
     } else {

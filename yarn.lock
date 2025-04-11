@@ -316,7 +316,12 @@
     tiny-emitter "^2.1.0"
     virtual-scroll "^2.1.1"
 
-"@emotionagency/utils@^1.1.14", "@emotionagency/utils@^1.1.3":
+"@emotionagency/utils@^1.1.17":
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/@emotionagency/utils/-/utils-1.1.17.tgz#e25335b07ab11b208a56bee9af302edd0e01599e"
+  integrity sha512-dOBoxvevOO5Z1M3zxrvojm2yGy7Tl23qfgwPXmbid28DIliPuvOzzyyviAlwzBZ5arMzxlard3CYCIpWN9SwVA==
+
+"@emotionagency/utils@^1.1.3":
   version "1.1.16"
   resolved "https://registry.yarnpkg.com/@emotionagency/utils/-/utils-1.1.16.tgz#526cb53b4b450f3332791371cf01af4c462d6550"
   integrity sha512-hUi90t8UTDcOH8+3U/SNBrsH/+V2ATJlxBBFwAhnDPDjLcaYX7XNrbUGx+NdmnEI044lESvY1BfMCdno+AF3Kg==

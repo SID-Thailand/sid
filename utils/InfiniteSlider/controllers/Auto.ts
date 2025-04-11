@@ -3,7 +3,6 @@ import { state } from '../state'
 import type { IController } from './IController'
 
 export class AutoController implements IController {
-  lastTime = performance.now()
   constructor(
     readonly $el: HTMLElement,
     readonly duration: number
@@ -11,10 +10,8 @@ export class AutoController implements IController {
     this.move = this.move.bind(this)
   }
 
-  move() {
-    const now = performance.now()
-    const delta = now - this.lastTime
-    this.lastTime = now
+  move(_: number, delta: number) {
+    console.log(delta)
 
     if (!this.isInViewport) {
       return
