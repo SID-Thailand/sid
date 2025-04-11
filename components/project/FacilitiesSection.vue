@@ -11,7 +11,7 @@ const props = defineProps<IProps>()
 
 console.log(props.content)
 const contentRef = ref<HTMLElement | null>(null)
-const interviewContentRef = ref<HTMLElement | null>(null)
+const projectContentRef = ref<HTMLElement | null>(null)
 const assetsRef = ref<HTMLElement | null>(null)
 const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
@@ -29,7 +29,7 @@ const itemsCount = computed(() => {
 const calcHeight = () => {
   const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
 
-  height.value = interviewContentRef.value?.scrollHeight - lastItemHeight
+  height.value = projectContentRef.value?.scrollHeight - lastItemHeight
 }
 
 const makeAnimation = () => {
@@ -42,9 +42,9 @@ const makeAnimation = () => {
   })
 
   const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
-  const height = interviewContentRef.value?.scrollHeight - lastItemHeight
+  const height = projectContentRef.value?.scrollHeight - lastItemHeight
 
-  tl.to(interviewContentRef.value, {
+  tl.to(projectContentRef.value, {
     duration: 1,
     ease: 'none',
     y: -height,
@@ -80,15 +80,8 @@ const makeAnimation = () => {
 }
 
 onMounted(() => {
-  console.log({
-    contentRef: contentRef.value,
-    interviewContentRef: interviewContentRef.value,
-    assetsRef: assetsRef.value,
-    wrappers: $wrappers.value,
-  })
-
   $wrappers.value = contentRef.value.querySelectorAll(
-    '.interview__content-wrapper'
+    '.project-facilities__content-wrapper'
   ) as NodeListOf<HTMLElement>
 
   resize.on(calcHeight)
@@ -113,40 +106,51 @@ onBeforeUnmount(() => {
           {{ content?.title }}
         </h2>
       </div>
-      <div ref="contentRef" class="interview__block">
-        <div class="interview__block-wrapper">
-          <div ref="assetsRef" class="interview__assets">
+      <div ref="contentRef" class="project-facilities__block">
+        <div class="project-facilities__block-wrapper">
+          <div ref="assetsRef" class="project-facilities__assets">
             <div
               v-for="(item, idx) in content?.slider"
               :key="idx"
-              class="interview__image-item"
-              :class="idx === activeIdx && 'interview__image-item--active'"
+              class="project-facilities__image-item"
+              :class="
+                idx === activeIdx && 'project-facilities__image-item--active'
+              "
             >
               <div
-                class="interview__img-wrapper"
-                :class="idx <= activeIdx && 'interview__img-wrapper--active'"
+                class="project-facilities__img-wrapper"
+                :class="
+                  idx <= activeIdx && 'project-facilities__img-wrapper--active'
+                "
               >
                 <CustomImage
                   :src="item?.asset?.filename"
                   :alt="item?.asset?.alt"
-                  class="interview__img"
+                  class="project-facilities__img"
                 />
               </div>
             </div>
           </div>
-          <div ref="interviewContentRef" class="interview__content">
+          <div ref="projectContentRef" class="project-facilities__content">
             <div
               v-for="(item, idx) in content?.slider"
               :key="idx"
-              class="interview__content-wrapper"
-              :class="idx === activeIdx && 'interview__content-wrapper--active'"
+              class="project-facilities__content-wrapper"
+              :class="
+                idx === activeIdx &&
+                'project-facilities__content-wrapper--active'
+              "
               :style="{ zIndex: idx + 1 }"
             >
-              <div class="interview__item">
-                <div class="interview__line" />
-                <div class="interview__info">
-                  <h3 class="interview__item-title">{{ item?.title }}</h3>
-                  <p class="interview__item-text">{{ item?.description }}</p>
+              <div class="project-facilities__item">
+                <div class="project-facilities__line" />
+                <div class="project-facilities__info">
+                  <h3 class="project-facilities__item-title">
+                    {{ item?.title }}
+                  </h3>
+                  <p class="project-facilities__item-text">
+                    {{ item?.description }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -227,12 +231,12 @@ onBeforeUnmount(() => {
 
 // New code
 
-.interview__block {
+.project-facilities__block {
   position: relative;
   height: 300vh;
 }
 
-.interview__block-wrapper {
+.project-facilities__block-wrapper {
   position: sticky;
   top: 0;
   height: 100vh;
@@ -250,29 +254,30 @@ onBeforeUnmount(() => {
   }
 }
 
-.interview__assets {
+.project-facilities__assets {
   position: relative;
   width: vw(440);
   height: vw(496);
+
   @media (max-width: $br1) {
     margin-top: 16px;
-
     width: 100%;
     aspect-ratio: 440 / 496;
     height: auto;
     z-index: 10;
-    background-color: var(--neutral-600);
+    background-color: var(--neutral-100);
   }
 }
 
-.interview__content {
+.project-facilities__content {
   position: relative;
+
   @media (min-width: $br1) {
     width: vw(785);
   }
 }
 
-.interview__content-wrapper {
+.project-facilities__content-wrapper {
   @media (min-width: $br1) {
     display: flex;
     justify-content: flex-end;
@@ -280,24 +285,30 @@ onBeforeUnmount(() => {
     column-gap: vw(20);
   }
 
+  @media (max-width: $br1) {
+    &:not(:first-child) {
+      margin-top: 40px;
+    }
+  }
+
   &--active {
-    .interview__item {
+    .project-facilities__item {
       color: var(--basic-white);
 
-      .interview__line {
+      .project-facilities__line {
         background-color: var(--basic-white);
       }
     }
 
     // @media (max-width: $br1) {
-    //   .interview__item {
+    //   .project-facilities__item {
     //     opacity: 1;
     //   }
     // }
   }
 }
 
-.interview__image-item {
+.project-facilities__image-item {
   position: absolute;
   left: 0;
   top: 0;
@@ -305,12 +316,18 @@ onBeforeUnmount(() => {
   @include subheading-h5;
 
   @media (min-width: $br1) {
-    width: fit-content;
+    width: 100%;
+    height: 100%;
     max-width: vw(600);
+  }
+
+  @media (max-width: $br1) {
+    width: 100%;
+    height: auto;
   }
 }
 
-.interview__img-wrapper {
+.project-facilities__img-wrapper {
   display: block;
   position: relative;
   overflow: hidden;
@@ -318,13 +335,13 @@ onBeforeUnmount(() => {
   height: 100%;
 
   &--active {
-    .interview__img {
+    .project-facilities__img {
       transform: translateY(0) scale(1);
     }
   }
 }
 
-.interview__img {
+.project-facilities__img {
   position: relative;
   display: block;
   width: 100%;
@@ -335,21 +352,16 @@ onBeforeUnmount(() => {
   will-change: transform;
 }
 
-.interview__item {
+.project-facilities__item {
   color: var(--neutral-300);
 
   @media (min-width: $br1) {
     width: vw(785);
     padding-bottom: vw(124);
   }
-
-  @media (max-width: $br1) {
-    // opacity: 0;
-    margin-top: 40px;
-  }
 }
 
-.interview__line {
+.project-facilities__line {
   display: block;
   width: 100%;
   height: 1px;
@@ -357,7 +369,7 @@ onBeforeUnmount(() => {
   transition: background-color 2s $easing;
 }
 
-.interview__info {
+.project-facilities__info {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -376,7 +388,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.interview__item-title {
+.project-facilities__item-title {
   text-transform: uppercase;
   transition: color 2s $easing;
   width: 100%;
@@ -388,7 +400,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.interview__item-text {
+.project-facilities__item-text {
   transition: color 2s $easing;
   line-height: 1.25em !important;
   @include text-t4;
