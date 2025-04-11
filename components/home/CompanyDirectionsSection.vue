@@ -252,11 +252,11 @@ const makeAnimation = async () => {
         const bounds = wrapper.getBoundingClientRect()
         const assetsBounds = assetsRef.value.getBoundingClientRect()
 
-        if (bounds.top < 150 && window.innerWidth > 960) {
+        if (bounds.top < 150 && window.innerWidth > 860) {
           activeIdx.value = index
         }
 
-        if (bounds.top - 100 < assetsBounds.bottom && window.innerWidth < 960) {
+        if (bounds.top - 100 < assetsBounds.bottom && window.innerWidth < 860) {
           activeIdx.value = index
         }
       })
