@@ -35,6 +35,8 @@ export const useGetStory = async (route: string) => {
             'quiz_block.quiz',
             'footer.contacts',
             'company_direction.person',
+            'project.category',
+            'project.cta',
           ],
         })
 

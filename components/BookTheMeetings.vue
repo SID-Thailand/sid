@@ -14,6 +14,7 @@ const imgRef = ref<HTMLElement | null>(null)
 const st = ref<ScrollTrigger | null>(null)
 
 const animate = () => {
+  if (!imgRef.value || !st.value) return
   const tl = gsap.timeline()
 
   tl.fromTo(
@@ -60,8 +61,8 @@ onBeforeUnmount(() => {
       <div class="mettings__manager-wrapper">
         <div ref="imgRef" class="meetings__manager">
           <CustomImage
-            :src="cta?.content?.manager?.content.masked_photo?.filename"
-            :alt="cta?.content?.manager?.content.masked_photo?.alt"
+            :src="cta?.content?.manager?.content?.masked_photo?.filename"
+            :alt="cta?.content?.manager?.content?.masked_photo?.alt"
           />
         </div>
       </div>
