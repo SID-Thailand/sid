@@ -348,10 +348,6 @@ onBeforeUnmount(() => {
   will-change: transform;
 
   filter: brightness(0.7) contrast(1.2) saturate(0);
-
-  /*&:first-child {
-    transform: translateY(0) scale(1);
-  }*/
 }
 
 .featured-projects__scroll-wrapper {
@@ -395,7 +391,7 @@ onBeforeUnmount(() => {
 
   @media (max-width: $br1) {
     width: auto;
-    height: 61%;
+    height: 65%;
     padding: 16px;
   }
 }

@@ -3,7 +3,7 @@ import EmotionScroll from '@emotionagency/emotion-scroll'
 import { raf } from '@emotionagency/utils'
 onMounted(() => {
   window.escroll = new EmotionScroll({
-    breakpoint: 1060,
+    breakpoint: 860,
     passive: false,
     friction: 0.06,
     stepSize: 0.8,

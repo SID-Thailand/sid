@@ -58,11 +58,13 @@ onBeforeUnmount(() => {
         :alt="cta?.content?.backdrop_asset?.alt"
         class="meetings__bg"
       />
-      <div ref="imgRef" class="meetings__people">
-        <CustomImage
-          :src="cta?.content?.manager?.content?.masked_photo?.filename"
-          :alt="cta?.content?.manager?.content?.masked_photo?.alt"
-        />
+      <div class="mettings__manager-wrapper">
+        <div ref="imgRef" class="meetings__manager">
+          <CustomImage
+            :src="cta?.content?.manager?.content?.masked_photo?.filename"
+            :alt="cta?.content?.manager?.content?.masked_photo?.alt"
+          />
+        </div>
       </div>
       <div class="meetings__content">
         <Logo class="meetings__logo" />
@@ -100,7 +102,6 @@ onBeforeUnmount(() => {
   position: relative;
   min-height: vw(893);
   padding: vw(100);
-  overflow: hidden;
 
   @media (max-width: $br1) {
     min-height: fit-content;
@@ -163,16 +164,23 @@ onBeforeUnmount(() => {
   }
 }
 
-.meetings__people {
+.mettings__manager-wrapper {
   position: absolute;
   right: vw(78);
   bottom: 0;
   height: vw(793);
   width: vw(536);
+  overflow: hidden;
 
   @media (max-width: $br1) {
     display: none;
   }
+}
+
+.meetings__manager {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .meetings__content {

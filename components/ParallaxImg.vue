@@ -21,7 +21,7 @@ const imgContainer = ref<HTMLDivElement | null>(null)
 onMounted(() => {
   if (!imgWrapper.value || !imgContainer.value) return
 
-  if (window.innerWidth < 1060) {
+  if (window.innerWidth < 860) {
     return
   }
 

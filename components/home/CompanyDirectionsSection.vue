@@ -252,13 +252,13 @@ const makeAnimation = async () => {
         const bounds = wrapper.getBoundingClientRect()
         const assetsBounds = assetsRef.value?.getBoundingClientRect()
 
-        if (bounds?.top < 150 && window.innerWidth > 1060) {
+        if (bounds?.top < 150 && window.innerWidth > 860) {
           activeIdx.value = index
         }
 
         if (
           bounds?.top - 100 < assetsBounds?.bottom &&
-          window.innerWidth < 1060
+          window.innerWidth < 860
         ) {
           activeIdx.value = index
         }
@@ -429,13 +429,18 @@ onBeforeUnmount(() => {
   width: vw(440);
   height: vw(496);
   @media (max-width: $br1) {
+    margin: 0 auto;
     margin-top: 16px;
 
-    width: 100%;
     aspect-ratio: 440 / 496;
     height: auto;
+    max-height: 50%;
     z-index: 10;
     background-color: var(--neutral-600);
+  }
+  @media (max-width: $br4) {
+    width: 100%;
+    max-height: none;
   }
 }
 
