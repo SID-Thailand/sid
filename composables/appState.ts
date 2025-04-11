@@ -3,7 +3,8 @@ export const useAppState = () => {
   const isLoaded = useState('inLoaded', () => false)
   const isWaiting = useState('isWaiting', () => false)
   const isMenuOpened = useState('isMenuOpened', () => false)
-  const isModalOpened = useState('isModalOpened', () => false)
+  const isSlideModalOpened = useState('isSlideModalOpened', () => false)
+  const isFormModalOpened = useState('isFormModalOpened', () => false)
   const isUseLoader = useState('isUseLoader', () => true)
 
   return {
@@ -11,7 +12,8 @@ export const useAppState = () => {
     isLoaded,
     isWaiting,
     isMenuOpened,
-    isModalOpened,
+    isFormModalOpened,
+    isSlideModalOpened,
     isUseLoader,
   }
 }
