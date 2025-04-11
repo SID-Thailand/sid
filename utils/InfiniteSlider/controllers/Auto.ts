@@ -3,6 +3,7 @@ import { state } from '../state'
 import type { IController } from './IController'
 
 export class AutoController implements IController {
+  lastTime = performance.now()
   constructor(
     readonly $el: HTMLElement,
     readonly duration: number
@@ -11,12 +12,18 @@ export class AutoController implements IController {
   }
 
   move() {
+    const now = performance.now()
+    const delta = now - this.lastTime
+    this.lastTime = now
+
     if (!this.isInViewport) {
       return
     }
 
     const dir = -state.velocity > 0 ? 1 : -1
-    state.targetX -= (this.duration / 10) * dir
+
+    const speed = this.duration * 10
+    state.targetX -= speed * (delta / 1000) * dir
   }
 
   get isInViewport() {
