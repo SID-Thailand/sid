@@ -64,12 +64,12 @@ const makeAnimation = () => {
         const bounds = wrapper.getBoundingClientRect()
         const assetsBounds = assetsRef.value?.getBoundingClientRect()
 
-        if (bounds.top < 150 && window.innerWidth > 1060) {
+        if (bounds?.top < 150 && window.innerWidth > 1060) {
           activeIdx.value = index
         }
 
         if (
-          bounds.top - 100 < assetsBounds.bottom &&
+          bounds?.top - 100 < assetsBounds?.bottom &&
           window.innerWidth < 1060
         ) {
           activeIdx.value = index
