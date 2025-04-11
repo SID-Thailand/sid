@@ -10,13 +10,15 @@ export class AutoController implements IController {
     this.move = this.move.bind(this)
   }
 
-  move() {
+  move(_: number, delta: number) {
     if (!this.isInViewport) {
       return
     }
 
     const dir = -state.velocity > 0 ? 1 : -1
-    state.targetX -= (this.duration / 10) * dir
+
+    const speed = this.duration * 5
+    state.targetX -= speed * (delta / 1000) * dir
   }
 
   get isInViewport() {

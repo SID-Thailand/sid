@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import type { ImgHTMLAttributes, ReservedProps } from 'vue'
+
 interface iProps {
   src: string
   alt?: string
   quality?: number
   width?: number
   height?: number
-  imgAttributes?: Record<string, string>
+  imgAttributes?: ImgHTMLAttributes & ReservedProps
   preload?: boolean
 }
 

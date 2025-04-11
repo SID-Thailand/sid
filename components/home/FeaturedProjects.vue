@@ -194,10 +194,6 @@ const makeAnimation = async () => {
 
   await prepareItems()
 
-  masterTl = gsap.timeline({
-    paused: true,
-  })
-
   $bgs.forEach((bg, index) => {
     imageRevealAnimation(masterTl, index, bg as HTMLElement)
     imageRevealAnimation(masterTl, index, $items[index] as HTMLElement)

@@ -105,8 +105,14 @@ const radioHandler = () => {
   position: absolute;
   bottom: vw(-24);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(1);
+  transform-origin: center;
   overflow: hidden;
+  transition: transform 0.5s $easing;
+
+  &:hover {
+    transform: translateX(-50%) scale(0.8);
+  }
 
   span {
     position: absolute;

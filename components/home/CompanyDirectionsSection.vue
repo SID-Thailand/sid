@@ -14,6 +14,7 @@ const contentRef = ref<HTMLElement | null>(null)
 const interviewContentRef = ref<HTMLElement | null>(null)
 const assetsRef = ref<HTMLElement | null>(null)
 const $wrappers = ref<NodeListOf<HTMLElement>>(null)
+const $assets = ref<NodeListOf<HTMLElement>>(null)
 
 const activeIdx = ref(0)
 
@@ -26,40 +27,227 @@ const itemsCount = computed(() => {
   return $wrappers.value.length
 })
 
+let titleSplitter: any = null
+let descSplitter: any = null
+
+const duration = computed(() => 1 / itemsCount.value)
+
+let masterTl
+
+const prepareItems = async () => {
+  if (!$assets.value) {
+    return
+  }
+
+  if (titleSplitter) {
+    titleSplitter.revert()
+    titleSplitter = null
+  }
+
+  if (descSplitter) {
+    descSplitter.revert()
+    descSplitter = null
+  }
+
+  $assets.value.forEach((item, index) => {
+    const $image = item.querySelector('.interview__img') as HTMLElement
+    if (index > 0) {
+      gsap.set($image, {
+        scale: 1.3,
+        y: '100%',
+      })
+    }
+  })
+
+  await nextTick()
+
+  $assets.value.forEach((item: HTMLElement, idx: number) => {
+    const $curTitle = item.querySelector('.interview__name') as HTMLElement
+    const $curDesc = item.querySelector(
+      '.interview__description'
+    ) as HTMLElement
+
+    titleSplitter = new TextSplitter($curTitle, {
+      splitTypeTypes: 'lines,words',
+    })
+
+    descSplitter = new TextSplitter($curDesc, {
+      splitTypeTypes: 'lines,words',
+    })
+
+    if (idx === 0) {
+      return
+    }
+
+    gsap.set(item, { pointerEvents: 'none' })
+    gsap.set($curTitle.querySelectorAll('.word'), { y: '100%' })
+    gsap.set($curDesc.querySelectorAll('.word'), { y: '100%' })
+  })
+}
+
+const imageRevealAnimation = (
+  tl: GSAPTimeline,
+  index: number,
+  item: HTMLElement
+) => {
+  const dur = duration.value
+
+  const idx = index
+
+  const delay = dur * idx
+
+  tl.to(
+    item,
+
+    {
+      duration: dur,
+      y: '0%',
+    },
+    delay
+  )
+
+  tl.to(
+    item,
+    {
+      duration: dur,
+      scale: 1,
+    },
+    delay + 0.05
+  )
+}
+
+const captionAnimation = (
+  tl: GSAPTimeline,
+  index: number,
+  item: HTMLElement
+) => {
+  const dur = duration.value
+
+  const idx = index
+
+  const delay = dur * idx
+
+  const $prevItem = getPreviousSibling(item) as HTMLElement | null
+
+  const $curTitle = item.querySelector('.interview__name') as HTMLElement
+  const $curDesc = item.querySelector('.interview__description') as HTMLElement
+
+  const $prevTitle = $prevItem?.querySelector('.interview__name') as HTMLElement
+  const $prevDesc = $prevItem?.querySelector(
+    '.interview__description'
+  ) as HTMLElement
+
+  $prevItem && tl.to($prevItem, { duration: dur, pointerEvents: 'none' }, delay)
+  tl.to(item, { duration: dur, pointerEvents: 'auto' }, delay)
+
+  const tl2 = gsap.timeline()
+
+  $prevTitle &&
+    tl2.to(
+      $prevTitle?.querySelectorAll('.word'),
+      {
+        duration: dur / 2,
+        y: '-100%',
+      },
+      0
+    )
+
+  tl2.to(
+    $curTitle.querySelectorAll('.word'),
+    {
+      duration: dur / 2,
+      y: '0%',
+    },
+    0
+  )
+
+  $prevDesc &&
+    tl2.to(
+      $prevDesc?.querySelectorAll('.word'),
+      {
+        duration: dur / 2,
+        y: '-100%',
+      },
+      0
+    )
+
+  tl2.to(
+    $curDesc.querySelectorAll('.word'),
+    {
+      duration: dur / 2,
+      y: '0%',
+    },
+    0
+  )
+
+  tl.add(tl2, delay)
+}
+
+const textAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
+  const dur = duration.value * 0.9
+
+  const idx = index
+
+  const delay = dur * idx
+
+  const $prevItem = getPreviousSibling(item) as HTMLElement | null
+
+  $prevItem && tl.to($prevItem, { duration: dur, opacity: 0 }, delay)
+  tl.to(item, { duration: dur, opacity: 1 }, delay)
+}
+
 const calcHeight = () => {
   const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
 
   height.value = interviewContentRef.value?.scrollHeight - lastItemHeight
 }
 
-const makeAnimation = () => {
+const makeAnimation = async () => {
   if (!contentRef.value) return
 
   if (!$wrappers.value?.length) return
 
-  const tl = gsap.timeline({
+  masterTl = gsap.timeline({
     paused: true,
+  })
+
+  await prepareItems()
+
+  $assets.value.forEach((item: HTMLElement, index: number) => {
+    const img = item.querySelector('.interview__img') as HTMLElement
+    imageRevealAnimation(masterTl, index, img)
+  })
+
+  $assets.value.forEach((item: HTMLElement, index: number) => {
+    captionAnimation(masterTl, index, item)
+  })
+
+  $wrappers.value.forEach((item: HTMLElement, index: number) => {
+    textAnimation(masterTl, index, item)
   })
 
   const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
   const height = interviewContentRef.value?.scrollHeight - lastItemHeight
 
-  tl.to(interviewContentRef.value, {
-    duration: 1,
-    ease: 'none',
-    y: -height,
-  })
+  masterTl.to(
+    interviewContentRef.value,
+    {
+      duration: 1,
+      ease: 'none',
+      y: -height,
+    },
+    0
+  )
 
   ScrollTrigger.create({
     trigger: contentRef.value as HTMLElement,
     start: () => 'top top',
     end: () => 'bottom-=5% bottom',
     scrub: true,
+    animation: masterTl,
+    invalidateOnRefresh: true,
 
-    animation: tl,
-
-    onUpdate: ({ direction }) => {
-      dir.value = direction
+    onUpdate: () => {
       $wrappers.value.forEach((wrapper, index) => {
         const bounds = wrapper.getBoundingClientRect()
         const assetsBounds = assetsRef.value?.getBoundingClientRect()
@@ -84,12 +272,19 @@ onMounted(() => {
     '.interview__content-wrapper'
   ) as NodeListOf<HTMLElement>
 
+  $assets.value = assetsRef.value.querySelectorAll(
+    '.interview__image-item'
+  ) as NodeListOf<HTMLElement>
+
   resize.on(calcHeight)
 
   makeAnimation()
 })
 
 onBeforeUnmount(() => {
+  if (masterTl) {
+    masterTl.kill()
+  }
   st.value?.kill(true)
   resize.off(calcHeight)
 })
@@ -127,20 +322,16 @@ onBeforeUnmount(() => {
 
               <div class="interview__desc-wrapper">
                 <p class="interview__name">
-                  <span class="interview__text-line">
-                    {{
-                      item?.person?.content?.interview_title ||
-                      item?.person?.content?.name
-                    }}
-                  </span>
+                  {{
+                    item?.person?.content?.interview_title ||
+                    item?.person?.content?.name
+                  }}
                 </p>
                 <p class="interview__description">
-                  <span class="interview__text-line">
-                    {{
-                      item?.person?.content?.interview_position ||
-                      item?.person?.content?.position
-                    }}
-                  </span>
+                  {{
+                    item?.person?.content?.interview_position ||
+                    item?.person?.content?.position
+                  }}
                 </p>
               </div>
             </div>
@@ -212,7 +403,7 @@ onBeforeUnmount(() => {
 
 .interview__block {
   position: relative;
-  height: 300vh;
+  height: 400vh;
 }
 
 .interview__block-wrapper {
@@ -256,6 +447,7 @@ onBeforeUnmount(() => {
 }
 
 .interview__content-wrapper {
+  color: var(--neutral-300);
   @media (min-width: $br1) {
     display: flex;
     justify-content: flex-end;
@@ -264,19 +456,7 @@ onBeforeUnmount(() => {
   }
 
   &--active {
-    .interview__item {
-      color: var(--basic-white);
-
-      .interview__line {
-        background-color: var(--basic-white);
-      }
-    }
-
-    // @media (max-width: $br1) {
-    //   .interview__item {
-    //     opacity: 1;
-    //   }
-    // }
+    color: var(--basic-white);
   }
 }
 
@@ -286,11 +466,6 @@ onBeforeUnmount(() => {
   top: 0;
   text-transform: uppercase;
   @include subheading-h5;
-  &--active {
-    .interview__text-line {
-      transform: translateY(0%);
-    }
-  }
 
   @media (min-width: $br1) {
     width: fit-content;
@@ -305,11 +480,11 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
 
-  &--active {
-    .interview__img {
-      transform: translateY(0) scale(1);
-    }
-  }
+  // &--active {
+  //   .interview__img {
+  //     transform: translateY(0) scale(1);
+  //   }
+  // }
 }
 
 .interview__img {
@@ -317,22 +492,10 @@ onBeforeUnmount(() => {
   display: block;
   width: 100%;
   height: auto;
-  transition: transform 3s $easing;
+  // transition: transform 3s $easing;
   transform-origin: center top;
-  transform: translateY(100%) scale(1.3);
+  // transform: translateY(100%) scale(1.3);
   will-change: transform;
-}
-
-.interview__text-line {
-  display: inline-block;
-  transform: translateY(100%);
-  transition: transform 0.5s $easing;
-}
-
-.reverse {
-  .interview__text-line {
-    transform: translateY(-100%);
-  }
 }
 
 .interview__name {
@@ -350,8 +513,6 @@ onBeforeUnmount(() => {
 }
 
 .interview__item {
-  color: var(--neutral-300);
-
   @media (min-width: $br1) {
     width: vw(785);
     padding-bottom: vw(124);

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { ReservedProps, VideoHTMLAttributes } from 'vue'
+
 interface IProps {
   url: string
-  videoAttributes?: Record<string, string>
+  videoAttributes?: VideoHTMLAttributes & ReservedProps
   isPlaying?: boolean
 }
 

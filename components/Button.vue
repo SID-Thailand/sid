@@ -99,7 +99,7 @@ withDefaults(defineProps<IProps>(), {
   margin-block-end: 1px;
   z-index: 1;
   gap: vw(7);
-  transition: transform 0.3s $easing;
+  transition: transform 0.5s $easing;
 
   text-box: trim-both cap alphabetic;
   > * {
