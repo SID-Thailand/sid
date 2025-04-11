@@ -166,7 +166,7 @@ onBeforeUnmount(() => {
   height: vw(822);
 
   aspect-ratio: 451 / 822;
-  border-radius: vw(40);
+
   overflow: hidden;
   z-index: 2;
 
@@ -174,11 +174,6 @@ onBeforeUnmount(() => {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: vw(40);
-
-    @media (max-width: $br1) {
-      border-radius: 32px;
-    }
   }
 
   @media (min-width: $br1) {
@@ -187,7 +182,6 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $br1) {
-    border-radius: 32px;
     height: 568px;
     width: 100%;
     max-width: 312px;
@@ -197,16 +191,14 @@ onBeforeUnmount(() => {
 .d-video__phone-wrapper {
   width: 100%;
   height: 100%;
-  padding: vw(8);
-  background-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.6) 0%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0.6) 100%
-  );
+
+  overflow: hidden;
+  border-radius: vw(40);
+
+  border: 12px solid var(--Gradient-Quaternary, rgba(0, 0, 0, 0.6));
 
   @media (max-width: $br1) {
-    padding: 8px;
+    border-radius: 32px;
   }
 }
 
