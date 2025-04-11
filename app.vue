@@ -12,7 +12,6 @@ const isLoading = ref(true)
 const loadingAnimation = async () => {
   window.escroll.disabled = true
   await delayPromise(200)
-  isLoading.value = false
 
   const $image = document.querySelector('[data-preload]') as HTMLElement
   const $title = document.querySelector('[data-title]') as HTMLElement
@@ -39,7 +38,11 @@ const loadingAnimation = async () => {
     gsap.set($lines, { y: '100%', clipPath: 'inset(0 0 110% 0)' })
   }
 
+  await delayPromise(10)
+
   const imageBounds = $image?.getBoundingClientRect()
+
+  await delayPromise(10)
 
   const tl = gsap.timeline({
     onComplete: () => {
@@ -56,6 +59,8 @@ const loadingAnimation = async () => {
     y: offsetY,
     scale: 3,
   })
+
+  isLoading.value = false
 
   appear()
 
