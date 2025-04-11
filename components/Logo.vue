@@ -1,12 +1,4 @@
 <script lang="ts" setup>
-const elRef = ref<SVGElement | null>(null)
-
-const { init } = useLogoAnimation()
-
-onMounted(() => {
-  init(elRef.value as SVGElement | null)
-})
-
 const logoPaths = [
   {
     d: 'M5.33868 19.027L5.06665 18.8716V45.0727L5.33868 45.228V19.027Z',
@@ -37,7 +29,6 @@ const logoPaths = [
 
 <template>
   <svg
-    ref="elRef"
     width="64"
     height="64"
     viewBox="0 0 64 64"

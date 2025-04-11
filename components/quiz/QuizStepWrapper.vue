@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import gsap from 'gsap'
+import { gsap } from '~/libs/gsap'
 
 interface IProps {
   idx: number
@@ -104,7 +104,6 @@ onMounted(() => {
     ref="itemRef"
     class="quiz-step"
     :style="{
-      position: activeIdx === idx ? 'relative' : 'absolute',
       background,
     }"
   >
@@ -133,6 +132,11 @@ onMounted(() => {
 
   background: var(--gradient-secondary);
   transform-origin: top;
+
+  &:first-child {
+    position: relative;
+    height: fit-content;
+  }
 
   @media (max-width: $br1) {
     border-radius: 20px 20px 0 0;

@@ -49,7 +49,7 @@ const changeLanguage = async (lang: string) => {
 .lang-switch__btn {
   position: relative;
   background-color: transparent;
-  color: var(--basic-white);
+  color: currentColor;
   font-size: vw(16);
 
   @media (max-width: $br1) {
@@ -69,7 +69,7 @@ const changeLanguage = async (lang: string) => {
     opacity 0.3s ease;
   font-size: vw(16);
   background: transparent;
-  color: var(--basic-white);
+  color: currentColor;
 
   @media (max-width: $br1) {
     font-size: 16px;

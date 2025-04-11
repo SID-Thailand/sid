@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger } from '~/libs/gsap'
 import type { iHomeCompanyDirections } from '~/types/story'
 import { resize } from '@emotionagency/utils'
 
@@ -11,14 +10,13 @@ interface IProps {
 
 defineProps<IProps>()
 
-gsap.registerPlugin(ScrollTrigger)
-
 const contentRef = ref<HTMLElement | null>(null)
 const interviewContentRef = ref<HTMLElement | null>(null)
 const assetsRef = ref<HTMLElement | null>(null)
 const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
 const activeIdx = ref(0)
+
 const dir = ref(1)
 const height = ref(0)
 const st = ref<ScrollTrigger | null>(null)

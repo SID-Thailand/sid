@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
+import { gsap } from '~/libs/gsap'
 
 interface iProps {
   src: string
@@ -11,11 +10,10 @@ interface iProps {
   storyblok?: boolean
   format?: 'webp' | 'jpg' | 'png' | null
   quality?: number
+  imageAttrs?: Record<string, string>
 }
 
 defineProps<iProps>()
-
-gsap.registerPlugin(ScrollTrigger)
 
 const imgWrapper = ref<HTMLDivElement | null>(null)
 const imgContainer = ref<HTMLDivElement | null>(null)
@@ -23,7 +21,9 @@ const imgContainer = ref<HTMLDivElement | null>(null)
 onMounted(() => {
   if (!imgWrapper.value || !imgContainer.value) return
 
-  ScrollTrigger.refresh()
+  if (window.innerWidth < 1060) {
+    return
+  }
 
   gsap.fromTo(
     imgContainer.value,
@@ -47,6 +47,7 @@ onMounted(() => {
   <div ref="imgWrapper" class="p-img-wrapper">
     <div ref="imgContainer" class="p-img-container">
       <CustomImage
+        v-bind="imageAttrs"
         class="parallax-img"
         :src="src"
         :alt="alt"

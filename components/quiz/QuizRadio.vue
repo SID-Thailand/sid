@@ -16,7 +16,13 @@ const radioHandler = () => {
 </script>
 
 <template>
-  <li class="quiz-radio" :class="{ 'quiz-radio--active': isActive }">
+  <li
+    class="quiz-radio"
+    :class="{ 'quiz-radio--active': isActive }"
+    aria-role="radio"
+    :aria-checked="isActive"
+    @click="radioHandler"
+  >
     <div class="quiz-radio__image-container">
       <CustomImage
         :src="item?.asset?.filename"

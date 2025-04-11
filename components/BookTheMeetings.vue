@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import type { iCTA } from '~/types/story'
 import { LucideArrowUpRight } from 'lucide-vue-next'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import gsap from 'gsap'
+import { gsap, ScrollTrigger } from '~/libs/gsap'
 
 interface IProps {
   cta: iCTA
@@ -66,7 +65,8 @@ onBeforeUnmount(() => {
         />
       </div>
       <div class="meetings__content">
-        <img src="/logo.png" alt="Logotype" class="meetings__logo" />
+        <Logo class="meetings__logo" />
+
         <h2 class="meetings__title">
           {{ cta?.content?.title }}
         </h2>

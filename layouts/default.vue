@@ -35,7 +35,7 @@ useHead({
     <!-- <Landscape /> -->
     <SmoothScroll>
       <div class="app">
-        <Header />
+        <AppHeader />
         <main class="main-content">
           <slot />
         </main>
