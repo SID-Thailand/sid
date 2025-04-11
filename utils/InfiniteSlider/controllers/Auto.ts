@@ -11,8 +11,6 @@ export class AutoController implements IController {
   }
 
   move(_: number, delta: number) {
-    console.log(delta)
-
     if (!this.isInViewport) {
       return
     }

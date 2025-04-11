@@ -16,6 +16,8 @@ body {
   background-color: var(--basic-black);
   font-size: 1rem;
   overflow: hidden;
+  white-space: pre-line;
+
   position: relative;
   font-family: sans-serif;
   overscroll-behavior-y: none;
