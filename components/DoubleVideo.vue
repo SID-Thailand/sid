@@ -54,7 +54,13 @@ onBeforeUnmount(() => {
       <h2 class="d-video__title">{{ title }}</h2>
       <div class="d-video__videos">
         <div class="d-video__landscape">
-          <CustomVideo :url="asset?.filename" :is-playing="isPlaying" />
+          <CustomVideo
+            :video-attributes="{
+              preload: 'true',
+            }"
+            :url="asset?.filename"
+            :is-playing="isPlaying"
+          />
         </div>
         <div class="d-video__phone">
           <div class="d-video__phone-wrapper">
