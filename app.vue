@@ -26,15 +26,18 @@ const loadingAnimation = async () => {
   const offsetX = screenCenterX - logoCenterX
   const offsetY = screenCenterY - logoCenterY
 
-  const titleSplitter = new TextSplitter($title, {
-    splitTypeTypes: 'lines,words',
-  })
+  let titleSplitter = null
+  let $lines = null
+  if ($title) {
+    titleSplitter = new TextSplitter($title, {
+      splitTypeTypes: 'lines,words',
+    })
+    $lines = titleSplitter?.getLines()
+    gsap.set($lines, { y: '100%', clipPath: 'inset(0 0 110% 0)' })
+  }
 
-  const $lines = titleSplitter.getLines()
+  const imageBounds = $image?.getBoundingClientRect()
 
-  const imageBounds = $image.getBoundingClientRect()
-
-  gsap.set($lines, { y: '100%', clipPath: 'inset(0 0 110% 0)' })
   const tl = gsap.timeline()
   tl.set($image, { width: '100vw', height: '100vh' })
 
@@ -59,16 +62,17 @@ const loadingAnimation = async () => {
     1.7
   )
 
-  tl.to(
-    $image,
-    {
-      duration: 2,
-      width: imageBounds.width,
-      height: imageBounds.height,
-      ease: 'power2.out',
-    },
-    1.7
-  )
+  $image &&
+    tl.to(
+      $image,
+      {
+        duration: 2,
+        width: imageBounds?.width,
+        height: imageBounds?.height,
+        ease: 'power2.out',
+      },
+      1.7
+    )
 
   $lines &&
     tl.to(
