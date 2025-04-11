@@ -56,6 +56,10 @@ defineProps<IProps>()
   text-transform: uppercase;
   text-align: center;
   @include heading-h1;
+
+  @media (max-width: $br1) {
+    text-align: start;
+  }
 }
 
 .project-exterior__content {

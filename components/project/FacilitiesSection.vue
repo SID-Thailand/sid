@@ -8,9 +8,8 @@ interface IProps {
   content: iProjectFacilities
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
-console.log(props.content)
 const contentRef = ref<HTMLElement | null>(null)
 const projectContentRef = ref<HTMLElement | null>(null)
 const assetsRef = ref<HTMLElement | null>(null)

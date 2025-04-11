@@ -249,7 +249,7 @@ export interface iPlan {
   _uid: string
 }
 
-export interface iApartments {
+export interface iApartment {
   area: string
   component: string
   info: string
@@ -262,7 +262,7 @@ export interface iApartments {
 
 export interface iProjectInterior {
   component: string
-  apartments: iImage[]
+  apartments: iApartment[]
   text: string
   title: string
   _uid: string
