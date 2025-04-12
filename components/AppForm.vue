@@ -4,13 +4,14 @@ import { useFormStory } from '~/composables/stories/formStory'
 import type { IForm } from '~/types/form'
 
 interface IProps {
+  formId: string
   title?: string
   description?: string
   btnText?: string
   showButton?: boolean
 }
 
-withDefaults(defineProps<IProps>(), {
+const props = withDefaults(defineProps<IProps>(), {
   showButton: true,
 })
 
@@ -20,7 +21,7 @@ const model = defineModel<IForm>()
 
 const inputs = reactiveComputed(() => [
   {
-    id: 'feedback-name',
+    id: `${props.formId}-name`,
     name: 'name',
     type: 'text',
     placeholder: story?.value?.content?.full_name_label || 'Name',
@@ -30,7 +31,7 @@ const inputs = reactiveComputed(() => [
     validators: [Validation.min(2, 'Please enter at least 2 characters')],
   },
   {
-    id: 'feedback-number',
+    id: `${props.formId}-number`,
     name: 'phone',
     type: 'text',
 
@@ -41,7 +42,7 @@ const inputs = reactiveComputed(() => [
     validators: [Validation.phone('Please enter a valid phone number')],
   },
   {
-    id: 'feedback-email',
+    id: `${props.formId}-email`,
     name: 'email',
     type: 'email',
     placeholder: story?.value?.content?.email_label || 'Email',
@@ -51,11 +52,23 @@ const inputs = reactiveComputed(() => [
     validators: [Validation.email('Please enter a valid email address')],
   },
 ])
+
+const isFormValid = computed(() => {
+  if (!model.value) return false
+
+  return Object.values(model.value).every(field => {
+    return !!field.value?.trim() && !field.error
+  })
+})
 </script>
 
 <template>
   <form class="form" novalidate @submit.prevent>
     <div class="form__wrapper">
+      <legend v-if="title" class="form__title">{{ title }}</legend>
+      <p v-if="description" class="form__description">
+        {{ description }}
+      </p>
       <fieldset class="form__fields">
         <AppInput
           v-for="(input, idx) in inputs"
@@ -73,7 +86,12 @@ const inputs = reactiveComputed(() => [
           :validators="input.validators"
         />
       </fieldset>
-      <Button v-if="showButton" type="submit" class="form__btn">
+      <Button
+        v-if="showButton"
+        type="submit"
+        class="form__btn"
+        :disabled="!isFormValid"
+      >
         <span>{{ btnText }}</span>
         <LucideArrowUpRight />
       </Button>
@@ -100,6 +118,7 @@ const inputs = reactiveComputed(() => [
 
 .form__title {
   text-transform: uppercase;
+  text-align: center;
   color: var(--basic-white);
   @include subheading-h1;
 }
@@ -107,8 +126,9 @@ const inputs = reactiveComputed(() => [
 .form__description {
   font-size: vw(16);
   line-height: 1.25em;
-  margin-top: vw(4);
+  margin-top: vw(10);
   color: var(--neutral-200);
+  text-align: center;
   @include med;
 
   @media (max-width: $br1) {

@@ -67,15 +67,18 @@ defineProps<IProps>()
 }
 
 .project-concept__top {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(24, 1fr);
-  column-gap: vw(20);
-  grid-auto-flow: row;
+  @media (min-width: $br1) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    column-gap: vw(20);
+    grid-auto-flow: row;
+  }
 
   @media (max-width: $br1) {
-    grid-template-columns: repeat(4, 1fr);
-    column-gap: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -91,7 +94,6 @@ defineProps<IProps>()
 
   @media (max-width: $br1) {
     font-size: size(20, 14);
-    @include col(1, 4);
   }
 
   @media (max-width: $br4) {
@@ -105,8 +107,8 @@ defineProps<IProps>()
   }
 
   @media (max-width: $br1) {
-    @include col(1, 4);
     margin-top: 48px;
+    max-width: 70%;
   }
 }
 
@@ -114,6 +116,7 @@ defineProps<IProps>()
   font-size: vw(68);
   line-height: 1em;
   text-transform: uppercase;
+  width: 100%;
   max-width: vw(899);
   @include med;
 
@@ -134,7 +137,8 @@ defineProps<IProps>()
 
   @media (max-width: $br1) {
     margin-top: 16px;
-    max-width: 70%;
+    width: 100%;
+    max-width: 100%;
   }
 }
 

@@ -9,6 +9,8 @@ interface IProps {
 
 defineProps<IProps>()
 
+const { isFormModalOpened } = useAppState()
+
 const imgRef = ref<HTMLElement | null>(null)
 
 const st = ref<ScrollTrigger | null>(null)
@@ -33,6 +35,10 @@ const animate = () => {
     end: () => `bottom+=${window.innerHeight} bottom`,
     scrub: true,
   })
+}
+
+const handleForm = () => {
+  isFormModalOpened.value = true
 }
 
 onMounted(() => {
@@ -80,12 +86,13 @@ onBeforeUnmount(() => {
             {{ cta?.content?.manager?.content?.position }}
           </p>
         </div>
-        <Button type="button" class="meetings__btn">
+        <Button type="button" class="meetings__btn" @click="handleForm">
           <span> {{ cta?.content?.button_text }}</span>
           <LucideArrowUpRight />
         </Button>
       </div>
     </div>
+    <FormModal />
   </div>
 </template>
 

@@ -27,8 +27,8 @@ const formData = defineModel<IForm>()
   >
     <AppForm
       v-model="formData"
+      form-id="feedback"
       class="quiz__form"
-      title="fill out the form"
       :show-button="false"
       @submit="onSubmit"
     />
