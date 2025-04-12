@@ -27,6 +27,7 @@ console.log(props.content)
             :alt="content?.apartments[0]?.assets[0]?.alt"
           />
         </div>
+        <ProjectInteriorApartments :apartments="content?.apartments" />
       </div>
     </div>
   </section>

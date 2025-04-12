@@ -388,7 +388,6 @@ onBeforeUnmount(() => {
 
 .project-facilities__item-title {
   text-transform: uppercase;
-  flex: 1 0 auto;
   font-size: vw(24);
   line-height: 1em;
   @include med;

@@ -249,6 +249,13 @@ export interface iPlan {
   _uid: string
 }
 
+export interface iPlan {
+  component: string
+  label: string
+  link: iLink
+  _uid: string
+}
+
 export interface iApartment {
   area: string
   component: string
@@ -257,6 +264,7 @@ export interface iApartment {
   price: string
   sold_out: boolean
   assets: iImage[]
+  plan: iPlan[]
   _uid: string
 }
 
