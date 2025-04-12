@@ -24,7 +24,6 @@ defineProps<IProps>()
       </li>
     </ul>
     <div class="interior-apart__content">
-      <slot />
       <h3 class="interior-apart__name">
         {{ apartment?.name }}
       </h3>
