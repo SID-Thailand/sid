@@ -224,7 +224,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  st.value?.kill(true)
+  setTimeout(() => {
+    st.value?.kill(true)
+  }, 2000)
 })
 </script>
 
