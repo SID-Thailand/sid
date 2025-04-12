@@ -5,7 +5,7 @@ export const useAppState = () => {
   const isMenuOpened = useState('isMenuOpened', () => false)
   const isSlideModalOpened = useState('isSlideModalOpened', () => false)
   const isFormModalOpened = useState('isFormModalOpened', () => false)
-  const isUseLoader = useState('isUseLoader', () => true)
+  const isUseLoader = useState('isUseLoader', () => false)
 
   return {
     isInEditor,

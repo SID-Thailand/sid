@@ -3,12 +3,9 @@ import { createFocusTrap, type FocusTrap } from 'focus-trap'
 
 interface IProps {
   isOpen: boolean
-  duration?: number
 }
 
-const props = withDefaults(defineProps<IProps>(), {
-  duration: 0.3,
-})
+const props = defineProps<IProps>()
 
 const emit = defineEmits(['close'])
 

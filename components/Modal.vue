@@ -15,20 +15,29 @@ watch(
 
 <template>
   <ClientOnly>
-    <div class="modal" :class="{ 'modal--opened': isOpen }">
-      <div class="modal__backdrop" @click="emit('close')" />
-
-      <div class="modal__wrapper">
-        <div class="modal__content">
-          <button
-            type="button"
-            class="modal__close-btn"
+    <Teleport to="#teleports">
+      <Transition name="dialog">
+        <HeadlessDialogModal
+          :is-open="isOpen"
+          class="modal"
+          @close="emit('close')"
+        >
+          <HeadlessDialogBackdrop
+            class="modal__backdrop"
             @click="emit('close')"
           />
-          <slot />
-        </div>
-      </div>
-    </div>
+
+          <HeadlessDialogWindow class="modal__wrapper">
+            <button
+              type="button"
+              class="modal__close-btn"
+              @click="emit('close')"
+            />
+            <slot />
+          </HeadlessDialogWindow>
+        </HeadlessDialogModal>
+      </Transition>
+    </Teleport>
   </ClientOnly>
 </template>
 
@@ -36,20 +45,7 @@ watch(
 .modal {
   position: fixed;
   top: 0;
-  z-index: 90;
-  pointer-events: none;
-
-  &--opened {
-    pointer-events: auto;
-
-    .modal__wrapper {
-      opacity: 1;
-    }
-
-    .modal__backdrop {
-      opacity: 1;
-    }
-  }
+  z-index: 101;
 }
 
 .modal__backdrop {
@@ -65,7 +61,7 @@ watch(
     rgba(36, 36, 36, 0) 0%,
     #242424 100%
   );
-  opacity: 0;
+
   transition: opacity 0.6s ease;
 }
 
@@ -73,13 +69,14 @@ watch(
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -60%);
   width: 100%;
   height: fit-content;
   max-width: vw(555);
   padding: vw(60) vw(64);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+
+  transition: all 0.3s ease;
+  transition-property: transform, opacity;
   z-index: 95;
   background-color: var(--basic-black);
 
@@ -93,9 +90,29 @@ watch(
   }
 }
 
-.modal__content {
-  position: relative;
-  width: 100%;
-  height: 100%;
+.dialog-enter-from {
+  .modal__backdrop {
+    opacity: 0;
+  }
+  .modal__wrapper {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+}
+
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: opacity 0.6s;
+}
+
+.dialog-enter,
+.dialog-leave-to {
+  .modal__backdrop {
+    opacity: 0;
+  }
+  .modal__wrapper {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
 }
 </style>
