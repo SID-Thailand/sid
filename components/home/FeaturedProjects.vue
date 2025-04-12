@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { resize } from '@emotionagency/utils'
 import { gsap, ScrollTrigger } from '~/libs/gsap'
 
 import type { iHomeFeaturedProjects } from '~/types/story'
@@ -215,20 +214,11 @@ const makeAnimation = async () => {
   })
 }
 
-const onResize = () => {
-  st.value?.kill(true)
-  masterTl?.kill()
-
-  makeAnimation()
-}
-
 onMounted(() => {
-  resize.on(onResize)
+  makeAnimation()
 })
 
 onBeforeUnmount(() => {
-  resize.off(onResize)
-
   st.value?.kill(true)
 })
 </script>
