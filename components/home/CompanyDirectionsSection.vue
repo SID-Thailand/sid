@@ -147,7 +147,7 @@ const captionAnimation = (
       $prevTitle?.querySelectorAll('.word'),
       {
         duration: dur / 2,
-        y: '-100%',
+        y: '-110%',
       },
       0
     )
@@ -166,7 +166,7 @@ const captionAnimation = (
       $prevDesc?.querySelectorAll('.word'),
       {
         duration: dur / 2,
-        y: '-100%',
+        y: '-110%',
       },
       0
     )
@@ -252,13 +252,13 @@ const makeAnimation = async () => {
         const bounds = wrapper.getBoundingClientRect()
         const assetsBounds = assetsRef.value?.getBoundingClientRect()
 
-        if (bounds?.top < 150 && window.innerWidth > 860) {
+        if (bounds?.top < 150 && window.innerWidth > 460) {
           activeIdx.value = index
         }
 
         if (
           bounds?.top - 100 < assetsBounds?.bottom &&
-          window.innerWidth < 860
+          window.innerWidth < 460
         ) {
           activeIdx.value = index
         }
@@ -374,7 +374,7 @@ onBeforeUnmount(() => {
 }
 
 .interview__title-wrapper {
-  @media (min-width: $br1) {
+  @media (min-width: $br4) {
     display: flex;
     justify-content: flex-end;
     width: 100%;
@@ -413,12 +413,12 @@ onBeforeUnmount(() => {
   overflow: hidden;
   padding-top: vw(60);
 
-  @media (min-width: $br1) {
+  @media (min-width: $br4) {
     display: flex;
     justify-content: space-between;
   }
 
-  @media (max-width: $br1) {
+  @media (max-width: $br4) {
     margin-top: 40px;
     padding-top: 0px;
   }
@@ -428,19 +428,16 @@ onBeforeUnmount(() => {
   position: relative;
   width: vw(440);
   height: vw(496);
-  @media (max-width: $br1) {
+
+  @media (max-width: $br4) {
     margin: 0 auto;
     margin-top: 16px;
-
-    aspect-ratio: 440 / 496;
+    aspect-ratio: 343 / 400;
     height: auto;
-    max-height: 50%;
-    z-index: 10;
-    background-color: var(--neutral-600);
-  }
-  @media (max-width: $br4) {
     width: 100%;
     max-height: none;
+    z-index: 10;
+    background-color: var(--neutral-600);
   }
 }
 
@@ -453,7 +450,7 @@ onBeforeUnmount(() => {
 
 .interview__content-wrapper {
   color: var(--neutral-300);
-  @media (min-width: $br1) {
+  @media (min-width: $br4) {
     display: flex;
     justify-content: flex-end;
     width: 100%;
@@ -472,7 +469,7 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   @include subheading-h5;
 
-  @media (min-width: $br1) {
+  @media (min-width: $br4) {
     width: fit-content;
     max-width: vw(600);
   }
@@ -518,13 +515,12 @@ onBeforeUnmount(() => {
 }
 
 .interview__item {
-  @media (min-width: $br1) {
+  @media (min-width: $br4) {
     width: vw(785);
     padding-bottom: vw(124);
   }
 
-  @media (max-width: $br1) {
-    // opacity: 0;
+  @media (max-width: $br4) {
     margin-top: 40px;
   }
 }
