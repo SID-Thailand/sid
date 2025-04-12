@@ -61,7 +61,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .p-img-wrapper {
   position: relative;
   overflow: hidden;

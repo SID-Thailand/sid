@@ -30,6 +30,7 @@ export default defineNuxtConfig({
       { code: 'en', iso: 'en-US', baseDefault: true },
       { code: 'ru', iso: 'ru-RU' },
     ],
+    autoDetectLanguage: false,
   },
 
   eslint: {
