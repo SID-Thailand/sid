@@ -8,6 +8,8 @@ interface IProps {
 }
 
 defineProps<IProps>()
+
+const { isFormModalOpened } = useAppState()
 </script>
 
 <template>
@@ -16,7 +18,12 @@ defineProps<IProps>()
       <h2 class="connect__title">
         {{ content?.title }}
       </h2>
-      <Button type="button" view="dark" class="connect__btn">
+      <Button
+        type="button"
+        view="dark"
+        class="connect__btn"
+        @click="isFormModalOpened = true"
+      >
         <span>{{ content?.button_text }}</span>
       </Button>
     </div>

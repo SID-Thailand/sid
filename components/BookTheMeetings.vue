@@ -92,7 +92,6 @@ onBeforeUnmount(() => {
         </Button>
       </div>
     </div>
-    <FormModal />
   </div>
 </template>
 
