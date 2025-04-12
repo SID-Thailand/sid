@@ -71,9 +71,11 @@ watch(
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -60%);
+  transform: translate(-50%, -50%);
   width: 100%;
   height: fit-content;
+  max-height: 100svh;
+  overflow: auto;
   max-width: vw(555);
   padding: vw(60) vw(64);
 
