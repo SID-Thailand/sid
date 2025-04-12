@@ -82,7 +82,7 @@ const { story } = await useFooterStory()
             </a>
           </li>
         </ul>
-        <form class="footer__form">
+        <form class="footer__form" novalidate @submit.prevent>
           <legend class="footer__title">
             {{ story?.content?.newsletter_title }}
           </legend>

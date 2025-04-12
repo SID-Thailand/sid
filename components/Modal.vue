@@ -16,7 +16,7 @@ watch(
 <template>
   <ClientOnly>
     <Teleport to="#teleports">
-      <Transition name="dialog">
+      <Transition name="dialog" :duration="600">
         <HeadlessDialogModal
           :is-open="isOpen"
           class="modal"
@@ -102,11 +102,6 @@ watch(
     opacity: 0;
     transform: translate(-50%, -40%);
   }
-}
-
-.dialog-enter-active,
-.dialog-leave-active {
-  transition: opacity 0.6s;
 }
 
 .dialog-enter,

@@ -15,6 +15,8 @@ const props = withDefaults(defineProps<IProps>(), {
   showButton: true,
 })
 
+const emit = defineEmits(['submit'])
+
 const { story } = await useFormStory()
 
 const model = defineModel<IForm>()
@@ -60,10 +62,19 @@ const isFormValid = computed(() => {
     return !!field.value?.trim() && !field.error
   })
 })
+
+const onSubmit = () => {
+  if (isFormValid.value) {
+    // Handle form submission
+    emit('submit', model.value)
+  } else {
+    // Handle form validation errors
+  }
+}
 </script>
 
 <template>
-  <form class="form" novalidate @submit.prevent>
+  <form class="form" novalidate @submit.prevent="onSubmit">
     <div class="form__wrapper">
       <legend v-if="title" class="form__title">{{ title }}</legend>
       <p v-if="description" class="form__description">

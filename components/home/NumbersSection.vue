@@ -8,6 +8,8 @@ interface IProps {
 }
 
 defineProps<IProps>()
+
+const { isFormModalOpened } = useAppState()
 </script>
 
 <template>
@@ -34,7 +36,11 @@ defineProps<IProps>()
           />
         </li>
       </ul>
-      <Button type="button" class="numbers-stat__btn">
+      <Button
+        type="button"
+        class="numbers-stat__btn"
+        @click="isFormModalOpened = true"
+      >
         <span>{{ content?.button_text }}</span>
         <LucidePlus />
       </Button>

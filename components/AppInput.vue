@@ -20,8 +20,6 @@ const model = defineModel<string>()
 const errorModel = defineModel<boolean>('errors')
 
 const onInput = (data: iInputData) => {
-  console.log(data)
-
   errorModel.value = !!data.error
 }
 </script>
