@@ -89,11 +89,14 @@ const { isFormModalOpened } = useAppState()
   gap: vw(20);
   grid-auto-flow: row;
   margin-top: vw(100);
-
   @media (max-width: $br1) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     margin-top: 60px;
     gap: 32px;
+  }
+
+  @media (max-width: $br3) {
+    grid-template-columns: 1fr;
   }
 }
 
