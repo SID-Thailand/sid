@@ -27,6 +27,8 @@ console.log(props.content)
             :alt="content?.apartments[0]?.assets[0]?.alt"
           />
         </div>
+      </div>
+      <div class="project-interior__apartments">
         <ProjectInteriorApartments :apartments="content?.apartments" />
       </div>
     </div>
@@ -98,6 +100,14 @@ console.log(props.content)
 
   @media (max-width: $br1) {
     margin-top: 24px;
+  }
+}
+
+.project-interior__apartments {
+  margin-top: vw(200);
+
+  @media (max-width: $br1) {
+    margin-top: 60px;
   }
 }
 </style>

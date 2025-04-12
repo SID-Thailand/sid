@@ -10,15 +10,14 @@ defineProps<IProps>()
 
 <template>
   <div class="interior-aparts">
+    <ProjectInteriorDropdown :apartments-list="apartments" />
     <ul class="interior-aparts__list">
       <li
         v-for="(apartment, idx) in apartments"
         :key="idx"
         class="interior-aparts__item"
       >
-        <ProjectInteriorApartment :apartment="apartment">
-          <ProjectInteriorDropdown :apartments-list="apartments" />
-        </ProjectInteriorApartment>
+        <ProjectInteriorApartment :apartment="apartment" />
       </li>
     </ul>
   </div>
