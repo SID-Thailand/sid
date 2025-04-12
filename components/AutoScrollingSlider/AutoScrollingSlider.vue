@@ -23,10 +23,9 @@ let sliderInstance: Slider | null = null
 const isIndicatorActive = ref(false)
 const isIndicatorVisible = ref(false)
 
-const setIndicator = (x: number, y: number, el: HTMLElement) => {
-  const rect = el.getBoundingClientRect()
-  dragIndicator.value?.style.setProperty('--indicator-x', `${x - rect.left}px`)
-  dragIndicator.value?.style.setProperty('--indicator-y', `${y - rect.top}px`)
+const setIndicator = (x: number, y: number) => {
+  dragIndicator.value?.style.setProperty('--indicator-x', `${x}px`)
+  dragIndicator.value?.style.setProperty('--indicator-y', `${y}px`)
 }
 
 onMounted(async () => {
@@ -52,13 +51,7 @@ onBeforeUnmount(() => {
       ref="el"
       class="scrolling-slider__content"
       data-slider
-      @mousemove="
-        setIndicator(
-          $event.clientX,
-          $event.clientY,
-          $event.currentTarget as HTMLElement
-        )
-      "
+      @mousemove="setIndicator($event.clientX, $event.clientY)"
       @mouseenter="isIndicatorVisible = true"
       @mouseleave="isIndicatorVisible = false"
       @mousedown="isIndicatorActive = true"
@@ -84,6 +77,7 @@ onBeforeUnmount(() => {
           :item="item as any"
         />
       </div>
+
       <div
         ref="dragIndicator"
         class="scrolling-slider__drag"
@@ -154,7 +148,7 @@ onBeforeUnmount(() => {
 }
 
 .scrolling-slider__drag {
-  position: absolute;
+  position: fixed;
   z-index: 1000;
   width: vw(48);
   height: vw(48);
