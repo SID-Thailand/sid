@@ -15,9 +15,10 @@ watch(
 
 <template>
   <ClientOnly>
-    <div class="modal" :class="{ 'modal--open': isOpen }">
+    <div class="modal" :class="{ 'modal--opened': isOpen }">
       <div class="modal__backdrop" @click="emit('close')" />
-      <div class="modal__wrapper container">
+
+      <div class="modal__wrapper">
         <div class="modal__content">
           <button
             type="button"
@@ -34,96 +35,67 @@ watch(
 <style scoped lang="scss">
 .modal {
   position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  height: 100%;
-  width: 100%;
-  z-index: 99;
-  opacity: 0;
+  top: 0;
+  z-index: 90;
   pointer-events: none;
-  transition: opacity 0.3s ease;
 
-  &--open {
+  &--opened {
     pointer-events: auto;
-    opacity: 1;
+
+    .modal__wrapper {
+      opacity: 1;
+    }
+
+    .modal__backdrop {
+      opacity: 1;
+    }
   }
 }
 
 .modal__backdrop {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  backdrop-filter: blur(60px);
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  backdrop-filter: blur(12px);
   background-image: linear-gradient(
     180deg,
     rgba(36, 36, 36, 0) 0%,
     #242424 100%
   );
+  opacity: 0;
+  transition: opacity 0.6s ease;
 }
 
 .modal__wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
-  height: 100%;
+  height: fit-content;
+  max-width: vw(555);
+  padding: vw(60) vw(64);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 95;
+  background-color: var(--basic-black);
+
+  @media (max-width: $br1) {
+    max-width: size(555, 343);
+    padding: 64px 48px;
+  }
+
+  @media (max-width: $br4) {
+    max-width: 90%;
+  }
 }
 
 .modal__content {
   position: relative;
   width: 100%;
-  height: fit-content;
-  padding: vw(60) vw(64);
-  background-color: var(--basic-black);
-  max-width: vw(555);
-  z-index: 2;
-
-  @media (max-width: $br1) {
-    padding: 48px 64px;
-    max-width: 343px;
-  }
-}
-
-.modal__close-btn {
-  position: absolute;
-  top: vw(20);
-  right: vw(20);
-  width: vw(22);
-  height: vw(22);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 24px;
-    height: 2px;
-    background-color: var(--basic-white);
-    transform-origin: center;
-  }
-
-  &::before {
-    transform: translate(-50%, -50%) rotate(45deg);
-  }
-
-  &::after {
-    transform: translate(-50%, -50%) rotate(-45deg);
-  }
-
-  @media (max-width: $br1) {
-    top: 16px;
-    right: 16px;
-    width: 15px;
-    height: 15px;
-  }
+  height: 100%;
 }
 </style>
