@@ -148,8 +148,13 @@ const specAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
   const $prevTitle = $prevItem?.querySelector('.fpc__title') as HTMLElement
   const $prevSpecs = $prevItem?.querySelectorAll('.fpc__spec')
 
-  $prevItem && tl.to($prevItem, { duration: dur, pointerEvents: 'none' }, delay)
-  tl.to(item, { duration: dur, pointerEvents: 'auto' }, delay)
+  $prevItem &&
+    tl.to(
+      $prevItem,
+      { duration: dur, pointerEvents: 'none' },
+      duration * idx * 1.3
+    )
+  tl.to(item, { duration: dur, pointerEvents: 'auto' }, duration * idx * 1.3)
 
   const tl2 = gsap.timeline()
 
@@ -202,7 +207,7 @@ const makeAnimation = async () => {
 
   st.value = ScrollTrigger.create({
     trigger: contentRef.value as HTMLElement,
-    start: () => 'top top',
+    start: () => 'top+=2.5% top',
     end: () => 'bottom-=5% bottom',
     scrub: true,
     animation: masterTl,
