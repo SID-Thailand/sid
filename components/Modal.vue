@@ -28,12 +28,12 @@ watch(
           />
 
           <HeadlessDialogWindow class="modal__wrapper">
+            <button
+              type="button"
+              class="modal__close-btn"
+              @click="emit('close')"
+            />
             <div class="modal__content">
-              <button
-                type="button"
-                class="modal__close-btn"
-                @click="emit('close')"
-              />
               <slot />
             </div>
           </HeadlessDialogWindow>
@@ -122,5 +122,43 @@ watch(
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.modal__close-btn {
+  position: absolute;
+  top: vw(20);
+  right: vw(20);
+  width: vw(22);
+  height: vw(22);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 2px;
+    background-color: var(--basic-white);
+    transform-origin: center;
+  }
+
+  &::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  &::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  @media (max-width: $br1) {
+    top: 16px;
+    right: 16px;
+    width: 15px;
+    height: 15px;
+  }
 }
 </style>
