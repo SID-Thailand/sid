@@ -28,12 +28,14 @@ watch(
           />
 
           <HeadlessDialogWindow class="modal__wrapper">
-            <button
-              type="button"
-              class="modal__close-btn"
-              @click="emit('close')"
-            />
-            <slot />
+            <div class="modal__content">
+              <button
+                type="button"
+                class="modal__close-btn"
+                @click="emit('close')"
+              />
+              <slot />
+            </div>
           </HeadlessDialogWindow>
         </HeadlessDialogModal>
       </Transition>
@@ -114,5 +116,11 @@ watch(
     opacity: 0;
     transform: translate(-50%, -40%);
   }
+}
+
+.modal__content {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 </style>
