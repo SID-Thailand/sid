@@ -25,7 +25,6 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 #scroll-container {
-  overflow: hidden;
   will-change: scroll-position;
   @media (max-width: $br1) {
     overflow-y: auto;
