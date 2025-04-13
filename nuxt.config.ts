@@ -56,4 +56,10 @@ export default defineNuxtConfig({
       process.env.NODE_ENV === 'production' ? '@emotionagency/utils' : null,
     ],
   },
+
+  runtimeConfig: {
+    public: {
+      env: process.env.NODE_ENV,
+    },
+  },
 })
