@@ -5,22 +5,41 @@ interface IProps {
   apartments: iApartment[]
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+const { selectedApartment, handleSelectApartment } = useApartments(
+  props.apartments
+)
+
+const onSelectApartment = (apartment: iApartment) => {
+  handleSelectApartment(apartment)
+}
 </script>
 
 <template>
   <div class="interior-aparts">
-    <ProjectInteriorDropdown :apartments-list="apartments" />
-    <ul class="interior-aparts__list">
-      <li
-        v-for="(apartment, idx) in apartments"
-        :key="idx"
-        class="interior-aparts__item"
-      >
-        <ProjectInteriorApartment :apartment="apartment" />
-      </li>
-    </ul>
+    <ProjectInteriorDropdown
+      :apartments-list="apartments"
+      :selected-apartment="selectedApartment"
+      @select="onSelectApartment"
+    />
+
+    <Transition name="fade" mode="out-in">
+      <ProjectInteriorApartment
+        :key="selectedApartment._uid"
+        :apartment="selectedApartment"
+      />
+    </Transition>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

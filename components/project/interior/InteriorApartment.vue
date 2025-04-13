@@ -58,4 +58,45 @@ defineProps<IProps>()
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.interior-apart {
+  display: flex;
+  align-items: flex-start;
+  gap: vw(76);
+
+  @media (max-width: $br1) {
+    flex-direction: column;
+    gap: 48px;
+  }
+}
+.interior-apart__img-list {
+  width: 100%;
+  max-width: vw(900);
+  flex: 1 0 auto;
+
+  @media (max-width: $br1) {
+    max-width: 100%;
+  }
+}
+.interior-apart__img-item {
+}
+.iterior-apart__img {
+}
+.interior-apart__content {
+  width: 100%;
+}
+.interior-apart__name {
+}
+.interior-apart__desc {
+}
+.interior-apart__about {
+}
+.interior-apart__about-item {
+}
+.interior-apart__line {
+}
+.interior-apart__title {
+}
+.interior-apart__text {
+}
+</style>

@@ -4,22 +4,22 @@ import type { iApartment } from '~/types/story'
 
 interface IProps {
   apartmentsList: iApartment[]
+  selectedApartment: iApartment
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const emit = defineEmits(['select'])
 
 const isOpen = ref(false)
-const selectedApartment = ref<iApartment>(props.apartmentsList[0])
+
+const onSelect = (item: iApartment) => {
+  emit('select', item)
+  handleToggleMenu()
+}
 
 const handleToggleMenu = () => {
   isOpen.value = !isOpen.value
-}
-
-const onSelect = (item: iApartment) => {
-  selectedApartment.value = item
-  emit('select', selectedApartment.value)
 }
 </script>
 
@@ -45,7 +45,7 @@ const onSelect = (item: iApartment) => {
           class="interior-dropdown__item"
           :class="{
             'interior-dropdown__item--active':
-              selectedApartment._uid === item._uid,
+              selectedApartment?._uid === item?._uid,
           }"
           @click="onSelect(item)"
         >
@@ -109,6 +109,7 @@ const onSelect = (item: iApartment) => {
 
 .interior-dropdown__menu {
   position: absolute;
+  z-index: 10;
   top: vw(30);
   left: 0;
   max-height: 0;
