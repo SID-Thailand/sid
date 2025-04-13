@@ -38,7 +38,7 @@ console.log(props.content)
 <style scoped lang="scss">
 .project-interior {
   position: relative;
-  background-color: var(--basic-white);
+  background-color: var(--neutral-100);
   color: var(--basic-black);
   padding-top: vw(40);
   padding-bottom: vw(200);

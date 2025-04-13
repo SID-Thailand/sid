@@ -110,7 +110,7 @@ const handleToggleMenu = () => {
 .interior-dropdown__menu {
   position: absolute;
   z-index: 10;
-  top: vw(30);
+  top: vw(22);
   left: 0;
   max-height: 0;
   max-width: vw(375);
@@ -121,7 +121,7 @@ const handleToggleMenu = () => {
 
   @media (max-width: $br1) {
     max-width: 385px;
-    top: 22px;
+    top: 20px;
   }
 
   &--opened {

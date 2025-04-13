@@ -38,6 +38,7 @@ const onSelectApartment = (apartment: iApartment) => {
 .fade-leave-active {
   transition: opacity 0.4s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
