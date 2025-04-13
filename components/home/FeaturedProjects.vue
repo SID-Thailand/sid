@@ -358,7 +358,7 @@ onBeforeUnmount(() => {
 
 .featured-projects__scroll-wrapper {
   position: relative;
-  height: calc(var(--height) * 1vh);
+  height: calc(var(--height) * 1.3vh);
 }
 
 .featured-projects__content {
