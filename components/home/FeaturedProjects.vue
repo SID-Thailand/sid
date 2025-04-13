@@ -18,6 +18,10 @@ const projectCount = computed(() => {
   return content?.featured_projects.length || 0
 })
 
+const height = computed(() => {
+  return projectCount.value * 100
+})
+
 const duration = 1 / projectCount.value
 
 const contentRef = ref<HTMLElement | null>(null)
@@ -232,7 +236,11 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="featured-projects">
-    <div ref="contentRef" class="featured-projects__scroll-wrapper">
+    <div
+      ref="contentRef"
+      class="featured-projects__scroll-wrapper"
+      :style="{ '--height': `${height}` }"
+    >
       <div class="featured-projects__content">
         <div class="featured-projects__bg-wrapper">
           <CustomImage
@@ -350,7 +358,7 @@ onBeforeUnmount(() => {
 
 .featured-projects__scroll-wrapper {
   position: relative;
-  height: 600vh;
+  height: calc(var(--height) * 1vh);
 }
 
 .featured-projects__content {
