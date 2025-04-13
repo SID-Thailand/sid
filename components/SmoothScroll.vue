@@ -26,10 +26,6 @@ onBeforeUnmount(() => {
 <style lang="scss">
 #scroll-container {
   will-change: scroll-position;
-  @media (max-width: $br1) {
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
