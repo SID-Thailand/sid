@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TransitionProps } from 'vue'
+
 import { LucidePlus } from 'lucide-vue-next'
 import type { iProjectContent } from '~/types/story'
 
@@ -11,19 +13,32 @@ const props = defineProps<IProps>()
 const { spec_1, spec_2, spec_3 } = props.content
 
 const specs = computed(() => [spec_1, spec_2, spec_3].filter(Boolean))
+
+const route = useRoute()
+
+const pageTransitionObject = route.meta.pageTransition as TransitionProps
+
+const isShouldRenderImage = pageTransitionObject.name !== 'project'
 </script>
 
 <template>
   <section class="project-hero">
     <div class="project-hero__wrapper container">
-      <ParallaxImg
-        :src="content?.cover?.filename"
-        :alt="content?.cover?.alt"
-        data-preload="true"
-        class="project-hero__img"
-      />
+      <div class="project-hero__img-wrapper">
+        <CustomImage
+          v-if="isShouldRenderImage"
+          :src="content?.cover?.filename"
+          :alt="content?.cover?.alt"
+          data-preload="true"
+          class="project-hero__img"
+        />
+      </div>
       <div class="project-hero__content">
-        <h1 data-title class="project-hero__title">{{ content?.name }}</h1>
+        <div class="project-hero__title-wrapper">
+          <h1 data-title class="project-hero__title">
+            {{ content?.name }}
+          </h1>
+        </div>
         <ul class="project-hero__list">
           <li
             v-for="(item, idx) in specs"
@@ -57,11 +72,17 @@ const specs = computed(() => [spec_1, spec_2, spec_3].filter(Boolean))
   width: 100%;
 }
 
-.project-hero__img {
+.project-hero__img-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.project-hero__img {
   display: block;
   object-fit: cover;
   width: 100%;

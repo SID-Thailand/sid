@@ -224,7 +224,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  st.value?.kill(true)
+  setTimeout(() => {
+    st.value?.kill(true)
+  }, 2000)
 })
 </script>
 
@@ -253,7 +255,7 @@ onBeforeUnmount(() => {
               v-for="(item, idx) in projects"
               :key="idx"
               class="fpc__image-item"
-              :class="{ active: activeProject >= idx }"
+              :class="{ active: activeProject === idx }"
               :style="{ zIndex: idx + 1 }"
             >
               <div class="fpc__img-wrapper">
@@ -261,6 +263,7 @@ onBeforeUnmount(() => {
                   :src="item?.content?.cover?.filename"
                   :alt="item?.content?.cover?.alt"
                   class="fpc__img"
+                  :data-slug="item?.slug"
                 />
               </div>
             </div>

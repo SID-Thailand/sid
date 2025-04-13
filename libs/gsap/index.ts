@@ -6,7 +6,7 @@ const GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2
 const RECIPROCAL_GR = 1 / GOLDEN_RATIO
 const DURATION = RECIPROCAL_GR
 
-if (process.client) {
+if (globalThis.document) {
   gsap.registerPlugin(Flip, ScrollTrigger)
 
   gsap.config({
