@@ -7,6 +7,7 @@ onMounted(() => {
     passive: false,
     friction: 0.06,
     stepSize: 0.8,
+    scrollbar: true,
     raf,
   })
 })
@@ -22,7 +23,7 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #scroll-container {
   overflow: hidden;
   will-change: scroll-position;
@@ -60,7 +61,7 @@ onBeforeUnmount(() => {
         width: 10px;
         opacity: 0.7;
         border-radius: 10px;
-        background-color: var(--accent);
+        background: var(--accent-primary);
       }
     }
   }
@@ -77,6 +78,7 @@ onBeforeUnmount(() => {
   border-radius: 7px;
   pointer-events: none;
   height: 100px;
+  min-height: 40px;
   background: #6b6b6b;
   display: block;
   position: relative;
@@ -85,7 +87,7 @@ onBeforeUnmount(() => {
     width 0.2s ease,
     opacity 0.3s ease,
     border-radius 0.3s ease,
-    background-color 0.3s ease;
+    background 0.3s ease;
   right: 0;
   opacity: 0;
   float: right;
@@ -96,7 +98,7 @@ onBeforeUnmount(() => {
     width: 10px;
     opacity: 0.7;
     border-radius: 10px;
-    background-color: var(--accent);
+    background: var(--accent-primary);
   }
 }
 </style>
