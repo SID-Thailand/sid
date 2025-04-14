@@ -23,8 +23,8 @@ console.log(props.content)
         <div class="project-interior__img-wrapper">
           <CustomImage
             class="project-interior__img"
-            :src="content?.apartments[0]?.assets[0]?.filename"
-            :alt="content?.apartments[0]?.assets[0]?.alt"
+            :src="content?.asset?.filename"
+            :alt="content?.asset?.alt"
           />
         </div>
       </div>
