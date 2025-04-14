@@ -171,7 +171,7 @@ onMounted(() => {
   line-height: 1em;
   text-transform: uppercase;
   text-align: center;
-  margin-top: vw(12);
+  margin-top: vw(18);
   max-width: vw(580);
   @include med;
 
@@ -192,7 +192,7 @@ onMounted(() => {
   gap: vw(56);
   grid-auto-flow: row;
   justify-items: center;
-  margin-top: vw(20);
+  margin-top: vw(60);
 
   @media (max-width: $br1) {
     margin-top: 40px;
