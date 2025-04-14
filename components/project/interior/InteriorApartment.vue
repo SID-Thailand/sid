@@ -22,6 +22,7 @@ defineProps<IProps>()
           v-for="(img, idx) in apartment?.assets"
           :key="idx"
           class="interior-apart__img-item"
+          :class="{ 'interior-apart__img-item--active': idx === 0 }"
         >
           <CustomImage
             :src="img?.filename"
@@ -94,8 +95,7 @@ defineProps<IProps>()
   }
 
   @media (max-width: $br1) {
-    height: 100%;
-    max-height: 222px;
+    position: relative;
     width: 100vw;
     overflow-x: auto;
     margin-top: 40px;
@@ -127,12 +127,26 @@ defineProps<IProps>()
   }
 }
 
+.interior-apart__img-item {
+  @media (min-width: $br1) {
+    max-width: vw(336);
+
+    &--active {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+}
+
 .iterior-apart__img {
   display: block;
   height: auto;
+  width: fit-content;
 
   @media (max-width: $br1) {
-    aspect-ratio: 332 / 222;
+    width: 100%;
+    height: 100%;
+    max-height: 222px;
   }
 }
 
