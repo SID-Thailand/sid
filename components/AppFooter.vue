@@ -35,37 +35,44 @@ const { story } = await useFooterStory()
             </a>
           </li>
         </ul>
-        <ul class="footer__list">
-          <li class="footer__item">
-            <h3 class="footer__label">
-              {{ story?.content?.contacts?.content?.items[2]?.title }}
-            </h3>
-            <a
-              :href="
-                'mailto:' +
-                story?.content?.contacts?.content?.items[2]?.item[0]?.link?.url
-              "
-              target="_blank"
-              class="footer__text underline-reverse"
-            >
-              {{ story?.content?.contacts?.content?.items[2]?.item[0]?.label }}
-            </a>
-          </li>
-          <li class="footer__item">
-            <h3 class="footer__label">
-              {{ story?.content?.contacts?.content?.items[3]?.title }}
-            </h3>
-            <a
-              :href="
-                'tel:' +
-                story?.content?.contacts?.content?.items[3]?.item[0]?.label
-              "
-              class="footer__text underline-reverse"
-            >
-              {{ story?.content?.contacts?.content?.items[3]?.item[0]?.label }}
-            </a>
-          </li>
-          <li class="footer__item">
+        <div class="footer__list-wrapper">
+          <ul class="footer__list">
+            <li class="footer__item">
+              <h3 class="footer__label">
+                {{ story?.content?.contacts?.content?.items[2]?.title }}
+              </h3>
+              <a
+                :href="
+                  'mailto:' +
+                  story?.content?.contacts?.content?.items[2]?.item[0]?.link
+                    ?.url
+                "
+                target="_blank"
+                class="footer__text underline-reverse"
+              >
+                {{
+                  story?.content?.contacts?.content?.items[2]?.item[0]?.label
+                }}
+              </a>
+            </li>
+            <li class="footer__item">
+              <h3 class="footer__label">
+                {{ story?.content?.contacts?.content?.items[3]?.title }}
+              </h3>
+              <a
+                :href="
+                  'tel:' +
+                  story?.content?.contacts?.content?.items[3]?.item[0]?.label
+                "
+                class="footer__text underline-reverse"
+              >
+                {{
+                  story?.content?.contacts?.content?.items[3]?.item[0]?.label
+                }}
+              </a>
+            </li>
+          </ul>
+          <div class="footer__socials">
             <h3 class="footer__label">
               {{ story?.content?.contacts?.content?.items[4]?.title }}:
             </h3>
@@ -80,8 +87,8 @@ const { story } = await useFooterStory()
             >
               {{ item?.label }}
             </a>
-          </li>
-        </ul>
+          </div>
+        </div>
         <form class="footer__form" novalidate @submit.prevent>
           <legend class="footer__title">
             {{ story?.content?.newsletter_title }}
@@ -144,6 +151,10 @@ const { story } = await useFooterStory()
   flex-direction: column;
   row-gap: vw(30);
 
+  @media (max-width: $br1) {
+    row-gap: 20px;
+  }
+
   &:nth-of-type(1) {
     @media (min-width: $br1) {
       @include col(1, 6);
@@ -171,6 +182,19 @@ const { story } = await useFooterStory()
   }
 }
 
+.footer__socials {
+  display: flex;
+  flex-direction: column;
+  row-gap: vw(6);
+  text-transform: uppercase;
+  margin-top: vw(38);
+
+  @media (max-width: $br1) {
+    row-gap: 26px;
+    margin-top: 60px;
+  }
+}
+
 .footer__label {
   width: fit-content;
   position: relative;
@@ -183,6 +207,12 @@ const { story } = await useFooterStory()
   position: relative;
   color: var(--basic-white);
   @include subheading-h5;
+}
+
+.footer__list-wrapper {
+  @media (max-width: $br1) {
+    margin-top: 60px;
+  }
 }
 
 .footer__form {
