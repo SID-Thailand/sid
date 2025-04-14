@@ -246,12 +246,6 @@ onBeforeUnmount(() => {
     z-index: 2;
   }
 
-  &:hover {
-    &::before {
-      opacity: 0.9;
-    }
-  }
-
   &::before {
     content: '';
     position: absolute;
