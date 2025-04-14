@@ -292,7 +292,7 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: flex-end;
     width: 100%;
-    margin-bottom: vw(200);
+    margin-bottom: vw(140);
   }
 }
 
@@ -333,7 +333,7 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $br4) {
-    margin-top: 40px;
+    margin-top: 24px;
     padding-top: 0px;
   }
 }
