@@ -8,11 +8,13 @@ interface IProps {
   title?: string
   description?: string
   btnText?: string
+  btnPosition?: 'left' | 'right' | 'center'
   showButton?: boolean
 }
 
 const props = withDefaults(defineProps<IProps>(), {
   showButton: true,
+  btnPosition: 'center',
 })
 
 const emit = defineEmits(['submit'])
@@ -75,7 +77,14 @@ const onSubmit = () => {
 
 <template>
   <form class="form" novalidate @submit.prevent="onSubmit">
-    <div class="form__wrapper">
+    <div
+      class="form__wrapper"
+      :class="{
+        'form__wrapper--left': btnPosition === 'left',
+        'form__wrapper--right': btnPosition === 'right',
+        'form__wrapper--center': btnPosition === 'center',
+      }"
+    >
       <legend v-if="title" class="form__title">{{ title }}</legend>
       <p v-if="description" class="form__description">
         {{ description }}
@@ -110,7 +119,7 @@ const onSubmit = () => {
   </form>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .form {
   position: relative;
   width: 100%;
@@ -121,6 +130,18 @@ const onSubmit = () => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
+  &--left {
+    align-items: flex-start;
+  }
+
+  &--right {
+    align-items: flex-end;
+  }
+
+  &--center {
+    align-items: center;
+  }
 }
 
 .form__top {

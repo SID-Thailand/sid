@@ -34,3 +34,11 @@ const formData = defineModel<IForm>()
     />
   </QuizStepWrapper>
 </template>
+
+<style scoped lang="scss">
+.quiz__form {
+  @media (min-width: $br1) {
+    max-width: vw(543);
+  }
+}
+</style>

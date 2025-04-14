@@ -5,9 +5,7 @@ interface IProps {
   content: iProjectInterior
 }
 
-const props = defineProps<IProps>()
-
-console.log(props.content)
+defineProps<IProps>()
 </script>
 
 <template>
