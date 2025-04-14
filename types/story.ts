@@ -273,6 +273,7 @@ export interface iProjectInterior {
   apartments: iApartment[]
   text: string
   title: string
+  asset: iImage
   _uid: string
 }
 

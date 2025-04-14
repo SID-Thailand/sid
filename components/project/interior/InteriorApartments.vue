@@ -5,22 +5,68 @@ interface IProps {
   apartments: iApartment[]
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+const { selectedApartment, handleSelectApartment } = useApartments(
+  props.apartments
+)
+
+const onSelectApartment = (apartment: iApartment) => {
+  handleSelectApartment(apartment)
+}
 </script>
 
 <template>
   <div class="interior-aparts">
-    <ProjectInteriorDropdown :apartments-list="apartments" />
-    <ul class="interior-aparts__list">
-      <li
-        v-for="(apartment, idx) in apartments"
-        :key="idx"
-        class="interior-aparts__item"
-      >
-        <ProjectInteriorApartment :apartment="apartment" />
-      </li>
-    </ul>
+    <div class="interior-aparts__dropdown-wrapper">
+      <div class="interior-aparts__hidden-block" />
+      <ProjectInteriorDropdown
+        :apartments-list="apartments"
+        :selected-apartment="selectedApartment"
+        class="interior-aparts__dropdown"
+        @select="onSelectApartment"
+      />
+    </div>
+
+    <Transition name="fade" mode="out-in">
+      <ProjectInteriorApartment
+        :key="selectedApartment._uid"
+        :apartment="selectedApartment"
+      />
+    </Transition>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.interior-aparts__dropdown-wrapper {
+  @media (min-width: $br1) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: vw(76);
+  }
+}
+
+.interior-aparts__hidden-block {
+  @media (min-width: $br1) {
+    display: block;
+    max-width: vw(900);
+    width: 100%;
+  }
+}
+
+.interior-aparts__dropdown {
+  width: 100%;
+  position: relative;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

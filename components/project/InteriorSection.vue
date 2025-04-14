@@ -23,8 +23,8 @@ console.log(props.content)
         <div class="project-interior__img-wrapper">
           <CustomImage
             class="project-interior__img"
-            :src="content?.apartments[0]?.assets[0]?.filename"
-            :alt="content?.apartments[0]?.assets[0]?.alt"
+            :src="content?.asset?.filename"
+            :alt="content?.asset?.alt"
           />
         </div>
       </div>
@@ -38,7 +38,7 @@ console.log(props.content)
 <style scoped lang="scss">
 .project-interior {
   position: relative;
-  background-color: var(--basic-white);
+  background-color: var(--neutral-100);
   color: var(--basic-black);
   padding-top: vw(40);
   padding-bottom: vw(200);
