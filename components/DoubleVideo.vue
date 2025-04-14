@@ -31,8 +31,9 @@ onMounted(() => {
 
   st.value = ScrollTrigger.create({
     trigger: sectionRef.value as HTMLElement,
-    start: () => 'top-=50% top',
-    end: () => 'bottom bottom',
+    start: () => `top-=${window.innerHeight * 0.75} top`,
+    end: () => `bottom+=${window.innerHeight * 0.75} bottom`,
+    markers: true,
     onUpdate: self => {
       const inView = self.isActive
       if (isClicked.value) {
