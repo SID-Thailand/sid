@@ -27,9 +27,6 @@ const itemsCount = computed(() => {
   return $wrappers.value.length
 })
 
-let titleSplitter: any = null
-let descSplitter: any = null
-
 const duration = computed(() => 1 / itemsCount.value)
 
 let masterTl
@@ -37,16 +34,6 @@ let masterTl
 const prepareItems = async () => {
   if (!$assets.value) {
     return
-  }
-
-  if (titleSplitter) {
-    titleSplitter.revert()
-    titleSplitter = null
-  }
-
-  if (descSplitter) {
-    descSplitter.revert()
-    descSplitter = null
   }
 
   $assets.value.forEach((item, index) => {
@@ -60,29 +47,6 @@ const prepareItems = async () => {
   })
 
   await nextTick()
-
-  $assets.value.forEach((item: HTMLElement, idx: number) => {
-    const $curTitle = item.querySelector('.interview__name') as HTMLElement
-    const $curDesc = item.querySelector(
-      '.interview__description'
-    ) as HTMLElement
-
-    titleSplitter = new TextSplitter($curTitle, {
-      splitTypeTypes: 'lines,words',
-    })
-
-    descSplitter = new TextSplitter($curDesc, {
-      splitTypeTypes: 'lines,words',
-    })
-
-    if (idx === 0) {
-      return
-    }
-
-    gsap.set(item, { pointerEvents: 'none' })
-    gsap.set($curTitle.querySelectorAll('.word'), { y: '100%' })
-    gsap.set($curDesc.querySelectorAll('.word'), { y: '100%' })
-  })
 }
 
 const imageRevealAnimation = (
@@ -102,6 +66,7 @@ const imageRevealAnimation = (
     {
       duration: dur,
       y: '0%',
+      ease: 'power2.out',
     },
     delay
   )
@@ -111,76 +76,10 @@ const imageRevealAnimation = (
     {
       duration: dur,
       scale: 1,
+      ease: 'power2.out',
     },
     delay + 0.05
   )
-}
-
-const captionAnimation = (
-  tl: GSAPTimeline,
-  index: number,
-  item: HTMLElement
-) => {
-  const dur = duration.value
-
-  const idx = index
-
-  const delay = dur * idx
-
-  const $prevItem = getPreviousSibling(item) as HTMLElement | null
-
-  const $curTitle = item.querySelector('.interview__name') as HTMLElement
-  const $curDesc = item.querySelector('.interview__description') as HTMLElement
-
-  const $prevTitle = $prevItem?.querySelector('.interview__name') as HTMLElement
-  const $prevDesc = $prevItem?.querySelector(
-    '.interview__description'
-  ) as HTMLElement
-
-  $prevItem && tl.to($prevItem, { duration: dur, pointerEvents: 'none' }, delay)
-  tl.to(item, { duration: dur, pointerEvents: 'auto' }, delay)
-
-  const tl2 = gsap.timeline()
-
-  $prevTitle &&
-    tl2.to(
-      $prevTitle?.querySelectorAll('.word'),
-      {
-        duration: dur / 2,
-        y: '-110%',
-      },
-      0
-    )
-
-  tl2.to(
-    $curTitle.querySelectorAll('.word'),
-    {
-      duration: dur / 2,
-      y: '0%',
-    },
-    0
-  )
-
-  $prevDesc &&
-    tl2.to(
-      $prevDesc?.querySelectorAll('.word'),
-      {
-        duration: dur / 2,
-        y: '-110%',
-      },
-      0
-    )
-
-  tl2.to(
-    $curDesc.querySelectorAll('.word'),
-    {
-      duration: dur / 2,
-      y: '0%',
-    },
-    0
-  )
-
-  tl.add(tl2, delay)
 }
 
 const textAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
@@ -216,10 +115,6 @@ const makeAnimation = async () => {
   $assets.value.forEach((item: HTMLElement, index: number) => {
     const img = item.querySelector('.interview__img') as HTMLElement
     imageRevealAnimation(masterTl, index, img)
-  })
-
-  $assets.value.forEach((item: HTMLElement, index: number) => {
-    captionAnimation(masterTl, index, item)
   })
 
   $wrappers.value.forEach((item: HTMLElement, index: number) => {
@@ -318,21 +213,6 @@ onBeforeUnmount(() => {
                   :alt="item?.person?.content?.photo?.alt"
                   class="interview__img"
                 />
-              </div>
-
-              <div class="interview__desc-wrapper">
-                <p class="interview__name">
-                  {{
-                    item?.person?.content?.interview_title ||
-                    item?.person?.content?.name
-                  }}
-                </p>
-                <p class="interview__description">
-                  {{
-                    item?.person?.content?.interview_position ||
-                    item?.person?.content?.position
-                  }}
-                </p>
               </div>
             </div>
           </div>
