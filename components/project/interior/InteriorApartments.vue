@@ -18,11 +18,15 @@ const onSelectApartment = (apartment: iApartment) => {
 
 <template>
   <div class="interior-aparts">
-    <ProjectInteriorDropdown
-      :apartments-list="apartments"
-      :selected-apartment="selectedApartment"
-      @select="onSelectApartment"
-    />
+    <div class="interior-aparts__dropdown-wrapper">
+      <div class="interior-aparts__hidden-block" />
+      <ProjectInteriorDropdown
+        :apartments-list="apartments"
+        :selected-apartment="selectedApartment"
+        class="interior-aparts__dropdown"
+        @select="onSelectApartment"
+      />
+    </div>
 
     <Transition name="fade" mode="out-in">
       <ProjectInteriorApartment
@@ -34,6 +38,28 @@ const onSelectApartment = (apartment: iApartment) => {
 </template>
 
 <style scoped lang="scss">
+.interior-aparts__dropdown-wrapper {
+  @media (min-width: $br1) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: vw(76);
+  }
+}
+
+.interior-aparts__hidden-block {
+  @media (min-width: $br1) {
+    display: block;
+    max-width: vw(900);
+    width: 100%;
+  }
+}
+
+.interior-aparts__dropdown {
+  width: 100%;
+  position: relative;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.4s ease;

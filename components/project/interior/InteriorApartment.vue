@@ -78,6 +78,7 @@ defineProps<IProps>()
   align-items: flex-start;
   gap: vw(76);
   color: var(--basic-black);
+  margin-top: vw(-23);
 
   @media (max-width: $br1) {
     flex-direction: column;
@@ -136,6 +137,7 @@ defineProps<IProps>()
 }
 
 .interior-apart__content {
+  margin-top: vw(46);
   width: 100%;
 
   @media (max-width: $br1) {
