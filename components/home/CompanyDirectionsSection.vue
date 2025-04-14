@@ -358,6 +358,7 @@ onBeforeUnmount(() => {
 
 .interview__content {
   position: relative;
+
   @media (min-width: $br1) {
     width: vw(785);
   }
@@ -365,6 +366,7 @@ onBeforeUnmount(() => {
 
 .interview__content-wrapper {
   color: var(--neutral-300);
+
   @media (min-width: $br4) {
     display: flex;
     justify-content: flex-end;
@@ -382,8 +384,8 @@ onBeforeUnmount(() => {
   left: 0;
   top: 0;
   text-transform: uppercase;
-  @include subheading-h5;
   height: 100%;
+  @include subheading-h5;
 
   @media (min-width: $br4) {
     width: fit-content;
