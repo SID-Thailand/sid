@@ -100,11 +100,11 @@ onMounted(() => {
 
 <template>
   <div
-    v-show="distanceFromActive <= 2"
     ref="itemRef"
     class="quiz-step"
     :style="{
       background,
+      visibility: distanceFromActive <= 2 ? 'visible' : 'hidden',
     }"
   >
     <div class="quiz-step__wrapper">
