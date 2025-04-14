@@ -96,7 +96,7 @@ export interface iHomeVideo {
   _uid: string
 }
 
-interface iFeaturedProject {
+export interface iFeaturedProject {
   name: string
   slug: string
   full_slug: string
