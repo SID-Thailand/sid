@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { gsap, ScrollTrigger } from '~/libs/gsap'
 import type { iHomeCompanyDirections } from '~/types/story'
 import { resize } from '@emotionagency/utils'
@@ -10,126 +9,151 @@ interface IProps {
 
 defineProps<IProps>()
 
+// DOM Refs
 const contentRef = ref<HTMLElement | null>(null)
 const interviewContentRef = ref<HTMLElement | null>(null)
 const assetsRef = ref<HTMLElement | null>(null)
-const $wrappers = ref<NodeListOf<HTMLElement>>(null)
-const $assets = ref<NodeListOf<HTMLElement>>(null)
+const $wrappers = ref<NodeListOf<HTMLElement> | null>(null)
+const $assets = ref<NodeListOf<HTMLElement> | null>(null)
 
+// Animation state
 const activeIdx = ref(0)
-
+const prevIdx = ref(0)
 const dir = ref(1)
 const height = ref(0)
-const st = ref<ScrollTrigger | null>(null)
 
-const itemsCount = computed(() => {
-  if (!$wrappers.value) return 0
-  return $wrappers.value.length
-})
+let masterTl: gsap.core.Timeline | null = null
 
-const duration = computed(() => 1 / itemsCount.value)
+const itemsCount = computed(() => $wrappers.value?.length || 0)
 
-let masterTl
-
-const prepareItems = async () => {
-  if (!$assets.value) {
-    return
-  }
+//Sets up initial states for image and text animations
+const setupInitialStates = (): void => {
+  if (!$assets.value) return
 
   $assets.value.forEach((item, index) => {
     const $image = item.querySelector('.interview__img') as HTMLElement
     if (index > 0) {
       gsap.set($image, {
         scale: 1.3,
-        y: '100%',
+        clipPath: 'inset(100% 0 0 0)',
       })
     }
   })
-
-  await nextTick()
 }
 
-const imageRevealAnimation = (
-  tl: GSAPTimeline,
-  index: number,
-  item: HTMLElement
-) => {
-  const dur = duration.value
+const animateSections = (): void => {
+  const $images = document.querySelectorAll(
+    '.interview__img'
+  ) as NodeListOf<HTMLElement>
+  const $wrappersList = $wrappers.value
 
-  const idx = index
+  if (!$images?.length || !$wrappersList?.length) return
 
-  const delay = dur * idx
+  const current = activeIdx.value
+  const prev = prevIdx.value
 
-  tl.to(
-    item,
+  // Avoid unnecessary animations
+  if (current === prev) return
 
-    {
-      duration: dur,
-      y: '0%',
+  const $currentImage = $images[current]
+  const $prevImage = $images[prev]
+  const $currentWrapper = $wrappersList[current]
+  const $prevWrapper = $wrappersList[current - 1]
+
+  if (!$currentWrapper || !$currentImage) return
+
+  const duration = 2
+
+  // Create a single timeline for better synchronization
+  const tl = gsap.timeline({
+    defaults: {
+      duration,
       ease: 'power2.out',
     },
-    delay
+  })
+
+  // Animate text sections
+  if ($prevWrapper) {
+    tl.to($prevWrapper, { opacity: 0 }, 0)
+  }
+  tl.to($currentWrapper, { opacity: 1 }, 0)
+
+  if (current > prev) {
+    if ($prevImage) {
+      tl.to($prevImage, { scale: 1.3 }, 0)
+    }
+    tl.to(
+      $currentImage,
+      {
+        scale: 1,
+        clipPath: 'inset(0% 0 0 0)',
+      },
+      0
+    )
+  } else {
+    tl.to(
+      $currentImage,
+      {
+        scale: 1,
+        clipPath: 'inset(0% 0 0 0)',
+      },
+      0
+    )
+
+    if ($prevImage) {
+      tl.to(
+        $prevImage,
+        {
+          scale: 1.3,
+          clipPath: 'inset(100% 0 0 0)',
+        },
+        0
+      )
+    }
+  }
+}
+
+/**
+ * Calculates the height for the scrolling animation
+ */
+const calculateHeight = (): void => {
+  if (!$wrappers.value?.length || !interviewContentRef.value) return
+
+  const lastItemHeight =
+    $wrappers.value[itemsCount.value - 1]?.scrollHeight || 0
+  height.value = interviewContentRef.value.scrollHeight - lastItemHeight
+}
+
+/**
+ * Sets up the main scroll animation
+ */
+const setupScrollAnimation = (): void => {
+  if (
+    !contentRef.value ||
+    !$wrappers.value?.length ||
+    !interviewContentRef.value
   )
+    return
 
-  tl.to(
-    item,
-    {
-      duration: dur,
-      scale: 1,
-      ease: 'power2.out',
-    },
-    delay + 0.05
-  )
-}
+  if (masterTl) {
+    masterTl.kill()
+    masterTl = null
+  }
 
-const textAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
-  const dur = duration.value * 0.9
+  // Set up initial states
+  setupInitialStates()
+  calculateHeight()
 
-  const idx = index
+  // Create the master timeline
+  masterTl = gsap.timeline({ paused: true })
 
-  const delay = dur * idx
-
-  const $prevItem = getPreviousSibling(item) as HTMLElement | null
-
-  $prevItem && tl.to($prevItem, { duration: dur, opacity: 0 }, delay)
-  tl.to(item, { duration: dur, opacity: 1 }, delay)
-}
-
-const calcHeight = () => {
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
-
-  height.value = interviewContentRef.value?.scrollHeight - lastItemHeight
-}
-
-const makeAnimation = async () => {
-  if (!contentRef.value) return
-
-  if (!$wrappers.value?.length) return
-
-  masterTl = gsap.timeline({
-    paused: true,
-  })
-
-  await prepareItems()
-
-  $assets.value.forEach((item: HTMLElement, index: number) => {
-    const img = item.querySelector('.interview__img') as HTMLElement
-    imageRevealAnimation(masterTl, index, img)
-  })
-
-  $wrappers.value.forEach((item: HTMLElement, index: number) => {
-    textAnimation(masterTl, index, item)
-  })
-
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
-  const height = interviewContentRef.value?.scrollHeight - lastItemHeight
-
+  // Animate the content scrolling
   masterTl.to(
     interviewContentRef.value,
     {
       duration: 1,
       ease: 'none',
-      y: -height,
+      y: -height.value,
     },
     0
   )
@@ -141,47 +165,61 @@ const makeAnimation = async () => {
     scrub: true,
     animation: masterTl,
     invalidateOnRefresh: true,
-
     onUpdate: () => {
+      if (!$wrappers.value || !assetsRef.value) return
+
       $wrappers.value.forEach((wrapper, index) => {
         const bounds = wrapper.getBoundingClientRect()
         const assetsBounds = assetsRef.value?.getBoundingClientRect()
 
-        if (bounds?.top < 150 && window.innerWidth > 460) {
-          activeIdx.value = index
-        }
+        if (!bounds || !assetsBounds) return
+
+        const isDesktop = window.innerWidth > 460
 
         if (
-          bounds?.top - 100 < assetsBounds?.bottom &&
-          window.innerWidth < 460
+          (isDesktop && bounds.top < 150) ||
+          (!isDesktop && bounds.top - 100 < assetsBounds.bottom)
         ) {
-          activeIdx.value = index
+          if (activeIdx.value !== index) {
+            prevIdx.value = activeIdx.value
+            activeIdx.value = index
+          }
         }
       })
     },
   })
 }
 
+watch(activeIdx, (current, prev) => {
+  if (current === prev) return
+
+  prevIdx.value = prev
+  dir.value = current > prev ? 1 : -1
+
+  nextTick(animateSections)
+})
+
 onMounted(() => {
+  if (!contentRef.value || !assetsRef.value) return
+
+  resize.on(calculateHeight)
   $wrappers.value = contentRef.value.querySelectorAll(
     '.interview__content-wrapper'
   ) as NodeListOf<HTMLElement>
-
   $assets.value = assetsRef.value.querySelectorAll(
     '.interview__image-item'
   ) as NodeListOf<HTMLElement>
 
-  resize.on(calcHeight)
-
-  makeAnimation()
+  setupScrollAnimation()
 })
 
 onBeforeUnmount(() => {
   if (masterTl) {
     masterTl.kill()
+    masterTl = null
   }
-  st.value?.kill(true)
-  resize.off(calcHeight)
+
+  resize.off(calculateHeight)
 })
 </script>
 
@@ -202,12 +240,8 @@ onBeforeUnmount(() => {
               v-for="(item, idx) in content?.directions"
               :key="idx"
               class="interview__image-item"
-              :class="idx === activeIdx && 'interview__image-item--active'"
             >
-              <div
-                class="interview__img-wrapper"
-                :class="idx <= activeIdx && 'interview__img-wrapper--active'"
-              >
+              <div class="interview__img-wrapper">
                 <CustomImage
                   :src="item?.person?.content?.photo?.filename"
                   :alt="item?.person?.content?.photo?.alt"
@@ -283,7 +317,7 @@ onBeforeUnmount(() => {
 
 .interview__block {
   position: relative;
-  height: 400vh;
+  height: 550vh;
 }
 
 .interview__block-wrapper {
@@ -308,11 +342,12 @@ onBeforeUnmount(() => {
   position: relative;
   width: vw(440);
   height: vw(496);
+  max-height: 90%;
 
   @media (max-width: $br4) {
     margin: 0 auto;
     margin-top: 16px;
-    aspect-ratio: 343 / 400;
+    aspect-ratio: 1;
     height: auto;
     width: 100%;
     max-height: none;
@@ -348,6 +383,7 @@ onBeforeUnmount(() => {
   top: 0;
   text-transform: uppercase;
   @include subheading-h5;
+  height: 100%;
 
   @media (min-width: $br4) {
     width: fit-content;
@@ -361,22 +397,14 @@ onBeforeUnmount(() => {
   overflow: hidden;
   width: 100%;
   height: 100%;
-
-  // &--active {
-  //   .interview__img {
-  //     transform: translateY(0) scale(1);
-  //   }
-  // }
 }
 
 .interview__img {
   position: relative;
   display: block;
   width: 100%;
-  height: auto;
-  // transition: transform 3s $easing;
-  transform-origin: center top;
-  // transform: translateY(100%) scale(1.3);
+  height: 100%;
+  object-fit: cover;
   will-change: transform;
 }
 
