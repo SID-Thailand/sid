@@ -42,6 +42,8 @@ const animate = async () => {
   const zBase = 20
   const targetScale = 1 - distance * 0.07
 
+  const duration = 1
+
   if (isActive) {
     el.style.zIndex = `${zBase}`
 
@@ -52,7 +54,7 @@ const animate = async () => {
         scale: targetScale,
       },
       {
-        duration: 0.5,
+        duration,
         y: 0,
         scale: 1,
         ease: 'power2.out',
@@ -66,7 +68,7 @@ const animate = async () => {
     const newY = -newDistance * 20
 
     tl.to(el, {
-      duration: 0.5,
+      duration,
       y: newY,
       scale: newScale,
       ease: 'power2.out',
@@ -78,7 +80,7 @@ const animate = async () => {
     el.style.zIndex = `${zBase - distance - 2}`
 
     tl.to(el, {
-      duration: 0.5,
+      duration,
       y: -distance * 20,
       scale: targetScale,
       ease: 'power2.out',
