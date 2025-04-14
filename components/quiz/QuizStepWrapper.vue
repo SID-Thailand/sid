@@ -134,6 +134,7 @@ onMounted(() => {
 
   background: var(--gradient-secondary);
   transform-origin: top;
+  will-change: transform, opacity;
 
   &:first-child {
     position: relative;
