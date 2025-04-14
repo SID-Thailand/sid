@@ -177,7 +177,7 @@ const setupScrollAnimation = (): void => {
         const isDesktop = window.innerWidth > 460
 
         if (
-          (isDesktop && bounds.top < 150) ||
+          (isDesktop && bounds.top < 200) ||
           (!isDesktop && bounds.top - 100 < assetsBounds.bottom)
         ) {
           if (activeIdx.value !== index) {
