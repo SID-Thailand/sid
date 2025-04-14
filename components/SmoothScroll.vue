@@ -5,8 +5,8 @@ onMounted(() => {
   window.escroll = new EmotionScroll({
     breakpoint: 860,
     passive: false,
-    friction: 0.06,
-    stepSize: 0.8,
+    friction: 0.04,
+    stepSize: 0.5,
     scrollbar: true,
     raf,
   })
