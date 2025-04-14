@@ -207,9 +207,17 @@ export interface iProjectConcept {
 
 export interface iProjectAbout {
   component: string
-  asset_1: iImage
-  asset_2: iImage
-  text: string
+  content: {
+    type: string
+    content: {
+      type: string
+      content: {
+        text?: string
+        attrs?: { alt: string; src: string; title: string; id: number }
+        type: 'text' | 'image'
+      }[]
+    }[]
+  }
   _uid: string
 }
 
