@@ -376,6 +376,10 @@ onBeforeUnmount(() => {
 
   &--active {
     color: var(--basic-white);
+
+    .interview__item-text {
+      color: var(--neutral-200);
+    }
   }
 }
 
@@ -477,6 +481,12 @@ onBeforeUnmount(() => {
 .interview__item-text {
   transition: color 2s $easing;
   line-height: 1.25em !important;
-  @include text-t4;
+  font-size: vw(16);
+  color: var(--neutral-300);
+  @include med;
+
+  @media (max-width: $br1) {
+    font-size: 16px;
+  }
 }
 </style>

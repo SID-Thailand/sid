@@ -184,20 +184,4 @@ onMounted(() => {
     font-size: 24px;
   }
 }
-
-.quiz-step__list {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(4, 1fr);
-  gap: vw(56);
-  grid-auto-flow: row;
-  justify-items: center;
-  margin-top: vw(60);
-
-  @media (max-width: $br1) {
-    margin-top: 40px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
-}
 </style>
