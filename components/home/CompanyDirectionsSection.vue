@@ -239,7 +239,7 @@ onMounted(() => {
   }
 
   @media (max-width: $br4) {
-    padding-top: 24px;
+    padding-top: 16px;
   }
 }
 
