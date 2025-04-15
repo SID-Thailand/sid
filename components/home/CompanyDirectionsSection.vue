@@ -251,7 +251,6 @@ onMounted(() => {
 
   @media (max-width: $br4) {
     margin: 0 auto;
-    margin-top: 16px;
     aspect-ratio: 1;
     height: auto;
     width: 100%;
