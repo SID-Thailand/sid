@@ -51,6 +51,30 @@ export interface iCompanyDirections {
   _uid: string
 }
 
+export interface iFeaturedProject {
+  name: string
+  slug: string
+  full_slug: string
+  _uid: string
+  content: {
+    component: string
+    cover: iImage
+    name: string
+    spec_1: string
+    spec_2: string
+    spec_3: string
+  }
+}
+
+export interface iFeaturedProjects {
+  title: string
+  component: string
+  text: string
+  button_text: string
+  featured_projects: iFeaturedProject[]
+  _uid: string
+}
+
 export interface iNumber {
   component: string
   number: string
@@ -70,21 +94,6 @@ export interface iInterview {
     photo: iImage
     position: string
     _uid: string
-  }
-}
-
-export interface iFeaturedProject {
-  name: string
-  slug: string
-  full_slug: string
-  _uid: string
-  content: {
-    component: string
-    cover: iImage
-    name: string
-    spec_1: string
-    spec_2: string
-    spec_3: string
   }
 }
 

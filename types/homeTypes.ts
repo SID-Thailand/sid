@@ -1,4 +1,4 @@
-import type { iCTA, iFeaturedProject, iImage, iMeta, iQuiz } from './story'
+import type { iCTA, iImage, iMeta, iQuiz } from './story'
 
 export interface iHomeHero {
   address: string
@@ -42,15 +42,6 @@ export interface iHomeVideo {
   _uid: string
 }
 
-export interface iHomeFeaturedProjects {
-  title: string
-  component: string
-  text: string
-  button_text: string
-  featured_projects: iFeaturedProject[]
-  _uid: string
-}
-
 export interface iHomeQuiz {
   component: string
   _uid: string
@@ -64,7 +55,6 @@ export type iHomeBody =
   | iHomeHero
   | iHomeNumbers
   | iHomeVideo
-  | iHomeFeaturedProjects
   | iHomeQuiz
 
 export interface iHomeContent {

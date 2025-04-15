@@ -6,9 +6,7 @@ interface IProps {
   content: iAboutHero
 }
 
-const props = defineProps<IProps>()
-
-console.log(props.content)
+defineProps<IProps>()
 </script>
 
 <template>
