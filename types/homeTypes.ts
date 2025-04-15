@@ -72,10 +72,10 @@ export interface iHomeFeaturedProjects {
   component: string
   text: string
   button_text: string
-  backdrop_asset: iImage
   featured_projects: iFeaturedProject[]
   _uid: string
 }
+
 export interface iHomeQuiz {
   component: string
   _uid: string

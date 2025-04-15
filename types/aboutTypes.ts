@@ -68,7 +68,10 @@ export interface iAboutCompanyDrirections {
 }
 
 export interface iAboutFeaturedProjects {
+  title: string
   component: string
+  text: string
+  button_text: string
   featured_projects: iFeaturedProject[]
   _uid: string
 }

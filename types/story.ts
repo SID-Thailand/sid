@@ -45,7 +45,6 @@ export interface iFeaturedProject {
     component: string
     cover: iImage
     name: string
-    small_description: string
     spec_1: string
     spec_2: string
     spec_3: string

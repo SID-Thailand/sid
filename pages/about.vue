@@ -44,8 +44,6 @@ const meta = computed(() => {
     ogImage: data?.image?.filename,
   }
 })
-
-console.log(story.value)
 </script>
 
 <template>
