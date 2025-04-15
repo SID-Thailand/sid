@@ -20,7 +20,7 @@ export interface iHistoryItem {
 export interface iTeamGroup {
   component: string
   group_name: string
-  members: iMember
+  members: iMember[]
   _uid: string
 }
 
