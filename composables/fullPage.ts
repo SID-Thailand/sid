@@ -94,14 +94,9 @@ export const useFullPage = (
 
           const scrollTop = currentScrollPosition + offset
 
-          isAnimating.value = true
-
           gsap.to(getScrollEl(), {
             scrollTo: { y: scrollTop, autoKill: true },
-            duration: 0.3,
-            onComplete: () => {
-              isAnimating.value = false
-            },
+            duration: 0.25,
           })
         } else {
           isFullPage.value = false
