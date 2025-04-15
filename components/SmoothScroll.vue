@@ -2,8 +2,10 @@
 import EmotionScroll from '@emotionagency/emotion-scroll'
 import { raf } from '@emotionagency/utils'
 onMounted(() => {
+  document.querySelector('#scroll-container').scrollTop = 0
   window.escroll = new EmotionScroll({
-    breakpoint: 860,
+    el: document.querySelector('#scroll-container'),
+    // breakpoint: 860,
     passive: false,
     friction: 0.04,
     stepSize: 0.5,
@@ -18,14 +20,26 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div>
+  <div id="scroll-container">
     <slot />
   </div>
 </template>
 
 <style lang="scss">
 #scroll-container {
+  overflow: hidden;
+  height: 100vh;
+
   will-change: scroll-position;
+  position: relative;
+  @media (max-width: $br1) {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+* {
+  overflow-anchor: none;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
