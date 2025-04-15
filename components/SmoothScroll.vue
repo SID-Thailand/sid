@@ -13,8 +13,8 @@ const onResize = () => {
   let stepSize = 0.5
 
   if (window.innerWidth <= breakpoint) {
-    friction = 0.05
-    stepSize = 0.6
+    friction = 0.06
+    stepSize = 0.7
   }
 
   window.escroll = new EmotionScroll({
