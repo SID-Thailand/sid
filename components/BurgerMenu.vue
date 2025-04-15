@@ -110,6 +110,7 @@ const menuTransition: TransitionProps = {
       },
       0.2
     )
+    appear()
   },
 }
 
