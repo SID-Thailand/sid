@@ -59,10 +59,6 @@ withDefaults(defineProps<IProps>(), {
   &--primary {
     color: var(--accent-secondary);
     background-image: var(--accent-primary);
-
-    &:hover:not(:disabled) {
-      filter: brightness(1.2);
-    }
   }
 
   &--dark {

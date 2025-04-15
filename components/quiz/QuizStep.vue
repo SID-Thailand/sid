@@ -42,12 +42,13 @@ const answer = defineModel<string | null>()
   gap: vw(56);
   grid-auto-flow: row;
   justify-items: center;
-  margin-top: vw(20);
+  margin-top: vw(60);
 
   @media (max-width: $br1) {
     margin-top: 40px;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+    row-gap: 40px;
   }
 }
 </style>

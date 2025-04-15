@@ -42,6 +42,8 @@ const animate = async () => {
   const zBase = 20
   const targetScale = 1 - distance * 0.07
 
+  const duration = 1
+
   if (isActive) {
     el.style.zIndex = `${zBase}`
 
@@ -52,7 +54,7 @@ const animate = async () => {
         scale: targetScale,
       },
       {
-        duration: 0.5,
+        duration,
         y: 0,
         scale: 1,
         ease: 'power2.out',
@@ -66,7 +68,7 @@ const animate = async () => {
     const newY = -newDistance * 20
 
     tl.to(el, {
-      duration: 0.5,
+      duration,
       y: newY,
       scale: newScale,
       ease: 'power2.out',
@@ -78,7 +80,7 @@ const animate = async () => {
     el.style.zIndex = `${zBase - distance - 2}`
 
     tl.to(el, {
-      duration: 0.5,
+      duration,
       y: -distance * 20,
       scale: targetScale,
       ease: 'power2.out',
@@ -132,6 +134,7 @@ onMounted(() => {
 
   background: var(--gradient-secondary);
   transform-origin: top;
+  will-change: transform, opacity;
 
   &:first-child {
     position: relative;
@@ -168,7 +171,7 @@ onMounted(() => {
   line-height: 1em;
   text-transform: uppercase;
   text-align: center;
-  margin-top: vw(12);
+  margin-top: vw(18);
   max-width: vw(580);
   @include med;
 
@@ -179,22 +182,6 @@ onMounted(() => {
 
   @media (max-width: $br4) {
     font-size: 24px;
-  }
-}
-
-.quiz-step__list {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(4, 1fr);
-  gap: vw(56);
-  grid-auto-flow: row;
-  justify-items: center;
-  margin-top: vw(20);
-
-  @media (max-width: $br1) {
-    margin-top: 40px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
   }
 }
 </style>

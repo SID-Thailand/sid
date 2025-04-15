@@ -358,7 +358,7 @@ onBeforeUnmount(() => {
 
 .featured-projects__scroll-wrapper {
   position: relative;
-  height: calc(var(--height) * 1.3vh);
+  height: calc(var(--height) * 2vh);
 }
 
 .featured-projects__content {
@@ -463,15 +463,24 @@ onBeforeUnmount(() => {
 .fpc__title {
   text-transform: uppercase;
   margin-bottom: vw(16);
-  @include subheading-h2;
+  font-size: vw(24);
+  @include med;
+
   @media (max-width: $br1) {
     margin-top: 8px;
+    font-size: 24px;
   }
 }
 
 .fpc__spec {
   color: var(--neutral-200);
-  @include text-t4;
+  line-height: 1.25em;
+  font-size: vw(16);
+  @include med;
+
+  @media (max-width: $br1) {
+    font-size: 16px;
+  }
 }
 
 .fpc__link {
