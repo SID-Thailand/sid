@@ -2,6 +2,7 @@ import type {
   iCTA,
   iFeaturedProject,
   iImage,
+  iInterview,
   iLink,
   iMeta,
   iNumber,
@@ -23,21 +24,6 @@ export interface iConsultingContent {
   component: string
   meta: iMeta[]
   cta: iCTA
-}
-
-export interface iInterview {
-  content: {
-    component: string
-    interview: iImage
-    interview_position: string
-    interview_title: string
-    links: iLink[]
-    masked_photo: iImage
-    name: string
-    photo: string
-    position: string
-    _uid: string
-  }
 }
 
 export interface iYoutubeButton {

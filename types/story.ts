@@ -43,6 +43,21 @@ export interface iNumber {
   _uid: string
 }
 
+export interface iInterview {
+  content: {
+    component: string
+    interview: iImage
+    interview_position: string
+    interview_title: string
+    links: iLink[]
+    masked_photo: iImage
+    name: string
+    photo: iImage
+    position: string
+    _uid: string
+  }
+}
+
 export interface iFeaturedProject {
   name: string
   slug: string

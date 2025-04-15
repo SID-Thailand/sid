@@ -2,6 +2,7 @@ import type {
   iCTA,
   iFeaturedProject,
   iImage,
+  iInterview,
   iMember,
   iMeta,
   iNumber,
@@ -51,9 +52,7 @@ interface iAboutCompanyDirection {
 export interface iAboutHero {
   asset: iImage
   component: string
-  interview_asset: iImage
-  interview_description: string
-  interview_title: string
+  interview: iInterview
   text: string
   title: string
   numbers: iNumber[]

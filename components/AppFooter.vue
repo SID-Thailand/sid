@@ -210,6 +210,10 @@ const { story } = await useFooterStory()
 }
 
 .footer__list-wrapper {
+  @media (min-width: $br1) {
+    @include col(7, 12);
+  }
+
   @media (max-width: $br1) {
     margin-top: 60px;
   }
