@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowDown } from 'lucide-vue-next'
-import type { iHomeHero } from '~/types/story'
+import type { iHomeHero } from '~/types/homeTypes'
 
 interface IProps {
   content: iHomeHero

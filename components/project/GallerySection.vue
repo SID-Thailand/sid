@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ArrowLeft, ArrowRight } from 'lucide-vue-next'
-import type { iProjectGallery } from '~/types/story'
+import type { iProjectGallery } from '~/types/projectTypes'
 
 interface IProps {
   content: iProjectGallery

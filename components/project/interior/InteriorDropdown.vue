@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ChevronDown, LucidePlus } from 'lucide-vue-next'
-import type { iApartment } from '~/types/story'
+import type { iApartment } from '~/types/projectTypes'
 
 interface IProps {
   apartmentsList: iApartment[]

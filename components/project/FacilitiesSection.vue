@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { iProjectFacilities } from '~/types/story'
 import { gsap, ScrollTrigger } from '~/libs/gsap'
 import { resize } from '@emotionagency/utils'
 import { LucidePlus } from 'lucide-vue-next'
+import type { iProjectFacilities } from '~/types/projectTypes'
 
 interface IProps {
   content: iProjectFacilities

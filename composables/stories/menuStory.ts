@@ -1,5 +1,6 @@
+import type { iMenuContent } from '~/types/menuTypes'
 import { useGetStory } from './getStory'
-import type { iMenuContent, iStory } from '~/types/story'
+import type { iStory } from '~/types/story'
 
 type tMenuStory = () => Promise<{
   story: Ref<iStory<iMenuContent>>

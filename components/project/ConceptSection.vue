@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { iProjectConcept } from '~/types/story'
+import type { iProjectConcept } from '~/types/projectTypes'
 
 interface IProps {
   content: iProjectConcept

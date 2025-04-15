@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { gsap } from '~/libs/gsap'
 import type { TransitionProps } from 'vue'
-import type { iMenuContent } from '~/types/story'
+import type { iMenuContent } from '~/types/menuTypes'
 
 interface iProps {
   content: iMenuContent
