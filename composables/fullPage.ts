@@ -26,12 +26,12 @@ export const useFullPage = (
 
   const stopScroll = () => {
     window.escroll.disabled = true
-    // document.documentElement.classList.add('full-page')
+    getScrollEl().classList.add('full-page')
   }
 
   const startScroll = () => {
     window.escroll.disabled = false
-    // document.documentElement.classList.remove('full-page')
+    getScrollEl().classList.remove('full-page')
   }
 
   const onScroll = (e: WheelEvent | TouchEvent) => {
