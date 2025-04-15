@@ -3,9 +3,9 @@ import { gsap } from '~/libs/gsap'
 export const useFullPage = (
   el: MaybeRefOrGetter<HTMLElement>,
   count: MaybeRefOrGetter<number>,
-  threshold = 1300
+  threshold = 1200
 ) => {
-  const isFullPage = ref(false)
+  const { isFullPage } = useAppState()
 
   const activePage = ref(1)
   const prevPage = ref(1)

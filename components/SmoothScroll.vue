@@ -1,20 +1,38 @@
 <script setup lang="ts">
 import EmotionScroll from '@emotionagency/emotion-scroll'
-import { raf } from '@emotionagency/utils'
-onMounted(() => {
+import { raf, resize } from '@emotionagency/utils'
+
+const breakpoint = 1024
+
+const onResize = () => {
   document.querySelector('#scroll-container').scrollTop = 0
+
+  window.escroll?.destroy()
+
+  let friction = 0.04
+  let stepSize = 0.5
+
+  if (window.innerWidth <= breakpoint) {
+    friction = 0.05
+    stepSize = 0.6
+  }
+
   window.escroll = new EmotionScroll({
     el: document.querySelector('#scroll-container'),
-    // breakpoint: 860,
     passive: false,
-    friction: 0.04,
-    stepSize: 0.5,
+    friction,
+    stepSize,
     scrollbar: true,
     raf,
   })
+}
+
+onMounted(() => {
+  resize.on(onResize)
 })
 
 onBeforeUnmount(() => {
+  resize.off(onResize)
   window.escroll && window.escroll.destroy()
 })
 </script>
@@ -33,7 +51,7 @@ onBeforeUnmount(() => {
   will-change: scroll-position;
   position: relative;
   @media (max-width: $br1) {
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
   }
 }

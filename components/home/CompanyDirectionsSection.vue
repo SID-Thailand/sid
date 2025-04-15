@@ -229,7 +229,7 @@ onMounted(() => {
 
 .interview__block-wrapper {
   top: 0;
-  height: 100vh;
+  height: 100svh;
 
   padding-top: vw(60);
 
