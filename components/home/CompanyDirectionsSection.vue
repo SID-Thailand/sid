@@ -229,7 +229,7 @@ onMounted(() => {
 
 .interview__block-wrapper {
   top: 0;
-  height: 100vh;
+  height: 100svh;
 
   padding-top: vw(60);
 
@@ -239,8 +239,7 @@ onMounted(() => {
   }
 
   @media (max-width: $br4) {
-    margin-top: 24px;
-    padding-top: 0px;
+    padding-top: 16px;
   }
 }
 

@@ -16,7 +16,6 @@ onMounted(async () => {
 useHead({
   htmlAttrs: {
     lang: 'en',
-    id: 'scroll-container',
   },
 })
 </script>

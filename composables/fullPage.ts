@@ -3,9 +3,9 @@ import { gsap } from '~/libs/gsap'
 export const useFullPage = (
   el: MaybeRefOrGetter<HTMLElement>,
   count: MaybeRefOrGetter<number>,
-  threshold = 1300
+  threshold = 1200
 ) => {
-  const isFullPage = ref(false)
+  const { isFullPage } = useAppState()
 
   const activePage = ref(1)
   const prevPage = ref(1)
@@ -26,14 +26,17 @@ export const useFullPage = (
 
   const stopScroll = () => {
     window.escroll.disabled = true
+    getScrollEl().classList.add('full-page')
   }
 
   const startScroll = () => {
     window.escroll.disabled = false
+    getScrollEl().classList.remove('full-page')
   }
 
   const onScroll = (e: WheelEvent | TouchEvent) => {
     if (isAnimating.value || !isFullPage.value) return
+    e.preventDefault()
 
     if (e instanceof WheelEvent) {
       direction.value = e.deltaY > 0 ? 1 : -1
@@ -68,6 +71,7 @@ export const useFullPage = (
   }
 
   watch(isFullPage, value => {
+    console.log('isFullPage', value)
     if (value) {
       stopScroll()
     } else {
@@ -86,16 +90,13 @@ export const useFullPage = (
 
           const offset = entry.boundingClientRect.top
 
-          const scrollTop = document.documentElement.scrollTop + offset
+          const currentScrollPosition = getScrollEl().scrollTop
 
-          isAnimating.value = true
+          const scrollTop = currentScrollPosition + offset
 
-          gsap.to(window, {
+          gsap.to(getScrollEl(), {
             scrollTo: { y: scrollTop, autoKill: true },
-            duration: 0.3,
-            onComplete: () => {
-              isAnimating.value = false
-            },
+            duration: 0.25,
           })
         } else {
           isFullPage.value = false
@@ -113,9 +114,12 @@ export const useFullPage = (
   onMounted(() => {
     observeElement()
 
-    window.addEventListener('wheel', onScroll)
+    window.addEventListener('wheel', onScroll, { passive: false })
     window.addEventListener('touchstart', onTouchStart, false)
     window.addEventListener('touchmove', onScroll, { passive: false })
+    window.addEventListener('scroll', e => {
+      e.preventDefault()
+    })
   })
 
   onBeforeUnmount(() => {

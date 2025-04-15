@@ -9,7 +9,7 @@ interface iProps {
 
 defineProps<iProps>()
 
-const { isMenuOpened } = useAppState()
+const { isMenuOpened, isFullPage } = useAppState()
 
 const toggleMenu = () => {
   isMenuOpened.value = !isMenuOpened.value
@@ -119,6 +119,7 @@ watch(isMenuOpened, () => {
     window.escroll.disabled = true
     return
   } else {
+    if (isFullPage.value) return
     window.escroll.disabled = false
   }
 })

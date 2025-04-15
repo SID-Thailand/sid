@@ -12,6 +12,8 @@ export const useAppState = () => {
     () => config.public.env === 'production'
   )
 
+  const isFullPage = useState('isFullPage', () => false)
+
   return {
     isInEditor,
     isLoaded,
@@ -20,5 +22,6 @@ export const useAppState = () => {
     isFormModalOpened,
     isSlideModalOpened,
     isUseLoader,
+    isFullPage,
   }
 }
