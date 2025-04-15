@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { resize } from '@emotionagency/utils'
-
 import type { IForm } from '~/types/form'
-import type { iHomeQuiz } from '~/types/story'
+import type { iHomeQuiz } from '~/types/homeTypes'
 
 interface IProps {
   content: iHomeQuiz

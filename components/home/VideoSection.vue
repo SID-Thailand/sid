@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { iHomeVideo } from '~/types/story'
+import type { iHomeVideo } from '~/types/homeTypes'
 
 interface IProps {
   content: iHomeVideo
