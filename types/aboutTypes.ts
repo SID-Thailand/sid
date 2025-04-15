@@ -1,4 +1,11 @@
-import type { iCTA, iFeaturedProject, iImage, iMember, iMeta } from './story'
+import type {
+  iCTA,
+  iFeaturedProject,
+  iImage,
+  iMember,
+  iMeta,
+  iNumber,
+} from './story'
 
 export type iAboutBody =
   | iAboutHistory
@@ -13,13 +20,6 @@ export interface iAboutContent {
   component: string
   meta: iMeta[]
   cta: iCTA
-}
-
-export interface iNumber {
-  component: string
-  number: string
-  text: string
-  _uid: string
 }
 
 export interface iHistoryItem {

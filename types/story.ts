@@ -36,6 +36,13 @@ export interface iLink {
   url: string
 }
 
+export interface iNumber {
+  component: string
+  number: string
+  text: string
+  _uid: string
+}
+
 export interface iFeaturedProject {
   name: string
   slug: string

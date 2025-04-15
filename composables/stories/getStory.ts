@@ -39,6 +39,9 @@ export const useGetStory = async (route: string) => {
             'project.cta',
             'about.cta',
             'about_team_group.members',
+            'consulting.cta',
+            'consulting_expertise.interview',
+            'consulting_experts.experts',
           ],
         })
 
