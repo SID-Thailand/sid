@@ -159,11 +159,5 @@ const radioHandler = () => {
     z-index: 1;
     transition: opacity 0.3s $easing;
   }
-
-  &:hover {
-    &::before {
-      opacity: 0.9;
-    }
-  }
 }
 </style>

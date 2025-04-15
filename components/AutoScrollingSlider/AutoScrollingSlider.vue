@@ -138,6 +138,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  cursor: none;
 }
 
 .scrolling-slider__wrapper {
@@ -150,23 +151,26 @@ onBeforeUnmount(() => {
 .scrolling-slider__drag {
   position: fixed;
   z-index: 1000;
-  width: vw(48);
-  height: vw(48);
-  top: calc(var(--indicator-y, 0px) - vw(35));
-  left: calc(var(--indicator-x, 0px) + vw(4));
+  width: vw(60);
+  height: vw(60);
+  top: calc(var(--indicator-y, 0px) - vw(30));
+  left: calc(var(--indicator-x, 0px) - vw(30));
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   background-color: var(--basic-black);
   color: var(--basic-white);
-  font-size: vw(14);
+  font-size: vw(10);
+  text-transform: uppercase;
   pointer-events: none;
   opacity: 0;
   transform: scale(1);
   transition:
     transform 0.15s ease,
     opacity 0.15s ease;
+  user-select: none;
+  @include med;
 
   @media (max-width: $br1) {
     display: none;

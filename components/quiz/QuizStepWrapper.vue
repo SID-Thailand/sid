@@ -171,7 +171,7 @@ onMounted(() => {
   line-height: 1em;
   text-transform: uppercase;
   text-align: center;
-  margin-top: vw(12);
+  margin-top: vw(18);
   max-width: vw(580);
   @include med;
 
@@ -182,22 +182,6 @@ onMounted(() => {
 
   @media (max-width: $br4) {
     font-size: 24px;
-  }
-}
-
-.quiz-step__list {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(4, 1fr);
-  gap: vw(56);
-  grid-auto-flow: row;
-  justify-items: center;
-  margin-top: vw(20);
-
-  @media (max-width: $br1) {
-    margin-top: 40px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
   }
 }
 </style>

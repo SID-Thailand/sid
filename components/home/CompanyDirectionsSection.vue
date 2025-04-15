@@ -292,7 +292,7 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: flex-end;
     width: 100%;
-    margin-bottom: vw(200);
+    margin-bottom: vw(140);
   }
 }
 
@@ -333,7 +333,7 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $br4) {
-    margin-top: 40px;
+    margin-top: 24px;
     padding-top: 0px;
   }
 }
@@ -358,6 +358,7 @@ onBeforeUnmount(() => {
 
 .interview__content {
   position: relative;
+
   @media (min-width: $br1) {
     width: vw(785);
   }
@@ -365,6 +366,7 @@ onBeforeUnmount(() => {
 
 .interview__content-wrapper {
   color: var(--neutral-300);
+
   @media (min-width: $br4) {
     display: flex;
     justify-content: flex-end;
@@ -374,6 +376,10 @@ onBeforeUnmount(() => {
 
   &--active {
     color: var(--basic-white);
+
+    .interview__item-text {
+      color: var(--neutral-200);
+    }
   }
 }
 
@@ -382,8 +388,8 @@ onBeforeUnmount(() => {
   left: 0;
   top: 0;
   text-transform: uppercase;
-  @include subheading-h5;
   height: 100%;
+  @include subheading-h5;
 
   @media (min-width: $br4) {
     width: fit-content;
@@ -475,6 +481,12 @@ onBeforeUnmount(() => {
 .interview__item-text {
   transition: color 2s $easing;
   line-height: 1.25em !important;
-  @include text-t4;
+  font-size: vw(16);
+  color: var(--neutral-300);
+  @include med;
+
+  @media (max-width: $br1) {
+    font-size: 16px;
+  }
 }
 </style>

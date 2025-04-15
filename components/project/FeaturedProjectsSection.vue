@@ -10,7 +10,11 @@ defineProps<IProps>()
 
 <template>
   <section class="project-feat-pr">
-    <div class="project-feat-pr__wrapper container">FeaturedProjects</div>
+    <AppFeaturedProjects
+      :projects="content?.featured_projects"
+      :title="content?.title"
+      :text="content?.text"
+    />
   </section>
 </template>
 
