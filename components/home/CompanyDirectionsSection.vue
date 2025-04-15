@@ -149,8 +149,8 @@ onMounted(() => {
             >
               <div class="interview__img-wrapper">
                 <CustomImage
-                  :src="item?.person?.content?.photo?.filename"
-                  :alt="item?.person?.content?.photo?.alt"
+                  :src="item?.asset?.filename"
+                  :alt="item?.asset?.alt"
                   class="interview__img"
                 />
               </div>

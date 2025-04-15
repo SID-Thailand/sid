@@ -27,7 +27,7 @@ export interface iHomeAbout {
 
 interface iHomeCompanyDirection {
   description: string
-  person: iMember
+  asset: iImage
   component: string
   title: string
   _uid: string
