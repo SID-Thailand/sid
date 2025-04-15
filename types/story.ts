@@ -36,66 +36,6 @@ export interface iLink {
   url: string
 }
 
-export interface iHomeHero {
-  address: string
-  title: string
-  asset: iImage
-  component: string
-  _uid: string
-}
-
-export interface iHomeAbout {
-  address: string
-  button_text: string
-  text: string
-  title: string
-  gallery: iImage[]
-  component: string
-  _uid: string
-}
-
-interface iHomeCompanyDirection {
-  description: string
-  person: iMember
-  component: string
-  title: string
-  _uid: string
-  // person_asset: iImage
-  // person_description: string
-  // person_title: string
-}
-
-export interface iHomeCompanyDirections {
-  title: string
-  directions: iHomeCompanyDirection[]
-  component: string
-  _uid: string
-}
-
-interface iHomeNumber {
-  asset: iImage
-  description: string
-  value: string
-  _uid: string
-}
-
-export interface iHomeNumbers {
-  address: string
-  button_text: string
-  numbers: iHomeNumber[]
-  title: string
-  component: string
-  _uid: string
-}
-
-export interface iHomeVideo {
-  address: string
-  asset: iImage
-  title: string
-  component: string
-  _uid: string
-}
-
 export interface iFeaturedProject {
   name: string
   slug: string
@@ -110,16 +50,6 @@ export interface iFeaturedProject {
     spec_2: string
     spec_3: string
   }
-}
-
-export interface iHomeFeaturedProjects {
-  title: string
-  component: string
-  text: string
-  button_text: string
-  backdrop_asset: iImage
-  featured_projects: iFeaturedProject[]
-  _uid: string
 }
 
 export interface iQuizStepItem {
@@ -145,25 +75,6 @@ export interface iQuiz {
   _uid: string
 }
 
-export interface iHomeQuiz {
-  component: string
-  _uid: string
-  quiz: {
-    content: iQuiz
-  }
-}
-
-export type iHomeBody =
-  | iHomeAbout
-  | iHomeHero
-  | iHomeCompanyDirections
-  | iHomeNumbers
-  | iHomeVideo
-  | iHomeFeaturedProjects
-  | iHomeQuiz
-
-export type iProjectBody = iProjectConcept | iProjectAbout
-
 export interface iMember {
   content: {
     component: string
@@ -171,9 +82,10 @@ export interface iMember {
     photo: iImage
     name: string
     position: string
+    interview?: iImage
     interview_title?: string
     interview_position?: string
-    links: { labek: string; component: string; link: iLink }[]
+    links: { label: string; component: string; link: iLink }[]
   }
 }
 
@@ -186,125 +98,6 @@ export interface iCTA {
     manager: iMember
     link: iLink
   }
-}
-
-export interface iProjectCategory {
-  component: string
-  name: string
-}
-
-export interface iProjectConcept {
-  big_asset: iImage
-  big_asset_description: string
-  component: string
-  small_asset: iImage
-  small_asset_description: string
-  subtitle: string
-  text: string
-  title: string
-  _uid: string
-}
-
-export interface iProjectAbout {
-  component: string
-  content: {
-    type: string
-    content: {
-      type: string
-      content: {
-        text?: string
-        attrs?: { alt: string; src: string; title: string; id: number }
-        type: 'text' | 'image'
-      }[]
-    }[]
-  }
-  _uid: string
-}
-
-export interface iProjectGallery {
-  component: string
-  images: iImage[]
-  _uid: string
-}
-
-export interface iSlider {
-  asset: iImage
-  component: string
-  description: string
-  title: string
-}
-
-export interface iProjectFacilities {
-  component: string
-  slider: iSlider[]
-  subtitle: string
-  title: string
-  _uid: string
-}
-
-export interface iProjectExterior {
-  component: string
-  assets: iImage[]
-  text: string
-  title: string
-  _uid: string
-}
-
-export interface iPlan {
-  component: string
-  label: string
-  link: iLink
-  _uid: string
-}
-
-export interface iPlan {
-  component: string
-  label: string
-  link: iLink
-  _uid: string
-}
-
-export interface iApartment {
-  area: string
-  component: string
-  info: string
-  name: string
-  price: string
-  sold_out: boolean
-  assets: iImage[]
-  plan: iPlan[]
-  _uid: string
-}
-
-export interface iProjectInterior {
-  component: string
-  apartments: iApartment[]
-  text: string
-  title: string
-  asset: iImage
-  _uid: string
-}
-
-export interface iProjectForm {
-  component: string
-  asset: iImage
-  button_text: string
-  email_label: string
-  full_name_label: string
-  phone_label: string
-  text: string
-  title: string
-  _uid: string
-}
-
-export interface iProjectFeaturedProjects {
-  component: string
-  backdrop_asset: iImage
-  button_text: string
-  text: string
-  title: string
-  featured_projects: iFeaturedProject[]
-  _uid: string
 }
 
 export interface iContactItem {
@@ -328,26 +121,6 @@ export interface iContacts {
   }
 }
 
-export interface iMenuLink {
-  asset: iImage
-  component: string
-  label: string
-  link: iLink
-}
-
-export interface iMenuSocial {
-  component: string
-  label: string
-  link: iLink
-}
-
-export interface iHomeContent {
-  body: iHomeBody[]
-  meta: iMeta[]
-  cta: iCTA
-  scroll_down_text: string
-}
-
 export interface iFooterContent {
   button: string
   component: string
@@ -356,29 +129,10 @@ export interface iFooterContent {
   contacts: iContacts
 }
 
-export interface iMenuContent {
-  component: string
-  menu_button_text: string
-  links: iMenuLink[]
-  socials: iMenuSocial[]
-}
-
 export interface iFormContent {
   component: string
   email_label: string
   full_name_label: string
   phone_label: string
   thankyou_text: string
-}
-
-export interface iProjectContent {
-  body: iProjectBody[]
-  category: iProjectCategory
-  component: string
-  cover: iImage
-  cta: iCTA
-  name: string
-  spec_1: string
-  spec_2: string
-  spec_3: string
 }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { gsap, ScrollTrigger } from '~/libs/gsap'
-
-import type { iHomeFeaturedProjects } from '~/types/story'
+import type { iHomeFeaturedProjects } from '~/types/homeTypes'
 
 interface IProps {
   content: iHomeFeaturedProjects

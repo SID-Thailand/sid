@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { gsap, ScrollTrigger } from '~/libs/gsap'
-import type { iHomeCompanyDirections } from '~/types/story'
 import { resize } from '@emotionagency/utils'
+import type { iHomeCompanyDirections } from '~/types/homeTypes'
 
 interface IProps {
   content: iHomeCompanyDirections

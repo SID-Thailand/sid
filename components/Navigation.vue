@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { gsap } from '~/libs/gsap'
-import type { iMenuLink } from '~/types/story'
+import type { iMenuLink } from '~/types/menuTypes'
 
 interface iProps {
   links: iMenuLink[]

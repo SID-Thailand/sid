@@ -37,6 +37,8 @@ export const useGetStory = async (route: string) => {
             'company_direction.person',
             'project.category',
             'project.cta',
+            'about.cta',
+            'about_team_group.members',
           ],
         })
 
