@@ -36,6 +36,21 @@ export interface iLink {
   url: string
 }
 
+export interface iCompanyDirection {
+  description: string
+  person: iMember
+  component: string
+  title: string
+  _uid: string
+}
+
+export interface iCompanyDirections {
+  title: string
+  directions: iCompanyDirection[]
+  component: string
+  _uid: string
+}
+
 export interface iNumber {
   component: string
   number: string

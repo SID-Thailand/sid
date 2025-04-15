@@ -13,7 +13,6 @@ export type iAboutBody =
   | iAboutMission
   | iAboutTeam
   | iAboutHero
-  | iAboutCompanyDrirections
   | iAboutFeaturedProjects
 
 export interface iAboutContent {
@@ -38,17 +37,6 @@ export interface iTeamGroup {
   _uid: string
 }
 
-interface iAboutCompanyDirection {
-  description: string
-  person: iMember
-  component: string
-  title: string
-  _uid: string
-  // person_asset: iImage
-  // person_description: string
-  // person_title: string
-}
-
 export interface iAboutHero {
   asset: iImage
   component: string
@@ -56,13 +44,6 @@ export interface iAboutHero {
   text: string
   title: string
   numbers: iNumber[]
-  _uid: string
-}
-
-export interface iAboutCompanyDrirections {
-  title: string
-  directions: iAboutCompanyDirection[]
-  component: string
   _uid: string
 }
 

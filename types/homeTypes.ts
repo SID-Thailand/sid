@@ -1,11 +1,4 @@
-import type {
-  iCTA,
-  iFeaturedProject,
-  iImage,
-  iMember,
-  iMeta,
-  iQuiz,
-} from './story'
+import type { iCTA, iFeaturedProject, iImage, iMeta, iQuiz } from './story'
 
 export interface iHomeHero {
   address: string
@@ -21,24 +14,6 @@ export interface iHomeAbout {
   text: string
   title: string
   gallery: iImage[]
-  component: string
-  _uid: string
-}
-
-interface iHomeCompanyDirection {
-  description: string
-  person: iMember
-  component: string
-  title: string
-  _uid: string
-  // person_asset: iImage
-  // person_description: string
-  // person_title: string
-}
-
-export interface iHomeCompanyDirections {
-  title: string
-  directions: iHomeCompanyDirection[]
   component: string
   _uid: string
 }
@@ -87,7 +62,6 @@ export interface iHomeQuiz {
 export type iHomeBody =
   | iHomeAbout
   | iHomeHero
-  | iHomeCompanyDirections
   | iHomeNumbers
   | iHomeVideo
   | iHomeFeaturedProjects
