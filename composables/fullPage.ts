@@ -16,10 +16,40 @@ export const useFullPage = (
 
   let observer: IntersectionObserver | null = null
 
-  const onScroll = (e: WheelEvent) => {
+  let touchY = null
+
+  const onTouchStart = (e: TouchEvent) => {
+    const firstTouch = e.touches[0]
+
+    touchY = firstTouch.clientY
+  }
+
+  const stopScroll = () => {
+    window.escroll.disabled = true
+  }
+
+  const startScroll = () => {
+    window.escroll.disabled = false
+  }
+
+  const onScroll = (e: WheelEvent | TouchEvent) => {
     if (isAnimating.value || !isFullPage.value) return
 
-    direction.value = e.deltaY > 0 ? 1 : -1
+    if (e instanceof WheelEvent) {
+      direction.value = e.deltaY > 0 ? 1 : -1
+    } else {
+      const yUp = e.touches[0].clientY
+
+      const yDiff = touchY - yUp
+
+      if (yDiff > 0) {
+        direction.value = 1
+      } else {
+        direction.value = -1
+      }
+
+      touchY = null
+    }
 
     const newPage = activePage.value + direction.value
 
@@ -39,9 +69,9 @@ export const useFullPage = (
 
   watch(isFullPage, value => {
     if (value) {
-      window.escroll.disabled = true
+      stopScroll()
     } else {
-      window.escroll.disabled = false
+      startScroll()
     }
   })
 
@@ -52,7 +82,7 @@ export const useFullPage = (
     observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && entry.intersectionRatio > 0.95) {
-          console.log(entry.boundingClientRect)
+          isFullPage.value = true
 
           const offset = entry.boundingClientRect.top
 
@@ -60,15 +90,13 @@ export const useFullPage = (
 
           isAnimating.value = true
 
-          gsap.to(document.documentElement, {
-            scrollTop,
+          gsap.to(window, {
+            scrollTo: { y: scrollTop, autoKill: true },
             duration: 0.3,
             onComplete: () => {
               isAnimating.value = false
             },
           })
-
-          isFullPage.value = true
         } else {
           isFullPage.value = false
         }
@@ -86,12 +114,16 @@ export const useFullPage = (
     observeElement()
 
     window.addEventListener('wheel', onScroll)
+    window.addEventListener('touchstart', onTouchStart, false)
+    window.addEventListener('touchmove', onScroll, { passive: false })
   })
 
   onBeforeUnmount(() => {
     isFullPage.value = false
     if (observer) observer.disconnect()
     window.removeEventListener('wheel', onScroll)
+    window.removeEventListener('touchstart', onTouchStart, false)
+    window.removeEventListener('touchmove', onScroll)
   })
 
   return { isFullPage, activePage, prevPage, direction }
