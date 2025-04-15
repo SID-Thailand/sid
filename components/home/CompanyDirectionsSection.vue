@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { gsap, ScrollTrigger } from '~/libs/gsap'
+import { gsap } from '~/libs/gsap'
 import type { iHomeCompanyDirections } from '~/types/story'
-import { resize } from '@emotionagency/utils'
 
 interface IProps {
   content: iHomeCompanyDirections
@@ -13,18 +12,16 @@ defineProps<IProps>()
 const contentRef = ref<HTMLElement | null>(null)
 const interviewContentRef = ref<HTMLElement | null>(null)
 const assetsRef = ref<HTMLElement | null>(null)
-const $wrappers = ref<NodeListOf<HTMLElement> | null>(null)
+
+const $texts = ref<NodeListOf<HTMLElement> | null>(null)
 const $assets = ref<NodeListOf<HTMLElement> | null>(null)
 
-// Animation state
-const activeIdx = ref(0)
-const prevIdx = ref(0)
-const dir = ref(1)
-const height = ref(0)
+const itemsCount = computed(() => $texts.value?.length || 0)
 
-let masterTl: gsap.core.Timeline | null = null
-
-const itemsCount = computed(() => $wrappers.value?.length || 0)
+const { activePage, prevPage, direction } = useFullPage(
+  contentRef as Ref<HTMLElement>,
+  itemsCount
+)
 
 //Sets up initial states for image and text animations
 const setupInitialStates = (): void => {
@@ -45,32 +42,32 @@ const animateSections = (): void => {
   const $images = document.querySelectorAll(
     '.interview__img'
   ) as NodeListOf<HTMLElement>
-  const $wrappersList = $wrappers.value
+  const $textsList = $texts.value
 
-  if (!$images?.length || !$wrappersList?.length) return
+  if (!$images?.length || !$textsList?.length) return
 
-  const current = activeIdx.value
-  const prev = prevIdx.value
-
-  // Avoid unnecessary animations
-  if (current === prev) return
+  const current = activePage.value - 1
+  const prev = prevPage.value - 1
 
   const $currentImage = $images[current]
   const $prevImage = $images[prev]
-  const $currentWrapper = $wrappersList[current]
-  const $prevWrapper = $wrappersList[current - 1]
+  const $currentWrapper = $textsList[current]
+  const $prevWrapper = $textsList[current - 1]
+
+  const currentWrapperTop = $currentWrapper?.offsetTop
 
   if (!$currentWrapper || !$currentImage) return
 
   const duration = 2
 
-  // Create a single timeline for better synchronization
   const tl = gsap.timeline({
     defaults: {
       duration,
       ease: 'power2.out',
     },
   })
+
+  tl.to(interviewContentRef.value, { y: -currentWrapperTop }, 0)
 
   // Animate text sections
   if ($prevWrapper) {
@@ -113,113 +110,21 @@ const animateSections = (): void => {
   }
 }
 
-/**
- * Calculates the height for the scrolling animation
- */
-const calculateHeight = (): void => {
-  if (!$wrappers.value?.length || !interviewContentRef.value) return
-
-  const lastItemHeight =
-    $wrappers.value[itemsCount.value - 1]?.scrollHeight || 0
-  height.value = interviewContentRef.value.scrollHeight - lastItemHeight
-}
-
-/**
- * Sets up the main scroll animation
- */
-const setupScrollAnimation = (): void => {
-  if (
-    !contentRef.value ||
-    !$wrappers.value?.length ||
-    !interviewContentRef.value
-  )
-    return
-
-  if (masterTl) {
-    masterTl.kill()
-    masterTl = null
-  }
-
-  // Set up initial states
-  setupInitialStates()
-  calculateHeight()
-
-  // Create the master timeline
-  masterTl = gsap.timeline({ paused: true })
-
-  // Animate the content scrolling
-  masterTl.to(
-    interviewContentRef.value,
-    {
-      duration: 1,
-      ease: 'none',
-      y: -height.value,
-    },
-    0
-  )
-
-  ScrollTrigger.create({
-    trigger: contentRef.value as HTMLElement,
-    start: () => 'top top',
-    end: () => 'bottom-=5% bottom',
-    scrub: true,
-    animation: masterTl,
-    invalidateOnRefresh: true,
-    onUpdate: () => {
-      if (!$wrappers.value || !assetsRef.value) return
-
-      $wrappers.value.forEach((wrapper, index) => {
-        const bounds = wrapper.getBoundingClientRect()
-        const assetsBounds = assetsRef.value?.getBoundingClientRect()
-
-        if (!bounds || !assetsBounds) return
-
-        const isDesktop = window.innerWidth > 460
-
-        if (
-          (isDesktop && bounds.top < 200) ||
-          (!isDesktop && bounds.top - 100 < assetsBounds.bottom)
-        ) {
-          if (activeIdx.value !== index) {
-            prevIdx.value = activeIdx.value
-            activeIdx.value = index
-          }
-        }
-      })
-    },
-  })
-}
-
-watch(activeIdx, (current, prev) => {
-  if (current === prev) return
-
-  prevIdx.value = prev
-  dir.value = current > prev ? 1 : -1
-
-  nextTick(animateSections)
+watch(activePage, () => {
+  animateSections()
 })
 
 onMounted(() => {
   if (!contentRef.value || !assetsRef.value) return
 
-  resize.on(calculateHeight)
-  $wrappers.value = contentRef.value.querySelectorAll(
+  $texts.value = contentRef.value.querySelectorAll(
     '.interview__content-wrapper'
   ) as NodeListOf<HTMLElement>
   $assets.value = assetsRef.value.querySelectorAll(
     '.interview__image-item'
   ) as NodeListOf<HTMLElement>
 
-  setupScrollAnimation()
-})
-
-onBeforeUnmount(() => {
-  if (masterTl) {
-    masterTl.kill()
-    masterTl = null
-  }
-
-  resize.off(calculateHeight)
+  setupInitialStates()
 })
 </script>
 
@@ -232,7 +137,7 @@ onBeforeUnmount(() => {
       <div
         ref="contentRef"
         class="interview__block"
-        :style="{ '--direction': dir === 1 ? 'normal' : 'reverse' }"
+        :style="{ '--direction': direction === 1 ? 'normal' : 'reverse' }"
       >
         <div class="interview__block-wrapper">
           <div ref="assetsRef" class="interview__assets">
@@ -255,7 +160,9 @@ onBeforeUnmount(() => {
               v-for="(item, idx) in content?.directions"
               :key="idx"
               class="interview__content-wrapper"
-              :class="idx === activeIdx && 'interview__content-wrapper--active'"
+              :class="
+                idx === activePage - 1 && 'interview__content-wrapper--active'
+              "
               :style="{ zIndex: idx + 1 }"
             >
               <div class="interview__item">
@@ -317,14 +224,12 @@ onBeforeUnmount(() => {
 
 .interview__block {
   position: relative;
-  height: 550vh;
 }
 
 .interview__block-wrapper {
-  position: sticky;
   top: 0;
   height: 100vh;
-  overflow: hidden;
+
   padding-top: vw(60);
 
   @media (min-width: $br4) {
