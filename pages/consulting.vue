@@ -28,8 +28,8 @@ const resolveSectionByName = (name: string) => {
     consulting_experts: ExpertsSection,
     consulting_service: ServiceSection,
     consulting_youtube: YoutubeSection,
-    quiz_block: QuizSection,
     featured_projects: FeaturedProjects,
+    quiz_block: QuizSection,
   }
 
   return sections[name]
@@ -48,8 +48,6 @@ const meta = computed(() => {
     ogImage: data?.image?.filename,
   }
 })
-
-console.log(story.value)
 </script>
 
 <template>
