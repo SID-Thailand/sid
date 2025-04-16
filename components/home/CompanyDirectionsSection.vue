@@ -264,7 +264,7 @@ onMounted(() => {
 .interview__content-mask {
   @media (max-width: $br4) {
     overflow: hidden;
-    padding-top: 40px;
+    margin-top: 40px;
   }
 }
 

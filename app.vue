@@ -129,6 +129,7 @@ onErrorCaptured(error => {
     <Preloader v-if="isLoading" />
   </Transition>
   <NuxtLayout>
+    <!-- <PullToRefresh /> -->
     <FormModal />
 
     <NuxtPage />
