@@ -22,8 +22,6 @@ onBeforeUnmount(() => {
   navbarPos && navbarPos.destroy()
 })
 
-const { appear } = useLogoAnimation()
-
 const { headerColor, $headerRef } = useHeaderColor()
 </script>
 
@@ -35,7 +33,6 @@ const { headerColor, $headerRef } = useHeaderColor()
         :to="selectedLang === defaultLocale() ? '/' : '/' + selectedLang"
         class="header__link"
         @click="onClick"
-        @mouseenter="appear"
       >
         <HeaderLogo />
       </NuxtLink>

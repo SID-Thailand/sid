@@ -5,7 +5,8 @@ export const useFullPage = (
   count: MaybeRefOrGetter<number>,
   threshold = 1000
 ) => {
-  const { isFullPage } = useAppState()
+  const { isFullPage: isFullPageGlobalState } = useAppState()
+  const isFullPage = ref(false)
 
   const activePage = ref(1)
   const prevPage = ref(1)
@@ -72,6 +73,7 @@ export const useFullPage = (
   }
 
   watch(isFullPage, value => {
+    isFullPageGlobalState.value = value
     if (value) {
       stopScroll()
     } else {
