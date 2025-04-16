@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { gsap, ScrollTrigger } from '~/libs/gsap'
+import { gsap } from '~/libs/gsap'
 import type { iFeaturedProjects } from '~/types/story'
 
 interface IProps {
@@ -17,46 +17,32 @@ const projectCount = computed(() => {
   return content?.featured_projects.length || 0
 })
 
-const height = computed(() => {
-  return projectCount.value * 100
-})
-
-const duration = 1 / projectCount.value
-
 const contentRef = ref<HTMLElement | null>(null)
-
-const st = ref<ScrollTrigger | null>(null)
-const dir = ref(1)
 
 let titleSplitter: typeof TextSplitter.prototype | null = null
 
 let specsSplitters = []
 
-let masterTl
-
 let $bgs: NodeListOf<HTMLElement> = null
 let $items: NodeListOf<HTMLElement> = null
 let $specs: NodeListOf<HTMLElement> = null
 
-const prepareItems = async () => {
-  $bgs = contentRef.value?.querySelectorAll('.featured-projects__bg')
-  $items = contentRef.value?.querySelectorAll('.fpc__image-item')
-  $specs = contentRef.value?.querySelectorAll('.fpc__specs')
+const { activePage, prevPage } = useFullPage(
+  contentRef as Ref<HTMLElement>,
+  projectCount
+)
 
-  if (!$bgs || !$items || !$specs) {
-    return
-  }
-
+const setupInitialStates = async () => {
   $bgs.forEach((bg, index) => {
     if (index > 0) {
       gsap.set(bg, {
         scale: 1.3,
-        y: '100%',
+        clipPath: 'inset(100% 0 0 0)',
       })
 
       gsap.set($items[index], {
         scale: 1.3,
-        y: '100%',
+        clipPath: 'inset(100% 0 0 0)',
       })
     }
   })
@@ -105,141 +91,219 @@ const prepareItems = async () => {
   })
 }
 
-const imageRevealAnimation = (
-  tl: GSAPTimeline,
-  index: number,
-  item: HTMLElement
-) => {
-  const dur = index === 0 ? 0 : duration
+const animateSections = () => {
+  const current = activePage.value - 1
+  const prev = prevPage.value - 1
 
-  const idx = Math.max(0, index - 1)
+  const $currentBg = $bgs[current]
+  const $prevBg = $bgs[prev]
 
-  const delay = dur * idx
+  const $currentItem = $items[current]
+  const $prevItem = $items[prev]
 
-  tl.to(
-    item,
+  const $currentTexts = $specs[current]
+  const $prevTexts = $specs[prev]
 
-    {
-      duration: dur,
-      y: '0%',
+  const $curTitle = $currentTexts.querySelector('.fpc__title') as HTMLElement
+  const $curSpecs = $currentTexts.querySelectorAll('.fpc__spec')
+
+  const $prevTitle = $prevTexts?.querySelector('.fpc__title') as HTMLElement
+  const $prevSpecs = $prevTexts?.querySelectorAll('.fpc__spec')
+
+  const duration = 1.5
+  const textDuration = 1
+
+  const tl = gsap.timeline({
+    defaults: {
+      duration,
+      ease: 'power2.out',
     },
-    delay
-  )
+  })
 
-  tl.to(
-    item,
-    {
-      duration: dur,
-      scale: 1,
-    },
-    delay + 0.05
-  )
-}
+  if (current > prev) {
+    $prevBg && tl.to($prevBg, { scale: 1.3 }, 0)
+    $prevItem && tl.to($prevItem, { scale: 1.3 }, 0)
 
-const specAnimation = (tl: GSAPTimeline, index: number, item: HTMLElement) => {
-  const dur = index === 0 ? 0 : duration
-
-  const idx = Math.max(0, index - 1)
-
-  const delay = dur * idx
-
-  const $prevItem = getPreviousSibling(item) as HTMLElement | null
-
-  const $curTitle = item.querySelector('.fpc__title') as HTMLElement
-  const $curSpecs = item.querySelectorAll('.fpc__spec')
-
-  const $prevTitle = $prevItem?.querySelector('.fpc__title') as HTMLElement
-  const $prevSpecs = $prevItem?.querySelectorAll('.fpc__spec')
-
-  $prevItem &&
     tl.to(
-      $prevItem,
-      { duration: dur, pointerEvents: 'none' },
-      duration * idx * 1.3
+      $currentBg,
+      {
+        scale: 1,
+        clipPath: 'inset(0% 0 0 0)',
+      },
+      0
     )
-  tl.to(item, { duration: dur, pointerEvents: 'auto' }, duration * idx * 1.3)
 
-  const tl2 = gsap.timeline()
+    tl.to(
+      $currentItem,
+      {
+        scale: 1,
+        clipPath: 'inset(0% 0 0 0)',
+      },
+      0
+    )
 
-  $prevTitle &&
-    tl2.to($prevTitle?.querySelectorAll('.word'), {
-      duration: dur / 2,
-      y: '-100%',
+    $prevTitle &&
+      tl.to(
+        $prevTitle?.querySelectorAll('.word'),
+        {
+          duration: textDuration,
+          y: '-100%',
+        },
+        0
+      )
+
+    tl.fromTo(
+      $curTitle.querySelectorAll('.word'),
+      {
+        y: '100%',
+      },
+      {
+        duration: textDuration,
+        y: '0%',
+      },
+      0
+    )
+
+    $curSpecs.forEach(spec => {
+      const $curSpec = spec as HTMLElement
+
+      tl.fromTo(
+        $curSpec.querySelectorAll('.word'),
+        {
+          y: '100%',
+        },
+        {
+          y: '0%',
+          duration: textDuration,
+        },
+        0.3
+      )
     })
 
-  tl2.to($curTitle.querySelectorAll('.word'), {
-    duration: dur / 2,
-    y: '0%',
-  })
+    $prevSpecs?.forEach(spec => {
+      const $prevSpec = spec as HTMLElement
 
-  tl.add(tl2, delay)
+      tl.to(
+        $prevSpec.querySelectorAll('.word'),
+        {
+          y: '-100%',
+          duration: textDuration,
+        },
+        0
+      )
+    })
+  } else {
+    tl.to(
+      $currentBg,
+      {
+        scale: 1,
+        clipPath: 'inset(0% 0 0 0)',
+      },
+      0
+    )
 
-  $curSpecs?.forEach((spec, idx) => {
-    const tl3 = gsap.timeline()
+    tl.to(
+      $currentItem,
+      {
+        scale: 1,
+        clipPath: 'inset(0% 0 0 0)',
+      },
+      0
+    )
 
-    $prevSpecs &&
-      tl3.to($prevSpecs?.[idx]?.querySelectorAll('.word'), {
-        duration: dur / 2,
+    $prevBg &&
+      tl.to(
+        $prevBg,
+        {
+          scale: 1.3,
+          clipPath: 'inset(100% 0 0 0)',
+        },
+        0
+      )
+
+    $prevItem &&
+      tl.to(
+        $prevItem,
+        {
+          scale: 1.3,
+          clipPath: 'inset(100% 0 0 0)',
+        },
+        0
+      )
+
+    $prevTitle &&
+      tl.to(
+        $prevTitle?.querySelectorAll('.word'),
+        {
+          duration: textDuration,
+          y: '100%',
+        },
+        0
+      )
+
+    tl.fromTo(
+      $curTitle.querySelectorAll('.word'),
+      {
         y: '-100%',
-      })
+      },
+      {
+        duration: textDuration,
+        y: '0%',
+      },
+      0
+    )
 
-    tl3.to(spec.querySelectorAll('.word'), {
-      duration: dur / 2,
-      y: '0%',
+    $curSpecs.forEach(spec => {
+      const $curSpec = spec as HTMLElement
+
+      tl.fromTo(
+        $curSpec.querySelectorAll('.word'),
+        {
+          y: '-100%',
+        },
+        {
+          duration: textDuration,
+          y: '0%',
+        },
+        0.3
+      )
     })
 
-    tl.add(tl3, delay)
-  })
+    $prevSpecs?.forEach(spec => {
+      const $prevSpec = spec as HTMLElement
+
+      tl.to(
+        $prevSpec.querySelectorAll('.word'),
+        {
+          duration: textDuration,
+          y: '100%',
+        },
+        0
+      )
+    })
+  }
 }
 
-const makeAnimation = async () => {
-  if (!contentRef.value) return
-
-  masterTl = gsap.timeline({
-    paused: true,
-  })
-
-  await prepareItems()
-
-  $bgs.forEach((bg, index) => {
-    imageRevealAnimation(masterTl, index, bg as HTMLElement)
-    imageRevealAnimation(masterTl, index, $items[index] as HTMLElement)
-
-    specAnimation(masterTl, index, $specs[index] as HTMLElement)
-  })
-
-  st.value = ScrollTrigger.create({
-    trigger: contentRef.value as HTMLElement,
-    start: () => 'top+=2.5% top',
-    end: () => 'bottom-=5% bottom',
-    scrub: true,
-    animation: masterTl,
-    invalidateOnRefresh: true,
-
-    onUpdate: ({ direction }) => {
-      dir.value = direction
-    },
-  })
-}
-
-onMounted(() => {
-  makeAnimation()
+watch(activePage, () => {
+  animateSections()
 })
 
-onBeforeUnmount(() => {
-  setTimeout(() => {
-    st.value?.kill(true)
-  }, 2000)
+onMounted(() => {
+  $bgs = contentRef.value?.querySelectorAll('.featured-projects__bg')
+  $items = contentRef.value?.querySelectorAll('.fpc__image-item')
+  $specs = contentRef.value?.querySelectorAll('.fpc__specs')
+
+  if (!$bgs || !$items || !$specs) {
+    return
+  }
+
+  setupInitialStates()
 })
 </script>
 
 <template>
   <section class="featured-projects">
-    <div
-      ref="contentRef"
-      class="featured-projects__scroll-wrapper"
-      :style="{ '--height': `${height}` }"
-    >
+    <div ref="contentRef" class="featured-projects__scroll-wrapper">
       <div class="featured-projects__content">
         <div class="featured-projects__bg-wrapper">
           <CustomImage
@@ -349,7 +413,7 @@ onBeforeUnmount(() => {
   height: 100%;
   z-index: 0;
   object-fit: cover;
-  transform-origin: center top;
+
   will-change: transform;
 
   filter: brightness(0.7) contrast(1.2) saturate(0);
@@ -357,13 +421,11 @@ onBeforeUnmount(() => {
 
 .featured-projects__scroll-wrapper {
   position: relative;
-  height: calc(var(--height) * 2vh);
 }
 
 .featured-projects__content {
   height: 100svh;
-  position: sticky;
-  top: 0;
+
   display: flex;
   justify-content: space-between;
   padding: vh(100) 0;
@@ -423,16 +485,10 @@ onBeforeUnmount(() => {
   top: 0;
   left: 0;
 
-  transform-origin: center top;
-  transform: translateY(100%) scale(1.3);
   will-change: transform;
 
   &:first-child {
     position: relative;
-  }
-
-  &.active {
-    transform: translateY(0) scale(1);
   }
 }
 
