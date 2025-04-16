@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
 import { ScrollTrigger } from '~/libs/gsap'
+import { LucideArrowUpRight } from 'lucide-vue-next'
 
 interface IProps {
   title: string
   asset: iImage
-  addressText: string
+  addressText?: string
+  buttonText?: string
 }
 
 defineProps<IProps>()
@@ -77,6 +79,10 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
+      <Button v-if="buttonText" type="button" class="d-video__btn">
+        {{ buttonText }}
+        <span><LucideArrowUpRight /></span>
+      </Button>
     </div>
     <div v-if="addressText" class="d-video__address">
       <BuildAddress :text="addressText" />
@@ -84,7 +90,7 @@ onBeforeUnmount(() => {
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .d-video {
   padding: vw(100) 0 vw(65);
   border-radius: vw(148) vw(148) 0 0;
@@ -276,5 +282,13 @@ onBeforeUnmount(() => {
   justify-content: flex-end;
   margin-top: vw(100);
   width: 100%;
+}
+
+.d-video__btn {
+  margin-top: vw(100);
+
+  @media (max-width: $br1) {
+    margin-top: 40px;
+  }
 }
 </style>
