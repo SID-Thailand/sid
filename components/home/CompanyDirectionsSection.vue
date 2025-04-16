@@ -247,13 +247,14 @@ onMounted(() => {
 .interview__assets {
   position: relative;
   width: vw(440);
-  height: vw(496);
+  height: vw(440);
   max-height: 90%;
 
   @media (max-width: $br4) {
     margin: 0 auto;
-    aspect-ratio: 1;
     height: auto;
+    aspect-ratio: 1;
+
     width: 100%;
     max-height: none;
     z-index: 10;
