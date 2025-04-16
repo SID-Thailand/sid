@@ -27,7 +27,7 @@ let $bgs: NodeListOf<HTMLElement> = null
 let $items: NodeListOf<HTMLElement> = null
 let $specs: NodeListOf<HTMLElement> = null
 
-const { activePage, prevPage } = useFullPage(
+const { activePage, prevPage, direction } = useFullPage(
   contentRef as Ref<HTMLElement>,
   projectCount
 )
@@ -92,23 +92,45 @@ const setupInitialStates = async () => {
 }
 
 const animateSections = () => {
-  const current = activePage.value - 1
-  const prev = prevPage.value - 1
+  const currentIndex = activePage.value - 1
+  const prevIndex = prevPage.value - 1
 
-  const $currentBg = $bgs[current]
-  const $prevBg = $bgs[prev]
+  const elements = {
+    current: {
+      bg: $bgs[currentIndex],
+      item: $items[currentIndex],
+      texts: $specs[currentIndex],
+    },
+    prev: {
+      bg: $bgs[prevIndex],
+      item: $items[prevIndex],
+      texts: $specs[prevIndex],
+    },
+  }
 
-  const $currentItem = $items[current]
-  const $prevItem = $items[prev]
+  const getWords = (selector: HTMLElement | null, className: string) =>
+    selector?.querySelectorAll(`.${className}`) ?? []
 
-  const $currentTexts = $specs[current]
-  const $prevTexts = $specs[prev]
+  const animateWords = (
+    words: NodeListOf<Element> | any[],
+    fromY: string,
+    toY: string,
+    time: number,
+    offset = 0
+  ) => {
+    if (!words.length) return
+    tl.fromTo(words, { y: fromY }, { y: toY, duration: time }, offset)
+  }
 
-  const $curTitle = $currentTexts.querySelector('.fpc__title') as HTMLElement
-  const $curSpecs = $currentTexts.querySelectorAll('.fpc__spec')
-
-  const $prevTitle = $prevTexts?.querySelector('.fpc__title') as HTMLElement
-  const $prevSpecs = $prevTexts?.querySelectorAll('.fpc__spec')
+  const animateWordExit = (
+    words: NodeListOf<Element> | any[],
+    toY: string,
+    time: number,
+    offset = 0
+  ) => {
+    if (!words.length) return
+    tl.to(words, { y: toY, duration: time }, offset)
+  }
 
   const duration = 1.5
   const textDuration = 1
@@ -120,168 +142,62 @@ const animateSections = () => {
     },
   })
 
-  if (current > prev) {
-    $prevBg && tl.to($prevBg, { scale: 1.3 }, 0)
-    $prevItem && tl.to($prevItem, { scale: 1.3 }, 0)
+  const isForward = direction.value === 1
 
-    tl.to(
-      $currentBg,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
+  const { current, prev } = elements
 
-    tl.to(
-      $currentItem,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
+  const $curTitle = current.texts?.querySelector('.fpc__title') as HTMLElement
+  const $prevTitle = prev.texts?.querySelector('.fpc__title') as HTMLElement
 
-    $prevTitle &&
-      tl.to(
-        $prevTitle?.querySelectorAll('.word'),
-        {
-          duration: textDuration,
-          y: '-100%',
-        },
-        0
-      )
+  const $curSpecs = current.texts?.querySelectorAll('.fpc__spec') || []
+  const $prevSpecs = prev.texts?.querySelectorAll('.fpc__spec') || []
 
-    tl.fromTo(
-      $curTitle.querySelectorAll('.word'),
-      {
-        y: '100%',
-      },
-      {
-        duration: textDuration,
-        y: '0%',
-      },
-      0
-    )
-
-    $curSpecs.forEach(spec => {
-      const $curSpec = spec as HTMLElement
-
-      tl.fromTo(
-        $curSpec.querySelectorAll('.word'),
-        {
-          y: '100%',
-        },
-        {
-          y: '0%',
-          duration: textDuration,
-        },
-        0.3
-      )
-    })
-
-    $prevSpecs?.forEach(spec => {
-      const $prevSpec = spec as HTMLElement
-
-      tl.to(
-        $prevSpec.querySelectorAll('.word'),
-        {
-          y: '-100%',
-          duration: textDuration,
-        },
-        0
-      )
-    })
-  } else {
-    tl.to(
-      $currentBg,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
-
-    tl.to(
-      $currentItem,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
-
-    $prevBg &&
-      tl.to(
-        $prevBg,
-        {
-          scale: 1.3,
-          clipPath: 'inset(100% 0 0 0)',
-        },
-        0
-      )
-
-    $prevItem &&
-      tl.to(
-        $prevItem,
-        {
-          scale: 1.3,
-          clipPath: 'inset(100% 0 0 0)',
-        },
-        0
-      )
-
-    $prevTitle &&
-      tl.to(
-        $prevTitle?.querySelectorAll('.word'),
-        {
-          duration: textDuration,
-          y: '100%',
-        },
-        0
-      )
-
-    tl.fromTo(
-      $curTitle.querySelectorAll('.word'),
-      {
-        y: '-100%',
-      },
-      {
-        duration: textDuration,
-        y: '0%',
-      },
-      0
-    )
-
-    $curSpecs.forEach(spec => {
-      const $curSpec = spec as HTMLElement
-
-      tl.fromTo(
-        $curSpec.querySelectorAll('.word'),
-        {
-          y: '-100%',
-        },
-        {
-          duration: textDuration,
-          y: '0%',
-        },
-        0.3
-      )
-    })
-
-    $prevSpecs?.forEach(spec => {
-      const $prevSpec = spec as HTMLElement
-
-      tl.to(
-        $prevSpec.querySelectorAll('.word'),
-        {
-          duration: textDuration,
-          y: '100%',
-        },
-        0
-      )
+  const transitionSpecs = (
+    specs: NodeListOf<Element> | any[],
+    fromY: string,
+    toY: string
+  ) => {
+    specs.forEach(spec => {
+      const words = spec.querySelectorAll('.word')
+      animateWords(words, fromY, toY, textDuration, 0.3)
     })
   }
+
+  const exitSpecs = (specs: NodeListOf<Element> | any[], toY: string) => {
+    specs.forEach(spec => {
+      const words = spec.querySelectorAll('.word')
+      animateWordExit(words, toY, textDuration, 0)
+    })
+  }
+
+  if (isForward) {
+    prev.bg && tl.to(prev.bg, { scale: 1.3 }, 0)
+    prev.item && tl.to(prev.item, { scale: 1.3 }, 0)
+  }
+
+  tl.to(current.bg, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
+  tl.to(current.item, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
+
+  if (!isForward) {
+    prev.bg && tl.to(prev.bg, { scale: 1.3, clipPath: 'inset(100% 0 0 0)' }, 0)
+    prev.item &&
+      tl.to(prev.item, { scale: 1.3, clipPath: 'inset(100% 0 0 0)' }, 0)
+  }
+
+  const curTitleWords = getWords($curTitle, 'word')
+  const prevTitleWords = getWords($prevTitle, 'word')
+
+  animateWordExit(prevTitleWords, isForward ? '-100%' : '100%', textDuration, 0)
+  animateWords(
+    curTitleWords,
+    isForward ? '100%' : '-100%',
+    '0%',
+    textDuration,
+    0
+  )
+
+  transitionSpecs($curSpecs, isForward ? '100%' : '-100%', '0%')
+  exitSpecs($prevSpecs, isForward ? '-100%' : '100%')
 }
 
 watch(activePage, () => {

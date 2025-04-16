@@ -44,21 +44,20 @@ const animateSections = (): void => {
     '.interview__img'
   ) as NodeListOf<HTMLElement>
   const $textsList = $texts.value
+  const currentIndex = activePage.value - 1
+  const prevIndex = prevPage.value - 1
 
-  if (!$images?.length || !$textsList?.length) return
+  if (!$images.length || !$textsList.length) return
 
-  const current = activePage.value - 1
-  const prev = prevPage.value - 1
+  const $currentImage = $images[currentIndex]
+  const $prevImage = $images[prevIndex]
+  const $currentWrapper = $textsList[currentIndex]
+  const $prevWrapper = $textsList[currentIndex - 1]
+  const $content = interviewContentRef.value
 
-  const $currentImage = $images[current]
-  const $prevImage = $images[prev]
-  const $currentWrapper = $textsList[current]
-  const $prevWrapper = $textsList[current - 1]
+  if (!$currentWrapper || !$currentImage || !$content) return
 
-  const currentWrapperTop = $currentWrapper?.offsetTop
-
-  if (!$currentWrapper || !$currentImage) return
-
+  const currentWrapperTop = $currentWrapper.offsetTop
   const duration = 1.5
 
   const tl = gsap.timeline({
@@ -68,45 +67,35 @@ const animateSections = (): void => {
     },
   })
 
-  tl.to(interviewContentRef.value, { y: -currentWrapperTop }, 0)
-
-  if ($prevWrapper) {
-    tl.to($prevWrapper, { opacity: 0, duration: 0.2 }, 1)
+  const fadeIn = (el: HTMLElement | null, offset = 0) => {
+    if (!el) return
+    tl.to(el, { opacity: 1, duration: 0.2, overwrite: true }, offset)
   }
-  tl.to($currentWrapper, { opacity: 1, duration: 0.2, overwrite: true }, 0)
 
-  if (current > prev) {
-    if ($prevImage) {
-      tl.to($prevImage, { scale: 1.3 }, 0)
-    }
-    tl.to(
-      $currentImage,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
+  const fadeOut = (el: HTMLElement | null, offset = 0) => {
+    if (!el) return
+    tl.to(el, { opacity: 0, duration: 0.2 }, offset)
+  }
+
+  const scaleIn = (el: HTMLElement, offset = 0) =>
+    tl.to(el, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, offset)
+
+  const scaleOut = (el: HTMLElement, inset: string, offset = 0) =>
+    tl.to(el, { scale: 1.3, clipPath: `inset(${inset})` }, offset)
+
+  tl.to($content, { y: -currentWrapperTop }, 0)
+
+  if ($prevWrapper) fadeOut($prevWrapper as HTMLElement, 1)
+  fadeIn($currentWrapper as HTMLElement, 0)
+
+  const isForward = currentIndex > prevIndex
+
+  if (isForward) {
+    if ($prevImage) scaleOut($prevImage, '0 0 0 0', 0)
+    scaleIn($currentImage, 0)
   } else {
-    tl.to(
-      $currentImage,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
-
-    if ($prevImage) {
-      tl.to(
-        $prevImage,
-        {
-          scale: 1.3,
-          clipPath: 'inset(100% 0 0 0)',
-        },
-        0
-      )
-    }
+    scaleIn($currentImage, 0)
+    if ($prevImage) scaleOut($prevImage, '100% 0 0 0', 0)
   }
 }
 
