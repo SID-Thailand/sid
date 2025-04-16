@@ -6,10 +6,14 @@ interface IProps {
 }
 
 defineProps<IProps>()
+
+const $el = ref<HTMLElement | null>(null)
+
+useDetectHeaderColor($el as Ref<HTMLElement>)
 </script>
 
 <template>
-  <section class="ab-team container">
+  <section ref="$el" class="ab-team container">
     <div class="ab-team__wrapper">
       <h2 class="ab-team__title">
         {{ content?.title }}
