@@ -1,7 +1,7 @@
 import type {
   iCTA,
-  iFeaturedProject,
   iImage,
+  iInterview,
   iLink,
   iMeta,
   iNumber,
@@ -16,28 +16,12 @@ export type iConsultingBody =
   | iConsultingService
   | iConsultingYoutube
   | iConsultingQuiz
-  | iConsultingFeaturedProjects
 
 export interface iConsultingContent {
   body: iConsultingBody[]
   component: string
   meta: iMeta[]
   cta: iCTA
-}
-
-export interface iInterview {
-  content: {
-    component: string
-    interview: iImage
-    interview_position: string
-    interview_title: string
-    links: iLink[]
-    masked_photo: iImage
-    name: string
-    photo: string
-    position: string
-    _uid: string
-  }
 }
 
 export interface iYoutubeButton {
@@ -112,13 +96,4 @@ export interface iConsultingQuiz {
   quiz: {
     content: iQuiz
   }
-}
-
-export interface iConsultingFeaturedProjects {
-  title: string
-  component: string
-  text: string
-  button_text: string
-  featured_projects: iFeaturedProject[]
-  _uid: string
 }

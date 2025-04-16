@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useAboutStory } from '~/composables/stories/aboutStory'
 import { pageTransition } from '~/transitions/base'
-import CompanyDirectionsSection from '~/components/about/CompanyDirectionsSection.vue'
-import FeaturedProjects from '~/components/about/FeaturedProjects.vue'
 import HeroSection from '~/components/about/HeroSection.vue'
 import MissionSection from '~/components/about/MissionSection.vue'
 import HistorySection from '~/components/about/HistorySection.vue'
 import TeamSection from '~/components/about/TeamSection.vue'
+import CompanyDirections from '~/components/CompanyDirections.vue'
+import FeaturedProjects from '~/components/FeaturedProjects.vue'
 
 definePageMeta({
   pageTransition,
@@ -21,7 +21,7 @@ const body = computed(() => {
 const resolveSectionByName = (name: string) => {
   const sections = {
     about_hero: HeroSection,
-    company_directions: CompanyDirectionsSection,
+    company_directions: CompanyDirections,
     featured_projects: FeaturedProjects,
     about_mission: MissionSection,
     about_history: HistorySection,

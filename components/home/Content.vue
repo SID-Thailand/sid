@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import AboutSection from '~/components/home/AboutSection.vue'
-import CompanyDirectionsSection from '~/components/home/CompanyDirectionsSection.vue'
-import FeaturedProjects from '~/components/home/FeaturedProjects.vue'
 import HeroSection from '~/components/home/HeroSection.vue'
 import NumbersSection from '~/components/home/NumbersSection.vue'
 import VideoSection from '~/components/home/VideoSection.vue'
 import QuizSection from '~/components/quiz/QuizSection.vue'
 import { useHomeStory } from '~/composables/stories/homeStory'
 import PageMeta from '../PageMeta.vue'
+import CompanyDirections from '../CompanyDirections.vue'
+import FeaturedProjects from '../FeaturedProjects.vue'
 
 const { story } = await useHomeStory()
 
@@ -19,7 +19,7 @@ const resolveSectionByName = (name: string) => {
   const sections = {
     home_hero: HeroSection,
     home_about: AboutSection,
-    company_directions: CompanyDirectionsSection,
+    company_directions: CompanyDirections,
     home_numbers: NumbersSection,
     home_video: VideoSection,
     featured_projects: FeaturedProjects,

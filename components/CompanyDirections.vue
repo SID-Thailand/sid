@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useFullPage } from '~/composables/fullPage'
 import { gsap } from '~/libs/gsap'
-import type { iHomeCompanyDirections } from '~/types/homeTypes'
+import type { iCompanyDirections } from '~/types/story'
 
 interface IProps {
-  content: iHomeCompanyDirections
+  content: iCompanyDirections
 }
 
 defineProps<IProps>()
