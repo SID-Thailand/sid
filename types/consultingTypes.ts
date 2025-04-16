@@ -24,6 +24,13 @@ export interface iConsultingContent {
   cta: iCTA
 }
 
+export interface iService {
+  asset: iImage
+  component: string
+  text: string
+  _uid: string
+}
+
 export interface iYoutubeButton {
   component: string
   _uid: string
@@ -79,7 +86,7 @@ export interface iConsultingService {
   title: string
   subtitle: string
   _uid: string
-  service: string
+  service: iService[]
 }
 
 export interface iConsultingYoutube {
