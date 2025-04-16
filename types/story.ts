@@ -36,10 +36,18 @@ export interface iLink {
   url: string
 }
 
-export interface iNumber {
+export interface iCompanyDirection {
+  description: string
+  person: iMember
   component: string
-  number: string
-  text: string
+  title: string
+  _uid: string
+}
+
+export interface iCompanyDirections {
+  title: string
+  directions: iCompanyDirection[]
+  component: string
   _uid: string
 }
 
@@ -55,6 +63,37 @@ export interface iFeaturedProject {
     spec_1: string
     spec_2: string
     spec_3: string
+  }
+}
+
+export interface iFeaturedProjects {
+  title: string
+  component: string
+  text: string
+  button_text: string
+  featured_projects: iFeaturedProject[]
+  _uid: string
+}
+
+export interface iNumber {
+  component: string
+  number: string
+  text: string
+  _uid: string
+}
+
+export interface iInterview {
+  content: {
+    component: string
+    interview: iImage
+    interview_position: string
+    interview_title: string
+    links: iLink[]
+    masked_photo: iImage
+    name: string
+    photo: iImage
+    position: string
+    _uid: string
   }
 }
 

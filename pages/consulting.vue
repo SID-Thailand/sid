@@ -2,10 +2,10 @@
 import DifferenceSection from '~/components/consulting/DifferenceSection.vue'
 import ExpertiseSection from '~/components/consulting/ExpertiseSection.vue'
 import ExpertsSection from '~/components/consulting/ExpertsSection.vue'
-import FeaturedProjectsSection from '~/components/consulting/FeaturedProjectsSection.vue'
 import HeroSection from '~/components/consulting/HeroSection.vue'
 import ServiceSection from '~/components/consulting/ServiceSection.vue'
 import YoutubeSection from '~/components/consulting/YoutubeSection.vue'
+import FeaturedProjects from '~/components/FeaturedProjects.vue'
 import QuizSection from '~/components/quiz/QuizSection.vue'
 import { useConsultingStory } from '~/composables/stories/consultingStory'
 import { pageTransition } from '~/transitions/base'
@@ -29,7 +29,7 @@ const resolveSectionByName = (name: string) => {
     consulting_service: ServiceSection,
     consulting_youtube: YoutubeSection,
     quiz_block: QuizSection,
-    featured_projects: FeaturedProjectsSection,
+    featured_projects: FeaturedProjects,
   }
 
   return sections[name]

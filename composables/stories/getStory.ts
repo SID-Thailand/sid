@@ -42,6 +42,7 @@ export const useGetStory = async (route: string) => {
             'consulting.cta',
             'consulting_expertise.interview',
             'consulting_experts.experts',
+            'about_hero.interview',
           ],
         })
 
