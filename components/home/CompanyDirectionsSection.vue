@@ -73,7 +73,7 @@ const animateSections = (): void => {
   if ($prevWrapper) {
     tl.to($prevWrapper, { opacity: 0, duration: 0.2 }, 1)
   }
-  tl.to($currentWrapper, { opacity: 1, duration: 0.2 }, 0)
+  tl.to($currentWrapper, { opacity: 1, duration: 0.2, overwrite: true }, 0)
 
   if (current > prev) {
     if ($prevImage) {
