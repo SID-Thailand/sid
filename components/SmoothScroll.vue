@@ -5,8 +5,6 @@ import { raf, resize } from '@emotionagency/utils'
 const breakpoint = 1024
 
 const onResize = () => {
-  document.querySelector('#scroll-container').scrollTop = 0
-
   window.escroll?.destroy()
 
   let friction = 0.05
@@ -28,7 +26,10 @@ const onResize = () => {
 }
 
 onMounted(() => {
-  resize.on(onResize)
+  document.querySelector('#scroll-container').scrollTop = 0
+
+  resize.match(`<${breakpoint}px`, onResize)
+  resize.match(`>${breakpoint}px`, onResize)
 })
 
 onBeforeUnmount(() => {
