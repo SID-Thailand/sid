@@ -361,7 +361,7 @@ onBeforeUnmount(() => {
 }
 
 .featured-projects__content {
-  height: 100vh;
+  height: 100svh;
   position: sticky;
   top: 0;
   display: flex;
@@ -398,6 +398,14 @@ onBeforeUnmount(() => {
     width: auto;
     height: 65%;
     padding: 16px;
+  }
+
+  @media (max-width: $br4) {
+    width: 100%;
+    height: fit-content;
+    aspect-ratio: unset;
+    flex: 1;
+    max-height: 518px;
   }
 }
 
