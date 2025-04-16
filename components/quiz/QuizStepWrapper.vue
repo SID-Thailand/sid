@@ -23,11 +23,11 @@ const background = computed(() => {
     return 'var(--gradient-secondary)'
   }
 
-  if (distanceFromActive.value === 2) {
-    return 'var(--accent-quaternary)'
-  }
+  // if (distanceFromActive.value === 2) {
+  //   return 'var(--accent-quaternary)'
+  // }
 
-  return 'var(--accent-tertiary)'
+  return '#57534C'
 })
 
 const animate = async () => {
@@ -107,6 +107,8 @@ onMounted(() => {
     :style="{
       background,
       visibility: distanceFromActive <= 2 ? 'visible' : 'hidden',
+      boxShadow:
+        distanceFromActive >= 1 ? `0 0 20px 0 rgba(0, 0, 0, 0.3)` : 'none',
     }"
   >
     <div class="quiz-step__wrapper">
@@ -131,7 +133,6 @@ onMounted(() => {
   border-radius: vw(20) vw(20) 0 0;
   padding: vw(60) vw(50);
   position: absolute;
-
   background: var(--gradient-secondary);
   transform-origin: top;
   will-change: transform, opacity;
