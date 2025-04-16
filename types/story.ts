@@ -38,7 +38,7 @@ export interface iLink {
 
 export interface iCompanyDirection {
   description: string
-  person: iMember
+  asset: iImage
   component: string
   title: string
   _uid: string

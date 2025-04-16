@@ -3,9 +3,10 @@ import { gsap } from '~/libs/gsap'
 export const useFullPage = (
   el: MaybeRefOrGetter<HTMLElement>,
   count: MaybeRefOrGetter<number>,
-  threshold = 1200
+  threshold = 1000
 ) => {
-  const { isFullPage } = useAppState()
+  const { isFullPage: isFullPageGlobalState } = useAppState()
+  const isFullPage = ref(false)
 
   const activePage = ref(1)
   const prevPage = ref(1)
@@ -26,6 +27,7 @@ export const useFullPage = (
 
   const stopScroll = () => {
     window.escroll.disabled = true
+
     getScrollEl().classList.add('full-page')
   }
 
@@ -71,7 +73,7 @@ export const useFullPage = (
   }
 
   watch(isFullPage, value => {
-    console.log('isFullPage', value)
+    isFullPageGlobalState.value = value
     if (value) {
       stopScroll()
     } else {
@@ -83,19 +85,26 @@ export const useFullPage = (
     const target = toValue(el)
     if (!target) return
 
+    let scrollTop
+    let offset
+
     observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && entry.intersectionRatio > 0.95) {
           isFullPage.value = true
 
-          const offset = entry.boundingClientRect.top
+          offset = entry.boundingClientRect.top
 
           const currentScrollPosition = getScrollEl().scrollTop
 
-          const scrollTop = currentScrollPosition + offset
+          scrollTop = currentScrollPosition + offset
 
           gsap.to(getScrollEl(), {
             scrollTo: { y: scrollTop, autoKill: true },
+            onComplete: () => {
+              window.escroll.state.position = scrollTop
+              window.escroll.state.vsPosition = scrollTop
+            },
             duration: 0.25,
           })
         } else {

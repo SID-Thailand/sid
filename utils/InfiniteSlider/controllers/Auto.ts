@@ -11,13 +11,13 @@ export class AutoController implements IController {
   }
 
   move(_: number, delta: number) {
-    if (!this.isInViewport) {
+    if (!this.isInViewport || this.isTabInactive) {
       return
     }
 
     const dir = -state.velocity > 0 ? 1 : -1
 
-    const speed = this.duration * 5
+    const speed = 1000 / this.duration
     state.targetX -= speed * (delta / 1000) * dir
   }
 
@@ -30,6 +30,10 @@ export class AutoController implements IController {
       bounds.top < window.innerHeight + treshhold && bounds.bottom > -treshhold
 
     return isInViewport
+  }
+
+  get isTabInactive() {
+    return document.hidden
   }
 
   subscribe() {

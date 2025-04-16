@@ -101,10 +101,12 @@ onBeforeUnmount(() => {
   @media (max-width: $br1) {
     margin-top: 48px;
     height: size(360, 229);
+    width: calc(100% + 32px);
   }
 
   @media (max-width: $br4) {
     height: 229px;
+    width: calc(100% + 16px);
   }
 }
 

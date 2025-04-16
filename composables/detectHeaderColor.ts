@@ -13,6 +13,7 @@ export const useDetectHeaderColor = ($el: Ref<HTMLElement | null>) => {
 
   onUnmounted(() => {
     cleanup()
+    setHeaderColor('white')
   })
 
   watch([isIntersecting, isMenuOpened], () => {

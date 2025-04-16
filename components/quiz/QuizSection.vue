@@ -204,14 +204,14 @@ onBeforeUnmount(() => {
 
 .quiz__title {
   text-align: center;
-  font-size: vw(80);
+  font-size: vw(68);
   line-height: 1em;
   text-transform: uppercase;
   color: var(--neutral-200);
   @include med;
 
   @media (max-width: $br1) {
-    font-size: size(80, 36);
+    font-size: size(68, 36);
   }
 
   @media (max-width: $br4) {

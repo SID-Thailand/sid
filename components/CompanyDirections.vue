@@ -44,22 +44,21 @@ const animateSections = (): void => {
     '.interview__img'
   ) as NodeListOf<HTMLElement>
   const $textsList = $texts.value
+  const currentIndex = activePage.value - 1
+  const prevIndex = prevPage.value - 1
 
-  if (!$images?.length || !$textsList?.length) return
+  if (!$images.length || !$textsList.length) return
 
-  const current = activePage.value - 1
-  const prev = prevPage.value - 1
+  const $currentImage = $images[currentIndex]
+  const $prevImage = $images[prevIndex]
+  const $currentWrapper = $textsList[currentIndex]
+  const $prevWrapper = $textsList[currentIndex - 1]
+  const $content = interviewContentRef.value
 
-  const $currentImage = $images[current]
-  const $prevImage = $images[prev]
-  const $currentWrapper = $textsList[current]
-  const $prevWrapper = $textsList[current - 1]
+  if (!$currentWrapper || !$currentImage || !$content) return
 
-  const currentWrapperTop = $currentWrapper?.offsetTop
-
-  if (!$currentWrapper || !$currentImage) return
-
-  const duration = 2
+  const currentWrapperTop = $currentWrapper.offsetTop
+  const duration = 1.5
 
   const tl = gsap.timeline({
     defaults: {
@@ -68,46 +67,35 @@ const animateSections = (): void => {
     },
   })
 
-  tl.to(interviewContentRef.value, { y: -currentWrapperTop }, 0)
-
-  // Animate text sections
-  if ($prevWrapper) {
-    tl.to($prevWrapper, { opacity: 0 }, 0)
+  const fadeIn = (el: HTMLElement | null, offset = 0) => {
+    if (!el) return
+    tl.to(el, { opacity: 1, duration: 0.2, overwrite: true }, offset)
   }
-  tl.to($currentWrapper, { opacity: 1 }, 0)
 
-  if (current > prev) {
-    if ($prevImage) {
-      tl.to($prevImage, { scale: 1.3 }, 0)
-    }
-    tl.to(
-      $currentImage,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
+  const fadeOut = (el: HTMLElement | null, offset = 0) => {
+    if (!el) return
+    tl.to(el, { opacity: 0, duration: 0.2 }, offset)
+  }
+
+  const scaleIn = (el: HTMLElement, offset = 0) =>
+    tl.to(el, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, offset)
+
+  const scaleOut = (el: HTMLElement, inset: string, offset = 0) =>
+    tl.to(el, { scale: 1.3, clipPath: `inset(${inset})` }, offset)
+
+  tl.to($content, { y: -currentWrapperTop }, 0)
+
+  if ($prevWrapper) fadeOut($prevWrapper as HTMLElement, 1)
+  fadeIn($currentWrapper as HTMLElement, 0)
+
+  const isForward = currentIndex > prevIndex
+
+  if (isForward) {
+    if ($prevImage) scaleOut($prevImage, '0 0 0 0', 0)
+    scaleIn($currentImage, 0)
   } else {
-    tl.to(
-      $currentImage,
-      {
-        scale: 1,
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0
-    )
-
-    if ($prevImage) {
-      tl.to(
-        $prevImage,
-        {
-          scale: 1.3,
-          clipPath: 'inset(100% 0 0 0)',
-        },
-        0
-      )
-    }
+    scaleIn($currentImage, 0)
+    if ($prevImage) scaleOut($prevImage, '100% 0 0 0', 0)
   }
 }
 
@@ -149,28 +137,30 @@ onMounted(() => {
             >
               <div class="interview__img-wrapper">
                 <CustomImage
-                  :src="item?.person?.content?.photo?.filename"
-                  :alt="item?.person?.content?.photo?.alt"
+                  :src="item?.asset?.filename"
+                  :alt="item?.asset?.alt"
                   class="interview__img"
                 />
               </div>
             </div>
           </div>
-          <div ref="interviewContentRef" class="interview__content">
-            <div
-              v-for="(item, idx) in content?.directions"
-              :key="idx"
-              class="interview__content-wrapper"
-              :class="
-                idx === activePage - 1 && 'interview__content-wrapper--active'
-              "
-              :style="{ zIndex: idx + 1 }"
-            >
-              <div class="interview__item">
-                <div class="interview__line" />
-                <div class="interview__info">
-                  <h3 class="interview__item-title">{{ item?.title }}</h3>
-                  <p class="interview__item-text">{{ item?.description }}</p>
+          <div class="interview__content-mask">
+            <div ref="interviewContentRef" class="interview__content">
+              <div
+                v-for="(item, idx) in content?.directions"
+                :key="idx"
+                class="interview__content-wrapper"
+                :class="
+                  idx === activePage - 1 && 'interview__content-wrapper--active'
+                "
+                :style="{ zIndex: idx + 1 }"
+              >
+                <div class="interview__item">
+                  <div class="interview__line" />
+                  <div class="interview__info">
+                    <h3 class="interview__item-title">{{ item?.title }}</h3>
+                    <p class="interview__item-text">{{ item?.description }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -246,18 +236,25 @@ onMounted(() => {
 .interview__assets {
   position: relative;
   width: vw(440);
-  height: vw(496);
+  height: vw(440);
   max-height: 90%;
 
   @media (max-width: $br4) {
     margin: 0 auto;
-    margin-top: 16px;
-    aspect-ratio: 1;
     height: auto;
+    aspect-ratio: 1;
+
     width: 100%;
     max-height: none;
     z-index: 10;
     background-color: var(--neutral-600);
+  }
+}
+
+.interview__content-mask {
+  @media (max-width: $br4) {
+    overflow: hidden;
+    margin-top: 40px;
   }
 }
 
@@ -266,6 +263,14 @@ onMounted(() => {
 
   @media (min-width: $br1) {
     width: vw(785);
+  }
+
+  @media (max-width: $br4) {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    overflow: hidden;
   }
 }
 
@@ -319,28 +324,10 @@ onMounted(() => {
   will-change: transform;
 }
 
-.interview__name {
-  margin-top: vw(16);
-  overflow: hidden;
-
-  @media (max-width: $br1) {
-    margin-top: 16px;
-  }
-}
-
-.interview__description {
-  color: var(--neutral-300);
-  overflow: hidden;
-}
-
 .interview__item {
   @media (min-width: $br4) {
     width: vw(785);
     padding-bottom: vw(124);
-  }
-
-  @media (max-width: $br4) {
-    margin-top: 40px;
   }
 }
 
