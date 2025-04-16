@@ -71,7 +71,6 @@ export const useFullPage = (
   }
 
   watch(isFullPage, value => {
-    console.log('isFullPage', value)
     if (value) {
       stopScroll()
     } else {

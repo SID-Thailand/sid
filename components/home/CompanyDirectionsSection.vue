@@ -59,7 +59,7 @@ const animateSections = (): void => {
 
   if (!$currentWrapper || !$currentImage) return
 
-  const duration = 2
+  const duration = 1.5
 
   const tl = gsap.timeline({
     defaults: {
@@ -70,11 +70,10 @@ const animateSections = (): void => {
 
   tl.to(interviewContentRef.value, { y: -currentWrapperTop }, 0)
 
-  // Animate text sections
   if ($prevWrapper) {
-    tl.to($prevWrapper, { opacity: 0 }, 0)
+    tl.to($prevWrapper, { opacity: 0, duration: 0.2 }, 1)
   }
-  tl.to($currentWrapper, { opacity: 1 }, 0)
+  tl.to($currentWrapper, { opacity: 1, duration: 0.2 }, 0)
 
   if (current > prev) {
     if ($prevImage) {
@@ -156,21 +155,23 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div ref="interviewContentRef" class="interview__content">
-            <div
-              v-for="(item, idx) in content?.directions"
-              :key="idx"
-              class="interview__content-wrapper"
-              :class="
-                idx === activePage - 1 && 'interview__content-wrapper--active'
-              "
-              :style="{ zIndex: idx + 1 }"
-            >
-              <div class="interview__item">
-                <div class="interview__line" />
-                <div class="interview__info">
-                  <h3 class="interview__item-title">{{ item?.title }}</h3>
-                  <p class="interview__item-text">{{ item?.description }}</p>
+          <div class="interview__content-mask">
+            <div ref="interviewContentRef" class="interview__content">
+              <div
+                v-for="(item, idx) in content?.directions"
+                :key="idx"
+                class="interview__content-wrapper"
+                :class="
+                  idx === activePage - 1 && 'interview__content-wrapper--active'
+                "
+                :style="{ zIndex: idx + 1 }"
+              >
+                <div class="interview__item">
+                  <div class="interview__line" />
+                  <div class="interview__info">
+                    <h3 class="interview__item-title">{{ item?.title }}</h3>
+                    <p class="interview__item-text">{{ item?.description }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -260,11 +261,26 @@ onMounted(() => {
   }
 }
 
+.interview__content-mask {
+  @media (max-width: $br4) {
+    overflow: hidden;
+    padding-top: 40px;
+  }
+}
+
 .interview__content {
   position: relative;
 
   @media (min-width: $br1) {
     width: vw(785);
+  }
+
+  @media (max-width: $br4) {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    overflow: hidden;
   }
 }
 
@@ -318,28 +334,10 @@ onMounted(() => {
   will-change: transform;
 }
 
-.interview__name {
-  margin-top: vw(16);
-  overflow: hidden;
-
-  @media (max-width: $br1) {
-    margin-top: 16px;
-  }
-}
-
-.interview__description {
-  color: var(--neutral-300);
-  overflow: hidden;
-}
-
 .interview__item {
   @media (min-width: $br4) {
     width: vw(785);
     padding-bottom: vw(124);
-  }
-
-  @media (max-width: $br4) {
-    margin-top: 40px;
   }
 }
 
