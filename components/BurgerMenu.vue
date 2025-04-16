@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { gsap } from '~/libs/gsap'
 import type { TransitionProps } from 'vue'
-import type { iMenuContent } from '~/types/story'
+import type { iMenuContent } from '~/types/menuTypes'
 
 interface iProps {
   content: iMenuContent
@@ -9,7 +9,7 @@ interface iProps {
 
 defineProps<iProps>()
 
-const { isMenuOpened } = useAppState()
+const { isMenuOpened, isFullPage } = useAppState()
 
 const toggleMenu = () => {
   isMenuOpened.value = !isMenuOpened.value
@@ -110,6 +110,7 @@ const menuTransition: TransitionProps = {
       },
       0.2
     )
+    appear()
   },
 }
 
@@ -118,6 +119,7 @@ watch(isMenuOpened, () => {
     window.escroll.disabled = true
     return
   } else {
+    if (isFullPage.value) return
     window.escroll.disabled = false
   }
 })

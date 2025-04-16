@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { iMenuSocial } from '~/types/story'
+import type { iMenuSocial } from '~/types/menuTypes'
 
 interface iProps {
   socials: iMenuSocial[]

@@ -35,6 +35,8 @@ export const useLogoAnimation = () => {
           stroke: 'transparent',
           fill: color,
           ease: 'power2.out',
+          clearProps: 'all',
+          overwrite: true,
           stagger: {
             amount: 0.5,
             from: 'start',

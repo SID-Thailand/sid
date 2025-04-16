@@ -5,7 +5,7 @@ const { story } = await useMenuStory()
 const { selectedLang, defaultLocale } = useLang()
 const { isMenuOpened } = useAppState()
 
-const $el = ref(null)
+// const $el = ref(null)
 let navbarPos
 
 const onClick = () => {
@@ -24,12 +24,12 @@ onBeforeUnmount(() => {
 
 const { appear } = useLogoAnimation()
 
-const { headerColor } = useHeaderColor()
+const { headerColor, $headerRef } = useHeaderColor()
 </script>
 
 <template>
-  <header ref="$el" class="header container" :class="`header--${headerColor}`">
-    <div class="header__wrapper container">
+  <header class="header container" :class="`header--${headerColor}`">
+    <div ref="$headerRef" class="header__wrapper container">
       <LanguageSwitcher />
       <NuxtLink
         :to="selectedLang === defaultLocale() ? '/' : '/' + selectedLang"
@@ -49,7 +49,7 @@ const { headerColor } = useHeaderColor()
   padding: vw(40) 0;
   position: fixed;
   background-color: transparent;
-  mix-blend-mode: difference;
+
   width: 100%;
   z-index: 100;
   top: 0;

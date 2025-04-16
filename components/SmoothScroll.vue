@@ -1,31 +1,63 @@
 <script setup lang="ts">
 import EmotionScroll from '@emotionagency/emotion-scroll'
-import { raf } from '@emotionagency/utils'
-onMounted(() => {
+import { raf, resize } from '@emotionagency/utils'
+
+const breakpoint = 1024
+
+const onResize = () => {
+  document.querySelector('#scroll-container').scrollTop = 0
+
+  window.escroll?.destroy()
+
+  let friction = 0.05
+  let stepSize = 0.5
+
+  if (window.innerWidth <= breakpoint) {
+    friction = 0.07
+    stepSize = 0.9
+  }
+
   window.escroll = new EmotionScroll({
-    breakpoint: 860,
+    el: document.querySelector('#scroll-container'),
     passive: false,
-    friction: 0.04,
-    stepSize: 0.5,
+    friction,
+    stepSize,
     scrollbar: true,
     raf,
   })
+}
+
+onMounted(() => {
+  resize.on(onResize)
 })
 
 onBeforeUnmount(() => {
+  resize.off(onResize)
   window.escroll && window.escroll.destroy()
 })
 </script>
 
 <template>
-  <div>
+  <div id="scroll-container">
     <slot />
   </div>
 </template>
 
 <style lang="scss">
 #scroll-container {
+  overflow: hidden;
+  height: 100vh;
+
   will-change: scroll-position;
+  position: relative;
+  @media (max-width: $br1) {
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
+}
+
+* {
+  overflow-anchor: none;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

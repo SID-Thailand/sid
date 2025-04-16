@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { iProjectExterior } from '~/types/story'
+import type { iProjectExterior } from '~/types/projectTypes'
 
 interface IProps {
   content: iProjectExterior

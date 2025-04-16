@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowDown } from 'lucide-vue-next'
-import type { iHomeAbout } from '~/types/story'
+import type { iHomeAbout } from '~/types/homeTypes'
 
 interface IProps {
   content: iHomeAbout
@@ -10,10 +10,14 @@ interface IProps {
 defineProps<IProps>()
 
 const { isFormModalOpened } = useAppState()
+
+const $el = ref<HTMLElement | null>(null)
+
+useDetectHeaderColor($el as Ref<HTMLElement>)
 </script>
 
 <template>
-  <section class="connect container">
+  <section ref="$el" class="connect container">
     <div class="connect__top">
       <h2 class="connect__title">
         {{ content?.title }}

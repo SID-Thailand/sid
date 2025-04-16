@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import type { TransitionProps } from 'vue'
-
 import { LucidePlus } from 'lucide-vue-next'
-import type { iProjectContent } from '~/types/story'
+import type { iProjectContent } from '~/types/projectTypes'
 
 interface IProps {
   content: iProjectContent

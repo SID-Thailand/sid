@@ -53,6 +53,9 @@ export default class NavbarPos {
   }
 
   get isFixed() {
+    if (this.$sc.classList.contains('full-page')) {
+      return false
+    }
     return window.escroll ? window.escroll.disabled : false
   }
 

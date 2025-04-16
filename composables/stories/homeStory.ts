@@ -1,5 +1,6 @@
+import type { iHomeContent } from '~/types/homeTypes'
 import { useGetStory } from './getStory'
-import type { iHomeContent, iStory } from '~/types/story'
+import type { iStory } from '~/types/story'
 
 type tHomeStory = () => Promise<{
   story: Ref<iStory<iHomeContent>>
