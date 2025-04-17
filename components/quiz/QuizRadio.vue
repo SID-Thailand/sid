@@ -19,7 +19,7 @@ const radioHandler = () => {
   <li
     class="quiz-radio"
     :class="{ 'quiz-radio--active': isActive }"
-    aria-role="radio"
+    role="button"
     :aria-checked="isActive"
     @click="radioHandler"
   >
