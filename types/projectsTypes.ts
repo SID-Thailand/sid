@@ -16,4 +16,5 @@ export interface iProjectsHeroContent {
   description: string
   component: string
   meta: iMeta[]
+  cta: iCTA
 }

@@ -47,7 +47,7 @@ const meta = computed(() => {
       <p>Unknown component: {{ story?.content?.component }}</p>
     </div>
     <ProjectsList />
-    <!-- <BookTheMeetings :cta="story?.content?.cta" /> -->
+    <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
 
