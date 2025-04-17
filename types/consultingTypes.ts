@@ -1,7 +1,7 @@
 import type {
   iCTA,
   iImage,
-  iInterview,
+  iMember,
   iLink,
   iMeta,
   iNumber,
@@ -22,6 +22,13 @@ export interface iConsultingContent {
   component: string
   meta: iMeta[]
   cta: iCTA
+}
+
+export interface iService {
+  asset: iImage
+  component: string
+  text: string
+  _uid: string
 }
 
 export interface iYoutubeButton {
@@ -51,7 +58,7 @@ export interface iConsultingExpertise {
   asset: iImage
   button_text: string
   component: string
-  interview: iInterview
+  interview: iMember
   numbers: iNumber[]
   numbers_title: string
   title: string
@@ -71,7 +78,7 @@ export interface iConsultingExperts {
   title: string
   subtitle: string
   _uid: string
-  experts: iInterview[]
+  experts: iMember[]
 }
 
 export interface iConsultingService {
@@ -79,7 +86,7 @@ export interface iConsultingService {
   title: string
   subtitle: string
   _uid: string
-  service: string
+  service: iService[]
 }
 
 export interface iConsultingYoutube {

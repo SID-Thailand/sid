@@ -1,9 +1,10 @@
-import type { iCTA, iFeaturedProject, iImage, iLink } from './story'
-
-export interface iProjectCategory {
-  component: string
-  name: string
-}
+import type {
+  iCTA,
+  iFeaturedProject,
+  iImage,
+  iLink,
+  iProjectCategory,
+} from './story'
 
 export interface iPlan {
   component: string

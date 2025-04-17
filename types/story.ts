@@ -51,6 +51,13 @@ export interface iCompanyDirections {
   _uid: string
 }
 
+export interface iProjectCategory {
+  content: {
+    component: string
+    name: string
+  }
+}
+
 export interface iFeaturedProject {
   name: string
   slug: string
@@ -82,13 +89,13 @@ export interface iNumber {
   _uid: string
 }
 
-export interface iInterview {
+export interface iMember {
   content: {
     component: string
-    interview: iImage
-    interview_position: string
-    interview_title: string
-    links: iLink[]
+    interview?: iImage
+    interview_position?: string
+    interview_title?: string
+    links: { label: string; component: string; link: iLink }[]
     masked_photo: iImage
     name: string
     photo: iImage
@@ -118,20 +125,6 @@ export interface iQuiz {
   steps: iQuizStep[]
   form_title: string
   _uid: string
-}
-
-export interface iMember {
-  content: {
-    component: string
-    masked_photo: iImage
-    photo: iImage
-    name: string
-    position: string
-    interview?: iImage
-    interview_title?: string
-    interview_position?: string
-    links: { label: string; component: string; link: iLink }[]
-  }
 }
 
 export interface iCTA {

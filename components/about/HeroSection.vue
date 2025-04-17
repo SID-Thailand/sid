@@ -34,17 +34,17 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
           :key="idx"
           class="about-hero__item"
         >
-          <h3 class="about-hero__title">{{ item?.number }}</h3>
-          <p class="about-hero__item-text">{{ item?.text }}</p>
+          <h3 class="about-hero__number-title">{{ item?.number }}</h3>
+          <p class="about-hero__number-text">{{ item?.text }}</p>
           <span class="about-hero__plus"><LucidePlus /></span>
         </li>
       </ul>
       <div class="about-hero__interview">
-        <div class="about-hero__img-wrapper">
+        <div class="about-hero__video-wrapper">
           <CustomImage
             :src="content?.interview?.content?.photo?.filename"
             :alt="content?.interview?.content?.photo?.alt"
-            class="about-hero__img"
+            class="about-hero__video"
           />
           <button type="button" class="about-hero__play-btn">
             <IconsPlay />
@@ -114,6 +114,8 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   }
 }
 
+// NEW CODEEEEEEEEEEE
+
 .about-hero__list {
   margin-top: vw(100);
 
@@ -150,7 +152,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   }
 }
 
-.about-hero__title {
+.about-hero__number-title {
   text-transform: uppercase;
   line-height: 1em;
   font-size: vw(60);
@@ -165,8 +167,9 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   }
 }
 
-.about-hero__item-text {
+.about-hero__number-text {
   margin-top: vw(6);
+  text-transform: lowercase;
   @include text-t2;
 
   @media (max-width: $br1) {
@@ -209,19 +212,19 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   }
 }
 
-.about-hero__img-wrapper {
+.about-hero__video-wrapper {
   position: relative;
 }
 
-.about-hero__img {
-  max-width: vw(555);
-  width: 100%;
-  height: auto;
+.about-hero__video {
+  display: block;
+  object-fit: cover;
+  height: vw(370);
+  width: vw(555);
 
   @media (max-width: $br1) {
-    max-width: 100%;
+    width: 100%;
     height: size(370, 229);
-    object-fit: cover;
   }
 
   @media (max-width: $br4) {

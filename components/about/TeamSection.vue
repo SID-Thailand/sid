@@ -164,6 +164,20 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   }
 }
 
+.ab-team__img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+
+  @media (min-width: $br1) {
+    height: vw(325);
+  }
+
+  @media (max-width: $br1) {
+    height: 344px;
+  }
+}
+
 .ab-team__info {
   margin-top: vw(24);
 
