@@ -1,5 +1,4 @@
 import type { ISbStoriesParams } from '@storyblok/js'
-import { useDecocedRuntimeConfig } from '../decodedRuntimeConfig'
 import type { iStory } from '~/types/story'
 
 type tResStory = {
@@ -11,7 +10,7 @@ type tResStory = {
 export const useGetStories = async (opts: ISbStoriesParams) => {
   const response = ref<iStory[]>(null)
 
-  const config = useDecocedRuntimeConfig()
+  const config = useRuntimeConfig()
 
   const storyapi = useStoryblokApi()
   const { isInEditor } = useAppState()
@@ -30,6 +29,7 @@ export const useGetStories = async (opts: ISbStoriesParams) => {
               : 'published',
           cv: Date.now(),
           ...opts,
+          resolve_relations: ['project.category', 'project.cta'],
         })
 
         response.value = data.stories

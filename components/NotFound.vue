@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { pageTransition } from '~/transitions/base'
-
-definePageMeta({
-  pageTransition,
-})
+const emit = defineEmits(['error'])
 
 const { selectedLang, defaultLocale } = useLang()
 </script>
@@ -32,6 +28,7 @@ const { selectedLang, defaultLocale } = useLang()
         :href="selectedLang === defaultLocale() ? '/' : '/' + selectedLang"
         type="button"
         class="n-found__btn"
+        @click="emit('error')"
       >
         go to home page
       </Button>

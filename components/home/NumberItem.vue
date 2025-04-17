@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import type { iHomeNumber } from '~/types/homeTypes'
+
 interface IProps {
-  card: iHomeNumberItem
+  card: iHomeNumber
 }
 
 defineProps<IProps>()

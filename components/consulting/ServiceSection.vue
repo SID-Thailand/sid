@@ -8,7 +8,7 @@ interface IProps {
   content: iConsultingService
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const contentRef = ref<HTMLElement | null>(null)
 const projectContentRef = ref<HTMLElement | null>(null)
@@ -93,8 +93,6 @@ onBeforeUnmount(() => {
   st.value?.kill(true)
   resize.off(calcHeight)
 })
-
-console.log(props.content)
 </script>
 
 <template>

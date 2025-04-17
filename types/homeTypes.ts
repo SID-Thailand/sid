@@ -18,7 +18,7 @@ export interface iHomeAbout {
   _uid: string
 }
 
-interface iHomeNumber {
+export interface iHomeNumber {
   asset: iImage
   description: string
   value: string

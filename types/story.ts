@@ -51,6 +51,13 @@ export interface iCompanyDirections {
   _uid: string
 }
 
+export interface iProjectCategory {
+  content: {
+    component: string
+    name: string
+  }
+}
+
 export interface iFeaturedProject {
   name: string
   slug: string

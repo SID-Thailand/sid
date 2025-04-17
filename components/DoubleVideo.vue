@@ -75,7 +75,6 @@ onBeforeUnmount(() => {
               v-if="isYoutube"
               type="button"
               class="d-video__youtube"
-              :class="{ 'd-video__youtube--active': isPlaying }"
               @click="togglePlay"
             >
               <Play />
@@ -316,12 +315,6 @@ onBeforeUnmount(() => {
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-  opacity: 1;
-  transition: opacity 0.3s $easing;
-
-  &--active {
-    opacity: 0;
-  }
 
   svg {
     position: relative;
