@@ -9,18 +9,6 @@ interface IProps {
 defineProps<IProps>()
 
 const emit = defineEmits(['filter', 'getAll'])
-
-const activeCategory = ref<string | null>(null)
-
-const handleFilter = (category: string) => {
-  activeCategory.value = category
-  emit('filter', activeCategory.value)
-}
-
-const handleGetAll = () => {
-  activeCategory.value = null
-  emit('getAll')
-}
 </script>
 
 <template>
@@ -42,42 +30,12 @@ const handleGetAll = () => {
         <p class="projects-hero__description">
           {{ content?.description }}
         </p>
-        <ul class="projects-hero__filter">
-          <li
-            class="projects-hero__filter-item"
-            :class="{
-              'projects-hero__filter-item--active': activeCategory === null,
-            }"
-          >
-            <button
-              type="button"
-              class="projects-hero__filter-btn underline"
-              :class="{ 'underline--active': activeCategory === null }"
-              @click="handleGetAll"
-            >
-              {{ content?.categories_all }}
-            </button>
-            <span>|</span>
-          </li>
-          <li
-            v-for="(category, idx) in categories"
-            :key="idx"
-            class="projects-hero__filter-item"
-            :class="{
-              'projects-hero__filter-item--active': activeCategory === category,
-            }"
-          >
-            <button
-              type="button"
-              class="projects-hero__filter-btn underline"
-              :class="{ 'underline--active': activeCategory === category }"
-              @click="handleFilter(category)"
-            >
-              {{ category }}
-            </button>
-            <span v-if="categories?.length - 1 !== idx">|</span>
-          </li>
-        </ul>
+        <CategoryFilter
+          :categories="categories"
+          :label-all="content?.categories_all"
+          @filter="emit('filter', $event)"
+          @get-all="emit('getAll')"
+        />
       </div>
     </div>
   </section>
@@ -154,62 +112,6 @@ const handleGetAll = () => {
     margin-top: 24px;
     font-size: 16px;
     max-width: 100%;
-  }
-}
-
-.projects-hero__filter {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: vw(60);
-  max-width: vw(900);
-  row-gap: vw(12);
-  justify-content: center;
-
-  @media (max-width: $br1) {
-    flex-direction: column;
-    margin-top: 48px;
-    row-gap: 32px;
-  }
-}
-
-.projects-hero__filter-item {
-  span {
-    color: var(--neutral-300);
-    margin: 0 vw(20);
-
-    @media (max-width: $br1) {
-      display: none;
-    }
-  }
-
-  &--active {
-    .projects-hero__filter-btn {
-      color: var(--basic-white);
-
-      &:before {
-        background-color: var(--basic-white);
-      }
-    }
-  }
-}
-
-.projects-hero__filter-btn {
-  position: relative;
-  font-size: vw(20);
-  line-height: 1.2em;
-  text-transform: uppercase;
-  background-color: transparent;
-  color: var(--neutral-300);
-  transition: color 0.3s ease;
-  @include med;
-
-  &:before {
-    background-color: var(--neutral-300);
-  }
-
-  @media (max-width: $br1) {
-    font-size: size(20, 14);
   }
 }
 </style>
