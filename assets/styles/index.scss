@@ -1,4 +1,5 @@
-@import './reset.scss';
-@import './helpers/all.scss';
-@import './layout.scss';
-@import './global.scss';
+@use 'sass:meta';
+
+@include meta.load-css('./reset.scss');
+@include meta.load-css('./layout.scss');
+@include meta.load-css('./global.scss');
