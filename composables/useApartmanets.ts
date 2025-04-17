@@ -1,4 +1,4 @@
-import type { iApartment } from '~/types/projectTypes'
+import type { iApartment } from '~/types/currentProjectTypes'
 
 export const useApartments = (apartments: iApartment[]) => {
   const selectedApartment = ref<iApartment>(apartments[0])

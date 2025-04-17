@@ -59,6 +59,12 @@ export interface iProjectCategory {
   }
 }
 
+export interface iNewsCategory {
+  content: {
+    component: string
+  }
+}
+
 export interface iFeaturedProject {
   name: string
   slug: string
