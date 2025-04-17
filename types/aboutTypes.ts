@@ -1,4 +1,4 @@
-import type { iCTA, iImage, iInterview, iMember, iMeta, iNumber } from './story'
+import type { iCTA, iImage, iMember, iMeta, iNumber } from './story'
 
 export type iAboutBody = iAboutHistory | iAboutMission | iAboutTeam | iAboutHero
 
@@ -27,7 +27,7 @@ export interface iTeamGroup {
 export interface iAboutHero {
   asset: iImage
   component: string
-  interview: iInterview
+  interview: iMember
   text: string
   title: string
   numbers: iNumber[]

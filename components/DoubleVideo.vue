@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
 import { ScrollTrigger } from '~/libs/gsap'
+import { LucideArrowUpRight } from 'lucide-vue-next'
+import Play from './icons/Play.vue'
 
 interface IProps {
   title: string
   asset: iImage
-  addressText: string
+  addressText?: string
+  buttonText?: string
+  isYoutube?: boolean
 }
 
 defineProps<IProps>()
@@ -68,6 +72,15 @@ onBeforeUnmount(() => {
             <div class="d-video__phone-camera" />
             <CustomVideo :url="asset?.filename" :is-playing="isPlaying" />
             <button
+              v-if="isYoutube"
+              type="button"
+              class="d-video__youtube"
+              @click="togglePlay"
+            >
+              <Play />
+            </button>
+            <button
+              v-else
               type="button"
               class="d-video__phone-btn"
               @click="togglePlay"
@@ -77,6 +90,10 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
+      <Button v-if="buttonText" type="button" class="d-video__btn">
+        {{ buttonText }}
+        <span><LucideArrowUpRight /></span>
+      </Button>
     </div>
     <div v-if="addressText" class="d-video__address">
       <BuildAddress :text="addressText" />
@@ -84,7 +101,7 @@ onBeforeUnmount(() => {
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .d-video {
   padding: vw(100) 0 vw(65);
   border-radius: vw(148) vw(148) 0 0;
@@ -276,5 +293,47 @@ onBeforeUnmount(() => {
   justify-content: flex-end;
   margin-top: vw(100);
   width: 100%;
+}
+
+.d-video__btn {
+  margin-top: vw(100);
+
+  @media (max-width: $br1) {
+    margin-top: 40px;
+  }
+}
+
+.d-video__youtube {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #cf0a0a;
+  width: vw(88);
+  height: vw(60);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+
+  svg {
+    position: relative;
+    display: block;
+    width: vw(20);
+    height: vw(20);
+    left: vw(3);
+  }
+
+  @media (max-width: $br1) {
+    width: 60px;
+    height: 40px;
+    border-radius: 12px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      left: 2px;
+    }
+  }
 }
 </style>
