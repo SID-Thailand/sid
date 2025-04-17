@@ -36,6 +36,23 @@ export const useFullPage = (
     getScrollEl().classList.remove('full-page')
   }
 
+  const changePage = () => {
+    const newPage = activePage.value + direction.value
+
+    if (newPage < 1 || newPage > pagesCount.value) {
+      isFullPage.value = false
+      return
+    }
+    isAnimating.value = true
+
+    prevPage.value = activePage.value
+    activePage.value = newPage
+
+    setTimeout(() => {
+      isAnimating.value = false
+    }, threshold)
+  }
+
   const onScroll = (e: WheelEvent | TouchEvent) => {
     if (isAnimating.value || !isFullPage.value) return
     e.preventDefault()
@@ -56,20 +73,30 @@ export const useFullPage = (
       touchY = null
     }
 
-    const newPage = activePage.value + direction.value
+    changePage()
+  }
 
-    if (newPage < 1 || newPage > pagesCount.value) {
-      isFullPage.value = false
-      return
+  const onKeydown = (e: KeyboardEvent) => {
+    if (isAnimating.value || !isFullPage.value) return
+
+    if (e.key === 'ArrowUp') {
+      direction.value = -1
+      changePage()
+    } else if (e.key === 'ArrowDown') {
+      direction.value = 1
+      changePage()
     }
-    isAnimating.value = true
 
-    prevPage.value = activePage.value
-    activePage.value = newPage
+    if (e.key === 'Escape') {
+      const prev = direction.value === 1 ? pagesCount.value - 1 : 2
 
-    setTimeout(() => {
+      const active = direction.value === 1 ? pagesCount.value : 1
+
+      prevPage.value = prev
+      activePage.value = active
+      isFullPage.value = false
       isAnimating.value = false
-    }, threshold)
+    }
   }
 
   watch(isFullPage, value => {
@@ -124,11 +151,11 @@ export const useFullPage = (
     observeElement()
 
     window.addEventListener('wheel', onScroll, { passive: false })
+
+    window.addEventListener('keydown', onKeydown)
+
     window.addEventListener('touchstart', onTouchStart, false)
     window.addEventListener('touchmove', onScroll, { passive: false })
-    window.addEventListener('scroll', e => {
-      e.preventDefault()
-    })
   })
 
   onBeforeUnmount(() => {
@@ -137,6 +164,7 @@ export const useFullPage = (
     window.removeEventListener('wheel', onScroll)
     window.removeEventListener('touchstart', onTouchStart, false)
     window.removeEventListener('touchmove', onScroll)
+    window.removeEventListener('keydown', onKeydown)
   })
 
   return { isFullPage, activePage, prevPage, direction }
