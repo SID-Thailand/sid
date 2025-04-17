@@ -29,6 +29,12 @@ export const useFullPage = (
     window.escroll.disabled = true
 
     getScrollEl().classList.add('full-page')
+
+    isAnimating.value = true
+
+    setTimeout(() => {
+      isAnimating.value = false
+    }, 300)
   }
 
   const startScroll = () => {
