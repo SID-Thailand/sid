@@ -36,6 +36,7 @@ const handleToggleMenu = () => {
 
     <div
       class="interior-dropdown__menu"
+      data-scroll-ignore="true"
       :class="{ 'interior-dropdown__menu--opened': isOpen }"
     >
       <ul class="interior-dropdown__list">

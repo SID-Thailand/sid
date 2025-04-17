@@ -307,10 +307,10 @@
   dependencies:
     mime "^3.0.0"
 
-"@emotionagency/emotion-scroll@latest":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@emotionagency/emotion-scroll/-/emotion-scroll-1.0.9.tgz#1ead139eee3992520518140c9d72b4b2788bce25"
-  integrity sha512-Ezjwdq4KyN6RmULALaPrHPejab5ngNn6Opx189G0css5LbAfAUPjUX+COCI5ULwiFg+0sjhig7bGrRabzZqBGA==
+"@emotionagency/emotion-scroll@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@emotionagency/emotion-scroll/-/emotion-scroll-1.0.10.tgz#1332616b92d9d77828bab778ea9c93daac5edcee"
+  integrity sha512-1K5p0coLZ5Ujp1F3XMvLG1P7lWS6OWJOncfL0A8+lchntaiHsF4aEWP3S5WnKshqSlq7HXC7jmSBJp2MbqQVuQ==
   dependencies:
     "@emotionagency/utils" "^1.1.3"
     tiny-emitter "^2.1.0"
