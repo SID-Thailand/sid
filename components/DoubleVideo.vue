@@ -2,12 +2,14 @@
 import type { iImage } from '~/types/story'
 import { ScrollTrigger } from '~/libs/gsap'
 import { LucideArrowUpRight } from 'lucide-vue-next'
+import Play from './icons/Play.vue'
 
 interface IProps {
   title: string
   asset: iImage
   addressText?: string
   buttonText?: string
+  isYoutube?: boolean
 }
 
 defineProps<IProps>()
@@ -70,6 +72,16 @@ onBeforeUnmount(() => {
             <div class="d-video__phone-camera" />
             <CustomVideo :url="asset?.filename" :is-playing="isPlaying" />
             <button
+              v-if="isYoutube"
+              type="button"
+              class="d-video__youtube"
+              :class="{ 'd-video__youtube--active': isPlaying }"
+              @click="togglePlay"
+            >
+              <Play />
+            </button>
+            <button
+              v-else
               type="button"
               class="d-video__phone-btn"
               @click="togglePlay"
@@ -289,6 +301,46 @@ onBeforeUnmount(() => {
 
   @media (max-width: $br1) {
     margin-top: 40px;
+  }
+}
+
+.d-video__youtube {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #cf0a0a;
+  width: vw(88);
+  height: vw(60);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  opacity: 1;
+  transition: opacity 0.3s $easing;
+
+  &--active {
+    opacity: 0;
+  }
+
+  svg {
+    position: relative;
+    display: block;
+    width: vw(20);
+    height: vw(20);
+    left: vw(3);
+  }
+
+  @media (max-width: $br1) {
+    width: 60px;
+    height: 40px;
+    border-radius: 12px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      left: 2px;
+    }
   }
 }
 </style>

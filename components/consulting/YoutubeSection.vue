@@ -14,6 +14,7 @@ defineProps<IProps>()
       <DoubleVideo
         :title="content?.title"
         :asset="content?.asset"
+        :is-youtube="true"
         button-text="SUBSCRIBE"
         class="cons-youtube__videos"
       />
