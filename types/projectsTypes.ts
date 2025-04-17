@@ -13,6 +13,7 @@ export interface iProjectsContent {
 
 export interface iProjectsHeroContent {
   title: string
+  categories_all: string
   description: string
   component: string
   meta: iMeta[]

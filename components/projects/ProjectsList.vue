@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { useProjectsStories } from '~/composables/stories/projectsStories'
+import type { iProjectsContent } from '~/types/projectsTypes'
+import type { iStory } from '~/types/story'
 
-const { projects } = await useProjectsStories()
+interface iProps {
+  projects: iStory<iProjectsContent>[]
+}
 
-console.log(projects.value)
+const props = defineProps<iProps>()
+console.log(props.projects)
 </script>
 
 <template>
@@ -11,7 +15,7 @@ console.log(projects.value)
     <div class="projects__wrapper">
       <ul v-for="(project, idx) in projects" :key="idx" class="projects__list">
         {{
-          project?.content?.name
+          project.content.name
         }}
       </ul>
     </div>
