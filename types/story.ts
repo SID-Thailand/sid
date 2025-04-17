@@ -10,6 +10,7 @@ export interface iMeta {
 export interface iStory<T = any> {
   content: T
   slug: string
+  full_slug: string
   created_at: string
   first_published_at: string
   published_at: number

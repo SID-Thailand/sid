@@ -9,6 +9,7 @@ export interface iProjectsContent {
   spec_1: string
   spec_2: string
   spec_3: string
+  description: string
 }
 
 export interface iProjectsHeroContent {
@@ -18,4 +19,6 @@ export interface iProjectsHeroContent {
   component: string
   meta: iMeta[]
   cta: iCTA
+  view_project_btn: string
+  background: iImage
 }

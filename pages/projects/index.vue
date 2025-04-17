@@ -67,7 +67,10 @@ const meta = computed(() => {
     <div v-else>
       <p>Unknown component: {{ story?.content?.component }}</p>
     </div>
-    <ProjectsList :projects="filteredProjects" />
+    <ProjectsList
+      :projects="filteredProjects"
+      :project-btn="story?.content?.view_project_btn"
+    />
     <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>

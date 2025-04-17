@@ -26,11 +26,15 @@ const handleGetAll = () => {
 <template>
   <section class="projects-hero container">
     <div class="projects-hero__wrapper">
-      <!-- <CustomImage
-        :src="content?.asset?.filename"
-        :alt="content?.asset?.alt"
-        class="projects-hero__bg"
-      /> -->
+      <div class="projects-hero__bg-wrapper">
+        <CustomImage
+          :src="content?.background?.filename"
+          :alt="content?.background?.alt"
+          class="projects-hero__bg"
+        />
+        <div class="projects-hero__layer" />
+      </div>
+
       <div class="projects-hero__content">
         <h1 class="projects-hero__title">
           {{ content?.title }}
@@ -99,16 +103,32 @@ const handleGetAll = () => {
   height: 100%;
 }
 
-.projects-hero__bg {
+.projects-hero__bg-wrapper {
   position: absolute;
-  top: 0%;
   left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.projects-hero__bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+.projects-hero__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(36, 36, 36, 0) 0%, #242424 100%);
+  mix-blend-mode: multiply;
+}
+
 .projects-hero__content {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
