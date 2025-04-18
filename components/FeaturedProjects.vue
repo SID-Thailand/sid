@@ -263,7 +263,11 @@ onMounted(() => {
               <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
               <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
               <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
-              <NuxtLink :to="`/${item.full_slug}`" class="fpc__link">
+              <NuxtLink
+                :to="`/${item.full_slug}`"
+                class="fpc__link"
+                aria-label="View project"
+              >
                 <svg
                   width="24"
                   height="24"
