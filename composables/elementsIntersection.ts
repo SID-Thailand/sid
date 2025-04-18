@@ -21,7 +21,11 @@ export function useIntersection(
   }
 
   const update = () => {
-    isIntersecting.value = checkIntersection()
+    const intersecting = checkIntersection()
+
+    if (intersecting !== isIntersecting.value) {
+      isIntersecting.value = checkIntersection()
+    }
   }
 
   const init = () => {
