@@ -307,24 +307,19 @@
   dependencies:
     mime "^3.0.0"
 
-"@emotionagency/emotion-scroll@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@emotionagency/emotion-scroll/-/emotion-scroll-2.0.0.tgz#ed70f2670a209d0754c2d0c10676daec4dd8b618"
-  integrity sha512-+9W1nl7dfTkXzb7/5LaxipxiUhj1tIhYlY4OW/bPUP/g1kOtPfAbs4cbZWU4d3oLhahCpvNbVGR7O4w3NJWBdg==
+"@emotionagency/emotion-scroll@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@emotionagency/emotion-scroll/-/emotion-scroll-2.0.1.tgz#12c9f499d6a1efd95d651604c357eeedb0230f2b"
+  integrity sha512-Bcf5YGCdF7yscJ9iaS/JIsRV7d4trQ31SFmCgufTTkzbPF4RyvzT4OuQ0+/t480twpuwfym3yM0WJdwui5jZWw==
   dependencies:
-    "@emotionagency/utils" "^1.1.3"
+    "@emotionagency/utils" "^2.0.1"
     tiny-emitter "^2.1.0"
     virtual-scroll "^2.1.1"
 
-"@emotionagency/utils@^1.1.3":
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/@emotionagency/utils/-/utils-1.1.16.tgz#526cb53b4b450f3332791371cf01af4c462d6550"
-  integrity sha512-hUi90t8UTDcOH8+3U/SNBrsH/+V2ATJlxBBFwAhnDPDjLcaYX7XNrbUGx+NdmnEI044lESvY1BfMCdno+AF3Kg==
-
-"@emotionagency/utils@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@emotionagency/utils/-/utils-2.0.0.tgz#92e82571c902cfb6c01bcc3aed6aa3fc34cd0466"
-  integrity sha512-phQeyqx4aJTJ58XhYFPuXrOpzMAaatcsptgRV4dMrqyaMiLaefDqthVLKvnIpdG4VGSBmoDuFD4nBb6QwZ2abA==
+"@emotionagency/utils@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@emotionagency/utils/-/utils-2.0.1.tgz#686e9bfcdaefe391422b34bea062a8537878f9e9"
+  integrity sha512-BvaWxcO/JRtnc5Wz3apgD7ThYhbE3miJYWW7mClvH1hKhclPzVMKr71CRufl20ZTOUG/jQtZQtufJI9b0qtoiA==
 
 "@es-joy/jsdoccomment@~0.49.0":
   version "0.49.0"

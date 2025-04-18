@@ -23,8 +23,8 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@emotionagency/emotion-scroll": "^2.0.0",
-    "@emotionagency/utils": "^2.0.0",
+    "@emotionagency/emotion-scroll": "^2.0.1",
+    "@emotionagency/utils": "^2.0.1",
     "@storyblok/nuxt": "6.2.4",
     "@vueuse/core": "^11.2.0",
     "@vueuse/nuxt": "^11.2.0",
