@@ -144,6 +144,8 @@ onBeforeUnmount(() => {
     height: 100%;
     background-color: var(--accent-secondary);
     filter: blur(vw(108));
+
+    will-change: transform, filter;
     z-index: 1;
 
     @media (max-width: $br1) {
