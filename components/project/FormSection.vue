@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { IForm } from '~/types/form'
-import type { iProjectForm } from '~/types/projectTypes'
+import type { iCurrentProjectForm } from '~/types/currentProjectTypes'
 
 interface IProps {
-  content: iProjectForm
+  content: iCurrentProjectForm
 }
 
 defineProps<IProps>()

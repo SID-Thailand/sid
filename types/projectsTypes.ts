@@ -9,11 +9,16 @@ export interface iProjectsContent {
   spec_1: string
   spec_2: string
   spec_3: string
+  description: string
 }
 
 export interface iProjectsHeroContent {
   title: string
+  categories_all: string
   description: string
   component: string
   meta: iMeta[]
+  cta: iCTA
+  view_project_btn: string
+  background: iImage
 }

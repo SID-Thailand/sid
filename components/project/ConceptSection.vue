@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { iProjectConcept } from '~/types/projectTypes'
+import type { iCurrentProjectConcept } from '~/types/currentProjectTypes'
 
 interface IProps {
-  content: iProjectConcept
+  content: iCurrentProjectConcept
 }
 
 defineProps<IProps>()

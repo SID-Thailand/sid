@@ -2,10 +2,10 @@
 import { gsap, ScrollTrigger } from '~/libs/gsap'
 import { resize } from '@emotionagency/utils'
 import { LucidePlus } from 'lucide-vue-next'
-import type { iProjectFacilities } from '~/types/projectTypes'
+import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
-  content: iProjectFacilities
+  content: iCurrentProjectFacilities
 }
 
 defineProps<IProps>()

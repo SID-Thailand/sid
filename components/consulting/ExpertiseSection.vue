@@ -48,24 +48,11 @@ defineProps<IProps>()
             </li>
           </ul>
         </div>
-        <div class="cons-expertise__interview">
-          <div class="cons-expertise__video-wrapper">
-            <CustomImage
-              :src="content?.interview?.content?.photo?.filename"
-              :alt="content?.interview?.content?.photo?.alt"
-              class="cons-expertise__video"
-            />
-            <button type="button" class="cons-expertise__play-btn">
-              <IconsPlay />
-            </button>
-          </div>
-          <h4 class="cons-expertise__interview-title">
-            {{ content?.interview?.content?.interview_title }}
-          </h4>
-          <p class="cons-expertise__interview-description">
-            {{ content?.interview?.content?.interview_position }}
-          </p>
-        </div>
+        <VideoInterview
+          :asset="content?.interview?.content?.interview"
+          :title="content?.interview?.content?.interview_title"
+          :description="content?.interview?.content?.interview_position"
+        />
       </div>
     </div>
   </section>
@@ -284,90 +271,5 @@ defineProps<IProps>()
     width: 100%;
     height: 100%;
   }
-}
-
-.cons-expertise__interview {
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-
-  @media (min-width: $br1) {
-    margin-left: auto;
-    margin-right: 0;
-  }
-
-  @media (max-width: $br1) {
-    width: 100%;
-    margin-top: 60px;
-  }
-}
-
-.cons-expertise__video-wrapper {
-  position: relative;
-}
-
-.cons-expertise__video {
-  display: block;
-  object-fit: cover;
-  height: vw(370);
-  width: vw(555);
-
-  @media (max-width: $br1) {
-    width: 100%;
-    height: size(370, 229);
-  }
-
-  @media (max-width: $br4) {
-    height: 229px;
-  }
-}
-
-.cons-expertise__play-btn {
-  position: absolute;
-  bottom: vw(20);
-  right: vw(20);
-  background-color: var(--basic-black);
-  width: vw(48);
-  height: vw(48);
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s $easing;
-
-  &:hover {
-    background-color: var(--neutral-600);
-  }
-
-  svg {
-    width: vw(15);
-    height: vw(15);
-
-    @media (max-width: $br1) {
-      width: 15px;
-      height: 15px;
-    }
-  }
-
-  @media (max-width: $br1) {
-    width: 48px;
-    height: 48px;
-    bottom: 16px;
-    right: 16px;
-  }
-}
-
-.cons-expertise__interview-title {
-  text-transform: uppercase;
-  margin-top: vw(20);
-  line-height: 1.25em !important;
-  @include subheading-h5;
-}
-
-.cons-expertise__interview-description {
-  color: var(--neutral-300);
-  text-transform: uppercase;
-  line-height: 1.25em !important;
-  @include subheading-h5;
 }
 </style>

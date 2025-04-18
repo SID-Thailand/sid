@@ -6,11 +6,13 @@ interface IProps {
   content: iAboutHero
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const $el = ref<HTMLElement | null>(null)
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
+
+console.log(props.content)
 </script>
 
 <template>
@@ -39,24 +41,11 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
           <span class="about-hero__plus"><LucidePlus /></span>
         </li>
       </ul>
-      <div class="about-hero__interview">
-        <div class="about-hero__video-wrapper">
-          <CustomImage
-            :src="content?.interview?.content?.photo?.filename"
-            :alt="content?.interview?.content?.photo?.alt"
-            class="about-hero__video"
-          />
-          <button type="button" class="about-hero__play-btn">
-            <IconsPlay />
-          </button>
-        </div>
-        <h4 class="about-hero__interview-title">
-          {{ content?.interview?.content?.interview_title }}
-        </h4>
-        <p class="about-hero__interview-description">
-          {{ content?.interview?.content?.interview_position }}
-        </p>
-      </div>
+      <VideoInterview
+        :asset="content?.interview?.content?.interview"
+        :title="content?.interview?.content?.interview_title"
+        :description="content?.interview?.content?.interview_position"
+      />
     </div>
   </section>
 </template>
@@ -113,8 +102,6 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
     max-width: 70%;
   }
 }
-
-// NEW CODEEEEEEEEEEE
 
 .about-hero__list {
   margin-top: vw(100);
@@ -194,90 +181,5 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
     width: 100%;
     height: 100%;
   }
-}
-
-.about-hero__interview {
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-
-  @media (min-width: $br1) {
-    margin-left: auto;
-    margin-right: 0;
-  }
-
-  @media (max-width: $br1) {
-    width: 100%;
-    margin-top: 60px;
-  }
-}
-
-.about-hero__video-wrapper {
-  position: relative;
-}
-
-.about-hero__video {
-  display: block;
-  object-fit: cover;
-  height: vw(370);
-  width: vw(555);
-
-  @media (max-width: $br1) {
-    width: 100%;
-    height: size(370, 229);
-  }
-
-  @media (max-width: $br4) {
-    height: 229px;
-  }
-}
-
-.about-hero__play-btn {
-  position: absolute;
-  bottom: vw(20);
-  right: vw(20);
-  background-color: var(--basic-black);
-  width: vw(48);
-  height: vw(48);
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s $easing;
-
-  &:hover {
-    background-color: var(--neutral-600);
-  }
-
-  svg {
-    width: vw(15);
-    height: vw(15);
-
-    @media (max-width: $br1) {
-      width: 15px;
-      height: 15px;
-    }
-  }
-
-  @media (max-width: $br1) {
-    width: 48px;
-    height: 48px;
-    bottom: 16px;
-    right: 16px;
-  }
-}
-
-.about-hero__interview-title {
-  text-transform: uppercase;
-  margin-top: vw(20);
-  line-height: 1.25em !important;
-  @include subheading-h5;
-}
-
-.about-hero__interview-description {
-  color: var(--neutral-300);
-  text-transform: uppercase;
-  line-height: 1.25em !important;
-  @include subheading-h5;
 }
 </style>

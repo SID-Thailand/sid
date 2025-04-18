@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { iApartment } from '~/types/projectTypes'
+import type { iApartment } from '~/types/currentProjectTypes'
 
 interface IProps {
   apartments: iApartment[]
