@@ -134,6 +134,14 @@ defineProps<IProps>()
   }
 }
 
+.hero__wrapper {
+  padding-bottom: vw(200);
+
+  @media (max-width: $br1) {
+    padding-bottom: 60px;
+  }
+}
+
 .hero__contacts {
   display: flex;
   flex-direction: column;

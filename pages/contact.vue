@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import FormSection from '~/components/contacts/FormSection.vue'
 import HeroSection from '~/components/contacts/HeroSection.vue'
 import { useContactStory } from '~/composables/stories/contactStory'
 import { pageTransition } from '~/transitions/base'
@@ -8,8 +9,6 @@ definePageMeta({
 })
 
 const { story } = await useContactStory()
-
-console.log(story.value.content)
 
 const meta = computed(() => {
   const data = story?.value?.content?.meta[0]
@@ -30,7 +29,7 @@ const meta = computed(() => {
   <div>
     <PageMeta v-if="meta" v-bind="meta" />
     <HeroSection :content="story?.content" />
-
+    <FormSection :content="story?.content" />
     <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
