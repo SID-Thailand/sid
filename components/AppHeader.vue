@@ -52,8 +52,8 @@ const { headerColor, $headerRef } = useHeaderColor()
   top: 0;
   left: 0;
   transition:
-    transform 0.5s ease,
-    opacity 0.5s ease;
+    transform 1s ease,
+    opacity 1s ease;
 
   @media (max-width: $br1) {
     padding: 32px 0;

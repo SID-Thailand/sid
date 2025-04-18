@@ -5,7 +5,8 @@ const cb = () => {}
 const appendToScss = (path, fontname) => {
   fs.appendFile(
     path,
-    '@include font("' +
+    '@use "./mixins" as *;' +
+      '@include font("' +
       fontname +
       '", "' +
       fontname +

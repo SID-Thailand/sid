@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { iProjectsHeroContent } from '~/types/projectsTypes'
+import type { iNewsHeroContent } from '~/types/newsTypes'
 
 interface IProps {
-  content: iProjectsHeroContent
+  content: iNewsHeroContent
   categories: string[]
 }
 
@@ -12,23 +12,23 @@ const emit = defineEmits(['filter', 'getAll'])
 </script>
 
 <template>
-  <section class="projects-hero container">
-    <div class="projects-hero__wrapper">
-      <div class="projects-hero__bg-wrapper">
+  <section class="news-hero container">
+    <div class="news-hero__wrapper">
+      <div class="news-hero__bg-wrapper">
         <CustomImage
           :src="content?.background?.filename"
           :alt="content?.background?.alt"
-          class="projects-hero__bg"
+          class="news-hero__bg"
         />
-        <div class="projects-hero__layer" />
+        <div class="news-hero__layer" />
       </div>
 
-      <div class="projects-hero__content">
-        <h1 class="projects-hero__title">
+      <div class="news-hero__content">
+        <h1 class="news-hero__title">
           {{ content?.title }}
         </h1>
-        <p class="projects-hero__description">
-          {{ content?.description }}
+        <p class="news-hero__description">
+          {{ content?.hero_text }}
         </p>
         <CategoryFilter
           :categories="categories"
@@ -42,7 +42,7 @@ const emit = defineEmits(['filter', 'getAll'])
 </template>
 
 <style scoped lang="scss">
-.projects-hero {
+.news-hero {
   position: relative;
   height: 100%;
   width: 100%;
@@ -56,12 +56,12 @@ const emit = defineEmits(['filter', 'getAll'])
   }
 }
 
-.projects-hero__wrapper {
+.news-hero__wrapper {
   width: 100%;
   height: 100%;
 }
 
-.projects-hero__bg-wrapper {
+.news-hero__bg-wrapper {
   position: absolute;
   left: 0;
   top: 0;
@@ -69,13 +69,13 @@ const emit = defineEmits(['filter', 'getAll'])
   height: 100%;
 }
 
-.projects-hero__bg {
+.news-hero__bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.projects-hero__layer {
+.news-hero__layer {
   position: absolute;
   top: 0;
   left: 0;
@@ -85,7 +85,7 @@ const emit = defineEmits(['filter', 'getAll'])
   mix-blend-mode: multiply;
 }
 
-.projects-hero__content {
+.news-hero__content {
   position: relative;
   display: flex;
   justify-content: center;
@@ -96,12 +96,12 @@ const emit = defineEmits(['filter', 'getAll'])
   height: 100%;
 }
 
-.projects-hero__title {
+.news-hero__title {
   text-transform: uppercase;
   @include heading-h1;
 }
 
-.projects-hero__description {
+.news-hero__description {
   font-size: vw(16);
   line-height: 1.25em;
   max-width: vw(900);

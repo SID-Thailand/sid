@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { TransitionProps } from 'vue'
 import { LucidePlus } from 'lucide-vue-next'
-import type { iProjectContent } from '~/types/projectTypes'
+import type { iCurrentProjectContent } from '~/types/currentProjectTypes'
 
 interface IProps {
-  content: iProjectContent
+  content: iCurrentProjectContent
 }
 
 const props = defineProps<IProps>()

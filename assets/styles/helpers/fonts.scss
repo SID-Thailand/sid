@@ -1,3 +1,7 @@
+@use './variables' as *;
+@use './helpers' as *;
+@use './mixins' as *;
+
 @mixin reg {
   font-family:
     'HelveticaNeueCyr',

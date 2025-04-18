@@ -18,7 +18,8 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "~/assets/styles/helpers/all.scss";',
+          additionalData: '@use "~/assets/styles/helpers/index.scss" as *;',
+          api: 'modern-compiler',
         },
       },
     },
@@ -50,12 +51,6 @@ export default defineNuxtConfig({
       },
     ],
   ],
-
-  build: {
-    transpile: [
-      process.env.NODE_ENV === 'production' ? '@emotionagency/utils' : null,
-    ],
-  },
 
   runtimeConfig: {
     public: {

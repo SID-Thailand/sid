@@ -1,14 +1,33 @@
-<script lang="ts" setup>
-import { pageTransition } from '~/transitions/base'
+<script setup lang="ts">
+import { useCurrentNewsStory } from '~/composables/stories/currentNewsStory'
 
-definePageMeta({
-  pageTransition,
-})
 const { params } = useRoute()
+const { story } = await useCurrentNewsStory(params?.id as string)
+
+console.log(story.value)
+
+const resolveSectionByName = (name: string) => {
+  const sections = {}
+
+  return sections[name]
+}
 </script>
 
 <template>
-  <section>Current news {{ params.id }}</section>
-</template>
+  <div>
+    Current News {{ params?.id }}
+    <!-- <template v-for="item in body" :key="item._uid">
+      <component
+        :is="resolveSectionByName(item.component)"
+        v-if="resolveSectionByName(item.component)"
+        v-editable="item"
+        :content="item"
+      />
+      <div v-else>
+        <p>Unknown component: {{ item.component }}</p>
+      </div>
+    </template>
 
-<style scoped lang="scss"></style>
+    <BookTheMeetings :cta="story?.content?.cta" /> -->
+  </div>
+</template>

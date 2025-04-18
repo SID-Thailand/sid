@@ -32,13 +32,13 @@ export interface iApartment {
   _uid: string
 }
 
-export interface iProjectGallery {
+export interface iCurrentProjectGallery {
   component: string
   images: iImage[]
   _uid: string
 }
 
-export interface iProjectConcept {
+export interface iCurrentProjectConcept {
   big_asset: iImage
   big_asset_description: string
   component: string
@@ -50,7 +50,7 @@ export interface iProjectConcept {
   _uid: string
 }
 
-export interface iProjectInterior {
+export interface iCurrentProjectInterior {
   component: string
   apartments: iApartment[]
   text: string
@@ -59,7 +59,7 @@ export interface iProjectInterior {
   _uid: string
 }
 
-export interface iProjectForm {
+export interface iCurrentProjectForm {
   component: string
   asset: iImage
   button_text: string
@@ -71,7 +71,7 @@ export interface iProjectForm {
   _uid: string
 }
 
-export interface iProjectFeaturedProjects {
+export interface iCurrentProjectFeaturedProjects {
   component: string
   backdrop_asset: iImage
   button_text: string
@@ -81,7 +81,7 @@ export interface iProjectFeaturedProjects {
   _uid: string
 }
 
-export interface iProjectAbout {
+export interface iCurrentProjectAbout {
   component: string
   content: {
     type: string
@@ -97,7 +97,7 @@ export interface iProjectAbout {
   _uid: string
 }
 
-export interface iProjectFacilities {
+export interface iCurrentProjectFacilities {
   component: string
   slider: iSlider[]
   subtitle: string
@@ -105,7 +105,7 @@ export interface iProjectFacilities {
   _uid: string
 }
 
-export interface iProjectExterior {
+export interface iCurrentProjectExterior {
   component: string
   assets: iImage[]
   text: string
@@ -113,18 +113,18 @@ export interface iProjectExterior {
   _uid: string
 }
 
-export type iProjectBody =
-  | iProjectConcept
-  | iProjectAbout
-  | iProjectGallery
-  | iProjectFacilities
-  | iProjectExterior
-  | iProjectInterior
-  | iProjectForm
-  | iProjectFeaturedProjects
+export type iCurrentProjectBody =
+  | iCurrentProjectConcept
+  | iCurrentProjectAbout
+  | iCurrentProjectGallery
+  | iCurrentProjectFacilities
+  | iCurrentProjectExterior
+  | iCurrentProjectInterior
+  | iCurrentProjectForm
+  | iCurrentProjectFeaturedProjects
 
-export interface iProjectContent {
-  body: iProjectBody[]
+export interface iCurrentProjectContent {
+  body: iCurrentProjectBody[]
   category: iProjectCategory
   component: string
   cover: iImage

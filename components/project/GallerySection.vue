@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ArrowLeft, ArrowRight } from 'lucide-vue-next'
-import type { iProjectGallery } from '~/types/projectTypes'
+import type { iCurrentProjectGallery } from '~/types/currentProjectTypes'
 
 interface IProps {
-  content: iProjectGallery
+  content: iCurrentProjectGallery
 }
 
 const props = defineProps<IProps>()

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ChevronDown, LucidePlus } from 'lucide-vue-next'
-import type { iApartment } from '~/types/projectTypes'
+import type { iApartment } from '~/types/currentProjectTypes'
 
 interface IProps {
   apartmentsList: iApartment[]
@@ -36,6 +36,7 @@ const handleToggleMenu = () => {
 
     <div
       class="interior-dropdown__menu"
+      data-scroll-ignore="true"
       :class="{ 'interior-dropdown__menu--opened': isOpen }"
     >
       <ul class="interior-dropdown__list">
