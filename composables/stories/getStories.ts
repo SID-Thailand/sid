@@ -29,7 +29,12 @@ export const useGetStories = async (opts: ISbStoriesParams) => {
               : 'published',
           cv: Date.now(),
           ...opts,
-          resolve_relations: ['project.category', 'project.cta'],
+          resolve_relations: [
+            'project.category',
+            'project.cta',
+            'page.cta',
+            'page.category',
+          ],
         })
 
         response.value = data.stories

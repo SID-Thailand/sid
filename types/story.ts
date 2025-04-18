@@ -62,6 +62,7 @@ export interface iProjectCategory {
 export interface iNewsCategory {
   content: {
     component: string
+    name: string
   }
 }
 

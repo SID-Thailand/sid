@@ -45,8 +45,6 @@ export const useGetStory = async (route: string) => {
             'about_hero.interview',
             'project_home.cta',
             'news_home.cta',
-            'page.category',
-            'page.cta',
             'contact.cta',
             'contact.contacts',
           ],
