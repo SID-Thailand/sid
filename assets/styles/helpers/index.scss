@@ -1,12 +1,6 @@
 @forward './variables';
 @forward './mixins';
 @forward './helpers';
+@forward './layout-variables';
 @forward './fonts-include';
 @forward './fonts';
-
-@use './helpers' as *;
-
-// layouts
-$g-offset: #{vw(40)};
-$g-sm: 32px;
-$g-s: 16px;
