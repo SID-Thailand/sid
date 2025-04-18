@@ -19,8 +19,6 @@ const radioHandler = () => {
   <li
     class="quiz-radio"
     :class="{ 'quiz-radio--active': isActive }"
-    role="button"
-    :aria-checked="isActive"
     @click="radioHandler"
   >
     <div class="quiz-radio__image-container">
@@ -31,7 +29,6 @@ const radioHandler = () => {
       />
       <button
         type="button"
-        aria-role="radio"
         :aria-checked="isActive"
         :aria-label="item?.label"
         class="quiz-radio__circled-btn"
