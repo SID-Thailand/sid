@@ -6,7 +6,7 @@ interface iProps {
   links: iMenuLink[]
 }
 
-defineProps<iProps>()
+const props = defineProps<iProps>()
 
 const emit = defineEmits(['close'])
 
@@ -73,12 +73,35 @@ onMounted(() => {
     })
   }
 })
+
+const { selectedLang, defaultLocale } = useLang()
+
+const updatedLinks = computed(() => {
+  return props.links.map(item => {
+    if (item?.link?.cached_url.includes('home')) {
+      return {
+        ...item,
+        link: {
+          ...item.link,
+          cached_url:
+            selectedLang.value === defaultLocale()
+              ? '/'
+              : '/' + selectedLang.value,
+        },
+      }
+    }
+
+    return item
+  })
+})
+
+console.log(updatedLinks.value)
 </script>
 
 <template>
   <nav class="navigation">
     <NuxtLink
-      v-for="(item, idx) in links"
+      v-for="(item, idx) in updatedLinks"
       :key="idx"
       :to="`/${item?.link?.cached_url?.replace(/^\/+/, '')}`"
       class="navigation__link"
