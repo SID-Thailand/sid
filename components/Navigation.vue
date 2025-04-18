@@ -94,8 +94,6 @@ const updatedLinks = computed(() => {
     return item
   })
 })
-
-console.log(updatedLinks.value)
 </script>
 
 <template>
