@@ -65,8 +65,6 @@ const menuTransition: TransitionProps = {
       },
       0.3
     )
-
-    appear()
   },
   onLeave(el, done) {
     const $links = el.querySelectorAll('.navigation__link')
@@ -110,7 +108,6 @@ const menuTransition: TransitionProps = {
       },
       0.2
     )
-    appear()
   },
 }
 
