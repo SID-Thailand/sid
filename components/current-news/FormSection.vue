@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { iCurrentNewsContent } from '~/types/currentNewsTypes'
 import type { IForm } from '~/types/form'
+import type { iImage } from '~/types/story'
 
 interface IProps {
-  content: iCurrentNewsContent
+  background: iImage
+  title: string
 }
 
 defineProps<IProps>()
@@ -25,14 +26,14 @@ const formData = ref<IForm>({
       <div class="curr-news-form__bg-wrapper">
         <CustomImage
           class="curr-news-form__bg"
-          :src="content?.asset?.filename"
-          :alt="content?.asset?.alt"
+          :src="background?.filename"
+          :alt="background?.alt"
         />
         <div class="curr-news-form__layer" />
       </div>
 
       <h2 class="curr-news-form__title">
-        {{ content?.form_title }}
+        {{ title }}
       </h2>
       <AppForm
         v-model="formData"
