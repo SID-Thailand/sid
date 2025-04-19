@@ -47,6 +47,8 @@ export const useGetStory = async (route: string) => {
             'news_home.cta',
             'contact.cta',
             'contact.contacts',
+            'page.cta',
+            'page.category',
           ],
         })
 
