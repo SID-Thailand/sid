@@ -1,0 +1,94 @@
+<script setup lang="ts">
+interface IProps {
+  title: string
+  date: string
+  category: string
+}
+
+defineProps<IProps>()
+</script>
+
+<template>
+  <section class="curr-news-hero container">
+    <div class="curr-news-hero__wrapper">
+      <h1 class="curr-news-hero__title">
+        {{ title }}
+      </h1>
+      <div class="curr-news-hero__date-wrapper">
+        <p class="curr-news-hero__category">
+          {{ category }}
+        </p>
+        <span>|</span>
+        <p class="curr-news-hero__date">
+          {{ formatDate(date) }}
+        </p>
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped lang="scss">
+.curr-news-hero {
+  padding-top: vw(226);
+  padding-bottom: vw(100);
+  background-color: var(--basic-black);
+  color: var(--basic-white);
+
+  @media (max-width: $br1) {
+    padding-top: 128px;
+    padding-bottom: 48px;
+  }
+}
+
+.curr-news-hero__wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.curr-news-hero__title {
+  text-transform: uppercase;
+  max-width: vw(1050);
+  @include heading-h1;
+
+  @media (max-width: $br1) {
+    max-width: 100%;
+  }
+}
+
+.curr-news-hero__date-wrapper {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-top: vw(24);
+  gap: vw(20);
+  text-transform: uppercase;
+  color: var(--neutral-300);
+  font-size: vw(20);
+  line-height: 1em;
+  @include med;
+
+  @media (max-width: $br1) {
+    line-height: 1em;
+    font-size: size(20, 14);
+    margin-top: 24px;
+    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media (max-width: $br4) {
+    font-size: 14px;
+  }
+
+  span {
+    @media (max-width: $br1) {
+      transform: rotate(90deg);
+    }
+  }
+}
+</style>

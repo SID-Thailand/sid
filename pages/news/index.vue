@@ -11,8 +11,6 @@ definePageMeta({
 const { story } = await useNewsStory()
 const { news } = await useNewsStories()
 
-console.log({ story: story.value, news: news.value })
-
 const filteredNews = ref(news.value)
 
 const categories = computed(() => {

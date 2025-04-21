@@ -1,33 +1,25 @@
 <script setup lang="ts">
+import FormSection from '~/components/current-news/FormSection.vue'
+import HeroSection from '~/components/current-news/HeroSection.vue'
 import { useCurrentNewsStory } from '~/composables/stories/currentNewsStory'
 
 const { params } = useRoute()
 const { story } = await useCurrentNewsStory(params?.id as string)
 
 console.log(story.value)
-
-const resolveSectionByName = (name: string) => {
-  const sections = {}
-
-  return sections[name]
-}
 </script>
 
 <template>
   <div>
-    Current News {{ params?.id }}
-    <!-- <template v-for="item in body" :key="item._uid">
-      <component
-        :is="resolveSectionByName(item.component)"
-        v-if="resolveSectionByName(item.component)"
-        v-editable="item"
-        :content="item"
-      />
-      <div v-else>
-        <p>Unknown component: {{ item.component }}</p>
-      </div>
-    </template>
-
-    <BookTheMeetings :cta="story?.content?.cta" /> -->
+    <HeroSection
+      :title="story?.content?.title"
+      :date="story?.first_published_at"
+      :category="story?.content?.category?.content?.name"
+    />
+    <FormSection
+      :background="story?.content?.asset"
+      :title="story?.content?.title"
+    />
+    <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
