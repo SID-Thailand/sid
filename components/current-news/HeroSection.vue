@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import type { iImage } from '~/types/story'
+
 interface IProps {
   title: string
   date: string
   category: string
+  asset: iImage
 }
 
 defineProps<IProps>()
@@ -11,7 +14,7 @@ defineProps<IProps>()
 <template>
   <section class="curr-news-hero container">
     <div class="curr-news-hero__wrapper">
-      <h1 class="curr-news-hero__title">
+      <h1 v-if="title" class="curr-news-hero__title">
         {{ title }}
       </h1>
       <div class="curr-news-hero__date-wrapper">
@@ -23,6 +26,12 @@ defineProps<IProps>()
           {{ formatDate(date) }}
         </p>
       </div>
+      <CustomImage
+        v-if="asset.filename"
+        :src="asset?.filename"
+        :alt="asset?.alt"
+        class="curr-news-hero__img"
+      />
     </div>
   </section>
 </template>
@@ -89,6 +98,24 @@ defineProps<IProps>()
     @media (max-width: $br1) {
       transform: rotate(90deg);
     }
+  }
+}
+
+.curr-news-hero__img {
+  display: block;
+  height: vw(752);
+  width: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  margin-top: vw(100);
+
+  @media (max-width: $br1) {
+    height: size(752, 229);
+    margin-top: 48px;
+  }
+
+  @media (max-width: $br4) {
+    height: 229px;
   }
 }
 </style>

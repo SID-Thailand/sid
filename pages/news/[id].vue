@@ -6,20 +6,22 @@ import { useCurrentNewsStory } from '~/composables/stories/currentNewsStory'
 const { params } = useRoute()
 const { story } = await useCurrentNewsStory(params?.id as string)
 
-console.log(story.value)
+const content = computed(() => story.value?.content)
+
+console.log(content.value)
 </script>
 
 <template>
   <div>
     <HeroSection
-      :title="story?.content?.title"
+      :title="content?.title"
       :date="story?.first_published_at"
-      :category="story?.content?.category?.content?.name"
+      :category="content?.category?.content?.name"
+      :asset="content?.asset"
     />
-    <FormSection
-      :background="story?.content?.asset"
-      :title="story?.content?.title"
-    />
+    <DynamicBlockRenderer :blocks="content?.body" />
+
+    <FormSection :background="content?.asset" :title="content?.title" />
     <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
