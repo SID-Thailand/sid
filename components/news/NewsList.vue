@@ -4,24 +4,29 @@ import type { iStory } from '~/types/story'
 
 interface iProps {
   news: iStory<iNewsContent>[]
+  title?: string
 }
 
 const props = defineProps<iProps>()
 
 const isMobile = useMediaQuery('(max-width: 860px)')
 const showAll = ref(false)
+const maxCards = ref(8)
 
 const allNews = computed(() => props.news ?? [])
 
 const visibleNews = computed(() => {
   if (isMobile.value) return allNews.value
-  return showAll.value ? allNews.value : allNews.value.slice(0, 8)
+  return showAll.value ? allNews.value : allNews.value.slice(0, maxCards.value)
 })
 </script>
 
 <template>
   <div class="news-list">
     <div class="news-list__wrapper container">
+      <h2 v-if="title" class="news-list__main-title">
+        {{ title }}
+      </h2>
       <div class="news-list__list-wrapper">
         <ul class="news-list__list">
           <li
@@ -80,7 +85,7 @@ const visibleNews = computed(() => {
         </ul>
 
         <Button
-          v-if="allNews.length > 8"
+          v-if="allNews.length > maxCards"
           class="news-list__btn"
           type="button"
           @click="showAll = !showAll"
@@ -92,15 +97,15 @@ const visibleNews = computed(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .news-list {
   background: var(--neutral-600);
   color: var(--basic-white);
-  padding-top: vw(40);
+  padding-top: vw(100);
   padding-bottom: vw(112);
 
   @media (max-width: $br1) {
-    padding-top: 24px;
+    padding-top: 60px;
     padding-bottom: 60px;
   }
 }
@@ -113,6 +118,26 @@ const visibleNews = computed(() => {
 
   @media (max-width: $br1) {
     row-gap: 40px;
+  }
+}
+
+.news-list__main-title {
+  font-size: vw(68);
+  line-height: 1em;
+  text-transform: uppercase;
+  width: 100%;
+  @include med;
+
+  @media (min-width: $br1) {
+    text-align: center;
+  }
+
+  @media (max-width: $br1) {
+    font-size: size(68, 44);
+  }
+
+  @media (max-width: $br4) {
+    font-size: 44px;
   }
 }
 
@@ -150,9 +175,18 @@ const visibleNews = computed(() => {
 
   @media (max-width: $br1) {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     min-width: max-content;
     column-gap: 16px;
+  }
+}
+
+.news-list__card {
+  @media (max-width: $br1) {
+    width: 344px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -164,6 +198,7 @@ const visibleNews = computed(() => {
   background: var(--neutral-400);
   padding: vw(16);
   height: 100%;
+  flex-grow: 1;
 
   @media (max-width: $br1) {
     padding: 16px;
@@ -176,7 +211,7 @@ const visibleNews = computed(() => {
   object-fit: cover;
 
   @media (max-width: $br1) {
-    aspect-ratio: 268 / 268;
+    width: 100%;
     height: 268px;
   }
 }
