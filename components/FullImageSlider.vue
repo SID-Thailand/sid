@@ -1,28 +1,24 @@
 <script lang="ts" setup>
 import { ArrowLeft, ArrowRight } from 'lucide-vue-next'
+import { gsap } from '~/libs/gsap'
 import type { iImage } from '~/types/story'
 
 interface IProps {
   images: iImage[]
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
-const activeImg = ref(0)
+const current = ref(0)
+const prev = ref(null)
+const direction = ref<1 | -1>(1)
+
 const cursorX = ref(0)
 const cursorY = ref(0)
 const cursorType = ref<'left' | 'right' | null>(null)
 const isIndicatorActive = ref(false)
 
-const handlePrev = () => {
-  activeImg.value =
-    activeImg.value === 0 ? props.images.length - 1 : activeImg.value - 1
-}
-
-const handleNext = () => {
-  activeImg.value =
-    activeImg.value === props.images.length - 1 ? 0 : activeImg.value + 1
-}
+const $items = ref<HTMLElement[]>([])
 
 const handleMouseMove = (e: MouseEvent) => {
   cursorX.value = e.clientX
@@ -32,6 +28,111 @@ const handleMouseMove = (e: MouseEvent) => {
 const setCursor = (type: 'left' | 'right' | null) => {
   cursorType.value = type
 }
+
+const handlePrev = () => {
+  prev.value = current.value
+  current.value =
+    (current.value - 1 + $items.value.length) % $items.value.length
+  direction.value = -1
+}
+
+const handleNext = () => {
+  prev.value = current.value
+  current.value = (current.value + 1) % $items.value.length
+  direction.value = 1
+}
+
+const navigate = (direction: 1 | -1) => {
+  direction === 1 ? handleNext() : handlePrev()
+}
+
+const throttledNavigate = useThrottleFn(navigate, 700)
+
+const handleChangeSlide = async () => {
+  const $active = $items.value[current.value] as HTMLElement
+  const $prev = $items.value[prev.value] as HTMLElement
+
+  const $activeImg = $active.querySelector('img') as HTMLImageElement
+  const $prevImg = $prev?.querySelector('img') as HTMLImageElement
+
+  const dir = direction.value
+
+  const tl = gsap.timeline({
+    overwrite: true,
+  })
+
+  const from = 'inset(0 0 0 100%)'
+  const to = 'inset(0 100% 0 0)'
+
+  tl.set($active, {
+    clipPath: dir === 1 ? to : from,
+  })
+
+  tl.set($activeImg, {
+    scale: 1.3,
+  })
+
+  if ($prev) {
+    tl.to(
+      $prev,
+      {
+        clipPath: dir === 1 ? from : to,
+        duration: 1.5,
+        ease: 'power2.out',
+      },
+      0
+    )
+
+    tl.to(
+      $prevImg,
+      {
+        scale: 1.3,
+        duration: 1.5,
+        ease: 'power2.out',
+      },
+      0
+    )
+  }
+
+  tl.to(
+    $active,
+    {
+      clipPath: 'inset(0 0% 0 0%)',
+      duration: 1.5,
+      ease: 'power2.out',
+    },
+    0
+  )
+
+  tl.to(
+    $activeImg,
+    {
+      scale: 1,
+      duration: 1.5,
+      ease: 'power2.out',
+    },
+    0
+  )
+}
+
+watch(current, handleChangeSlide)
+
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (e.key === 'ArrowLeft') {
+    throttledNavigate(-1)
+  } else if (e.key === 'ArrowRight') {
+    throttledNavigate(1)
+  }
+}
+
+onMounted(() => {
+  prev.value = $items.value.length - 1
+  window.addEventListener('keydown', handleKeyDown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown)
+})
 </script>
 
 <template>
@@ -41,11 +142,14 @@ const setCursor = (type: 'left' | 'right' | null) => {
       @mousemove="handleMouseMove"
       @mouseleave="setCursor(null)"
     >
-      <ul
-        class="full-slider__list"
-        :style="{ transform: `translateX(-${activeImg * 100}%)` }"
-      >
-        <li v-for="(img, idx) in images" :key="idx" class="full-slider__item">
+      <ul class="full-slider__list">
+        <li
+          v-for="(img, idx) in images"
+          :key="idx"
+          ref="$items"
+          class="full-slider__item"
+          :class="{ active: idx === current, prev: idx === prev }"
+        >
           <CustomImage
             :src="img?.filename"
             :alt="img?.alt"
@@ -59,7 +163,7 @@ const setCursor = (type: 'left' | 'right' | null) => {
           type="button"
           class="full-slider__btn"
           :class="{ active: isIndicatorActive && cursorType === 'left' }"
-          @click="handlePrev"
+          @click="throttledNavigate(-1)"
           @mouseenter="setCursor('left')"
           @mouseleave="setCursor(null)"
           @mousedown="isIndicatorActive = true"
@@ -78,7 +182,7 @@ const setCursor = (type: 'left' | 'right' | null) => {
           type="button"
           class="full-slider__btn"
           :class="{ active: isIndicatorActive && cursorType === 'right' }"
-          @click="handleNext"
+          @click="throttledNavigate(1)"
           @mouseenter="setCursor('right')"
           @mouseleave="setCursor(null)"
           @mousedown="isIndicatorActive = true"
@@ -125,17 +229,31 @@ const setCursor = (type: 'left' | 'right' | null) => {
 }
 
 .full-slider__list {
-  display: flex;
   height: 100%;
   width: 100%;
-  transition: transform 0.5s ease-in-out;
-  will-change: transform;
+  position: relative;
 }
 
 .full-slider__item {
   width: 100%;
   height: 100%;
-  flex-shrink: 0;
+  will-change: transform, clip-path;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  clip-path: inset(0px 0px 0px 100%);
+
+  &.active {
+    z-index: 2;
+  }
+  &.prev {
+    z-index: 1;
+  }
+
+  &:first-child {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
 .full-slider__img {
@@ -150,6 +268,7 @@ const setCursor = (type: 'left' | 'right' | null) => {
   top: 0;
   height: 100%;
   width: 100%;
+  z-index: 3;
 
   @media (max-width: $br1) {
     display: flex;
@@ -167,6 +286,7 @@ const setCursor = (type: 'left' | 'right' | null) => {
   background-color: transparent;
   transform: scale(1);
   transition: transform 0.2s ease;
+  outline: none;
 
   @media (min-width: $br1) {
     &:first-child {

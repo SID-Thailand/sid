@@ -31,6 +31,7 @@ onMounted(() => {
   left: 50%;
   transform: translate(-50%, 10px);
   opacity: 0;
+  z-index: 10;
   visibility: hidden;
   transition: 0.3s ease-in-out;
   transition-property: opacity, transform, visibility;
