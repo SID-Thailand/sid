@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { LucidePlus } from 'lucide-vue-next'
+
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -12,15 +13,15 @@ const $el = ref<HTMLElement | null>(null)
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
 
-const contentRef = ref<HTMLElement | null>(null)
-
-const activeIdx = ref(0)
-
 const itemsCount = computed(() => props.content?.slider?.length || 0)
 
-const { activePage, prevPage, direction } = useFullPage(
+const contentRef = ref<HTMLElement | null>(null)
+
+const isMobile = useMediaQuery('(max-width: 768px)')
+const { activePage } = useFullPageAnimation(
   contentRef as Ref<HTMLElement>,
-  itemsCount
+  itemsCount,
+  isMobile
 )
 </script>
 
@@ -42,17 +43,10 @@ const { activePage, prevPage, direction } = useFullPage(
               v-for="(item, idx) in content?.slider"
               :key="idx"
               class="project-facilities__image-item"
-              :class="
-                idx === activeIdx && 'project-facilities__image-item--active'
-              "
             >
-              <div
-                class="project-facilities__img-wrapper"
-                :class="
-                  idx <= activeIdx && 'project-facilities__img-wrapper--active'
-                "
-              >
+              <div class="project-facilities__img-wrapper">
                 <CustomImage
+                  data-f-asset
                   :src="item?.asset?.filename"
                   :alt="item?.asset?.alt"
                   class="project-facilities__img"
@@ -60,28 +54,30 @@ const { activePage, prevPage, direction } = useFullPage(
               </div>
             </div>
           </div>
-          <div ref="projectContentRef" class="project-facilities__content">
-            <div
-              v-for="(item, idx) in content?.slider"
-              :key="idx"
-              class="project-facilities__content-wrapper"
-              :class="
-                idx === activeIdx &&
-                'project-facilities__content-wrapper--active'
-              "
-              :style="{ zIndex: idx + 1 }"
-            >
-              <div class="project-facilities__item">
-                <div class="project-facilities__line" />
-                <div class="project-facilities__item-wrapper">
-                  <LucidePlus class="project-facilities__plus" />
-                  <div class="project-facilities__info">
-                    <h3 class="project-facilities__item-title">
-                      {{ item?.title }}
-                    </h3>
-                    <p class="project-facilities__item-text">
-                      {{ item?.description }}
-                    </p>
+          <div class="project-facilities__content-c">
+            <div data-f-scroller class="project-facilities__content">
+              <div
+                v-for="(item, idx) in content?.slider"
+                :key="idx"
+                data-f-text
+                class="project-facilities__content-wrapper"
+                :class="
+                  idx === activePage - 1 &&
+                  'project-facilities__content-wrapper--active'
+                "
+              >
+                <div class="project-facilities__item">
+                  <div class="project-facilities__line" />
+                  <div class="project-facilities__item-wrapper">
+                    <LucidePlus class="project-facilities__plus" />
+                    <div class="project-facilities__info">
+                      <h3 class="project-facilities__item-title">
+                        {{ item?.title }}
+                      </h3>
+                      <p class="project-facilities__item-text">
+                        {{ item?.description }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -187,6 +183,13 @@ const { activePage, prevPage, direction } = useFullPage(
   }
 }
 
+.project-facilities__content-c {
+  @media (max-width: $br1) {
+    margin-top: 40px;
+    overflow: hidden;
+  }
+}
+
 .project-facilities__content {
   position: relative;
 }
@@ -237,12 +240,6 @@ const { activePage, prevPage, direction } = useFullPage(
   overflow: hidden;
   width: 100%;
   height: 100%;
-
-  &--active {
-    .project-facilities__img {
-      transform: translateY(0) scale(1);
-    }
-  }
 }
 
 .project-facilities__img {
@@ -250,9 +247,7 @@ const { activePage, prevPage, direction } = useFullPage(
   display: block;
   width: 100%;
   height: auto;
-  transition: transform 3s $easing;
-  transform-origin: center top;
-  transform: translateY(100%) scale(1.3);
+  // transform-origin: center top;
   will-change: transform;
 }
 
@@ -288,7 +283,7 @@ const { activePage, prevPage, direction } = useFullPage(
   width: vw(20);
   height: vw(20);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 1s ease;
 
   @media (max-width: $br1) {
     width: 16px;

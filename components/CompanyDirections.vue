@@ -1,120 +1,22 @@
 <script setup lang="ts">
-import { useFullPage } from '~/composables/fullPage'
-import { gsap } from '~/libs/gsap'
 import type { iCompanyDirections } from '~/types/story'
 
 interface IProps {
   content: iCompanyDirections
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 // DOM Refs
 const contentRef = ref<HTMLElement | null>(null)
-const interviewContentRef = ref<HTMLElement | null>(null)
-const assetsRef = ref<HTMLElement | null>(null)
 
-const $texts = ref<NodeListOf<HTMLElement> | null>(null)
-const $assets = ref<NodeListOf<HTMLElement> | null>(null)
+const itemsCount = computed(() => props?.content?.directions?.length || 0)
 
-const itemsCount = computed(() => $texts.value?.length || 0)
-
-const { activePage, prevPage, direction } = useFullPage(
+const { activePage, direction } = useFullPageAnimation(
   contentRef as Ref<HTMLElement>,
-  itemsCount
+  itemsCount,
+  true
 )
-
-//Sets up initial states for image and text animations
-const setupInitialStates = (): void => {
-  if (!$assets.value) return
-
-  $assets.value.forEach((item, index) => {
-    const $image = item.querySelector('.interview__img') as HTMLElement
-    if (index > 0) {
-      gsap.set($image, {
-        scale: 1.3,
-        clipPath: 'inset(100% 0 0 0)',
-      })
-    }
-  })
-}
-
-const animateSections = (): void => {
-  const $images = document.querySelectorAll(
-    '.interview__img'
-  ) as NodeListOf<HTMLElement>
-  const $textsList = $texts.value
-  const currentIndex = activePage.value - 1
-  const prevIndex = prevPage.value - 1
-
-  if (!$images.length || !$textsList.length) return
-
-  const $currentImage = $images[currentIndex]
-  const $prevImage = $images[prevIndex]
-  const $currentWrapper = $textsList[currentIndex]
-  const $prevWrapper = $textsList[currentIndex - 1]
-  const $content = interviewContentRef.value
-
-  if (!$currentWrapper || !$currentImage || !$content) return
-
-  const currentWrapperTop = $currentWrapper.offsetTop
-  const duration = 1.5
-
-  const tl = gsap.timeline({
-    defaults: {
-      duration,
-      ease: 'power2.out',
-    },
-  })
-
-  const fadeIn = (el: HTMLElement | null, offset = 0) => {
-    if (!el) return
-    tl.to(el, { opacity: 1, duration: 0.2, overwrite: true }, offset)
-  }
-
-  const fadeOut = (el: HTMLElement | null, offset = 0) => {
-    if (!el) return
-    tl.to(el, { opacity: 0, duration: 0.2 }, offset)
-  }
-
-  const scaleIn = (el: HTMLElement, offset = 0) =>
-    tl.to(el, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, offset)
-
-  const scaleOut = (el: HTMLElement, inset: string, offset = 0) =>
-    tl.to(el, { scale: 1.3, clipPath: `inset(${inset})` }, offset)
-
-  tl.to($content, { y: -currentWrapperTop }, 0)
-
-  if ($prevWrapper) fadeOut($prevWrapper as HTMLElement, 1)
-  fadeIn($currentWrapper as HTMLElement, 0)
-
-  const isForward = currentIndex > prevIndex
-
-  if (isForward) {
-    if ($prevImage) scaleOut($prevImage, '0 0 0 0', 0)
-    scaleIn($currentImage, 0)
-  } else {
-    scaleIn($currentImage, 0)
-    if ($prevImage) scaleOut($prevImage, '100% 0 0 0', 0)
-  }
-}
-
-watch(activePage, () => {
-  animateSections()
-})
-
-onMounted(() => {
-  if (!contentRef.value || !assetsRef.value) return
-
-  $texts.value = contentRef.value.querySelectorAll(
-    '.interview__content-wrapper'
-  ) as NodeListOf<HTMLElement>
-  $assets.value = assetsRef.value.querySelectorAll(
-    '.interview__image-item'
-  ) as NodeListOf<HTMLElement>
-
-  setupInitialStates()
-})
 </script>
 
 <template>
@@ -129,7 +31,7 @@ onMounted(() => {
         :style="{ '--direction': direction === 1 ? 'normal' : 'reverse' }"
       >
         <div class="interview__block-wrapper">
-          <div ref="assetsRef" class="interview__assets">
+          <div class="interview__assets">
             <div
               v-for="(item, idx) in content?.directions"
               :key="idx"
@@ -137,6 +39,7 @@ onMounted(() => {
             >
               <div class="interview__img-wrapper">
                 <CustomImage
+                  data-f-asset
                   :src="item?.asset?.filename"
                   :alt="item?.asset?.alt"
                   class="interview__img"
@@ -145,10 +48,11 @@ onMounted(() => {
             </div>
           </div>
           <div class="interview__content-mask">
-            <div ref="interviewContentRef" class="interview__content">
+            <div data-f-scroller class="interview__content">
               <div
                 v-for="(item, idx) in content?.directions"
                 :key="idx"
+                data-f-text
                 class="interview__content-wrapper"
                 :class="
                   idx === activePage - 1 && 'interview__content-wrapper--active'
