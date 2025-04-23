@@ -53,5 +53,6 @@ const resolveSectionByName = (name: string) => {
     </template>
 
     <BookTheMeetings :cta="story?.content?.cta" />
+    <ProjectButton />
   </div>
 </template>

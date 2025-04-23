@@ -8,8 +8,6 @@ interface IProps {
 
 const { content } = defineProps<IProps>()
 
-const activeProject = ref(0)
-
 const projects = computed(() => {
   return content?.featured_projects || []
 })
@@ -215,6 +213,10 @@ onMounted(() => {
 
   setupInitialStates()
 })
+
+const activeProject = computed(() => {
+  return projects.value[activePage.value - 1]
+})
 </script>
 
 <template>
@@ -242,7 +244,6 @@ onMounted(() => {
               v-for="(item, idx) in projects"
               :key="idx"
               class="fpc__image-item"
-              :class="{ active: activeProject === idx }"
               :style="{ zIndex: idx + 1 }"
             >
               <div class="fpc__img-wrapper">
@@ -263,39 +264,15 @@ onMounted(() => {
               <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
               <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
               <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
-              <NuxtLink
-                :to="`/${item.full_slug}`"
-                class="fpc__link"
-                aria-label="View project"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M11 13V23H13V13H23V11H13V1H11V11H1V13H11Z"
-                    fill="url(#paint0_linear_1_2446)"
-                  />
-                  <defs>
-                    <linearGradient
-                      id="paint0_linear_1_2446"
-                      x1="12"
-                      y1="1"
-                      x2="12"
-                      y2="23"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop stop-color="#FFCE7E" />
-                      <stop offset="1" stop-color="#997C4B" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </NuxtLink>
             </div>
           </div>
+          <NuxtLink
+            :to="`/${activeProject.full_slug}`"
+            class="fpc__link"
+            aria-label="View project"
+          >
+            <IconsPlus />
+          </NuxtLink>
         </div>
         <div class="featured-projects__text">
           <h2 class="featured-projects__title">{{ content?.title }}</h2>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TransitionProps } from 'vue'
-import { LucidePlus } from 'lucide-vue-next'
+
 import type { iCurrentProjectContent } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -50,10 +50,6 @@ const isShouldRenderImage = pageTransitionObject.name !== 'project'
             <span v-if="specs?.length - 1 !== idx">|</span>
           </li>
         </ul>
-        <Button type="button" class="project-hero__btn">
-          <span>WHATSAPP</span>
-          <LucidePlus />
-        </Button>
       </div>
     </div>
   </section>
@@ -145,15 +141,6 @@ const isShouldRenderImage = pageTransitionObject.name !== 'project'
 
   @media (max-width: $br4) {
     font-size: 14px;
-  }
-}
-
-.project-hero__btn {
-  position: absolute !important;
-  bottom: vw(85);
-
-  @media (max-width: $br1) {
-    bottom: 48px;
   }
 }
 </style>
