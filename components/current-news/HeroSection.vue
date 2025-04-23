@@ -102,7 +102,7 @@ defineProps<IProps>()
 .curr-news-hero__img {
   display: block;
   height: vw(752);
-  width: 100%;
+  width: vw(1130);
   max-width: 100%;
   object-fit: cover;
   margin-top: vw(100);
@@ -110,6 +110,7 @@ defineProps<IProps>()
   @media (max-width: $br1) {
     height: size(752, 229);
     margin-top: 48px;
+    width: 100%;
   }
 
   @media (max-width: $br4) {

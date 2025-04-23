@@ -7,5 +7,6 @@ export interface iCurrentNewsContent {
   cta: iCTA
   category: iNewsCategory
   form_title: string
+  form_bg: iImage
   title: string
 }

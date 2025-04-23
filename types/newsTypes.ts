@@ -5,6 +5,7 @@ export interface iNewsContent {
   component: string
   cta: iCTA
   form_title: string
+  form_bg: iImage
   title: string
   category: iNewsCategory
   // BODY NEED TO BE UPDATE
