@@ -31,10 +31,14 @@ const computeAspectRatio = () => {
 onMounted(() => {
   computeAspectRatio()
 })
+
+const $el = ref<HTMLElement | null>(null)
+
+useDetectHeaderColor($el as Ref<HTMLElement>)
 </script>
 
 <template>
-  <section class="project-about">
+  <section ref="$el" class="project-about">
     <div class="project-about__wrapper container">
       <p class="project-about__text-flow">
         <template v-for="(block, idx) in blocks" :key="idx">

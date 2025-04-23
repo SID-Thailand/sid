@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { gsap, ScrollTrigger } from '~/libs/gsap'
-import { resize } from '@emotionagency/utils'
 import { LucidePlus } from 'lucide-vue-next'
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
@@ -8,95 +6,26 @@ interface IProps {
   content: iCurrentProjectFacilities
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+const $el = ref<HTMLElement | null>(null)
+
+useDetectHeaderColor($el as Ref<HTMLElement>)
 
 const contentRef = ref<HTMLElement | null>(null)
-const projectContentRef = ref<HTMLElement | null>(null)
-const assetsRef = ref<HTMLElement | null>(null)
-const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
 const activeIdx = ref(0)
 
-const dir = ref(1)
-const height = ref(0)
-const st = ref<ScrollTrigger | null>(null)
+const itemsCount = computed(() => props.content?.slider?.length || 0)
 
-const itemsCount = computed(() => {
-  if (!$wrappers.value) return 0
-  return $wrappers.value.length
-})
-
-const calcHeight = () => {
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
-
-  height.value = projectContentRef.value?.scrollHeight - lastItemHeight
-}
-
-const makeAnimation = () => {
-  if (!contentRef.value) return
-
-  if (!$wrappers.value?.length) return
-
-  const tl = gsap.timeline({
-    paused: true,
-  })
-
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
-  const height = projectContentRef.value?.scrollHeight - lastItemHeight
-
-  tl.to(projectContentRef.value, {
-    duration: 1,
-    ease: 'none',
-    y: -height,
-  })
-
-  ScrollTrigger.create({
-    trigger: contentRef.value as HTMLElement,
-    start: () => 'top top',
-    end: () => 'bottom-=5% bottom',
-    scrub: true,
-
-    animation: tl,
-
-    onUpdate: ({ direction }) => {
-      dir.value = direction
-      $wrappers.value.forEach((wrapper, index) => {
-        const bounds = wrapper.getBoundingClientRect()
-        const assetsBounds = assetsRef.value?.getBoundingClientRect()
-
-        if (bounds?.top < 150 && window.innerWidth > 1060) {
-          activeIdx.value = index
-        }
-
-        if (
-          bounds?.top - 100 < assetsBounds?.bottom &&
-          window.innerWidth < 1060
-        ) {
-          activeIdx.value = index
-        }
-      })
-    },
-  })
-}
-
-onMounted(() => {
-  $wrappers.value = contentRef.value.querySelectorAll(
-    '.project-facilities__content-wrapper'
-  ) as NodeListOf<HTMLElement>
-
-  resize.on(calcHeight)
-
-  makeAnimation()
-})
-
-onBeforeUnmount(() => {
-  st.value?.kill(true)
-  resize.off(calcHeight)
-})
+const { activePage, prevPage, direction } = useFullPage(
+  contentRef as Ref<HTMLElement>,
+  itemsCount
+)
 </script>
 
 <template>
-  <section class="project-facilities">
+  <section ref="$el" class="project-facilities">
     <div class="project-facilities__wrapper container">
       <div class="project-facilities__top">
         <p class="project-facilities__subtitle">
@@ -224,13 +153,10 @@ onBeforeUnmount(() => {
 
 .project-facilities__block {
   position: relative;
-  height: 300vh;
   color: var(--basic-black);
 }
 
 .project-facilities__block-wrapper {
-  position: sticky;
-  top: 0;
   height: 100vh;
   overflow: hidden;
   padding-top: vw(60);
