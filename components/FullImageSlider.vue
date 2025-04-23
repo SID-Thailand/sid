@@ -75,9 +75,11 @@ const setCursor = (type: 'left' | 'right' | null) => {
       </div>
 
       <div
-        v-if="cursorType"
         class="full-slider__cursor"
-        :class="`full-slider__cursor--${cursorType}`"
+        :class="[
+          `full-slider__cursor--${cursorType}`,
+          { 'is-visible': cursorType !== null },
+        ]"
         :style="{ left: `${cursorX}px`, top: `${cursorY}px` }"
       >
         <ArrowLeft v-if="cursorType === 'left'" />
@@ -188,11 +190,25 @@ const setCursor = (type: 'left' | 'right' | null) => {
   background: var(--basic-black);
   color: var(--basic-white);
   z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    transform 0.2s ease,
+    visibility 0.3s ease;
+  will-change: opacity, visibility;
+  transform: scale(1);
 
   &--left svg,
   &--right svg {
     width: vw(30);
     height: vw(30);
+    opacity: 1;
+  }
+
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
   }
 
   @media (max-width: $br1) {
