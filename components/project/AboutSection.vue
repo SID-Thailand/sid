@@ -10,6 +10,27 @@ const props = defineProps<IProps>()
 const blocks = computed(() => {
   return props.content?.content?.content?.flatMap(block => block.content)
 })
+
+const $images = ref<HTMLSpanElement[]>([])
+
+const computeAspectRatio = () => {
+  $images.value?.forEach(img => {
+    const innerImg = img.querySelector('img')
+
+    const imgWidth = innerImg?.naturalWidth
+    const imgHeight = innerImg?.naturalHeight
+
+    if (!imgWidth || !imgHeight) return
+
+    const aspectRatio = imgWidth / imgHeight
+
+    img.style.setProperty('--aspect', `${aspectRatio}`)
+  })
+}
+
+onMounted(() => {
+  computeAspectRatio()
+})
 </script>
 
 <template>
@@ -21,8 +42,9 @@ const blocks = computed(() => {
             {{ block.text }}
           </template>
           <template v-else-if="block?.type === 'image'">
-            <span class="inline-img">
-              <CustomImage
+            <span ref="$images" class="inline-img">
+              <ParallaxImg
+                class="inline-img__img"
                 :src="block?.attrs?.src"
                 :alt="block?.attrs?.alt || ''"
               />
@@ -63,6 +85,8 @@ const blocks = computed(() => {
 
   .inline-img {
     display: inline-block;
+    height: vw(160);
+    aspect-ratio: var(--aspect);
 
     &:first-child {
       vertical-align: text-bottom;
@@ -74,15 +98,16 @@ const blocks = computed(() => {
       margin-top: vw(12);
     }
 
-    img {
-      height: vw(160);
-      width: auto;
-      display: inline-block;
-    }
-
     @media (max-width: $br1) {
       display: none;
     }
+  }
+
+  .inline-img__img {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 }
 </style>
