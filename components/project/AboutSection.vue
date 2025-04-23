@@ -11,27 +11,6 @@ const blocks = computed(() => {
   return props.content?.content?.content?.flatMap(block => block.content)
 })
 
-const $images = ref<HTMLSpanElement[]>([])
-
-const computeAspectRatio = () => {
-  $images.value?.forEach(img => {
-    const innerImg = img.querySelector('img')
-
-    const imgWidth = innerImg?.naturalWidth
-    const imgHeight = innerImg?.naturalHeight
-
-    if (!imgWidth || !imgHeight) return
-
-    const aspectRatio = imgWidth / imgHeight
-
-    img.style.setProperty('--aspect', `${aspectRatio}`)
-  })
-}
-
-onMounted(() => {
-  computeAspectRatio()
-})
-
 const $el = ref<HTMLElement | null>(null)
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
@@ -46,13 +25,10 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
             {{ block.text }}
           </template>
           <template v-else-if="block?.type === 'image'">
-            <span ref="$images" class="inline-img">
-              <ParallaxImg
-                class="inline-img__img"
-                :src="block?.attrs?.src"
-                :alt="block?.attrs?.alt || ''"
-              />
-            </span>
+            <ProjectInlineImg
+              :src="block?.attrs?.src"
+              :alt="block?.attrs?.alt || ''"
+            />
           </template>
         </template>
       </p>
@@ -88,10 +64,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   @include heading-h3;
 
   .inline-img {
-    display: inline-block;
     height: vw(160);
-    aspect-ratio: var(--aspect);
-
     &:first-child {
       vertical-align: text-bottom;
       margin-right: vw(12);
@@ -105,13 +78,6 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
     @media (max-width: $br1) {
       display: none;
     }
-  }
-
-  .inline-img__img {
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    display: block;
   }
 }
 </style>

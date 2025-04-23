@@ -1,3 +1,5 @@
+import { ScrollTrigger } from '~/libs/gsap'
+
 export const resetScroll = () => {
   if (window.escroll) {
     try {
@@ -7,4 +9,6 @@ export const resetScroll = () => {
     }
   }
   window.escroll && (window.escroll.disabled = false)
+
+  ScrollTrigger.refresh()
 }
