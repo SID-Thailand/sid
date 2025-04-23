@@ -12,6 +12,7 @@ const activeImg = ref(0)
 const cursorX = ref(0)
 const cursorY = ref(0)
 const cursorType = ref<'left' | 'right' | null>(null)
+const isIndicatorActive = ref(false)
 
 const handlePrev = () => {
   activeImg.value =
@@ -57,18 +58,38 @@ const setCursor = (type: 'left' | 'right' | null) => {
         <button
           type="button"
           class="full-slider__btn"
+          :class="{ active: isIndicatorActive && cursorType === 'left' }"
           @click="handlePrev"
           @mouseenter="setCursor('left')"
           @mouseleave="setCursor(null)"
+          @mousedown="isIndicatorActive = true"
+          @mouseup="isIndicatorActive = false"
+          @touchstart="
+            () => {
+              isIndicatorActive = true
+              setCursor('left')
+            }
+          "
+          @touchend="isIndicatorActive = false"
         >
           <ArrowLeft />
         </button>
         <button
           type="button"
           class="full-slider__btn"
+          :class="{ active: isIndicatorActive && cursorType === 'right' }"
           @click="handleNext"
           @mouseenter="setCursor('right')"
           @mouseleave="setCursor(null)"
+          @mousedown="isIndicatorActive = true"
+          @mouseup="isIndicatorActive = false"
+          @touchstart="
+            () => {
+              isIndicatorActive = true
+              setCursor('right')
+            }
+          "
+          @touchend="isIndicatorActive = false"
         >
           <ArrowRight />
         </button>
@@ -78,7 +99,7 @@ const setCursor = (type: 'left' | 'right' | null) => {
         class="full-slider__cursor"
         :class="[
           `full-slider__cursor--${cursorType}`,
-          { 'is-visible': cursorType !== null },
+          { visible: cursorType !== null, active: isIndicatorActive },
         ]"
         :style="{ left: `${cursorX}px`, top: `${cursorY}px` }"
       >
@@ -144,6 +165,8 @@ const setCursor = (type: 'left' | 'right' | null) => {
 .full-slider__btn {
   cursor: none;
   background-color: transparent;
+  transform: scale(1);
+  transition: transform 0.2s ease;
 
   @media (min-width: $br1) {
     &:first-child {
@@ -175,6 +198,10 @@ const setCursor = (type: 'left' | 'right' | null) => {
       height: 30px;
     }
   }
+
+  &.active {
+    transform: scale(0.8);
+  }
 }
 
 .full-slider__cursor {
@@ -196,7 +223,6 @@ const setCursor = (type: 'left' | 'right' | null) => {
     opacity 0.3s ease,
     transform 0.2s ease,
     visibility 0.3s ease;
-  will-change: opacity, visibility;
   transform: scale(1);
 
   &--left svg,
@@ -206,9 +232,13 @@ const setCursor = (type: 'left' | 'right' | null) => {
     opacity: 1;
   }
 
-  &.is-visible {
+  &.visible {
     opacity: 1;
     visibility: visible;
+  }
+
+  &.active {
+    transform: scale(0.8);
   }
 
   @media (max-width: $br1) {
