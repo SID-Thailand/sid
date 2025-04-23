@@ -12,12 +12,4 @@ defineProps<iProps>()
   </div>
 </template>
 
-<style scoped lang="scss">
-.gallery {
-  margin: vw(100) 0;
-
-  @media (max-width: $br1) {
-    margin: 48px 0;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

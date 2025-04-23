@@ -11,13 +11,13 @@ defineProps<iProps>()
 </script>
 
 <template>
-  <div class="news-section container">
-    <RichText :text="blok.content as ISbRichtext" />
+  <div class="curr-news-content container">
+    <RichText :text="blok.content" />
   </div>
 </template>
 
 <style lang="scss">
-.news-section {
+.curr-news-content {
   @media (min-width: $br1) {
     max-width: vw(670);
     margin: 0 auto;
@@ -50,7 +50,6 @@ defineProps<iProps>()
   h2 {
     position: relative;
     text-transform: uppercase;
-    margin: vw(100) 0;
     box-sizing: border-box;
     @include heading-h3;
 
@@ -64,7 +63,6 @@ defineProps<iProps>()
 
     @media (max-width: $br1) {
       width: calc(100vw - 64px);
-      margin: 48px 0;
     }
 
     @media (max-width: $br3) {
@@ -82,7 +80,7 @@ defineProps<iProps>()
   }
 
   img {
-    margin: vw(100) auto;
+    margin: 0 auto;
     display: block;
     width: auto;
     max-width: 100%;
@@ -91,7 +89,7 @@ defineProps<iProps>()
 
     @media (max-width: $br1) {
       height: size(448, 229);
-      margin: 48px auto;
+      margin: 0 auto;
     }
 
     @media (max-width: $br4) {
@@ -111,6 +109,14 @@ defineProps<iProps>()
       @media (max-width: $br1) {
         margin-top: 16px;
       }
+    }
+  }
+
+  :is(h1, h2, h3, h4, h5, h6) + :is(h1, h2, h3, h4, h5, h6) {
+    margin-top: vw(32);
+
+    @media (max-width: $br1) {
+      margin-top: 16px;
     }
   }
 

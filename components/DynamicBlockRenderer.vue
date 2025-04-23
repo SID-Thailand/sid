@@ -21,7 +21,7 @@ const resolveSectionByName = (name: string) => {
 </script>
 
 <template>
-  <section v-for="blok in blocks" :key="blok._uid">
+  <section v-for="blok in blocks" :key="blok._uid" class="news-section">
     <component
       :is="resolveSectionByName(blok?.component)"
       v-if="resolveSectionByName(blok?.component)"
@@ -34,4 +34,14 @@ const resolveSectionByName = (name: string) => {
   </section>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.news-section {
+  margin-top: vw(100);
+  margin-bottom: vw(100);
+
+  @media (max-width: $br1) {
+    margin-top: 48px;
+    margin-bottom: 48px;
+  }
+}
+</style>

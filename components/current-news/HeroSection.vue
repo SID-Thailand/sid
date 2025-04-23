@@ -39,13 +39,11 @@ defineProps<IProps>()
 <style scoped lang="scss">
 .curr-news-hero {
   padding-top: vw(226);
-  padding-bottom: vw(100);
   background-color: var(--basic-black);
   color: var(--basic-white);
 
   @media (max-width: $br1) {
     padding-top: 128px;
-    padding-bottom: 48px;
   }
 }
 
