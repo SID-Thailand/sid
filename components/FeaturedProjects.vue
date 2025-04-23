@@ -217,6 +217,12 @@ onMounted(() => {
 const activeProject = computed(() => {
   return projects.value[activePage.value - 1]
 })
+
+const route = useRoute()
+
+const onClick = () => {
+  route.meta.isProjectTransition = true
+}
 </script>
 
 <template>
@@ -270,6 +276,7 @@ const activeProject = computed(() => {
             :to="`/${activeProject.full_slug}`"
             class="fpc__link"
             aria-label="View project"
+            @click="onClick"
           >
             <IconsPlus />
           </NuxtLink>

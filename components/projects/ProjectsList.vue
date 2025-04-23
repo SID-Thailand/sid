@@ -135,6 +135,7 @@ const activeProject = ref(0)
 .projects__card {
   flex: 0 1 auto;
   height: clamp(50%, vh(768), vw(768));
+
   aspect-ratio: 0.64;
   max-width: 100%;
   background-color: var(--neutral-600);
@@ -208,9 +209,11 @@ const activeProject = ref(0)
   left: 0;
   height: 100%;
   width: 100%;
+  display: none;
 
   &:first-child {
     position: relative;
+    display: block;
   }
 }
 
