@@ -5,7 +5,9 @@ interface IProps {
   content: iConsultingYoutube
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+console.log(props.content)
 </script>
 
 <template>
@@ -15,7 +17,7 @@ defineProps<IProps>()
         :title="content?.title"
         :asset="content?.asset"
         :is-youtube="true"
-        button-text="SUBSCRIBE"
+        :button="content?.subscribe_button[0]"
         class="cons-youtube__videos"
       />
     </div>

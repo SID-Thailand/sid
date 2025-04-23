@@ -3,12 +3,13 @@ import type { iImage } from '~/types/story'
 import { ScrollTrigger } from '~/libs/gsap'
 import { LucideArrowUpRight } from 'lucide-vue-next'
 import Play from './icons/Play.vue'
+import type { iYoutubeButton } from '~/types/consultingTypes'
 
 interface IProps {
   title: string
   asset: iImage
   addressText?: string
-  buttonText?: string
+  button?: iYoutubeButton
   isYoutube?: boolean
 }
 
@@ -25,6 +26,10 @@ const togglePlay = () => {
   isPlaying.value = !isPlaying.value
 
   isClicked.value = true
+
+  setTimeout(() => {
+    isClicked.value = false
+  }, 200)
 }
 
 onMounted(() => {
@@ -71,18 +76,21 @@ onBeforeUnmount(() => {
           <div class="d-video__phone-wrapper">
             <div class="d-video__phone-camera" />
             <CustomVideo :url="asset?.filename" :is-playing="isPlaying" />
-            <button
+            <a
               v-if="isYoutube"
+              :href="button?.link?.url"
+              target="_blank"
+              rel="noopener noreferrer"
               type="button"
               class="d-video__youtube"
-              @click="togglePlay"
             >
               <Play />
-            </button>
+            </a>
             <button
               v-else
               type="button"
               class="d-video__phone-btn"
+              :class="{ 'd-video__phone-btn--active': isClicked }"
               @click="togglePlay"
             >
               <span>REC</span>
@@ -90,8 +98,14 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
-      <Button v-if="buttonText" type="button" class="d-video__btn">
-        {{ buttonText }}
+      <Button
+        v-if="button"
+        tag="a"
+        :href="button?.link?.url"
+        type="button"
+        class="d-video__btn"
+      >
+        {{ button?.label }}
         <span><LucideArrowUpRight /></span>
       </Button>
     </div>
@@ -252,10 +266,11 @@ onBeforeUnmount(() => {
   position: absolute;
   bottom: vw(50);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(1);
   color: var(--accent-secondary);
   border: 2px solid var(--basic-white);
   overflow: hidden;
+  transition: transform 0.3s ease;
   @include caption-c4;
 
   span {
@@ -285,6 +300,10 @@ onBeforeUnmount(() => {
   @media (max-width: $br4) {
     width: 48px;
     height: 48px;
+  }
+
+  &--active {
+    transform: translateX(-50%) scale(0.8);
   }
 }
 

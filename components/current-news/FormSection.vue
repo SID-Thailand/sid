@@ -54,10 +54,12 @@ const formData = ref<IForm>({
   position: relative;
   padding-top: vw(200);
   padding-bottom: vw(273);
+  margin-top: vw(200);
 
   @media (max-width: $br1) {
     padding-top: 60px;
     padding-bottom: 48px;
+    margin-top: 60px;
   }
 }
 
