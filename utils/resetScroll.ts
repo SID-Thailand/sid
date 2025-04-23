@@ -1,4 +1,4 @@
-import { ScrollTrigger } from '~/libs/gsap'
+import { ScrollTrigger } from '../libs/gsap'
 
 export const resetScroll = () => {
   if (window.escroll) {
