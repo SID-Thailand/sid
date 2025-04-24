@@ -118,7 +118,8 @@ const handleToggleMenu = () => {
   width: 100%;
   overflow-y: auto;
   background-color: var(--neutral-100);
-  transition: max-height 0.3s ease;
+  transition: max-height 0.8s ease;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
 
   @media (max-width: $br1) {
     max-width: 385px;
@@ -126,7 +127,7 @@ const handleToggleMenu = () => {
   }
 
   &--opened {
-    max-height: vw(350);
+    max-height: clamp(vw(500), vw(500), 50vh);
 
     @media (max-width: $br1) {
       max-height: 300px;
