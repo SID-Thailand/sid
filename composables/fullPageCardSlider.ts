@@ -1,3 +1,4 @@
+import { TextSplitter } from './../utils/textSplitter'
 import { gsap } from '~/libs/gsap'
 
 const animateWords = (
@@ -8,7 +9,7 @@ const animateWords = (
 ) => {
   if (!words.length) return
 
-  const y = isForward ? '100%' : '-100%'
+  const y = isForward ? '120%' : '-120%'
 
   gsap.fromTo(words, { y }, { y: '0%', duration: time, delay: offset })
 }
@@ -21,7 +22,7 @@ const animateWordExit = (
 ) => {
   if (!words.length) return
 
-  const y = isForward ? '-100%' : '100%'
+  const y = isForward ? '-120%' : '120%'
 
   gsap.to(words, { y, duration: time, delay: offset })
 }
@@ -29,7 +30,35 @@ const animateWordExit = (
 const getWords = (selector: HTMLElement | null) =>
   selector?.querySelectorAll(`.word`) ?? []
 
-export const useFullPageProjectsLike = (
+const resetSplitters = (splitters: (typeof TextSplitter.prototype)[]) => {
+  if (!splitters?.length) return
+  splitters.forEach(splitter => {
+    splitter.revert()
+  })
+  splitters = []
+}
+
+const splitTexts = (items: NodeListOf<HTMLElement>) => {
+  const splitters: (typeof TextSplitter.prototype)[] = []
+
+  items?.forEach((item, idx) => {
+    const textSplitter = new TextSplitter(item, {
+      splitTypeTypes: 'lines,words',
+    })
+
+    splitters.push(textSplitter)
+
+    if (idx === 0) {
+      return
+    }
+
+    gsap.set(item.querySelectorAll('.word'), { y: '100%' })
+  })
+
+  return splitters
+}
+
+export const useFullPageCardSlider = (
   el: MaybeRefOrGetter<HTMLElement>,
   count: MaybeRefOrGetter<number>
 ) => {
@@ -45,8 +74,10 @@ export const useFullPageProjectsLike = (
   const $bgs = ref<NodeListOf<HTMLElement> | null>(null)
   const $images = ref<NodeListOf<HTMLElement> | null>(null)
   const $titles = ref<NodeListOf<HTMLElement> | null>(null)
+  const $texts = ref<NodeListOf<HTMLElement> | null>(null)
 
   let titlesSplitter: (typeof TextSplitter.prototype)[] = []
+  let textsSplitter: (typeof TextSplitter.prototype)[] = []
 
   const setupInitialStates = async () => {
     $bgs.value?.forEach((bg, index) => {
@@ -63,27 +94,13 @@ export const useFullPageProjectsLike = (
       }
     })
 
-    if (titlesSplitter.length > 0) {
-      titlesSplitter.forEach(splitter => {
-        splitter.revert()
-      })
-      titlesSplitter = []
-    }
+    resetSplitters(titlesSplitter)
+    resetSplitters(textsSplitter)
 
     await nextTick()
 
-    $titles.value?.forEach((title, idx) => {
-      const titleSplitter = new TextSplitter(title, {
-        splitTypeTypes: 'lines,words',
-      })
-      titlesSplitter.push(titleSplitter)
-
-      if (idx === 0) {
-        return
-      }
-
-      gsap.set(title.querySelectorAll('.word'), { y: '100%' })
-    })
+    titlesSplitter = splitTexts($titles.value as NodeListOf<HTMLElement>)
+    textsSplitter = splitTexts($texts.value as NodeListOf<HTMLElement>)
   }
 
   const animateSections = () => {
@@ -95,11 +112,13 @@ export const useFullPageProjectsLike = (
         bg: $bgs.value[currentIndex],
         item: $images.value[currentIndex],
         title: $titles.value[currentIndex],
+        text: $texts.value[currentIndex],
       },
       prev: {
         bg: $bgs.value[prevIndex],
         item: $images.value[prevIndex],
         title: $titles.value[prevIndex],
+        text: $texts.value[prevIndex],
       },
     }
 
@@ -135,8 +154,14 @@ export const useFullPageProjectsLike = (
     const curTitleWords = getWords(current.title as HTMLElement)
     const prevTitleWords = getWords(prev.title as HTMLElement)
 
+    const curTextWords = getWords(current.text as HTMLElement)
+    const prevTextWords = getWords(prev.text as HTMLElement)
+
     animateWordExit(prevTitleWords, isForward, textDuration, 0)
     animateWords(curTitleWords, isForward, textDuration, 0)
+
+    animateWordExit(prevTextWords, isForward, textDuration, 0)
+    animateWords(curTextWords, isForward, textDuration, 0)
   }
 
   watch(activePage, animateSections)
@@ -152,6 +177,10 @@ export const useFullPageProjectsLike = (
 
     $titles.value = target.value?.querySelectorAll(
       '[data-f-title]'
+    ) as NodeListOf<HTMLElement>
+
+    $texts.value = target.value?.querySelectorAll(
+      '[data-f-text]'
     ) as NodeListOf<HTMLElement>
 
     setupInitialStates()

@@ -16,7 +16,7 @@ const projectCount = computed(() => {
 
 const contentRef = ref<HTMLElement | null>(null)
 
-const { activePage } = useFullPageProjectsLike(
+const { activePage } = useFullPageCardSlider(
   contentRef as Ref<HTMLElement>,
   projectCount
 )
@@ -72,13 +72,15 @@ const onClick = () => {
             </div>
           </div>
           <div class="fpc__specs-wrapper">
-            <div v-for="(item, idx) in projects" :key="idx" class="fpc__specs">
+            <div v-for="(item, idx) in projects" :key="idx" class="fpc__text">
               <h2 class="fpc__title" data-f-title>
                 {{ item?.content?.name }}
               </h2>
-              <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
-              <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
-              <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
+              <div data-f-text class="fpc__specs">
+                <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
+                <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
+                <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
+              </div>
             </div>
           </div>
           <NuxtLink
@@ -224,7 +226,7 @@ const onClick = () => {
   }
 }
 
-.fpc__specs {
+.fpc__text {
   position: absolute;
   top: 0;
   left: 0;
@@ -248,9 +250,21 @@ const onClick = () => {
   }
 }
 
+.fpc__specs {
+  max-width: vw(177);
+
+  @media (max-width: $br1) {
+    max-width: 190px;
+  }
+}
+
+:global(.fpc__specs .e-line) {
+  line-height: 0.8em;
+}
+
 .fpc__spec {
   color: var(--neutral-200);
-  line-height: 1.25em;
+  line-height: 1em;
   font-size: vw(16);
   @include med;
 
