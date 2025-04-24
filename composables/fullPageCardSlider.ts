@@ -9,7 +9,7 @@ const animateWords = (
 ) => {
   if (!words.length) return
 
-  const y = isForward ? '120%' : '-120%'
+  const y = isForward ? '130%' : '-130%'
 
   gsap.fromTo(words, { y }, { y: '0%', duration: time, delay: offset })
 }
@@ -22,7 +22,7 @@ const animateWordExit = (
 ) => {
   if (!words.length) return
 
-  const y = isForward ? '-120%' : '120%'
+  const y = isForward ? '-130%' : '130%'
 
   gsap.to(words, { y, duration: time, delay: offset })
 }
@@ -52,7 +52,7 @@ const splitTexts = (items: NodeListOf<HTMLElement>) => {
       return
     }
 
-    gsap.set(item.querySelectorAll('.word'), { y: '100%' })
+    gsap.set(item.querySelectorAll('.word'), { y: '120%' })
   })
 
   return splitters
