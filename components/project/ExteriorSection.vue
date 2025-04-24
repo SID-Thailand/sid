@@ -6,27 +6,19 @@ interface IProps {
   content: iCurrentProjectExterior
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const activeIdx = ref(0)
 
 const sliderRef = ref<HTMLUListElement | null>(null)
 const sliderContainerRef = ref<HTMLDivElement | null>(null)
 
-const slidesCount = computed(() => {
-  return props.content?.assets?.length
-})
-
 const onClick = (e: MouseEvent, idx: number) => {
   if (idx === activeIdx.value) return
 
   const target = e.currentTarget as HTMLElement
 
-  const itemWidth = target.offsetWidth
   const itemLeft = target.getBoundingClientRect().width
-  const sliderLeft = sliderContainerRef.value?.getBoundingClientRect().left
-
-  console.log(sliderLeft, itemLeft)
 
   gsap.to(sliderRef.value, {
     duration: 1,
