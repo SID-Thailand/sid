@@ -17,7 +17,7 @@ const itemsCount = computed(() => props.content?.slider?.length || 0)
 
 const contentRef = ref<HTMLElement | null>(null)
 
-const isMobile = useMediaQuery('(max-width: 768px)')
+const isMobile = useMediaQuery('(max-width: 560px)')
 const { activePage } = useFullPageAnimation(
   contentRef as Ref<HTMLElement>,
   itemsCount,
@@ -174,12 +174,18 @@ const { activePage } = useFullPageAnimation(
   height: vw(440);
 
   @media (max-width: $br1) {
+    margin: 0 auto;
     margin-top: 16px;
-    width: 100%;
-    aspect-ratio: 440 / 440;
+    max-height: 50%;
+    aspect-ratio: 1;
     height: auto;
     z-index: 10;
     background-color: var(--neutral-100);
+  }
+
+  @media (max-width: $br3) {
+    width: 100%;
+    max-height: none;
   }
 }
 
