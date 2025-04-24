@@ -44,8 +44,6 @@ function moveFocus(currentIndex: number, step: number) {
   const nextIndex =
     (currentIndex + step + $panels.value.length) % $panels.value.length
 
-  console.log(nextIndex, $buttons.value[nextIndex])
-
   $buttons.value[nextIndex]?.focus()
 }
 

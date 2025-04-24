@@ -5,9 +5,18 @@ interface IProps {
   content: iConsultingDifference
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
-const activeDiff = ref(0)
+const contentRef = ref<HTMLElement | null>(null)
+
+const count = computed(() => {
+  return props.content?.difference_gallery?.length || 0
+})
+
+const { activePage } = useFullPageCardSlider(
+  contentRef as Ref<HTMLElement>,
+  count
+)
 </script>
 
 <template>
@@ -18,14 +27,14 @@ const activeDiff = ref(0)
           {{ content?.title }}
         </h2>
       </div>
-      <div class="cons-diff__slider container">
+      <div ref="contentRef" class="cons-diff__slider container">
         <div
           v-for="(img, idx) in content?.difference_gallery"
           :key="idx"
           class="cons-diff__bg-wrapper"
-          :class="{ 'cons-diff__bg-wrapper--active': activeDiff === idx }"
         >
           <CustomImage
+            data-f-bg
             :src="img?.background_asset?.filename"
             :aly="img?.background_asset?.alt"
             class="cons-diff__bg"
@@ -37,18 +46,18 @@ const activeDiff = ref(0)
             v-for="(item, index) in content?.difference_gallery"
             :key="index"
             class="cons-diff__item"
-            :class="{ 'cons-diff__item--active': activeDiff === index }"
           >
             <div class="cons-diff__content">
-              <h3 class="cons-diff__item-title">
+              <h3 data-f-title class="cons-diff__item-title">
                 {{ item?.title }}
               </h3>
-              <p class="cons-diff__item-text">
+              <p data-f-text class="cons-diff__item-text">
                 {{ item?.text }}
               </p>
             </div>
             <div class="cons-diff__img-wrapper">
               <CustomImage
+                data-f-img
                 :src="item?.asset?.filename"
                 :aly="item?.asset?.alt"
                 class="cons-diff__img"
@@ -57,15 +66,13 @@ const activeDiff = ref(0)
           </li>
         </ul>
         <div class="cons-diff__counter container">
-          <p class="cons-diff__count">
-            {{ activeDiff + 1 }}/{{ content?.difference_gallery?.length }}
-          </p>
+          <p class="cons-diff__count">{{ activePage }}/{{ count }}</p>
           <div class="cons-diff__pagination">
             <span
               v-for="(_, i) in content?.difference_gallery?.length"
               :key="i"
               class="cons-diff__pag-item"
-              :class="{ 'cons-diff__pag-item--active': activeDiff === i }"
+              :class="{ 'cons-diff__pag-item--active': activePage === i + 1 }"
             />
           </div>
         </div>
@@ -111,12 +118,6 @@ const activeDiff = ref(0)
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  &--active {
-    opacity: 1;
-  }
 }
 
 .cons-diff__bg {
@@ -132,7 +133,9 @@ const activeDiff = ref(0)
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
   background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
+  opacity: 0.5;
   mix-blend-mode: hard-light;
 }
 
@@ -140,6 +143,14 @@ const activeDiff = ref(0)
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.cons-diff__content {
+  width: vw(324);
+
+  @media (max-width: $br1) {
+    width: 100%;
+  }
 }
 
 .cons-diff__item {
@@ -150,10 +161,7 @@ const activeDiff = ref(0)
   display: flex;
   align-items: center;
   gap: vw(134);
-  max-width: vw(784);
-  width: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  width: vw(784);
 
   @media (max-width: $br1) {
     text-align: center;
@@ -164,10 +172,6 @@ const activeDiff = ref(0)
 
   @media (max-width: $br4) {
     max-width: 100%;
-  }
-
-  &--active {
-    opacity: 1;
   }
 }
 
@@ -196,19 +200,22 @@ const activeDiff = ref(0)
 }
 
 .cons-diff__img-wrapper {
-  flex: 1 0 auto;
+  flex-shrink: 0;
+  width: vw(326);
+  height: vw(326);
+  overflow: hidden;
+  @media (max-width: $br1) {
+    height: 326px;
+    width: auto;
+    aspect-ratio: 1;
+  }
 }
 
 .cons-diff__img {
   display: block;
-  width: vw(326);
-  height: vw(326);
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-
-  @media (max-width: $br1) {
-    height: 326px;
-    width: 100%;
-  }
 }
 
 .cons-diff__counter {
@@ -224,7 +231,7 @@ const activeDiff = ref(0)
   @media (max-width: $br1) {
     flex-direction: column;
     height: 100%;
-    padding: 88px 0;
+    padding: 32px 0;
   }
 }
 

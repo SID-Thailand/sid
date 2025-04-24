@@ -6,8 +6,6 @@ interface IProps {
 }
 
 const props = defineProps<IProps>()
-
-console.log(props.content)
 </script>
 
 <template>

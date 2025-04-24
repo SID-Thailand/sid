@@ -30,10 +30,6 @@ const route = useRoute()
 const onClick = () => {
   route.meta.isProjectTransition = true
 }
-
-onMounted(() => {
-  console.log(props.projects)
-})
 </script>
 
 <template>

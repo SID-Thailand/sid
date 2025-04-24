@@ -11,8 +11,6 @@ const props = defineProps<IProps>()
 const $el = ref<HTMLElement | null>(null)
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
-
-console.log(props.content)
 </script>
 
 <template>
