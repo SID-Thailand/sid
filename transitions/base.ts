@@ -1,5 +1,5 @@
 import type { TransitionProps } from 'vue'
-import gsap from 'gsap'
+import { gsap } from '../libs/gsap'
 import { basicObject } from './basicObject'
 
 export const pageTransition: TransitionProps = {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { gsap } from '~/libs/gsap'
 import type { iFeaturedProjects } from '~/types/story'
 
 interface IProps {
@@ -17,202 +16,10 @@ const projectCount = computed(() => {
 
 const contentRef = ref<HTMLElement | null>(null)
 
-let titleSplitter: typeof TextSplitter.prototype | null = null
-
-let specsSplitters = []
-
-let $bgs: NodeListOf<HTMLElement> = null
-let $items: NodeListOf<HTMLElement> = null
-let $specs: NodeListOf<HTMLElement> = null
-
-const { activePage, prevPage, direction } = useFullPage(
+const { activePage } = useFullPageProjectsLike(
   contentRef as Ref<HTMLElement>,
   projectCount
 )
-
-const setupInitialStates = async () => {
-  $bgs.forEach((bg, index) => {
-    if (index > 0) {
-      gsap.set(bg, {
-        scale: 1.3,
-        clipPath: 'inset(100% 0 0 0)',
-      })
-
-      gsap.set($items[index], {
-        scale: 1.3,
-        clipPath: 'inset(100% 0 0 0)',
-      })
-    }
-  })
-
-  if (titleSplitter) {
-    titleSplitter.revert()
-    titleSplitter = null
-  }
-
-  if (specsSplitters.length) {
-    specsSplitters.forEach(spec => {
-      spec.revert()
-    })
-    specsSplitters = []
-  }
-
-  await nextTick()
-
-  $specs.forEach((item: HTMLElement, idx: number) => {
-    const $curTitle = item.querySelector('.fpc__title') as HTMLElement
-    const $curSpecs = item.querySelectorAll('.fpc__spec')
-
-    titleSplitter = new TextSplitter($curTitle, {
-      splitTypeTypes: 'lines,words',
-    })
-
-    $curSpecs?.forEach(spec => {
-      const specSplitter = new TextSplitter(spec as HTMLElement, {
-        splitTypeTypes: 'lines,words',
-      })
-
-      specsSplitters.push(specSplitter)
-
-      if (idx === 0) {
-        return
-      }
-      gsap.set(spec.querySelectorAll('.word'), { y: '100%' })
-    })
-
-    if (idx === 0) {
-      return
-    }
-
-    gsap.set(item, { pointerEvents: 'none' })
-    gsap.set($curTitle.querySelectorAll('.word'), { y: '100%' })
-  })
-}
-
-const animateSections = () => {
-  const currentIndex = activePage.value - 1
-  const prevIndex = prevPage.value - 1
-
-  const elements = {
-    current: {
-      bg: $bgs[currentIndex],
-      item: $items[currentIndex],
-      texts: $specs[currentIndex],
-    },
-    prev: {
-      bg: $bgs[prevIndex],
-      item: $items[prevIndex],
-      texts: $specs[prevIndex],
-    },
-  }
-
-  const getWords = (selector: HTMLElement | null, className: string) =>
-    selector?.querySelectorAll(`.${className}`) ?? []
-
-  const animateWords = (
-    words: NodeListOf<Element> | any[],
-    fromY: string,
-    toY: string,
-    time: number,
-    offset = 0
-  ) => {
-    if (!words.length) return
-    tl.fromTo(words, { y: fromY }, { y: toY, duration: time }, offset)
-  }
-
-  const animateWordExit = (
-    words: NodeListOf<Element> | any[],
-    toY: string,
-    time: number,
-    offset = 0
-  ) => {
-    if (!words.length) return
-    tl.to(words, { y: toY, duration: time }, offset)
-  }
-
-  const duration = 1.5
-  const textDuration = 1
-
-  const tl = gsap.timeline({
-    defaults: {
-      duration,
-      ease: 'power2.out',
-    },
-  })
-
-  const isForward = direction.value === 1
-
-  const { current, prev } = elements
-
-  const $curTitle = current.texts?.querySelector('.fpc__title') as HTMLElement
-  const $prevTitle = prev.texts?.querySelector('.fpc__title') as HTMLElement
-
-  const $curSpecs = current.texts?.querySelectorAll('.fpc__spec') || []
-  const $prevSpecs = prev.texts?.querySelectorAll('.fpc__spec') || []
-
-  const transitionSpecs = (
-    specs: NodeListOf<Element> | any[],
-    fromY: string,
-    toY: string
-  ) => {
-    specs.forEach(spec => {
-      const words = spec.querySelectorAll('.word')
-      animateWords(words, fromY, toY, textDuration, 0.3)
-    })
-  }
-
-  const exitSpecs = (specs: NodeListOf<Element> | any[], toY: string) => {
-    specs.forEach(spec => {
-      const words = spec.querySelectorAll('.word')
-      animateWordExit(words, toY, textDuration, 0)
-    })
-  }
-
-  if (isForward) {
-    prev.bg && tl.to(prev.bg, { scale: 1.3 }, 0)
-    prev.item && tl.to(prev.item, { scale: 1.3 }, 0)
-  }
-
-  tl.to(current.bg, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
-  tl.to(current.item, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
-
-  if (!isForward) {
-    prev.bg && tl.to(prev.bg, { scale: 1.3, clipPath: 'inset(100% 0 0 0)' }, 0)
-    prev.item &&
-      tl.to(prev.item, { scale: 1.3, clipPath: 'inset(100% 0 0 0)' }, 0)
-  }
-
-  const curTitleWords = getWords($curTitle, 'word')
-  const prevTitleWords = getWords($prevTitle, 'word')
-
-  animateWordExit(prevTitleWords, isForward ? '-100%' : '100%', textDuration, 0)
-  animateWords(
-    curTitleWords,
-    isForward ? '100%' : '-100%',
-    '0%',
-    textDuration,
-    0
-  )
-
-  transitionSpecs($curSpecs, isForward ? '100%' : '-100%', '0%')
-  exitSpecs($prevSpecs, isForward ? '-100%' : '100%')
-}
-
-watch(activePage, () => {
-  animateSections()
-})
-
-onMounted(() => {
-  $bgs = contentRef.value?.querySelectorAll('.featured-projects__bg')
-  $items = contentRef.value?.querySelectorAll('.fpc__image-item')
-  $specs = contentRef.value?.querySelectorAll('.fpc__specs')
-
-  if (!$bgs || !$items || !$specs) {
-    return
-  }
-
-  setupInitialStates()
-})
 
 const activeProject = computed(() => {
   return projects.value[activePage.value - 1]
@@ -233,6 +40,7 @@ const onClick = () => {
           <CustomImage
             v-for="(item, idx) in projects"
             :key="idx"
+            data-f-bg
             :src="item?.content?.cover?.filename"
             :alt="item?.content?.cover?.alt"
             class="featured-projects__bg"
@@ -254,6 +62,7 @@ const onClick = () => {
             >
               <div class="fpc__img-wrapper">
                 <CustomImage
+                  data-f-img
                   :src="item?.content?.cover?.filename"
                   :alt="item?.content?.cover?.alt"
                   class="fpc__img"
@@ -264,7 +73,7 @@ const onClick = () => {
           </div>
           <div class="fpc__specs-wrapper">
             <div v-for="(item, idx) in projects" :key="idx" class="fpc__specs">
-              <h2 class="fpc__title">
+              <h2 class="fpc__title" data-f-title>
                 {{ item?.content?.name }}
               </h2>
               <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
