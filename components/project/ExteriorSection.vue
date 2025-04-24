@@ -1,11 +1,42 @@
 <script lang="ts" setup>
+import { gsap } from '~/libs/gsap'
 import type { iCurrentProjectExterior } from '~/types/currentProjectTypes'
 
 interface IProps {
   content: iCurrentProjectExterior
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+const activeIdx = ref(0)
+
+const sliderRef = ref<HTMLUListElement | null>(null)
+const sliderContainerRef = ref<HTMLDivElement | null>(null)
+
+const slidesCount = computed(() => {
+  return props.content?.assets?.length
+})
+
+const onClick = (e: MouseEvent, idx: number) => {
+  if (idx === activeIdx.value) return
+
+  const target = e.currentTarget as HTMLElement
+
+  const itemWidth = target.offsetWidth
+  const itemLeft = target.getBoundingClientRect().width
+  const sliderLeft = sliderContainerRef.value?.getBoundingClientRect().left
+
+  console.log(sliderLeft, itemLeft)
+
+  gsap.to(sliderRef.value, {
+    duration: 1,
+    x: -itemLeft * idx,
+    ease: 'power2.out',
+  })
+
+  activeIdx.value = idx
+  console.log(idx)
+}
 </script>
 
 <template>
@@ -18,12 +49,14 @@ defineProps<IProps>()
         <p class="project-exterior__text">
           {{ content?.text }}
         </p>
-        <div class="project-exterior__slider">
-          <ul class="project-exterior__list">
+        <div ref="sliderContainerRef" class="project-exterior__slider">
+          <ul ref="sliderRef" class="project-exterior__list">
             <li
               v-for="(item, idx) in content?.assets"
               :key="idx"
               class="project-exterior__item"
+              :class="{ 'project-exterior__item--active': idx === activeIdx }"
+              @click="onClick($event, idx)"
             >
               <CustomImage
                 :src="item?.filename"
@@ -64,6 +97,9 @@ defineProps<IProps>()
 
 .project-exterior__content {
   margin-top: vw(200);
+  display: flex;
+  gap: vw(136);
+  height: vw(600);
 
   @media (max-width: $br1) {
     margin-top: 48px;
@@ -74,6 +110,7 @@ defineProps<IProps>()
   line-height: 1.2em;
   max-width: vw(325);
   width: 100%;
+  flex-shrink: 0;
   @include text-t3;
 
   @media (max-width: $br1) {
@@ -82,9 +119,8 @@ defineProps<IProps>()
 }
 
 .project-exterior__slider {
-  margin-top: vw(90);
-  width: 100vw;
-  overflow-x: auto;
+  align-self: flex-end;
+
   padding-right: vw(40);
   padding-left: vw(40);
   margin-left: vw(-40);
@@ -116,10 +152,12 @@ defineProps<IProps>()
 }
 
 .project-exterior__item {
-  pointer-events: none;
   user-select: none;
   height: vw(224);
   width: vw(336);
+  cursor: pointer;
+  transition-property: width, height;
+  transition: 1.5s $easing;
 
   @media (max-width: $br1) {
     height: 109px;
@@ -139,6 +177,7 @@ defineProps<IProps>()
 
 .project-exterior__img {
   display: block;
+  object-fit: cover;
   width: 100%;
   height: 100%;
 }

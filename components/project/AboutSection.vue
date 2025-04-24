@@ -18,21 +18,23 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
 
 <template>
   <section ref="$el" class="project-about">
-    <div class="project-about__wrapper container">
-      <p class="project-about__text-flow">
-        <template v-for="(block, idx) in blocks" :key="idx">
-          <template v-if="block?.type === 'text'">
-            {{ block.text }}
+    <ClientOnly>
+      <div class="project-about__wrapper container">
+        <p class="project-about__text-flow">
+          <template v-for="(block, idx) in blocks" :key="idx">
+            <template v-if="block?.type === 'text'">
+              {{ block.text }}
+            </template>
+            <template v-else-if="block?.type === 'image'">
+              <ProjectInlineImg
+                :src="block?.attrs?.src"
+                :alt="block?.attrs?.alt || ''"
+              />
+            </template>
           </template>
-          <template v-else-if="block?.type === 'image'">
-            <ProjectInlineImg
-              :src="block?.attrs?.src"
-              :alt="block?.attrs?.alt || ''"
-            />
-          </template>
-        </template>
-      </p>
-    </div>
+        </p>
+      </div>
+    </ClientOnly>
   </section>
 </template>
 
