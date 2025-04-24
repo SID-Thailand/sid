@@ -1,7 +1,5 @@
 <template>
-  <Teleport to="#teleports">
-    <div class="revealer"></div>
-  </Teleport>
+  <div class="revealer"></div>
 </template>
 
 <style scoped lang="scss">
@@ -12,7 +10,7 @@
   width: 100%;
   height: 100%;
   background-color: var(--neutral-600);
-  clip-path: inset(0 100% 0 0);
+  display: none;
   z-index: 99;
 }
 </style>

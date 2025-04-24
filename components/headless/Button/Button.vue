@@ -16,8 +16,13 @@ const tag = computed(() => {
   } else return props.tag ?? 'button'
 })
 
-const to = props.tag === 'nuxt-link' ? props.href : undefined
-const href = props.tag === 'a' ? props.href : undefined
+const to = computed(() => {
+  return props.tag === 'nuxt-link' ? props.href : undefined
+})
+
+const href = computed(() => {
+  return props.tag === 'a' ? props.href : undefined
+})
 </script>
 
 <template>

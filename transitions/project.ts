@@ -9,7 +9,7 @@ let $photo = null
 let leaveDoneCallback: () => void
 
 const prepareItem = ($item: HTMLElement) => {
-  const $parent = $item.closest('.fpc__assets')
+  const $parent = $item.closest('[data-t-assets]')
 
   const bounds = $parent.getBoundingClientRect()
 
@@ -77,7 +77,7 @@ export const projectTransition: TransitionProps = {
     const route = useRoute()
     const slug = route.params.id
 
-    $photo = el.querySelector(`.fpc__img[data-slug="${slug}"]`)
+    $photo = el.querySelector(`[data-t-img][data-slug="${slug}"]`)
 
     $photo = prepareItem($photo)
 

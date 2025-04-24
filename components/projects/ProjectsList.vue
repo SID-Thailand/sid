@@ -8,22 +8,45 @@ interface iProps {
   projectBtn: string
 }
 
-defineProps<iProps>()
+const props = defineProps<iProps>()
 
-const activeProject = ref(0)
+const contentRef = ref<HTMLElement | null>(null)
+
+const projectCount = computed(() => {
+  return props?.projects?.length || 0
+})
+
+const { activePage } = useFullPageCardSlider(
+  contentRef as Ref<HTMLElement>,
+  projectCount
+)
+
+const activeProject = computed(() => {
+  return props.projects[activePage.value - 1]
+})
+
+const route = useRoute()
+
+const onClick = () => {
+  route.meta.isProjectTransition = true
+}
+
+onMounted(() => {
+  console.log(props.projects)
+})
 </script>
 
 <template>
   <section class="projects">
-    <div class="projects__wrapper">
+    <div ref="contentRef" class="projects__wrapper">
       <div class="projects__slider container">
         <div
           v-for="(img, idx) in projects"
           :key="idx"
           class="projects__bg-wrapper"
-          :class="{ 'projects__bg-wrapper--active': activeProject === idx }"
         >
           <CustomImage
+            data-f-bg
             :src="img?.content?.cover?.filename"
             :aly="img?.content?.cover?.alt"
             class="projects__bg"
@@ -31,16 +54,17 @@ const activeProject = ref(0)
           <div class="projects__layer" />
         </div>
         <div class="projects__card">
-          <div class="projects__assets">
+          <div data-t-assets class="projects__assets">
             <div
               v-for="(item, idx) in projects"
               :key="idx"
               class="projects__image-item"
-              :class="{ active: activeProject === idx }"
               :style="{ zIndex: idx + 1 }"
             >
               <div class="projects__img-wrapper">
                 <CustomImage
+                  data-f-img
+                  data-t-img
                   :src="item?.content?.cover?.filename"
                   :alt="item?.content?.cover?.alt"
                   class="projects__img"
@@ -56,33 +80,34 @@ const activeProject = ref(0)
               :key="index"
               class="projects__text"
             >
-              <h2 class="projects__title">
+              <h2 data-f-title class="projects__title">
                 {{ project?.content?.name }}
               </h2>
-              <p class="projects__desc">{{ project?.content?.description }}</p>
-              <Button
-                tag="nuxt-link"
-                :href="`/${project?.full_slug}`"
-                class="projects__link"
-              >
-                <span>
-                  {{ projectBtn }}
-                </span>
-                <LucideArrowUpRight />
-              </Button>
+              <p data-f-text class="projects__desc">
+                {{ project?.content?.description }}
+              </p>
             </div>
           </div>
+          <Button
+            tag="nuxt-link"
+            :href="`/${activeProject?.full_slug}`"
+            class="projects__link"
+            @click="onClick"
+          >
+            <span>
+              {{ projectBtn }}
+            </span>
+            <LucideArrowUpRight />
+          </Button>
         </div>
         <div class="projects__counter container">
-          <p class="projects__count">
-            {{ activeProject + 1 }}/{{ projects?.length }}
-          </p>
+          <p class="projects__count">{{ activePage }}/{{ projectCount }}</p>
           <div class="projects__pagination">
             <span
               v-for="(_, i) in projects?.length"
               :key="i"
               class="projects__pag-item"
-              :class="{ 'projects__pag-item--active': activeProject === i }"
+              :class="{ 'projects__pag-item--active': activePage - 1 === i }"
             />
           </div>
         </div>
@@ -107,12 +132,6 @@ const activeProject = ref(0)
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  &--active {
-    opacity: 1;
-  }
 }
 
 .projects__bg {
@@ -129,6 +148,7 @@ const activeProject = ref(0)
   width: 100%;
   height: 100%;
   background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
+  opacity: 0.3;
   mix-blend-mode: hard-light;
 }
 
@@ -209,17 +229,25 @@ const activeProject = ref(0)
   left: 0;
   height: 100%;
   width: 100%;
-  display: none;
 
   &:first-child {
     position: relative;
-    display: block;
   }
 }
 
 .projects__title {
   text-transform: uppercase;
+  width: 70%;
+  margin: 0 auto;
   @include subheading-h1;
+
+  @media (max-width: $br1) {
+    width: 100%;
+  }
+
+  @media (max-width: $br4) {
+    width: 70%;
+  }
 }
 .projects__desc {
   font-size: vw(16);
@@ -238,14 +266,15 @@ const activeProject = ref(0)
   width: fit-content;
   margin: 0 auto;
   margin-top: vw(32);
-  padding-top: vw(19);
-  padding-bottom: vw(19);
+  padding-top: vw(16);
+  padding-bottom: vw(16);
   font-size: vw(14);
 
+  flex-shrink: 0;
   @media (max-width: $br1) {
     font-size: 14px;
-    padding-top: 19px;
-    padding-bottom: 19px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     margin-top: 24px;
   }
 }

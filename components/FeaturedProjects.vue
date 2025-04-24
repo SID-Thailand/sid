@@ -53,7 +53,7 @@ const onClick = () => {
           >{{ content?.button_text }}</NuxtLink
         >
         <div class="featured-projects__card fpc">
-          <div class="fpc__assets">
+          <div data-t-assets class="fpc__assets">
             <div
               v-for="(item, idx) in projects"
               :key="idx"
@@ -62,6 +62,7 @@ const onClick = () => {
             >
               <div class="fpc__img-wrapper">
                 <CustomImage
+                  data-t-img
                   data-f-img
                   :src="item?.content?.cover?.filename"
                   :alt="item?.content?.cover?.alt"
