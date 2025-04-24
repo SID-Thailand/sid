@@ -65,7 +65,7 @@ const handleChangeSlide = async () => {
   const to = 'inset(0 100% 0 0)'
 
   tl.set($active, {
-    clipPath: dir === 1 ? to : from,
+    clipPath: dir === 1 ? from : to,
   })
 
   tl.set($activeImg, {
@@ -76,7 +76,7 @@ const handleChangeSlide = async () => {
     tl.to(
       $prev,
       {
-        clipPath: dir === 1 ? from : to,
+        clipPath: dir === 1 ? to : from,
         duration: 1.5,
         ease: 'power2.out',
       },
