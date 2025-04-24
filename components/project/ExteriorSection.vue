@@ -95,6 +95,8 @@ const onClick = (e: MouseEvent, idx: number) => {
 
   @media (max-width: $br1) {
     margin-top: 48px;
+    flex-direction: column;
+    height: 100vh;
   }
 }
 
@@ -119,6 +121,7 @@ const onClick = (e: MouseEvent, idx: number) => {
 
   @media (max-width: $br1) {
     margin-top: 24px;
+    align-self: flex-start;
     padding-right: 32px;
     padding-left: 32px;
     margin-left: -32px;
