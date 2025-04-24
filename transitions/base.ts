@@ -3,9 +3,7 @@ import gsap from 'gsap'
 import { basicObject } from './basicObject'
 
 export const pageTransition: TransitionProps = {
-  onEnter(el, done) {
-    console.log('enter')
-
+  onEnter(_, done) {
     const revealer = document.querySelector('.revealer') as HTMLElement
     if (!revealer) {
       done()
@@ -24,7 +22,6 @@ export const pageTransition: TransitionProps = {
     basicObject.onEnter()
   },
   async onLeave(el, done) {
-    console.log('leave')
     const revealer = document.querySelector('.revealer') as HTMLElement
 
     if (!revealer) {
