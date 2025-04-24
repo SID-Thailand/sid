@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ChevronDown, LucidePlus } from 'lucide-vue-next'
+import { gsap } from '~/libs/gsap'
 import type { iApartment } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -18,13 +19,38 @@ const onSelect = (item: iApartment) => {
   handleToggleMenu()
 }
 
+const el = ref<HTMLElement | null>(null)
+
 const handleToggleMenu = () => {
   isOpen.value = !isOpen.value
 }
+
+const isMobile = useMediaQuery('(max-width: 560px)')
+
+watch(isOpen, val => {
+  if (val && isMobile.value) {
+    const top = el.value?.getBoundingClientRect().top
+
+    const scrollTop = getScrollEl().scrollTop + top - 20
+
+    gsap.to(getScrollEl(), {
+      duration: 0.8,
+      scrollTop,
+      ease: 'power2.out',
+      onComplete: () => {
+        window.escroll.disabled = true
+        getScrollEl().classList.add('full-page')
+      },
+    })
+  } else {
+    window.escroll.disabled = false
+    getScrollEl().classList.remove('full-page')
+  }
+})
 </script>
 
 <template>
-  <div class="interior-dropdown">
+  <div ref="el" class="interior-dropdown">
     <button
       class="interior-dropdown__btn"
       :class="{ 'interior-dropdown__btn--opened': isOpen }"
@@ -126,11 +152,18 @@ const handleToggleMenu = () => {
     top: 20px;
   }
 
+  @media (max-width: $br3) {
+    max-width: none;
+    width: 100vw;
+    margin-left: -16px;
+  }
+
   &--opened {
     max-height: clamp(vw(500), vw(500), 50vh);
 
     @media (max-width: $br1) {
-      max-height: 300px;
+      height: 100vh;
+      max-height: 100vh;
     }
   }
 }
