@@ -52,7 +52,11 @@ const onClick = () => {
           to="/projects/"
           >{{ content?.button_text }}</NuxtLink
         >
-        <div class="featured-projects__card fpc">
+        <NuxtLink
+          :to="`/${activeProject.full_slug}`"
+          class="featured-projects__card fpc"
+          @click="onClick"
+        >
           <div data-t-assets class="fpc__assets">
             <div
               v-for="(item, idx) in projects"
@@ -84,15 +88,10 @@ const onClick = () => {
               </div>
             </div>
           </div>
-          <NuxtLink
-            :to="`/${activeProject.full_slug}`"
-            class="fpc__link"
-            aria-label="View project"
-            @click="onClick"
-          >
+          <div aria-hidden="true" class="fpc__icon" aria-label="View project">
             <IconsPlus />
-          </NuxtLink>
-        </div>
+          </div>
+        </NuxtLink>
         <div class="featured-projects__text">
           <h2 class="featured-projects__title">{{ content?.title }}</h2>
           <div class="featured-projects__desc">{{ content?.text }}</div>
@@ -171,6 +170,14 @@ const onClick = () => {
   padding: vw(16);
   display: flex;
   flex-direction: column;
+  transition: transform 0.8s $easing;
+
+  &:hover {
+    transform: scale(0.98);
+    .fpc__assets {
+      clip-path: inset(2%);
+    }
+  }
 
   @media (max-width: $br1) {
     width: auto;
@@ -192,6 +199,8 @@ const onClick = () => {
   overflow: hidden;
   position: relative;
   height: 100%;
+  clip-path: inset(0%);
+  transition: clip-path 0.8s $easing;
 }
 
 .fpc__image-item {
@@ -274,7 +283,7 @@ const onClick = () => {
   }
 }
 
-.fpc__link {
+.fpc__icon {
   display: block;
   color: var(--accent-primary);
 
