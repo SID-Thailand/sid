@@ -88,7 +88,7 @@ const onSubmit = () => {
   setTimeout(() => {
     activeIdx.value = 0
     prevIdx.value = 0
-  }, 1000)
+  }, 4000)
 
   setTimeout(() => {
     isShowThankYou.value = false
