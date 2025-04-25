@@ -18,18 +18,12 @@ defineProps<IProps>()
     </p>
     <div class="interior-apart__img-list-wrapper">
       <ul class="interior-apart__img-list">
-        <li
-          v-for="(img, idx) in apartment?.assets"
-          :key="idx"
-          class="interior-apart__img-item"
-          :class="{ 'interior-apart__img-item--active': idx === 0 }"
-        >
-          <CustomImage
-            :src="img?.filename"
-            :alt="img?.alt"
-            class="iterior-apart__img"
-          />
-        </li>
+        <ProjectInteriorApartmentImg
+          v-for="(img, index) in apartment.assets"
+          :key="img._uid"
+          :img="img"
+          :idx="index"
+        />
       </ul>
     </div>
     <div class="interior-apart__content">
@@ -89,6 +83,8 @@ defineProps<IProps>()
 }
 
 .interior-apart__img-list-wrapper {
+  position: relative;
+
   @media (min-width: $br1) {
     max-width: vw(900);
     width: 100%;
@@ -113,6 +109,7 @@ defineProps<IProps>()
 
 .interior-apart__img-list {
   display: flex;
+  transform: translateY(calc(var(--progress) * -100%));
 
   @media (min-width: $br1) {
     flex-direction: column;
@@ -124,29 +121,6 @@ defineProps<IProps>()
     align-items: flex-start;
     min-width: max-content;
     gap: 16px;
-  }
-}
-
-.interior-apart__img-item {
-  @media (min-width: $br1) {
-    max-width: vw(336);
-
-    &--active {
-      max-width: 100%;
-      max-height: 100%;
-    }
-  }
-}
-
-.iterior-apart__img {
-  display: block;
-  height: auto;
-  width: fit-content;
-
-  @media (max-width: $br1) {
-    width: 100%;
-    height: 100%;
-    max-height: 222px;
   }
 }
 
