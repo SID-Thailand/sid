@@ -108,18 +108,19 @@ defineProps<IProps>()
 }
 
 .ab-history__list {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
   @media (min-width: $br1) {
-    display: flex;
-    flex-direction: column;
     max-width: vw(900);
-    row-gap: vw(100);
+    gap: vw(100);
   }
 
   @media (max-width: $br1) {
-    position: relative;
     margin-top: 40px;
     width: 100%;
-    height: 100vh;
+    gap: 40px;
   }
 }
 
@@ -135,16 +136,9 @@ defineProps<IProps>()
   }
 
   @media (max-width: $br1) {
-    transition: opacity 0.3s $easing;
-    opacity: 0;
-    position: absolute;
+    width: 100%;
     flex-direction: column;
-  }
-
-  &--active {
-    @media (max-width: $br1) {
-      opacity: 1;
-    }
+    gap: 24px;
   }
 }
 
@@ -171,6 +165,7 @@ defineProps<IProps>()
   @media (max-width: $br1) {
     margin-top: 40px;
     max-width: 100%;
+    width: 100%;
   }
 }
 

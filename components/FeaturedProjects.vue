@@ -172,10 +172,12 @@ const onClick = () => {
   flex-direction: column;
   transition: transform 0.8s $easing;
 
-  &:hover {
-    transform: scale(0.98);
-    .fpc__assets {
-      clip-path: inset(2%);
+  @media (min-width: $br1) {
+    &:hover {
+      transform: scale(0.98);
+      .fpc__assets {
+        clip-path: inset(2%);
+      }
     }
   }
 
