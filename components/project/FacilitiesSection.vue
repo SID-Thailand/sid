@@ -153,7 +153,7 @@ const { activePage } = useFullPageAnimation(
 }
 
 .project-facilities__block-wrapper {
-  height: 100vh;
+  height: 100svh;
   overflow: hidden;
   padding-top: vw(60);
 

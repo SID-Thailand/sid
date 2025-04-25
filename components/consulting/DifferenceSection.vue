@@ -109,7 +109,7 @@ const { activePage } = useFullPageCardSlider(
 .cons-diff__slider {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100svh;
 }
 
 .cons-diff__bg-wrapper {
