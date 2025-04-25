@@ -166,12 +166,13 @@ const { activePage } = useFullPageCardSlider(
   @media (max-width: $br1) {
     text-align: center;
     flex-direction: column-reverse;
-    max-width: 70%;
+    width: 70%;
     gap: 32px;
+    height: 70%;
   }
 
   @media (max-width: $br4) {
-    max-width: 100%;
+    width: 100%;
   }
 }
 
