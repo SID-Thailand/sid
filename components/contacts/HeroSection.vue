@@ -11,11 +11,11 @@ defineProps<IProps>()
 <template>
   <section class="hero container">
     <div class="hero__title-wrapper">
-      <h1 class="hero__title">
+      <h1 data-title class="hero__title">
         {{ content?.title }}
       </h1>
     </div>
-    <div class="hero__wrapper">
+    <div data-t class="hero__wrapper">
       <ul class="hero__contacts">
         <li
           v-for="(contact, idx) in content?.contacts"

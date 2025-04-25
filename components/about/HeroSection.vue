@@ -6,7 +6,7 @@ interface IProps {
   content: iAboutHero
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const $el = ref<HTMLElement | null>(null)
 
@@ -16,10 +16,11 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
 <template>
   <section ref="$el" class="about-hero container">
     <div class="about-hero__wrapper">
-      <h1 class="about-hero__main-title">
+      <h1 data-title class="about-hero__main-title">
         {{ content?.title }}
       </h1>
-      <CustomImage
+      <ParallaxImg
+        data-full-image
         :src="content?.asset?.filename"
         :alt="content?.asset?.alt"
         class="about-hero__main-img"

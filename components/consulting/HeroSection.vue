@@ -11,11 +11,12 @@ defineProps<IProps>()
 <template>
   <section class="cons-hero container">
     <div class="cons-hero__wrapper">
-      <h1 class="cons-hero__title">
+      <h1 data-title class="cons-hero__title">
         {{ content?.title }}
       </h1>
 
-      <CustomImage
+      <ParallaxImg
+        data-full-image
         class="cons-hero__bg"
         :alt="content?.asset?.alt"
         :src="content?.asset?.filename"

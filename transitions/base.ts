@@ -8,6 +8,7 @@ const ease = 'power3.inOut'
 export const pageTransition: TransitionProps = {
   mode: 'out-in',
   onEnter(el, done) {
+    const { init } = useLoadingAnimation()
     const revealer = document.querySelector('.revealer') as HTMLElement
     if (!revealer) {
       done()
@@ -46,6 +47,8 @@ export const pageTransition: TransitionProps = {
     )
 
     basicObject.onEnter()
+
+    init()
   },
   async onLeave(el, done) {
     const revealer = document.querySelector('.revealer') as HTMLElement

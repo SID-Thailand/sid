@@ -327,12 +327,12 @@ const onClick = () => {
   display: block;
   width: vw(4);
   height: vw(4);
-  border-radius: 100%;
+  border-radius: 9999px;
   background-color: var(--neutral-300);
   transition:
-    height 0.3s ease,
-    width 0.3s ease,
-    border-radius 0.3s ease;
+    height 1s ease,
+    width 1s ease,
+    background-color 1s ease;
 
   @media (max-width: $br1) {
     width: 4px;
@@ -344,12 +344,10 @@ const onClick = () => {
 
     @media (min-width: $br1) {
       height: vw(16);
-      border-radius: vw(12);
     }
 
     @media (max-width: $br1) {
       width: 16px;
-      border-radius: 12px;
     }
   }
 }

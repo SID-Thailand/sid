@@ -14,10 +14,10 @@ defineProps<IProps>()
 <template>
   <section class="curr-news-hero container">
     <div class="curr-news-hero__wrapper">
-      <h1 v-if="title" class="curr-news-hero__title">
+      <h1 v-if="title" data-title class="curr-news-hero__title">
         {{ title }}
       </h1>
-      <div class="curr-news-hero__date-wrapper">
+      <div data-t class="curr-news-hero__date-wrapper">
         <p class="curr-news-hero__category">
           {{ category }}
         </p>
@@ -28,6 +28,7 @@ defineProps<IProps>()
       </div>
       <CustomImage
         v-if="asset.filename"
+        data-full-image
         :src="asset?.filename"
         :alt="asset?.alt"
         class="curr-news-hero__img"

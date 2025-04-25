@@ -12,6 +12,8 @@ export const useAppState = () => {
     () => config.public.env === 'production'
   )
 
+  // const isUseLoader = useState('isUseLoader', () => true)
+
   const isFullPage = useState('isFullPage', () => false)
 
   return {

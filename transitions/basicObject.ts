@@ -17,5 +17,8 @@ export const basicObject: IBasicObject = {
   },
   onLeave() {
     window.escroll && (window.escroll.disabled = true)
+
+    document.documentElement.style.cursor = 'wait'
+    document.body.style.pointerEvents = 'none !important'
   },
 }
