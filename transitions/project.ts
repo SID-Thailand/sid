@@ -33,6 +33,8 @@ export const projectTransition: TransitionProps = {
   css: false,
   appear: true,
   async onEnter(el: HTMLElement, done) {
+    const { init } = useLoadingAnimation()
+
     await delayPromise(20)
     el.style.width = '100%'
     el.style.position = 'fixed'
@@ -54,6 +56,8 @@ export const projectTransition: TransitionProps = {
     })
 
     $to.appendChild($photo)
+
+    init()
 
     Flip.from(state, {
       duration: 2.5,
