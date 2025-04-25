@@ -23,7 +23,11 @@ let sliderInstance: Slider | null = null
 const isIndicatorActive = ref(false)
 const isIndicatorVisible = ref(false)
 
-const setIndicator = (x: number, y: number) => {
+const setIndicator = (event: MouseEvent) => {
+  const x = event.clientX
+  const y = event.clientY
+
+  isIndicatorVisible.value = true
   dragIndicator.value?.style.setProperty('--indicator-x', `${x}px`)
   dragIndicator.value?.style.setProperty('--indicator-y', `${y}px`)
 }
@@ -51,8 +55,8 @@ onBeforeUnmount(() => {
       ref="el"
       class="scrolling-slider__content"
       data-slider
-      @mousemove="setIndicator($event.clientX, $event.clientY)"
-      @mouseenter="isIndicatorVisible = true"
+      @mousemove="setIndicator"
+      @mouseenter="setIndicator"
       @mouseleave="isIndicatorVisible = false"
       @mousedown="isIndicatorActive = true"
       @mouseup="isIndicatorActive = false"
@@ -169,8 +173,8 @@ onBeforeUnmount(() => {
   opacity: 0;
   transform: scale(1);
   transition:
-    transform 0.15s ease,
-    opacity 0.15s ease;
+    transform 0.4s ease,
+    opacity 0.4s ease;
   user-select: none;
   @include med;
 
