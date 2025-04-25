@@ -135,6 +135,10 @@ const updatedLinks = computed(() => {
   .router-link-active {
     color: var(--basic-white);
   }
+
+  @media (max-width: $br1) {
+    gap: 12px;
+  }
 }
 
 .navigation__link {
