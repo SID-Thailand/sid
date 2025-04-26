@@ -5,16 +5,16 @@ export const useLoadingAnimation = () => {
   const { appear } = useLogoAnimation()
   const isFirstLoad = useState('isFirstLoad', () => true)
 
-  const getElements = () => {
-    const $image = document.querySelector(
-      '[data-preload]'
-    ) as HTMLElement | null
-    const $fullImage = document.querySelector(
+  const getElements = (parent?: HTMLElement) => {
+    const $el = parent || document
+
+    const $image = $el.querySelector('[data-preload]') as HTMLElement | null
+    const $fullImage = $el.querySelector(
       '[data-full-image]'
     ) as HTMLElement | null
-    const $title = document.querySelector('[data-title]') as HTMLElement | null
-    const $logo = document.querySelector('.header__logo') as HTMLElement | null
-    const $t = document.querySelectorAll('[data-t]')
+    const $title = $el.querySelector('[data-title]') as HTMLElement | null
+    const $logo = $el.querySelector('.header__logo') as HTMLElement | null
+    const $t = $el.querySelectorAll('[data-t]')
     return { $image, $fullImage, $title, $logo, $t }
   }
 
@@ -31,15 +31,14 @@ export const useLoadingAnimation = () => {
     }
   }
 
-  const animate = async () => {
+  const animate = async (parent?: HTMLElement, wait = 0.2) => {
     document.documentElement.style.cursor = 'wait'
     document.body.style.pointerEvents = 'none'
 
+    const { $image, $fullImage, $title, $logo, $t } = getElements(parent)
     await delayPromise(200)
 
-    const delay = isFirstLoad.value ? 1.7 : 0.2
-
-    const { $image, $fullImage, $title, $logo, $t } = getElements()
+    const delay = isFirstLoad.value ? 1.7 : wait
 
     const tl = gsap.timeline({
       onComplete: () => {

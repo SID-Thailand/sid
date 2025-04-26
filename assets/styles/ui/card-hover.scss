@@ -1,0 +1,17 @@
+@use '../helpers/' as *;
+
+@mixin card-hover($child) {
+  @media (min-width: $br1) {
+    transition: transform 0.8s $easing;
+    #{$child} {
+      transition: clip-path 0.8s $easing;
+      clip-path: inset(0%);
+    }
+    &:hover {
+      transform: scale(0.98);
+      #{$child} {
+        clip-path: inset(2%);
+      }
+    }
+  }
+}

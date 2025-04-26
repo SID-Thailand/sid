@@ -49,7 +49,7 @@ const onClick = () => {
           />
           <div class="projects__layer" />
         </div>
-        <div class="projects__card">
+        <div class="projects__card" data-t-card>
           <div data-t-assets class="projects__assets">
             <div
               v-for="(item, idx) in projects"
@@ -113,6 +113,8 @@ const onClick = () => {
 </template>
 
 <style scoped lang="scss">
+@use '~/assets/styles/ui/card-hover' as *;
+
 .projects__slider {
   position: relative;
   width: 100%;
@@ -161,6 +163,7 @@ const onClick = () => {
   padding-bottom: vw(32);
   display: flex;
   flex-direction: column;
+  @include card-hover('.projects__assets');
 
   @media (max-width: $br1) {
     width: auto;

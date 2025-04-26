@@ -35,12 +35,16 @@ export const projectTransition: TransitionProps = {
   async onEnter(el: HTMLElement, done) {
     const { init } = useLoadingAnimation()
 
-    await delayPromise(20)
+    init(el, 0.85)
+
     el.style.width = '100%'
     el.style.position = 'fixed'
     el.style.top = '0'
     el.style.left = '0'
     el.style.zIndex = '3'
+    el.style.opacity = '0'
+    await delayPromise(200)
+    el.style.opacity = '1'
 
     const $to = el.querySelector('.project-hero__img-wrapper')
     const state = Flip.getState($photo, {
@@ -56,8 +60,6 @@ export const projectTransition: TransitionProps = {
     })
 
     $to.appendChild($photo)
-
-    init()
 
     Flip.from(state, {
       duration: 2.5,
@@ -83,14 +85,26 @@ export const projectTransition: TransitionProps = {
 
     $photo = el.querySelector(`[data-t-img][data-slug="${slug}"]`)
 
+    const $card = el.querySelector('[data-t-card]') as HTMLElement
+
+    const { offsetX, offsetY } = getOffsetFromCenter($card)
+
     $photo = prepareItem($photo)
 
     basicObject.onLeave()
 
-    gsap.to(el, {
-      duration: 0.5,
-      opacity: 0,
+    gsap.to($card, {
+      duration: 2,
+      scale: 2,
       ease: 'power2.inOut',
+      x: offsetX,
+      y: offsetY,
+    })
+
+    gsap.to(el, {
+      duration: 2,
+      opacity: 0,
+      ease: 'power2.out',
     })
   },
 }

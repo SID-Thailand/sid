@@ -54,6 +54,7 @@ const onClick = () => {
         >
         <NuxtLink
           :to="`/${activeProject.full_slug}`"
+          data-t-card
           class="featured-projects__card fpc"
           @click="onClick"
         >
@@ -107,6 +108,8 @@ const onClick = () => {
 </template>
 
 <style scoped lang="scss">
+@use '~/assets/styles/ui/card-hover' as *;
+
 .featured-projects {
   position: relative;
 }
@@ -170,16 +173,9 @@ const onClick = () => {
   padding: vw(16);
   display: flex;
   flex-direction: column;
-  transition: transform 0.8s $easing;
+  transform-origin: center center;
 
-  @media (min-width: $br1) {
-    &:hover {
-      transform: scale(0.98);
-      .fpc__assets {
-        clip-path: inset(2%);
-      }
-    }
-  }
+  @include card-hover('.fpc__assets');
 
   @media (max-width: $br1) {
     width: auto;
@@ -201,8 +197,6 @@ const onClick = () => {
   overflow: hidden;
   position: relative;
   height: 100%;
-  clip-path: inset(0%);
-  transition: clip-path 0.8s $easing;
 }
 
 .fpc__image-item {
