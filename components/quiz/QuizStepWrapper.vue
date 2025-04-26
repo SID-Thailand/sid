@@ -148,7 +148,7 @@ onMounted(() => {
   }
 
   @media (max-width: $br3) {
-    transform-origin: center 10%;
+    transform-origin: center 20%;
   }
 }
 
