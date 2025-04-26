@@ -73,7 +73,6 @@ watch(
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  height: fit-content;
   max-height: 100svh;
   overflow: auto;
   max-width: vw(555);

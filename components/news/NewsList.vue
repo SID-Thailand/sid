@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { iNewsContent } from '~/types/newsTypes'
 import type { iStory } from '~/types/story'
+import formatDate from '~/utils/formatDate'
 
 interface iProps {
   news: iStory<iNewsContent>[]
@@ -165,29 +166,27 @@ const visibleNews = computed(() => {
 }
 
 .news-list__list {
-  @media (min-width: $br1) {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(4, 1fr);
-    gap: vw(20);
-    grid-auto-flow: row;
-  }
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  gap: vw(20);
+  grid-auto-flow: row;
 
   @media (max-width: $br1) {
-    display: flex;
-    align-items: stretch;
-    min-width: max-content;
-    column-gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+  }
+  @media (max-width: $br3) {
+    grid-template-columns: 1fr;
   }
 }
 
 .news-list__card {
-  @media (max-width: $br1) {
-    width: 344px;
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: column;
-  }
+  width: 100%;
+  grid-column: span 1;
+  min-width: 0;
+  min-height: 0;
 }
 
 .news-list__link {
@@ -199,10 +198,15 @@ const visibleNews = computed(() => {
   padding: vw(16);
   height: 100%;
   flex-grow: 1;
+  width: 100%;
 
   @media (max-width: $br1) {
     padding: 16px;
   }
+}
+
+.news-list__link-wrapper {
+  width: 100%;
 }
 
 .news-list__img {
@@ -212,7 +216,9 @@ const visibleNews = computed(() => {
 
   @media (max-width: $br1) {
     width: 100%;
-    height: 268px;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
   }
 }
 
@@ -236,7 +242,14 @@ const visibleNews = computed(() => {
   line-height: 1em;
   margin-top: vw(4);
   @include med;
-
+  max-width: 100%;
+  display: -webkit-box;
+  max-width: 400px;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   @media (max-width: $br1) {
     margin-top: 8px;
     font-size: 24px;

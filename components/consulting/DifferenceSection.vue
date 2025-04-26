@@ -147,7 +147,7 @@ const { activePage } = useFullPageCardSlider(
   height: 100%;
   z-index: 0;
   background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
-  opacity: 0.5;
+
   mix-blend-mode: hard-light;
 }
 

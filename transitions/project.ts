@@ -11,10 +11,13 @@ let leaveDoneCallback: () => void
 const prepareItem = ($item: HTMLElement) => {
   const bounds = $item.getBoundingClientRect()
 
+  const $parent = $item.closest('[data-t-assets]') as HTMLElement
+
   const $clone = $item.cloneNode(true) as HTMLElement
 
   document.body.appendChild($clone)
   $item.style.opacity = '0'
+  $parent.style.opacity = '0'
 
   const isDesktop = window.innerWidth > 860
 

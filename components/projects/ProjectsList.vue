@@ -47,8 +47,8 @@ const onClick = () => {
             :aly="img?.content?.cover?.alt"
             class="projects__bg"
           />
-          <div class="projects__layer" />
         </div>
+        <div class="projects__layer" />
         <div class="projects__card" data-t-card>
           <div data-t-assets class="projects__assets">
             <div
@@ -146,7 +146,6 @@ const onClick = () => {
   width: 100%;
   height: 100%;
   background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
-  opacity: 0.3;
   mix-blend-mode: hard-light;
 }
 
@@ -174,10 +173,10 @@ const onClick = () => {
 
   @media (max-width: $br4) {
     width: 100%;
-    height: fit-content;
+    height: 80%;
     aspect-ratio: unset;
     flex: 1;
-    max-height: 768px;
+    max-height: 600px;
   }
 }
 
@@ -291,8 +290,8 @@ const onClick = () => {
   @media (max-width: $br1) {
     flex-direction: column;
     height: 100%;
-    padding-top: 53px;
-    padding-bottom: 61px;
+    padding-top: 32px;
+    padding-bottom: 32px;
   }
 }
 
