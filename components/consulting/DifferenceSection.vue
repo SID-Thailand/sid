@@ -17,6 +17,8 @@ const { activePage } = useFullPageCardSlider(
   contentRef as Ref<HTMLElement>,
   count
 )
+
+// const activePage = ref(1)
 </script>
 
 <template>
@@ -39,32 +41,41 @@ const { activePage } = useFullPageCardSlider(
             :aly="img?.background_asset?.alt"
             class="cons-diff__bg"
           />
-          <div class="cons-diff__layer" />
         </div>
-        <ul class="cons-diff__list">
-          <li
-            v-for="(item, index) in content?.difference_gallery"
-            :key="index"
-            class="cons-diff__item"
-          >
-            <div class="cons-diff__content">
-              <h3 data-f-title class="cons-diff__item-title">
-                {{ item?.title }}
-              </h3>
-              <p data-f-text class="cons-diff__item-text">
-                {{ item?.text }}
-              </p>
-            </div>
-            <div class="cons-diff__img-wrapper">
+        <div class="cons-diff__layer" />
+
+        <div class="cons-diff__content">
+          <div class="cons-diff__texts">
+            <ul v-if="content?.difference_gallery" class="cons-diff__items">
+              <li
+                v-for="item in content?.difference_gallery"
+                :key="item._uid"
+                class="cons-diff__item"
+              >
+                <h3 data-f-title class="cons-diff__t">
+                  {{ item?.title }}
+                </h3>
+                <p data-f-text class="cons-diff__text">
+                  {{ item?.text }}
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="cons-diff__assets">
+            <div
+              v-for="img in content?.difference_gallery"
+              :key="img._uid"
+              class="cons-diff__img-wrapper"
+            >
               <CustomImage
                 data-f-img
-                :src="item?.asset?.filename"
-                :aly="item?.asset?.alt"
+                :src="img?.background_asset?.filename"
+                :aly="img?.background_asset?.alt"
                 class="cons-diff__img"
               />
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
         <div class="cons-diff__counter container">
           <p class="cons-diff__count">{{ activePage }}/{{ count }}</p>
           <div class="cons-diff__pagination">
@@ -117,6 +128,7 @@ const { activePage } = useFullPageCardSlider(
   top: 0;
   left: 0;
   width: 100%;
+  overflow: hidden;
   height: 100%;
 }
 
@@ -139,48 +151,70 @@ const { activePage } = useFullPageCardSlider(
   mix-blend-mode: hard-light;
 }
 
-.cons-diff__list {
-  position: relative;
+.cons-diff__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   height: 100%;
-}
-
-.cons-diff__content {
-  width: vw(324);
-
-  @media (max-width: $br1) {
-    width: 100%;
-  }
-}
-
-.cons-diff__item {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: vw(134);
+  z-index: 1;
+  position: relative;
   width: vw(784);
+  margin: 0 auto;
+  overflow: hidden;
 
   @media (max-width: $br1) {
-    text-align: center;
-    flex-direction: column-reverse;
-    width: 70%;
-    gap: 32px;
-    height: 70%;
+    width: 80%;
   }
 
-  @media (max-width: $br4) {
-    width: 100%;
+  @media (max-width: $br2) {
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 75%;
   }
 }
 
-.cons-diff__item-title {
+.cons-diff__texts {
+  width: vw(324);
+  flex-shrink: 0;
+
+  @media (max-width: $br2) {
+    width: 100%;
+  }
+}
+.cons-diff__items {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  align-items: center;
+}
+.cons-diff__item {
+  position: relative;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  display: flex;
+  flex-direction: column;
+  gap: vw(32);
+  top: 0;
+
+  @media (max-width: $br2) {
+    text-align: center;
+  }
+}
+.cons-diff__t {
   text-transform: uppercase;
-  line-height: 1em;
-  font-size: vw(40);
-  @include med;
+  @include heading-h6;
+
+  @media (min-width: $br1) {
+    text-align: left;
+  }
 
   @media (max-width: $br1) {
     font-size: size(40, 36);
@@ -190,24 +224,33 @@ const { activePage } = useFullPageCardSlider(
     font-size: 36px;
   }
 }
-
-.cons-diff__item-text {
-  margin-top: vw(32);
+.cons-diff__text {
   @include text-t3;
-
-  @media (max-width: $br1) {
-    margin-top: 20px;
-  }
 }
 
-.cons-diff__img-wrapper {
+.cons-diff__assets {
   flex-shrink: 0;
   width: vw(326);
   height: vw(326);
   overflow: hidden;
-  @media (max-width: $br1) {
-    height: 326px;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: $br2) {
     width: auto;
+    height: 50%;
+    aspect-ratio: 1;
+  }
+}
+
+.cons-diff__img-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  @media (max-width: $br2) {
+    width: 100%;
+    height: 100%;
     aspect-ratio: 1;
   }
 }

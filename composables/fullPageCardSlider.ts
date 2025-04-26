@@ -1,3 +1,4 @@
+import { delayPromise } from '@emotionagency/utils'
 import { TextSplitter } from './../utils/textSplitter'
 import { gsap } from '~/libs/gsap'
 
@@ -166,7 +167,9 @@ export const useFullPageCardSlider = (
 
   watch(activePage, animateSections)
 
-  onMounted(() => {
+  onMounted(async () => {
+    await delayPromise(500)
+
     $bgs.value = target.value?.querySelectorAll(
       '[data-f-bg]'
     ) as NodeListOf<HTMLElement>
@@ -183,7 +186,7 @@ export const useFullPageCardSlider = (
       '[data-f-text]'
     ) as NodeListOf<HTMLElement>
 
-    setupInitialStates()
+    await setupInitialStates()
   })
 
   return {
