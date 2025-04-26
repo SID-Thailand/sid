@@ -50,6 +50,12 @@ const meta = computed(() => {
     ogImage: data?.image?.filename,
   }
 })
+
+const key = ref(0)
+
+watch(filteredProjects, () => {
+  key.value++
+})
 </script>
 
 <template>
@@ -68,6 +74,7 @@ const meta = computed(() => {
       <p>Unknown component: {{ story?.content?.component }}</p>
     </div>
     <ProjectsList
+      :key="key"
       :projects="filteredProjects"
       :project-btn="story?.content?.view_project_btn"
     />
