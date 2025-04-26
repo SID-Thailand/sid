@@ -173,7 +173,6 @@ const onClick = () => {
   padding: vw(16);
   display: flex;
   flex-direction: column;
-  transform-origin: center center;
 
   @include card-hover('.fpc__assets');
 

@@ -9,22 +9,29 @@ let $photo = null
 let leaveDoneCallback: () => void
 
 const prepareItem = ($item: HTMLElement) => {
-  const $parent = $item.closest('[data-t-assets]')
+  const bounds = $item.getBoundingClientRect()
 
-  const bounds = $parent.getBoundingClientRect()
+  const $clone = $item.cloneNode(true) as HTMLElement
 
-  $item.style.position = 'fixed'
-  $item.style.top = `${bounds.top}px`
-  $item.style.left = `${bounds.left}px`
-  $item.style.width = `${bounds.width}px`
-  $item.style.height = `${bounds.height}px`
-  $item.style.objectFit = 'cover'
-  $item.style.zIndex = `10`
-  $item.style.opacity = `1`
+  document.body.appendChild($clone)
+  $item.style.opacity = '0'
 
-  document.body.appendChild($item)
+  const isDesktop = window.innerWidth > 860
 
-  return $item
+  $clone.style.position = 'fixed'
+  $clone.style.top = `${bounds.top}px`
+  $clone.style.left = `${bounds.left}px`
+  $clone.style.width = `${bounds.width}px`
+  $clone.style.height = `${bounds.height}px`
+  $clone.style.objectFit = 'cover'
+  $clone.style.zIndex = `10`
+  $clone.style.opacity = `1`
+
+  if (isDesktop) {
+    $clone.style.clipPath = `inset(2%)`
+  }
+
+  return $clone
 }
 
 export const projectTransition: TransitionProps = {
@@ -48,7 +55,7 @@ export const projectTransition: TransitionProps = {
 
     const $to = el.querySelector('.project-hero__img-wrapper')
     const state = Flip.getState($photo, {
-      props: 'zIndex',
+      props: 'clipPath, zIndex',
     })
     Object.assign($photo.style, {
       position: 'relative',
@@ -57,6 +64,7 @@ export const projectTransition: TransitionProps = {
       width: '100%',
       height: '100%',
       margin: '0',
+      clipPath: 'inset(0%)',
     })
 
     $to.appendChild($photo)

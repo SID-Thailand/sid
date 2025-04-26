@@ -18,6 +18,12 @@ const visibleProjects = computed(() => {
   if (isMobile.value) return allProjects.value
   return showAll.value ? allProjects.value : allProjects.value.slice(0, 8)
 })
+
+const route = useRoute()
+
+const onClick = () => {
+  route.meta.isProjectTransition = true
+}
 </script>
 
 <template>
@@ -36,11 +42,18 @@ const visibleProjects = computed(() => {
             :key="idx"
             class="app-projects__card"
           >
-            <NuxtLink :to="`/${project?.full_slug}`" class="app-projects__link">
+            <NuxtLink
+              data-t-card
+              :to="`/${project?.full_slug}`"
+              class="app-projects__link"
+              @click="onClick"
+            >
               <CustomImage
                 :src="project?.content?.cover?.filename"
                 :alt="project?.content?.cover?.alt"
                 class="app-projects__img"
+                data-t-img
+                :data-slug="project?.slug"
               />
               <div class="app-projects__info">
                 <h3 class="app-projects__name">
@@ -103,6 +116,8 @@ const visibleProjects = computed(() => {
 </template>
 
 <style scoped lang="scss">
+@use '~/assets/styles/ui/card-hover' as *;
+
 .app-projects {
   background: var(--neutral-600);
   color: var(--basic-white);
@@ -194,6 +209,7 @@ const visibleProjects = computed(() => {
   background: var(--neutral-400);
   padding: vw(16);
   row-gap: vw(24);
+  @include card-hover('.app-projects__img');
 
   @media (max-width: $br1) {
     padding: 16px;
