@@ -17,7 +17,10 @@ const prepareItem = ($item: HTMLElement) => {
 
   document.body.appendChild($clone)
   $item.style.opacity = '0'
-  $parent.style.opacity = '0'
+
+  if ($parent) {
+    $parent.style.opacity = '0'
+  }
 
   const isDesktop = window.innerWidth > 860
 
