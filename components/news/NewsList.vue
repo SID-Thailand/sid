@@ -11,15 +11,22 @@ interface iProps {
 const props = defineProps<iProps>()
 
 const isMobile = useMediaQuery('(max-width: 860px)')
-const showAll = ref(false)
-const maxCards = ref(8)
+
+const maxCards = computed(() => {
+  return isMobile.value ? 4 : 8
+})
+
+const offset = ref(0)
 
 const allNews = computed(() => props.news ?? [])
 
-const visibleNews = computed(() => {
-  if (isMobile.value) return allNews.value
-  return showAll.value ? allNews.value : allNews.value.slice(0, maxCards.value)
+const slicedNews = computed(() => {
+  return allNews.value.slice(0, maxCards.value + offset.value)
 })
+
+const viewMoreHandler = () => {
+  offset.value += maxCards.value
+}
 </script>
 
 <template>
@@ -31,7 +38,8 @@ const visibleNews = computed(() => {
       <div class="news-list__list-wrapper">
         <ul class="news-list__list">
           <li
-            v-for="(currNews, idx) in visibleNews"
+            v-for="(currNews, idx) in allNews"
+            v-show="slicedNews.includes(currNews)"
             :key="idx"
             class="news-list__card"
           >
@@ -86,12 +94,12 @@ const visibleNews = computed(() => {
         </ul>
 
         <Button
-          v-if="allNews.length > maxCards"
+          v-if="allNews.length > maxCards && allNews.length > slicedNews.length"
           class="news-list__btn"
           type="button"
-          @click="showAll = !showAll"
+          @click="viewMoreHandler"
         >
-          <span>{{ showAll ? 'LESS' : 'MORE' }}</span>
+          <span>{{ 'MORE' }}</span>
         </Button>
       </div>
     </div>
@@ -143,20 +151,10 @@ const visibleNews = computed(() => {
 }
 
 .news-list__list-wrapper {
-  @media (min-width: $br1) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  @media (max-width: $br1) {
-    width: 100vw;
-    overflow-x: auto;
-    padding-right: 32px;
-    padding-left: 32px;
-    margin-left: -32px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
   @media (max-width: $br3) {
     padding-right: 16px;
@@ -291,9 +289,5 @@ const visibleNews = computed(() => {
 
 .news-list__btn {
   margin-top: vw(100);
-
-  @media (max-width: $br1) {
-    display: none;
-  }
 }
 </style>
