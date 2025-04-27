@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import type { TransitionProps } from 'vue'
 import HeroSection from '~/components/projects/HeroSection.vue'
 import { useProjectsStories } from '~/composables/stories/projectsStories'
 import { useProjectsStory } from '~/composables/stories/projectsStory'
+import { gsap } from '~/libs/gsap'
 import { pageTransition } from '~/transitions/base'
 
 definePageMeta({
@@ -56,6 +58,33 @@ const key = ref(0)
 watch(filteredProjects, () => {
   key.value++
 })
+
+const projectFilterTransition: TransitionProps = {
+  mode: 'out-in',
+  onEnter(el: HTMLElement, done) {
+    el.style.opacity = '0'
+
+    gsap.to(el, {
+      opacity: 1,
+      delay: 0.5,
+      duration: 0.5,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        document.documentElement.style.cursor = 'auto'
+        done()
+      },
+    })
+  },
+  onLeave(el: HTMLElement, done) {
+    document.documentElement.style.cursor = 'wait'
+    gsap.to(el, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.inOut',
+      onComplete: done,
+    })
+  },
+}
 </script>
 
 <template>
@@ -73,11 +102,13 @@ watch(filteredProjects, () => {
     <div v-else>
       <p>Unknown component: {{ story?.content?.component }}</p>
     </div>
-    <ProjectsList
-      :key="key"
-      :projects="filteredProjects"
-      :project-btn="story?.content?.view_project_btn"
-    />
+    <Transition v-bind="projectFilterTransition">
+      <ProjectsList
+        :key="key"
+        :projects="filteredProjects"
+        :project-btn="story?.content?.view_project_btn"
+      />
+    </Transition>
     <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
