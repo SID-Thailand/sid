@@ -70,7 +70,6 @@ onMounted(async () => {
 }
 
 .iterior-apart__img {
-  --offset: 0;
   width: 100%;
   max-width: 100%;
   height: auto;

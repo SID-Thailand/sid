@@ -72,7 +72,6 @@ const animate = () => {
       prev,
       {
         [prevPropertyToAnimate]: prevPropertyToAnimateValue,
-        '--offset': `-${height}`,
         duration,
         ease: 'none',
       },
