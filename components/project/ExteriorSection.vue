@@ -6,29 +6,70 @@ interface IProps {
   content: iCurrentProjectExterior
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const activeIdx = ref(0)
 
 const sliderRef = ref<HTMLUListElement | null>(null)
 const sliderContainerRef = ref<HTMLDivElement | null>(null)
+const isDesktop = ref(true)
 
-const onClick = (e: MouseEvent, idx: number) => {
-  if (idx === activeIdx.value) return
+const touchStartX = ref(0)
+const touchEndX = ref(0)
 
-  const target = e.currentTarget as HTMLElement
+const slideTo = (idx: number) => {
+  if (!sliderRef.value) return
 
-  const itemLeft = target.getBoundingClientRect().width
+  const target = sliderRef.value.children[idx] as HTMLElement
+  if (!target) return
+
+  const itemWidth = target.getBoundingClientRect().width
 
   gsap.to(sliderRef.value, {
     duration: 1,
-    x: -itemLeft * idx,
+    x: -itemWidth * idx,
     ease: 'power2.out',
   })
 
   activeIdx.value = idx
-  console.log(idx)
 }
+
+const onClick = (_e: MouseEvent, idx: number) => {
+  if (!isDesktop.value) {
+    console.log('mobile click')
+  } else {
+    if (idx === activeIdx.value) return
+    slideTo(idx)
+  }
+}
+
+const onTouchStart = (e: TouchEvent) => {
+  touchStartX.value = e.touches[0].clientX
+}
+
+const onTouchEnd = (e: TouchEvent) => {
+  touchEndX.value = e.changedTouches[0].clientX
+  handleSwipe()
+}
+
+const handleSwipe = () => {
+  const distance = touchEndX.value - touchStartX.value
+  if (Math.abs(distance) < 50) return
+
+  if (distance < 0 && activeIdx.value < props.content?.assets?.length - 1) {
+    slideTo(activeIdx.value + 1)
+  } else if (distance > 0 && activeIdx.value > 0) {
+    slideTo(activeIdx.value - 1)
+  }
+}
+
+onMounted(() => {
+  isDesktop.value = window.innerWidth > 860
+
+  window.addEventListener('resize', () => {
+    isDesktop.value = window.innerWidth > 860
+  })
+})
 </script>
 
 <template>
@@ -41,7 +82,12 @@ const onClick = (e: MouseEvent, idx: number) => {
         <p class="project-exterior__text">
           {{ content?.text }}
         </p>
-        <div ref="sliderContainerRef" class="project-exterior__slider">
+        <div
+          ref="sliderContainerRef"
+          class="project-exterior__slider"
+          @touchstart="onTouchStart"
+          @touchend="onTouchEnd"
+        >
           <ul ref="sliderRef" class="project-exterior__list">
             <li
               v-for="(item, idx) in content?.assets"
