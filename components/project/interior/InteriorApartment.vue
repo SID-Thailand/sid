@@ -86,8 +86,7 @@ defineProps<IProps>()
   position: relative;
 
   @media (min-width: $br1) {
-    max-width: vw(900);
-    width: 100%;
+    width: vw(900);
   }
 
   @media (max-width: $br1) {
@@ -108,16 +107,14 @@ defineProps<IProps>()
 }
 
 .interior-apart__img-list {
-  display: flex;
-  transform: translateY(calc(var(--progress) * -100%));
+  position: relative;
 
   @media (min-width: $br1) {
-    flex-direction: column;
-    row-gap: vw(40);
     width: 100%;
   }
 
   @media (max-width: $br1) {
+    display: flex;
     align-items: flex-start;
     min-width: max-content;
     gap: 16px;
@@ -126,7 +123,10 @@ defineProps<IProps>()
 
 .interior-apart__content {
   margin-top: vw(46);
-  width: 100%;
+
+  @media (min-width: $br1) {
+    width: vw(382);
+  }
 
   @media (max-width: $br1) {
     margin-top: 48px;

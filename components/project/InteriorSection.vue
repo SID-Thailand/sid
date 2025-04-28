@@ -17,68 +17,77 @@ const scrollerRef = ref<HTMLElement | null>(null)
 
 let st: ScrollTrigger | null = null
 
-const activeIdx = ref(0)
-
 const animate = () => {
   const scroller = scrollerRef.value as HTMLElement
 
-  const slidesWrapper = scroller.querySelector('.interior-apart__img-list')
-
-  const slides = slidesWrapper?.querySelectorAll('.iterior-apart__img')
-
-  const slidesHeight = slidesWrapper?.clientHeight
-
-  const firstSlide = slides?.[0] as HTMLElement
-
-  const firstSlideHeight = firstSlide.clientHeight
+  const slides = gsap.utils.toArray('[data-image]') as HTMLElement[]
 
   const tl = gsap.timeline()
 
-  const duration = slides?.length * 0.4
+  const duration = 0.5
 
-  tl.to(
-    slidesWrapper,
-    {
-      y: -slidesHeight + firstSlideHeight,
-      duration,
-      ease: 'none',
-    },
-    0
-  )
-
-  slides?.forEach((slide, idx) => {
-    const current = slide as HTMLElement
-    const prev = slides?.[idx - 1] as HTMLElement
-
-    const delayIndex = idx - 1
-
-    const slideWidth = current.clientWidth
-
-    if (idx === 0) {
+  slides.forEach((slide, i) => {
+    if (i === 0) {
+      gsap.set(slide, {
+        width: '100%',
+        height: 'auto',
+      })
       return
     }
 
+    const delayIdx = i - 1
+
+    const aspect = slide.getAttribute('aspect')
+
+    const propertyToAnimate = aspect === 'landscape' ? 'width' : 'height'
+
+    const propertyToAnimateValue =
+      propertyToAnimate === 'width' ? '100%' : '90vh'
+
     tl.to(
-      current,
+      slide,
       {
-        width: slideWidth * 3,
-        duration: idx === 0 ? 0 : 0.5,
+        [propertyToAnimate]: propertyToAnimateValue,
+        duration,
         ease: 'none',
       },
-      delayIndex * 0.6
+      duration * delayIdx
     )
 
-    if (prev) {
-      tl.to(
-        prev,
-        {
-          duration: 0.5,
-          width: slideWidth,
-          ease: 'none',
-        },
-        delayIndex * 0.6
-      )
+    const prev = slides[i - 1] as HTMLElement
+
+    if (!prev) {
+      return
     }
+
+    const prevAspect = prev?.getAttribute('aspect')
+    const prevPropertyToAnimate =
+      prevAspect === 'landscape' ? 'width' : 'height'
+    const prevPropertyToAnimateValue =
+      prevPropertyToAnimate === 'width' ? '33%' : '25vh'
+
+    const height = prev?.getAttribute('original-height')
+
+    tl.to(
+      prev,
+      {
+        [prevPropertyToAnimate]: prevPropertyToAnimateValue,
+        '--offset': `-${height}`,
+        duration,
+        ease: 'none',
+      },
+      duration * delayIdx
+    )
+
+    tl.to(
+      prev.parentElement,
+      {
+        marginTop: `-${height}`,
+        duration,
+        ease: 'none',
+      },
+      duration * delayIdx
+    )
   })
 
   st = ScrollTrigger.create({
@@ -91,7 +100,7 @@ const animate = () => {
 }
 
 onMounted(async () => {
-  await delayPromise(100)
+  await delayPromise(500)
   animate()
 })
 
@@ -133,7 +142,6 @@ onUnmounted(() => {
   background-color: var(--neutral-100);
   color: var(--basic-black);
   padding-top: vw(40);
-  padding-bottom: vw(200);
 
   @media (max-width: $br1) {
     padding-top: 24px;
@@ -196,7 +204,7 @@ onUnmounted(() => {
 }
 
 .project-interior__apartments-wrapper {
-  height: 500vh;
+  height: 700vh;
   position: relative;
 }
 

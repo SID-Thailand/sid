@@ -56,8 +56,11 @@ const onSelectApartment = (apartment: iApartment) => {
 }
 
 .interior-aparts__dropdown {
-  width: 100%;
+  width: vw(382);
   position: relative;
+  @media (max-width: $br1) {
+    width: 100%;
+  }
 }
 
 .fade-enter-active,
