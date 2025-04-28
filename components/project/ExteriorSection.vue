@@ -96,7 +96,7 @@ const onClick = (e: MouseEvent, idx: number) => {
   @media (max-width: $br1) {
     margin-top: 48px;
     flex-direction: column;
-    height: 100vh;
+    height: auto;
   }
 }
 
@@ -114,7 +114,6 @@ const onClick = (e: MouseEvent, idx: number) => {
 
 .project-exterior__slider {
   align-self: flex-end;
-
   padding-right: vw(40);
   padding-left: vw(40);
   margin-left: vw(-40);
