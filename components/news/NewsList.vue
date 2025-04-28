@@ -155,12 +155,6 @@ const viewMoreHandler = () => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
-  @media (max-width: $br3) {
-    padding-right: 16px;
-    padding-left: 16px;
-    margin-left: -16px;
-  }
 }
 
 .news-list__list {
