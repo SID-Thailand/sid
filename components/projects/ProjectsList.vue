@@ -119,6 +119,7 @@ const onClick = () => {
   position: relative;
   width: 100%;
   height: 100svh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
