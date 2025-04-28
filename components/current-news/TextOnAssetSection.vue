@@ -21,25 +21,20 @@ defineProps<iProps>()
 .text-asset {
   position: relative;
   margin: vw(100) 0;
+  aspect-ratio: 16 / 9;
 
   @media (max-width: $br1) {
     margin: 48px 0;
   }
 }
+
 .text-asset__img {
   display: block;
   width: 100%;
-  height: vw(752);
+  height: 100%;
   object-fit: cover;
-
-  @media (max-width: $br1) {
-    height: size(752, 229);
-  }
-
-  @media (max-width: $br4) {
-    height: 229px;
-  }
 }
+
 .text-asset__text {
   position: absolute;
   top: 50%;

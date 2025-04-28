@@ -26,6 +26,10 @@ defineProps<iProps>()
 
   @media (max-width: $br1) {
     max-width: 70%;
+
+    &:has(img) {
+      max-width: 100%;
+    }
   }
 
   h1,
@@ -88,12 +92,9 @@ defineProps<iProps>()
     object-fit: cover;
 
     @media (max-width: $br1) {
-      height: size(448, 229);
+      width: 100%;
+      height: auto;
       margin: 0 auto;
-    }
-
-    @media (max-width: $br4) {
-      height: 229px;
     }
   }
 
