@@ -107,6 +107,8 @@ const viewMoreHandler = () => {
 </template>
 
 <style lang="scss">
+@use '~/assets/styles/ui/card-hover' as *;
+
 .news-list {
   background: var(--neutral-600);
   color: var(--basic-white);
@@ -151,34 +153,52 @@ const viewMoreHandler = () => {
 }
 
 .news-list__list-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  @media (min-width: $br1) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  @media (max-width: $br1) {
+    width: 100vw;
+    overflow-x: auto;
+    padding-right: 32px;
+    padding-left: 32px;
+    margin-left: -32px;
+  }
+
+  @media (max-width: $br3) {
+    padding-right: 16px;
+    padding-left: 16px;
+    margin-left: -16px;
+  }
 }
 
 .news-list__list {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(4, 1fr);
-  gap: vw(20);
-  grid-auto-flow: row;
+  @media (min-width: $br1) {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    gap: vw(20);
+    grid-auto-flow: row;
+  }
 
   @media (max-width: $br1) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    width: 100%;
-  }
-  @media (max-width: $br3) {
-    grid-template-columns: 1fr;
+    display: flex;
+    align-items: stretch;
+    min-width: max-content;
+    column-gap: 16px;
   }
 }
 
 .news-list__card {
-  width: 100%;
-  grid-column: span 1;
-  min-width: 0;
-  min-height: 0;
+  @media (max-width: $br1) {
+    width: 344px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .news-list__link {
@@ -190,15 +210,11 @@ const viewMoreHandler = () => {
   padding: vw(16);
   height: 100%;
   flex-grow: 1;
-  width: 100%;
+  @include card-hover('.news-list__img');
 
   @media (max-width: $br1) {
     padding: 16px;
   }
-}
-
-.news-list__link-wrapper {
-  width: 100%;
 }
 
 .news-list__img {
@@ -208,9 +224,7 @@ const viewMoreHandler = () => {
 
   @media (max-width: $br1) {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-    object-fit: cover;
+    height: 268px;
   }
 }
 
@@ -242,6 +256,7 @@ const viewMoreHandler = () => {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+
   @media (max-width: $br1) {
     margin-top: 8px;
     font-size: 24px;
