@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { gsap } from '~/libs/gsap'
 import type { iCurrentProjectExterior } from '~/types/currentProjectTypes'
+import type { iImage } from '~/types/story'
 
 interface IProps {
   content: iCurrentProjectExterior
@@ -13,6 +14,8 @@ const activeIdx = ref(0)
 const sliderRef = ref<HTMLUListElement | null>(null)
 const sliderContainerRef = ref<HTMLDivElement | null>(null)
 const isDesktop = ref(true)
+const isFullImageModalOpened = ref(false)
+const activeImage = ref<iImage | null>(null)
 
 const touchStartX = ref(0)
 const touchEndX = ref(0)
@@ -34,9 +37,10 @@ const slideTo = (idx: number) => {
   activeIdx.value = idx
 }
 
-const onClick = (_e: MouseEvent, idx: number) => {
+const onClick = (_e: MouseEvent, img: iImage, idx: number) => {
   if (!isDesktop.value) {
-    console.log('mobile click')
+    isFullImageModalOpened.value = true
+    activeImage.value = img
   } else {
     if (idx === activeIdx.value) return
     slideTo(idx)
@@ -61,6 +65,11 @@ const handleSwipe = () => {
   } else if (distance > 0 && activeIdx.value > 0) {
     slideTo(activeIdx.value - 1)
   }
+}
+
+const handleCloseFullImageModal = () => {
+  isFullImageModalOpened.value = false
+  activeImage.value = null
 }
 
 onMounted(() => {
@@ -94,7 +103,7 @@ onMounted(() => {
               :key="idx"
               class="project-exterior__item"
               :class="{ 'project-exterior__item--active': idx === activeIdx }"
-              @click="onClick($event, idx)"
+              @click="onClick($event, item, idx)"
             >
               <CustomImage
                 :src="item?.filename"
@@ -106,10 +115,21 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <Modal
+      :is-open="isFullImageModalOpened"
+      modal-window-class="project-exterior__modal-wrapper"
+      @close="handleCloseFullImageModal"
+    >
+      <CustomImage
+        :src="activeImage?.filename"
+        :alt="activeImage?.alt"
+        class="project-exterior__modal-img"
+      />
+    </Modal>
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .project-exterior {
   position: relative;
   padding-top: vw(40);
@@ -220,5 +240,19 @@ onMounted(() => {
   object-fit: cover;
   width: 100%;
   height: 100%;
+}
+
+.project-exterior__modal-wrapper {
+  max-height: 100svh;
+  height: 100%;
+  width: 100%;
+  max-width: 100vw !important;
+}
+
+.project-exterior__modal-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
