@@ -93,12 +93,8 @@ defineProps<iProps>()
 
     @media (max-width: $br1) {
       width: 100%;
-      height: size(448, 229);
+      height: auto;
       margin: 0 auto;
-    }
-
-    @media (max-width: $br4) {
-      height: 229px;
     }
   }
 
