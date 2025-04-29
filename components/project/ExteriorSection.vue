@@ -26,7 +26,8 @@ const slideTo = (idx: number) => {
   const target = sliderRef.value.children[idx] as HTMLElement
   if (!target) return
 
-  const itemWidth = target.getBoundingClientRect().width
+  const gap = parseFloat(getComputedStyle(sliderRef.value).gap) || 0
+  const itemWidth = target.getBoundingClientRect().width + gap
 
   gsap.to(sliderRef.value, {
     duration: 1,
