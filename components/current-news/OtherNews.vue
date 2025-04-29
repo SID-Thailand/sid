@@ -8,61 +8,42 @@ interface iProps {
   title?: string
 }
 
-const props = defineProps<iProps>()
-
-const isMobile = useMediaQuery('(max-width: 860px)')
-
-const maxCards = computed(() => {
-  return isMobile.value ? 4 : 8
-})
-
-const offset = ref(0)
-
-const allNews = computed(() => props.news ?? [])
-
-const slicedNews = computed(() => {
-  return allNews.value.slice(0, maxCards.value + offset.value)
-})
-
-const viewMoreHandler = () => {
-  offset.value += maxCards.value
-}
+defineProps<iProps>()
 </script>
 
 <template>
-  <div class="news-list">
-    <div class="news-list__wrapper container">
-      <h2 v-if="title" class="news-list__main-title">
+  <div class="other-news">
+    <div class="other-news__wrapper container">
+      <h2 v-if="title" class="other-news__main-title">
         {{ title }}
       </h2>
-      <div class="news-list__list-wrapper">
-        <ul class="news-list__list">
+      <div class="other-news__list-wrapper">
+        <ul class="other-news__list">
           <li
-            v-for="(currNews, idx) in allNews"
-            v-show="slicedNews.includes(currNews)"
+            v-for="(currNews, idx) in news"
             :key="idx"
-            class="news-list__card"
+            class="other-news__card"
           >
-            <NuxtLink :to="`/${currNews?.full_slug}`" class="news-list__link">
-              <div class="news-list__link-wrapper">
+            <NuxtLink :to="`/${currNews?.full_slug}`" class="other-news__link">
+              <div class="other-news__link-wrapper">
                 <CustomImage
                   :src="currNews?.content?.asset?.filename"
                   :alt="currNews?.content?.asset?.alt"
-                  class="news-list__img"
+                  class="other-news__img"
                 />
-                <div class="news-list__info">
-                  <p class="news-list__category">
+                <div class="other-news__info">
+                  <p class="other-news__category">
                     {{ currNews?.content?.category?.content?.name }}
                   </p>
-                  <h3 class="news-list__title">
+                  <h3 class="other-news__title">
                     {{ currNews?.content?.title }}
                   </h3>
-                  <p class="news-list__date">
+                  <p class="other-news__date">
                     {{ formatDate(currNews?.first_published_at) }}
                   </p>
                 </div>
               </div>
-              <div class="news-list__plus">
+              <div class="other-news__plus">
                 <svg
                   width="24"
                   height="24"
@@ -93,13 +74,8 @@ const viewMoreHandler = () => {
           </li>
         </ul>
 
-        <Button
-          v-if="allNews.length > maxCards && allNews.length > slicedNews.length"
-          class="news-list__btn"
-          type="button"
-          @click="viewMoreHandler"
-        >
-          <span>{{ 'MORE' }}</span>
+        <Button tag="nuxt-link" href="/news" class="other-news__btn">
+          <span>ALL NEWS</span>
         </Button>
       </div>
     </div>
@@ -109,7 +85,7 @@ const viewMoreHandler = () => {
 <style lang="scss">
 @use '~/assets/styles/ui/card-hover' as *;
 
-.news-list {
+.other-news {
   background: var(--neutral-600);
   color: var(--basic-white);
   padding-top: vw(100);
@@ -121,7 +97,7 @@ const viewMoreHandler = () => {
   }
 }
 
-.news-list__wrapper {
+.other-news__wrapper {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -132,7 +108,7 @@ const viewMoreHandler = () => {
   }
 }
 
-.news-list__main-title {
+.other-news__main-title {
   font-size: vw(68);
   line-height: 1em;
   text-transform: uppercase;
@@ -152,39 +128,56 @@ const viewMoreHandler = () => {
   }
 }
 
-.news-list__list-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.news-list__list {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(4, 1fr);
-  gap: vw(20);
-  grid-auto-flow: row;
+.other-news__list-wrapper {
+  @media (min-width: $br1) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
 
   @media (max-width: $br1) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    width: 100%;
+    width: 100vw;
+    overflow-x: auto;
+    padding-right: 32px;
+    padding-left: 32px;
+    margin-left: -32px;
   }
 
   @media (max-width: $br3) {
-    grid-template-columns: 1fr;
+    padding-right: 16px;
+    padding-left: 16px;
+    margin-left: -16px;
   }
 }
 
-.news-list__card {
-  width: 100%;
-  grid-column: span 1;
-  min-width: 0;
-  min-height: 0;
+.other-news__list {
+  @media (min-width: $br1) {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    gap: vw(20);
+    grid-auto-flow: row;
+  }
+
+  @media (max-width: $br1) {
+    display: flex;
+    align-items: stretch;
+    min-width: max-content;
+    column-gap: 16px;
+  }
 }
 
-.news-list__link {
+.other-news__card {
+  @media (max-width: $br1) {
+    width: 300px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.other-news__link {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -193,32 +186,25 @@ const viewMoreHandler = () => {
   padding: vw(16);
   height: 100%;
   flex-grow: 1;
-  width: 100%;
-  @include card-hover('.news-list__img');
+  @include card-hover('.other-news__img');
 
   @media (max-width: $br1) {
     padding: 16px;
   }
 }
 
-.news-list__link-wrapper {
-  width: 100%;
-}
-
-.news-list__img {
+.other-news__img {
   width: 100%;
   height: vw(292);
   object-fit: cover;
 
   @media (max-width: $br1) {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-    object-fit: cover;
+    height: 268px;
   }
 }
 
-.news-list__info {
+.other-news__info {
   margin-top: vw(16);
 
   @media (max-width: $br1) {
@@ -226,17 +212,18 @@ const viewMoreHandler = () => {
   }
 }
 
-.news-list__category {
+.other-news__category {
   color: var(--neutral-300);
   text-transform: lowercase;
   @include text-t4;
 }
 
-.news-list__title {
+.other-news__title {
   font-size: vw(24);
   text-transform: uppercase;
   line-height: 1em;
   margin-top: vw(4);
+  @include med;
   max-width: 100%;
   display: -webkit-box;
   max-width: 400px;
@@ -245,7 +232,6 @@ const viewMoreHandler = () => {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  @include med;
 
   @media (max-width: $br1) {
     margin-top: 8px;
@@ -254,7 +240,7 @@ const viewMoreHandler = () => {
   }
 }
 
-.news-list__date {
+.other-news__date {
   font-size: vw(16);
   line-height: 1.25em;
   text-transform: uppercase;
@@ -268,7 +254,7 @@ const viewMoreHandler = () => {
   }
 }
 
-.news-list__plus {
+.other-news__plus {
   display: block;
   width: vw(22);
   height: vw(22);
@@ -279,7 +265,6 @@ const viewMoreHandler = () => {
     width: 20px;
     height: 20px;
   }
-
   svg {
     display: block;
     width: 100%;
@@ -287,11 +272,15 @@ const viewMoreHandler = () => {
   }
 }
 
-.news-list__btn {
+.other-news__btn {
+  display: block;
   margin-top: vw(100);
 
   @media (max-width: $br1) {
-    margin-top: 60px;
+    margin: 0 auto;
+    margin-top: 40px;
+    width: fit-content;
+    padding: 25px 20px !important;
   }
 }
 </style>

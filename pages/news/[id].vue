@@ -21,13 +21,17 @@ const content = computed(() => story.value?.content)
     />
     <DynamicBlockRenderer :blocks="content?.body" />
     <FormSection :background="content?.form_bg" :title="content?.title" />
-    <NewsList :news="news" class="news-list" title="Other news" />
+    <CurrentNewsOtherNews
+      :news="news"
+      class="current-news-list"
+      title="Other news"
+    />
     <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
 
 <style scoped lang="scss">
-.news-list {
+.current-news-list {
   background-color: var(--basic-black);
 }
 </style>
