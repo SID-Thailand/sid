@@ -11,8 +11,9 @@ defineProps<IProps>()
 
 const activeIdx = ref(0)
 
-const sliderRef = ref<HTMLUListElement | null>(null)
-const sliderContainerRef = ref<HTMLDivElement | null>(null)
+const sliderRef = templateRef('sliderRef')
+const sliderContainerRef = templateRef('sliderContainerRef')
+
 const isDesktop = ref(true)
 const isFullImageModalOpened = ref(false)
 const activeImage = ref<iImage | null>(null)
