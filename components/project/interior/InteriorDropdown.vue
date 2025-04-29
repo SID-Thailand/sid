@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ChevronDown, LucidePlus } from 'lucide-vue-next'
-import { gsap } from '~/libs/gsap'
 import type { iApartment } from '~/types/currentProjectTypes'
+import { scrollTo } from '~/utils/scrollTo'
 
 interface IProps {
   apartmentsList: iApartment[]
@@ -25,22 +25,13 @@ const handleToggleMenu = () => {
   isOpen.value = !isOpen.value
 }
 
-const isMobile = useMediaQuery('(max-width: 560px)')
-
 watch(isOpen, val => {
-  if (val && isMobile.value) {
+  if (val) {
     const top = el.value?.getBoundingClientRect().top
 
-    const scrollTop = getScrollEl().scrollTop + top - 20
-
-    gsap.to(getScrollEl(), {
-      duration: 0.8,
-      scrollTop,
-      ease: 'power2.out',
-      onComplete: () => {
-        window.escroll.disabled = true
-        getScrollEl().classList.add('full-page')
-      },
+    scrollTo(top - 20, false, () => {
+      window.escroll.disabled = true
+      getScrollEl().classList.add('full-page')
     })
   } else {
     window.escroll.disabled = false

@@ -40,7 +40,12 @@ const onLoad = () => {
   }
 }
 
+const isMobile = useMediaQuery('(max-width: 860px)')
+
 onMounted(async () => {
+  if (isMobile.value) {
+    return
+  }
   await nextTick()
 
   imagesLoaded($el.value, onLoad)
@@ -63,9 +68,11 @@ onMounted(async () => {
   max-width: 100%;
   transform-origin: left top;
 
-  &:not(:first-child) {
-    .iterior-apart__img {
-      margin-top: 32px;
+  @media (min-width: $br1) {
+    &:not(:first-child) {
+      .iterior-apart__img {
+        margin-top: 32px;
+      }
     }
   }
 }
@@ -75,5 +82,9 @@ onMounted(async () => {
   max-width: 100%;
   height: auto;
   max-height: 90vh;
+
+  @media (max-width: $br1) {
+    width: auto;
+  }
 }
 </style>

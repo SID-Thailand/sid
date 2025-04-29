@@ -2,6 +2,7 @@
 import type { iCurrentProjectInterior } from '~/types/currentProjectTypes'
 import { ScrollTrigger, gsap } from '~/libs/gsap'
 import { delayPromise } from '@emotionagency/utils'
+import { scrollTo } from '~/utils/scrollTo'
 
 interface IProps {
   content: iCurrentProjectInterior
@@ -31,16 +32,30 @@ const height = computed(() => {
   return (selectedAppart.value?.assets?.length || 0) * 100 + 'vh'
 })
 
+const onEnter = () => {
+  document.documentElement.classList.add('header-disabled')
+}
+
+const onLeave = () => {
+  document.documentElement.classList.remove('header-disabled')
+}
+
 const animate = () => {
   const scroller = scrollerRef.value as HTMLElement
-
   const slides = gsap.utils.toArray('[data-image]') as HTMLElement[]
 
-  const tl = gsap.timeline()
+  if (!scroller || slides.length === 0) return
 
+  const tl = gsap.timeline()
   const duration = 0.5
 
   slides.forEach((slide, i) => {
+    const aspect = slide.getAttribute('aspect')
+    const isLandscape = aspect === 'landscape'
+
+    const dimension = isLandscape ? 'width' : 'height'
+    const expandedValue = isLandscape ? '100%' : '90vh'
+
     if (i === 0) {
       gsap.set(slide, {
         width: '100%',
@@ -49,72 +64,67 @@ const animate = () => {
       return
     }
 
-    const delayIdx = i - 1
-
-    const aspect = slide.getAttribute('aspect')
-
-    const propertyToAnimate = aspect === 'landscape' ? 'width' : 'height'
-
-    const propertyToAnimateValue =
-      propertyToAnimate === 'width' ? '100%' : '90vh'
+    const delay = duration * (i - 1)
 
     tl.to(
       slide,
       {
-        [propertyToAnimate]: propertyToAnimateValue,
+        [dimension]: expandedValue,
         duration,
         ease: 'none',
       },
-      duration * delayIdx
+      delay
     )
 
-    const prev = slides[i - 1] as HTMLElement
+    const prevSlide = slides[i - 1]
+    if (!prevSlide) return
 
-    if (!prev) {
-      return
-    }
-
-    const prevAspect = prev?.getAttribute('aspect')
-    const prevPropertyToAnimate =
-      prevAspect === 'landscape' ? 'width' : 'height'
-    const prevPropertyToAnimateValue =
-      prevPropertyToAnimate === 'width' ? '33%' : '25vh'
-
-    const height = prev?.getAttribute('original-height')
+    const prevAspect = prevSlide.getAttribute('aspect')
+    const prevIsLandscape = prevAspect === 'landscape'
+    const prevDimension = prevIsLandscape ? 'width' : 'height'
+    const prevCollapsedValue = prevIsLandscape ? '33%' : '25vh'
+    const originalHeight = prevSlide.getAttribute('original-height') ?? '0'
 
     tl.to(
-      prev,
+      prevSlide,
       {
-        [prevPropertyToAnimate]: prevPropertyToAnimateValue,
+        [prevDimension]: prevCollapsedValue,
         duration,
         ease: 'none',
       },
-      duration * delayIdx
+      delay
     )
 
     tl.to(
-      prev.parentElement,
+      prevSlide.parentElement,
       {
-        marginTop: `-${height}`,
+        marginTop: `-${originalHeight}`,
         duration,
         ease: 'none',
       },
-      duration * delayIdx
+      delay
     )
   })
 
   st = ScrollTrigger.create({
     trigger: scroller,
-    start: () => 'top+=5% top',
-    end: () => 'bottom-=2% bottom',
+    start: 'top+=5% top',
+    end: 'bottom-=2% bottom',
     scrub: true,
+    onEnter,
+    onEnterBack: onEnter,
+    onLeaveBack: onLeave,
+    onLeave,
     animation: tl,
   })
 }
 
+const isMobile = useMediaQuery('(max-width: 860px)')
+
 watch(
   selectedAppart,
   async () => {
+    if (!import.meta.client || isMobile.value) return
     st?.kill()
     await delayPromise(500)
 
@@ -122,6 +132,13 @@ watch(
   },
   { immediate: true }
 )
+
+watch(selectedAppart, () => {
+  if (!import.meta.client) return
+  const top = scrollerRef.value?.getBoundingClientRect().top
+
+  scrollTo(top, true)
+})
 
 onUnmounted(() => {
   st?.kill()
@@ -232,17 +249,21 @@ onUnmounted(() => {
 }
 
 .project-interior__apartments-wrapper {
-  height: 700vh;
-  height: var(--height);
   position: relative;
+  @media (min-width: $br1) {
+    height: 700vh;
+    height: var(--height);
+  }
 }
 
 .project-interior__apartments {
   margin-top: vw(180);
   padding-top: vw(20);
-  height: 100vh;
-  position: sticky;
-  top: 0;
+  @media (min-width: $br1) {
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
   @media (max-width: $br1) {
     margin-top: 60px;
     padding-top: 0;
