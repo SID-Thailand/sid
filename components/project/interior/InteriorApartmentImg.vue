@@ -5,6 +5,7 @@ import type { iImage } from '~/types/story'
 defineProps<{
   img: iImage
   idx: number
+  active: boolean
 }>()
 
 const $el = ref<HTMLSpanElement>()
@@ -53,7 +54,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <li ref="$el" class="interior-apart__img-item" data-image-wrapper>
+  <li
+    ref="$el"
+    class="interior-apart__img-item"
+    :class="{
+      'interior-apart__img-item--active': active,
+    }"
+    data-image-wrapper
+  >
     <CustomImage
       data-image
       :src="img?.filename"
@@ -75,6 +83,15 @@ onMounted(async () => {
       }
     }
   }
+
+  @media (max-width: $br1) {
+    width: auto;
+    height: 50%;
+    transition: height 1.5s $easing;
+    &--active {
+      height: 100%;
+    }
+  }
 }
 
 .iterior-apart__img {
@@ -85,6 +102,7 @@ onMounted(async () => {
 
   @media (max-width: $br1) {
     width: auto;
+    height: 100%;
   }
 }
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { gsap } from '~/libs/gsap'
 import type { iApartment } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -6,6 +7,48 @@ interface IProps {
 }
 
 defineProps<IProps>()
+
+const sliderRef = ref<HTMLUListElement | null>(null)
+const containerRef = ref<HTMLDivElement | null>(null)
+const activeIdx = ref(0)
+
+const slideTo = (idx: number) => {
+  if (!sliderRef.value || !containerRef.value) return
+
+  const slider = sliderRef.value
+  const target = slider.children[idx] as HTMLElement
+  if (!target) return
+
+  const prevSlide = slider.children[activeIdx.value] as HTMLElement
+
+  const direction = idx > activeIdx.value ? 1 : -1
+
+  const prevSlideWidth = prevSlide.getBoundingClientRect().width
+
+  const tl = gsap.timeline()
+
+  const widthOffset = direction === 1 ? prevSlideWidth / 2 : 0
+
+  const offsetLeft = target.offsetLeft - widthOffset
+  tl.to(slider, {
+    x: -offsetLeft,
+    duration: 1.5,
+    ease: 'power2.out',
+  })
+
+  activeIdx.value = idx
+}
+
+useSwipe(containerRef, {
+  threshold: 50,
+  onSwipeEnd: (_, direction) => {
+    if (direction === 'left') {
+      slideTo(activeIdx.value + 1)
+    } else if (direction === 'right') {
+      slideTo(activeIdx.value - 1)
+    }
+  },
+})
 </script>
 
 <template>
@@ -16,13 +59,15 @@ defineProps<IProps>()
     <p class="interior-apart__desc interior-apart__desc--mob">
       {{ apartment?.price }}
     </p>
-    <div class="interior-apart__img-list-wrapper">
-      <ul class="interior-apart__img-list">
+    <div ref="containerRef" class="interior-apart__img-list-wrapper">
+      <ul ref="sliderRef" class="interior-apart__img-list">
         <ProjectInteriorApartmentImg
           v-for="(img, index) in apartment.assets"
           :key="img._uid"
           :img="img"
           :idx="index"
+          :active="activeIdx === index"
+          @click="slideTo(index)"
         />
       </ul>
     </div>
@@ -118,6 +163,7 @@ defineProps<IProps>()
     align-items: flex-start;
     min-width: max-content;
     gap: 16px;
+    height: 222px;
   }
 }
 
@@ -130,6 +176,7 @@ defineProps<IProps>()
 
   @media (max-width: $br1) {
     margin-top: 48px;
+    width: 100%;
   }
 }
 

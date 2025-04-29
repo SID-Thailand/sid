@@ -7,7 +7,7 @@ interface IProps {
   content: iCurrentProjectExterior
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const activeIdx = ref(0)
 
@@ -16,9 +16,6 @@ const sliderContainerRef = ref<HTMLDivElement | null>(null)
 const isDesktop = ref(true)
 const isFullImageModalOpened = ref(false)
 const activeImage = ref<iImage | null>(null)
-
-const touchStartX = ref(0)
-const touchEndX = ref(0)
 
 const slideTo = (idx: number) => {
   if (!sliderRef.value) return
@@ -48,25 +45,16 @@ const onClick = (_e: MouseEvent, img: iImage, idx: number) => {
   }
 }
 
-const onTouchStart = (e: TouchEvent) => {
-  touchStartX.value = e.touches[0].clientX
-}
-
-const onTouchEnd = (e: TouchEvent) => {
-  touchEndX.value = e.changedTouches[0].clientX
-  handleSwipe()
-}
-
-const handleSwipe = () => {
-  const distance = touchEndX.value - touchStartX.value
-  if (Math.abs(distance) < 50) return
-
-  if (distance < 0 && activeIdx.value < props.content?.assets?.length - 1) {
-    slideTo(activeIdx.value + 1)
-  } else if (distance > 0 && activeIdx.value > 0) {
-    slideTo(activeIdx.value - 1)
-  }
-}
+useSwipe(sliderContainerRef, {
+  threshold: 50,
+  onSwipeEnd: (_, direction) => {
+    if (direction === 'left') {
+      slideTo(activeIdx.value + 1)
+    } else if (direction === 'right') {
+      slideTo(activeIdx.value - 1)
+    }
+  },
+})
 
 const handleCloseFullImageModal = () => {
   isFullImageModalOpened.value = false
@@ -92,12 +80,7 @@ onMounted(() => {
         <p class="project-exterior__text">
           {{ content?.text }}
         </p>
-        <div
-          ref="sliderContainerRef"
-          class="project-exterior__slider"
-          @touchstart="onTouchStart"
-          @touchend="onTouchEnd"
-        >
+        <div ref="sliderContainerRef" class="project-exterior__slider">
           <ul ref="sliderRef" class="project-exterior__list">
             <li
               v-for="(item, idx) in content?.assets"
@@ -209,6 +192,7 @@ onMounted(() => {
   @media (max-width: $br1) {
     align-items: flex-start;
     gap: 16px;
+    height: 285px;
   }
 }
 
