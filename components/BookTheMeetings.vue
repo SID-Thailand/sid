@@ -2,6 +2,7 @@
 import type { iCTA } from '~/types/story'
 import { LucideArrowUpRight } from 'lucide-vue-next'
 import { gsap, ScrollTrigger } from '~/libs/gsap'
+import { delayPromise } from '@emotionagency/utils'
 
 interface IProps {
   cta: iCTA
@@ -45,8 +46,9 @@ onMounted(() => {
   animate()
 })
 
-onBeforeUnmount(() => {
+onBeforeUnmount(async () => {
   if (st.value) {
+    await delayPromise(1500)
     st.value.kill()
   }
 })
