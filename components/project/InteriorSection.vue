@@ -7,7 +7,7 @@ interface IProps {
   content: iCurrentProjectInterior
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const $el = ref<HTMLElement | null>(null)
 
@@ -16,6 +16,20 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
 const scrollerRef = ref<HTMLElement | null>(null)
 
 let st: ScrollTrigger | null = null
+
+const apparts = computed(() => {
+  return props.content?.apartments
+})
+
+const selectedAppart = reactiveComputed(() => {
+  return {
+    value: apparts?.value?.[0],
+  }
+})
+
+const height = computed(() => {
+  return (selectedAppart.value?.assets?.length || 0) * 100 + 'vh'
+})
 
 const animate = () => {
   const scroller = scrollerRef.value as HTMLElement
@@ -98,10 +112,16 @@ const animate = () => {
   })
 }
 
-onMounted(async () => {
-  await delayPromise(500)
-  animate()
-})
+watch(
+  selectedAppart,
+  async () => {
+    st?.kill()
+    await delayPromise(500)
+
+    animate()
+  },
+  { immediate: true }
+)
 
 onUnmounted(() => {
   st?.kill()
@@ -126,9 +146,18 @@ onUnmounted(() => {
           />
         </div>
       </div>
-      <div ref="scrollerRef" class="project-interior__apartments-wrapper">
+      <div
+        ref="scrollerRef"
+        class="project-interior__apartments-wrapper"
+        :style="{
+          '--height': `${height}`,
+        }"
+      >
         <div class="project-interior__apartments">
-          <ProjectInteriorApartments :apartments="content?.apartments" />
+          <ProjectInteriorApartments
+            v-model="selectedAppart.value"
+            :apartments="apparts"
+          />
         </div>
       </div>
     </div>
@@ -204,6 +233,7 @@ onUnmounted(() => {
 
 .project-interior__apartments-wrapper {
   height: 700vh;
+  height: var(--height);
   position: relative;
 }
 

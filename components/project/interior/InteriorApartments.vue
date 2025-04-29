@@ -5,14 +5,12 @@ interface IProps {
   apartments: iApartment[]
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
-const { selectedApartment, handleSelectApartment } = useApartments(
-  props.apartments
-)
+const selectedApartment = defineModel<iApartment>()
 
 const onSelectApartment = (apartment: iApartment) => {
-  handleSelectApartment(apartment)
+  selectedApartment.value = apartment
 }
 </script>
 

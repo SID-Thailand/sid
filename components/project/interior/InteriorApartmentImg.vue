@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import imagesLoaded from 'imagesloaded'
 import type { iImage } from '~/types/story'
 
 defineProps<{
@@ -32,7 +33,7 @@ const scaleImageByWidthAndHeight = (img: HTMLImageElement) => {
   }
 }
 
-const onResize = () => {
+const onLoad = () => {
   const img = $el.value?.querySelector('img') as HTMLImageElement
   if (img) {
     scaleImageByWidthAndHeight(img)
@@ -42,7 +43,7 @@ const onResize = () => {
 onMounted(async () => {
   await nextTick()
 
-  onResize()
+  imagesLoaded($el.value, onLoad)
 })
 </script>
 
