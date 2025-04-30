@@ -123,6 +123,7 @@ const onSubmit = () => {
 .form {
   position: relative;
   width: 100%;
+  height: 100%;
 }
 
 .form__wrapper {

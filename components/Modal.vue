@@ -1,6 +1,7 @@
 <script setup lang="ts">
 interface IProps {
   isOpen: boolean
+  modalWindowClass?: string
 }
 const props = defineProps<IProps>()
 const emit = defineEmits(['close'])
@@ -27,7 +28,7 @@ watch(
             @click="emit('close')"
           />
 
-          <HeadlessDialogWindow class="modal__wrapper">
+          <HeadlessDialogWindow :class="['modal__wrapper', modalWindowClass]">
             <button
               type="button"
               class="modal__close-btn"
@@ -73,7 +74,6 @@ watch(
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  height: fit-content;
   max-height: 100svh;
   overflow: auto;
   max-width: vw(555);

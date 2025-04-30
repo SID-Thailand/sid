@@ -1,13 +1,12 @@
 import type { iCTA, iImage, iNewsCategory } from './story'
 
-// export type iNewsBody =
-
 export interface iCurrentNewsContent {
-  // body: iNewsBody[]
+  body: any[]
   asset: iImage
   component: string
   cta: iCTA
   category: iNewsCategory
   form_title: string
+  form_bg: iImage
   title: string
 }

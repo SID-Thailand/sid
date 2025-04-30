@@ -21,4 +21,7 @@ export interface iContactContent {
   cta: iCTA
   title: string
   contacts: iContact[]
+  form_bg: iImage
+  form_text: string
+  form_title: string
 }

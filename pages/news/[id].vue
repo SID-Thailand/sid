@@ -1,33 +1,44 @@
 <script setup lang="ts">
+import FormSection from '~/components/current-news/FormSection.vue'
+import HeroSection from '~/components/current-news/HeroSection.vue'
 import { useCurrentNewsStory } from '~/composables/stories/currentNewsStory'
+import { useNewsStories } from '~/composables/stories/newsStories'
 
 const { params } = useRoute()
 const { story } = await useCurrentNewsStory(params?.id as string)
+const { news } = await useNewsStories()
 
-console.log(story.value)
-
-const resolveSectionByName = (name: string) => {
-  const sections = {}
-
-  return sections[name]
+if (!story.value) {
+  showError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+  })
 }
+
+const content = computed(() => story.value?.content)
 </script>
 
 <template>
-  <div>
-    Current News {{ params?.id }}
-    <!-- <template v-for="item in body" :key="item._uid">
-      <component
-        :is="resolveSectionByName(item.component)"
-        v-if="resolveSectionByName(item.component)"
-        v-editable="item"
-        :content="item"
-      />
-      <div v-else>
-        <p>Unknown component: {{ item.component }}</p>
-      </div>
-    </template>
-
-    <BookTheMeetings :cta="story?.content?.cta" /> -->
+  <div v-if="story">
+    <HeroSection
+      :title="content?.title"
+      :date="story?.first_published_at"
+      :category="content?.category?.content?.name"
+      :asset="content?.asset"
+    />
+    <DynamicBlockRenderer :blocks="content?.body" />
+    <FormSection :background="content?.form_bg" :title="content?.title" />
+    <CurrentNewsOtherNews
+      :news="news"
+      class="current-news-list"
+      title="Other news"
+    />
+    <BookTheMeetings :cta="story?.content?.cta" />
   </div>
 </template>
+
+<style scoped lang="scss">
+.current-news-list {
+  background-color: var(--basic-black);
+}
+</style>

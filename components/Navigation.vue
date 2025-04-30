@@ -94,8 +94,6 @@ const updatedLinks = computed(() => {
     return item
   })
 })
-
-console.log(updatedLinks.value)
 </script>
 
 <template>
@@ -136,6 +134,10 @@ console.log(updatedLinks.value)
 
   .router-link-active {
     color: var(--basic-white);
+  }
+
+  @media (max-width: $br1) {
+    gap: 12px;
   }
 }
 

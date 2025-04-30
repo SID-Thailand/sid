@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { gsap, ScrollTrigger } from '~/libs/gsap'
-import { resize } from '@emotionagency/utils'
 import { LucidePlus } from 'lucide-vue-next'
 import type { iConsultingService } from '~/types/consultingTypes'
 
@@ -8,91 +6,19 @@ interface IProps {
   content: iConsultingService
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const contentRef = ref<HTMLElement | null>(null)
-const projectContentRef = ref<HTMLElement | null>(null)
-const assetsRef = ref<HTMLElement | null>(null)
-const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
-const activeIdx = ref(0)
+const itemsCount = computed(() => props?.content?.service?.length || 0)
 
-const dir = ref(1)
-const height = ref(0)
-const st = ref<ScrollTrigger | null>(null)
+const isMobile = computed(() => window.innerWidth < 768)
 
-const itemsCount = computed(() => {
-  if (!$wrappers.value) return 0
-  return $wrappers.value.length
-})
-
-const calcHeight = () => {
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
-
-  height.value = projectContentRef.value?.scrollHeight - lastItemHeight
-}
-
-const makeAnimation = () => {
-  if (!contentRef.value) return
-
-  if (!$wrappers.value?.length) return
-
-  const tl = gsap.timeline({
-    paused: true,
-  })
-
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
-  const height = projectContentRef.value?.scrollHeight - lastItemHeight
-
-  tl.to(projectContentRef.value, {
-    duration: 1,
-    ease: 'none',
-    y: -height,
-  })
-
-  ScrollTrigger.create({
-    trigger: contentRef.value as HTMLElement,
-    start: () => 'top top',
-    end: () => 'bottom-=5% bottom',
-    scrub: true,
-
-    animation: tl,
-
-    onUpdate: ({ direction }) => {
-      dir.value = direction
-      $wrappers.value.forEach((wrapper, index) => {
-        const bounds = wrapper.getBoundingClientRect()
-        const assetsBounds = assetsRef.value?.getBoundingClientRect()
-
-        if (bounds?.top < 150 && window.innerWidth > 1060) {
-          activeIdx.value = index
-        }
-
-        if (
-          bounds?.top - 100 < assetsBounds?.bottom &&
-          window.innerWidth < 1060
-        ) {
-          activeIdx.value = index
-        }
-      })
-    },
-  })
-}
-
-onMounted(() => {
-  $wrappers.value = contentRef.value.querySelectorAll(
-    '.cons-service__content-wrapper'
-  ) as NodeListOf<HTMLElement>
-
-  resize.on(calcHeight)
-
-  makeAnimation()
-})
-
-onBeforeUnmount(() => {
-  st.value?.kill(true)
-  resize.off(calcHeight)
-})
+const { activePage } = useFullPageAnimation(
+  contentRef as Ref<HTMLElement>,
+  itemsCount,
+  isMobile
+)
 </script>
 
 <template>
@@ -113,13 +39,10 @@ onBeforeUnmount(() => {
               v-for="(item, idx) in content?.service"
               :key="idx"
               class="cons-service__image-item"
-              :class="idx === activeIdx && 'cons-service__image-item--active'"
             >
-              <div
-                class="cons-service__img-wrapper"
-                :class="idx <= activeIdx && 'cons-service__img-wrapper--active'"
-              >
+              <div class="cons-service__img-wrapper">
                 <CustomImage
+                  data-f-asset
                   :src="item?.asset?.filename"
                   :alt="item?.asset?.alt"
                   class="cons-service__img"
@@ -127,24 +50,28 @@ onBeforeUnmount(() => {
               </div>
             </div>
           </div>
-          <div ref="projectContentRef" class="cons-service__content">
-            <div
-              v-for="(item, idx) in content?.service"
-              :key="idx"
-              class="cons-service__content-wrapper"
-              :class="
-                idx === activeIdx && 'cons-service__content-wrapper--active'
-              "
-              :style="{ zIndex: idx + 1 }"
-            >
-              <div class="cons-service__item">
-                <div class="cons-service__line" />
-                <div class="cons-service__item-wrapper">
-                  <LucidePlus class="cons-service__plus" />
-                  <div class="cons-service__info">
-                    <h3 class="cons-service__item-title">
-                      {{ item?.text }}
-                    </h3>
+          <div class="cons-service__content-mask">
+            <div data-f-scroller class="cons-service__content">
+              <div
+                v-for="(item, idx) in content?.service"
+                :key="idx"
+                data-f-text
+                class="cons-service__content-wrapper"
+                :style="{ zIndex: idx + 1 }"
+                :class="
+                  idx === activePage - 1 &&
+                  'cons-service__content-wrapper--active'
+                "
+              >
+                <div class="cons-service__item">
+                  <div class="cons-service__line" />
+                  <div class="cons-service__item-wrapper">
+                    <LucidePlus class="cons-service__plus" />
+                    <div class="cons-service__info">
+                      <h3 class="cons-service__item-title">
+                        {{ item?.text }}
+                      </h3>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -216,14 +143,11 @@ onBeforeUnmount(() => {
 
 .cons-service__block {
   position: relative;
-  height: 300vh;
   color: var(--basic-white);
 }
 
 .cons-service__block-wrapper {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100svh;
   overflow: hidden;
   padding-top: vw(60);
 
@@ -250,6 +174,13 @@ onBeforeUnmount(() => {
     height: auto;
     z-index: 10;
     background-color: var(--neutral-100);
+  }
+}
+
+.cons-service__content-mask {
+  @media (max-width: $br1) {
+    overflow: hidden;
+    margin-top: 40px;
   }
 }
 
@@ -307,12 +238,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
   width: 100%;
   height: 100%;
-
-  &--active {
-    .cons-service__img {
-      transform: translateY(0) scale(1);
-    }
-  }
 }
 
 .cons-service__img {
@@ -320,9 +245,7 @@ onBeforeUnmount(() => {
   display: block;
   width: 100%;
   height: auto;
-  transition: transform 3s $easing;
-  transform-origin: center top;
-  transform: translateY(100%) scale(1.3);
+
   will-change: transform;
 }
 

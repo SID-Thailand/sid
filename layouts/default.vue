@@ -38,6 +38,8 @@ useHead({
         <main class="main-content">
           <slot />
         </main>
+        <Revealer />
+
         <AppFooter />
       </div>
     </SmoothScroll>

@@ -5,9 +5,20 @@ interface IProps {
   content: iConsultingDifference
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
-const activeDiff = ref(0)
+const contentRef = ref<HTMLElement | null>(null)
+
+const count = computed(() => {
+  return props.content?.difference_gallery?.length || 0
+})
+
+const { activePage } = useFullPageCardSlider(
+  contentRef as Ref<HTMLElement>,
+  count
+)
+
+// const activePage = ref(1)
 </script>
 
 <template>
@@ -18,54 +29,61 @@ const activeDiff = ref(0)
           {{ content?.title }}
         </h2>
       </div>
-      <div class="cons-diff__slider container">
+      <div ref="contentRef" class="cons-diff__slider container">
         <div
           v-for="(img, idx) in content?.difference_gallery"
           :key="idx"
           class="cons-diff__bg-wrapper"
-          :class="{ 'cons-diff__bg-wrapper--active': activeDiff === idx }"
         >
           <CustomImage
+            data-f-bg
             :src="img?.background_asset?.filename"
             :aly="img?.background_asset?.alt"
             class="cons-diff__bg"
           />
-          <div class="cons-diff__layer" />
         </div>
-        <ul class="cons-diff__list">
-          <li
-            v-for="(item, index) in content?.difference_gallery"
-            :key="index"
-            class="cons-diff__item"
-            :class="{ 'cons-diff__item--active': activeDiff === index }"
-          >
-            <div class="cons-diff__content">
-              <h3 class="cons-diff__item-title">
-                {{ item?.title }}
-              </h3>
-              <p class="cons-diff__item-text">
-                {{ item?.text }}
-              </p>
-            </div>
-            <div class="cons-diff__img-wrapper">
+        <div class="cons-diff__layer" />
+
+        <div class="cons-diff__content">
+          <div class="cons-diff__texts">
+            <ul v-if="content?.difference_gallery" class="cons-diff__items">
+              <li
+                v-for="item in content?.difference_gallery"
+                :key="item._uid"
+                class="cons-diff__item"
+              >
+                <h3 data-f-title class="cons-diff__t">
+                  {{ item?.title }}
+                </h3>
+                <p data-f-text class="cons-diff__text">
+                  {{ item?.text }}
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="cons-diff__assets">
+            <div
+              v-for="img in content?.difference_gallery"
+              :key="img._uid"
+              class="cons-diff__img-wrapper"
+            >
               <CustomImage
-                :src="item?.asset?.filename"
-                :aly="item?.asset?.alt"
+                data-f-img
+                :src="img?.background_asset?.filename"
+                :aly="img?.background_asset?.alt"
                 class="cons-diff__img"
               />
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
         <div class="cons-diff__counter container">
-          <p class="cons-diff__count">
-            {{ activeDiff + 1 }}/{{ content?.difference_gallery?.length }}
-          </p>
+          <p class="cons-diff__count">{{ activePage }}/{{ count }}</p>
           <div class="cons-diff__pagination">
             <span
               v-for="(_, i) in content?.difference_gallery?.length"
               :key="i"
               class="cons-diff__pag-item"
-              :class="{ 'cons-diff__pag-item--active': activeDiff === i }"
+              :class="{ 'cons-diff__pag-item--active': activePage === i + 1 }"
             />
           </div>
         </div>
@@ -102,7 +120,7 @@ const activeDiff = ref(0)
 .cons-diff__slider {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100svh;
 }
 
 .cons-diff__bg-wrapper {
@@ -110,13 +128,8 @@ const activeDiff = ref(0)
   top: 0;
   left: 0;
   width: 100%;
+  overflow: hidden;
   height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  &--active {
-    opacity: 1;
-  }
 }
 
 .cons-diff__bg {
@@ -132,50 +145,76 @@ const activeDiff = ref(0)
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
   background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
+
   mix-blend-mode: hard-light;
 }
 
-.cons-diff__list {
-  position: relative;
+.cons-diff__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   height: 100%;
-}
-
-.cons-diff__item {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: vw(134);
-  max-width: vw(784);
-  width: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  z-index: 1;
+  position: relative;
+  width: vw(784);
+  margin: 0 auto;
+  overflow: hidden;
 
   @media (max-width: $br1) {
-    text-align: center;
+    width: 80%;
+  }
+
+  @media (max-width: $br2) {
     flex-direction: column-reverse;
-    max-width: 70%;
+    align-items: center;
+    justify-content: center;
     gap: 32px;
-  }
-
-  @media (max-width: $br4) {
-    max-width: 100%;
-  }
-
-  &--active {
-    opacity: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 75%;
   }
 }
 
-.cons-diff__item-title {
+.cons-diff__texts {
+  width: vw(324);
+  flex-shrink: 0;
+
+  @media (max-width: $br2) {
+    width: 100%;
+  }
+}
+.cons-diff__items {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  align-items: center;
+}
+.cons-diff__item {
+  position: relative;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  display: flex;
+  flex-direction: column;
+  gap: vw(32);
+  top: 0;
+
+  @media (max-width: $br2) {
+    text-align: center;
+  }
+}
+.cons-diff__t {
   text-transform: uppercase;
-  line-height: 1em;
-  font-size: vw(40);
-  @include med;
+  @include heading-h6;
+
+  @media (min-width: $br1) {
+    text-align: left;
+  }
 
   @media (max-width: $br1) {
     font-size: size(40, 36);
@@ -185,30 +224,42 @@ const activeDiff = ref(0)
     font-size: 36px;
   }
 }
-
-.cons-diff__item-text {
-  margin-top: vw(32);
+.cons-diff__text {
   @include text-t3;
+}
 
-  @media (max-width: $br1) {
-    margin-top: 20px;
+.cons-diff__assets {
+  flex-shrink: 0;
+  width: vw(326);
+  height: vw(326);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: $br2) {
+    width: auto;
+    height: 50%;
+    aspect-ratio: 1;
   }
 }
 
 .cons-diff__img-wrapper {
-  flex: 1 0 auto;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  @media (max-width: $br2) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+  }
 }
 
 .cons-diff__img {
   display: block;
-  width: vw(326);
-  height: vw(326);
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-
-  @media (max-width: $br1) {
-    height: 326px;
-    width: 100%;
-  }
 }
 
 .cons-diff__counter {
@@ -224,7 +275,7 @@ const activeDiff = ref(0)
   @media (max-width: $br1) {
     flex-direction: column;
     height: 100%;
-    padding: 88px 0;
+    padding: 32px 0;
   }
 }
 
@@ -262,12 +313,12 @@ const activeDiff = ref(0)
   display: block;
   width: vw(4);
   height: vw(4);
-  border-radius: 100%;
+  border-radius: 9999px;
   background-color: var(--neutral-300);
   transition:
-    height 0.3s ease,
-    width 0.3s ease,
-    border-radius 0.3s ease;
+    height 1s ease,
+    width 1s ease,
+    background-color 1s ease;
 
   @media (max-width: $br1) {
     width: 4px;
@@ -279,12 +330,10 @@ const activeDiff = ref(0)
 
     @media (min-width: $br1) {
       height: vw(16);
-      border-radius: vw(12);
     }
 
     @media (max-width: $br1) {
       width: 16px;
-      border-radius: 12px;
     }
   }
 }

@@ -1,8 +1,15 @@
-import type { iCTA, iImage, iMeta, iProjectCategory } from './story'
+import type { iCTA, iImage, iMeta, iNewsCategory } from './story'
 
 export interface iNewsContent {
+  asset: iImage
+  component: string
   cta: iCTA
-  category: iProjectCategory
+  form_title: string
+  form_bg: iImage
+  title: string
+  category: iNewsCategory
+  // BODY NEED TO BE UPDATE
+  body: string
 }
 
 export interface iNewsHeroContent {

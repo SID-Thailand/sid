@@ -8,11 +8,13 @@ type tNewsStories = () => Promise<{
 
 export const useNewsStories: tNewsStories = async () => {
   const news = useState<iStory<iNewsContent>[]>('news', () => [])
+
   try {
     if (!news.value?.length) {
       const res = await useGetStories({
         by_slugs: `news/*`,
-        content_type: 'news_cat',
+        content_type: 'page',
+        sort_by: 'first_published_at:desc',
       })
 
       news.value = res.value

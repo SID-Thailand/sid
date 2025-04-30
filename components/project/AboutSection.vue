@@ -10,27 +10,31 @@ const props = defineProps<IProps>()
 const blocks = computed(() => {
   return props.content?.content?.content?.flatMap(block => block.content)
 })
+
+const $el = ref<HTMLElement | null>(null)
+
+useDetectHeaderColor($el as Ref<HTMLElement>)
 </script>
 
 <template>
-  <section class="project-about">
-    <div class="project-about__wrapper container">
-      <p class="project-about__text-flow">
-        <template v-for="(block, idx) in blocks" :key="idx">
-          <template v-if="block?.type === 'text'">
-            {{ block.text }}
-          </template>
-          <template v-else-if="block?.type === 'image'">
-            <span class="inline-img">
-              <CustomImage
+  <section ref="$el" class="project-about">
+    <ClientOnly>
+      <div class="project-about__wrapper container">
+        <p class="project-about__text-flow">
+          <template v-for="(block, idx) in blocks" :key="idx">
+            <template v-if="block?.type === 'text'">
+              {{ block.text }}
+            </template>
+            <template v-else-if="block?.type === 'image'">
+              <ProjectInlineImg
                 :src="block?.attrs?.src"
                 :alt="block?.attrs?.alt || ''"
               />
-            </span>
+            </template>
           </template>
-        </template>
-      </p>
-    </div>
+        </p>
+      </div>
+    </ClientOnly>
   </section>
 </template>
 
@@ -62,8 +66,7 @@ const blocks = computed(() => {
   @include heading-h3;
 
   .inline-img {
-    display: inline-block;
-
+    height: vw(160);
     &:first-child {
       vertical-align: text-bottom;
       margin-right: vw(12);
@@ -72,12 +75,6 @@ const blocks = computed(() => {
     &:last-child {
       vertical-align: text-top;
       margin-top: vw(12);
-    }
-
-    img {
-      height: vw(160);
-      width: auto;
-      display: inline-block;
     }
 
     @media (max-width: $br1) {

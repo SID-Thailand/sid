@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { gsap } from '~/libs/gsap'
 import type { iFeaturedProjects } from '~/types/story'
 
 interface IProps {
@@ -7,8 +6,6 @@ interface IProps {
 }
 
 const { content } = defineProps<IProps>()
-
-const activeProject = ref(0)
 
 const projects = computed(() => {
   return content?.featured_projects || []
@@ -19,202 +16,20 @@ const projectCount = computed(() => {
 
 const contentRef = ref<HTMLElement | null>(null)
 
-let titleSplitter: typeof TextSplitter.prototype | null = null
-
-let specsSplitters = []
-
-let $bgs: NodeListOf<HTMLElement> = null
-let $items: NodeListOf<HTMLElement> = null
-let $specs: NodeListOf<HTMLElement> = null
-
-const { activePage, prevPage, direction } = useFullPage(
+const { activePage } = useFullPageCardSlider(
   contentRef as Ref<HTMLElement>,
   projectCount
 )
 
-const setupInitialStates = async () => {
-  $bgs.forEach((bg, index) => {
-    if (index > 0) {
-      gsap.set(bg, {
-        scale: 1.3,
-        clipPath: 'inset(100% 0 0 0)',
-      })
-
-      gsap.set($items[index], {
-        scale: 1.3,
-        clipPath: 'inset(100% 0 0 0)',
-      })
-    }
-  })
-
-  if (titleSplitter) {
-    titleSplitter.revert()
-    titleSplitter = null
-  }
-
-  if (specsSplitters.length) {
-    specsSplitters.forEach(spec => {
-      spec.revert()
-    })
-    specsSplitters = []
-  }
-
-  await nextTick()
-
-  $specs.forEach((item: HTMLElement, idx: number) => {
-    const $curTitle = item.querySelector('.fpc__title') as HTMLElement
-    const $curSpecs = item.querySelectorAll('.fpc__spec')
-
-    titleSplitter = new TextSplitter($curTitle, {
-      splitTypeTypes: 'lines,words',
-    })
-
-    $curSpecs?.forEach(spec => {
-      const specSplitter = new TextSplitter(spec as HTMLElement, {
-        splitTypeTypes: 'lines,words',
-      })
-
-      specsSplitters.push(specSplitter)
-
-      if (idx === 0) {
-        return
-      }
-      gsap.set(spec.querySelectorAll('.word'), { y: '100%' })
-    })
-
-    if (idx === 0) {
-      return
-    }
-
-    gsap.set(item, { pointerEvents: 'none' })
-    gsap.set($curTitle.querySelectorAll('.word'), { y: '100%' })
-  })
-}
-
-const animateSections = () => {
-  const currentIndex = activePage.value - 1
-  const prevIndex = prevPage.value - 1
-
-  const elements = {
-    current: {
-      bg: $bgs[currentIndex],
-      item: $items[currentIndex],
-      texts: $specs[currentIndex],
-    },
-    prev: {
-      bg: $bgs[prevIndex],
-      item: $items[prevIndex],
-      texts: $specs[prevIndex],
-    },
-  }
-
-  const getWords = (selector: HTMLElement | null, className: string) =>
-    selector?.querySelectorAll(`.${className}`) ?? []
-
-  const animateWords = (
-    words: NodeListOf<Element> | any[],
-    fromY: string,
-    toY: string,
-    time: number,
-    offset = 0
-  ) => {
-    if (!words.length) return
-    tl.fromTo(words, { y: fromY }, { y: toY, duration: time }, offset)
-  }
-
-  const animateWordExit = (
-    words: NodeListOf<Element> | any[],
-    toY: string,
-    time: number,
-    offset = 0
-  ) => {
-    if (!words.length) return
-    tl.to(words, { y: toY, duration: time }, offset)
-  }
-
-  const duration = 1.5
-  const textDuration = 1
-
-  const tl = gsap.timeline({
-    defaults: {
-      duration,
-      ease: 'power2.out',
-    },
-  })
-
-  const isForward = direction.value === 1
-
-  const { current, prev } = elements
-
-  const $curTitle = current.texts?.querySelector('.fpc__title') as HTMLElement
-  const $prevTitle = prev.texts?.querySelector('.fpc__title') as HTMLElement
-
-  const $curSpecs = current.texts?.querySelectorAll('.fpc__spec') || []
-  const $prevSpecs = prev.texts?.querySelectorAll('.fpc__spec') || []
-
-  const transitionSpecs = (
-    specs: NodeListOf<Element> | any[],
-    fromY: string,
-    toY: string
-  ) => {
-    specs.forEach(spec => {
-      const words = spec.querySelectorAll('.word')
-      animateWords(words, fromY, toY, textDuration, 0.3)
-    })
-  }
-
-  const exitSpecs = (specs: NodeListOf<Element> | any[], toY: string) => {
-    specs.forEach(spec => {
-      const words = spec.querySelectorAll('.word')
-      animateWordExit(words, toY, textDuration, 0)
-    })
-  }
-
-  if (isForward) {
-    prev.bg && tl.to(prev.bg, { scale: 1.3 }, 0)
-    prev.item && tl.to(prev.item, { scale: 1.3 }, 0)
-  }
-
-  tl.to(current.bg, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
-  tl.to(current.item, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
-
-  if (!isForward) {
-    prev.bg && tl.to(prev.bg, { scale: 1.3, clipPath: 'inset(100% 0 0 0)' }, 0)
-    prev.item &&
-      tl.to(prev.item, { scale: 1.3, clipPath: 'inset(100% 0 0 0)' }, 0)
-  }
-
-  const curTitleWords = getWords($curTitle, 'word')
-  const prevTitleWords = getWords($prevTitle, 'word')
-
-  animateWordExit(prevTitleWords, isForward ? '-100%' : '100%', textDuration, 0)
-  animateWords(
-    curTitleWords,
-    isForward ? '100%' : '-100%',
-    '0%',
-    textDuration,
-    0
-  )
-
-  transitionSpecs($curSpecs, isForward ? '100%' : '-100%', '0%')
-  exitSpecs($prevSpecs, isForward ? '-100%' : '100%')
-}
-
-watch(activePage, () => {
-  animateSections()
+const activeProject = computed(() => {
+  return projects.value[activePage.value - 1]
 })
 
-onMounted(() => {
-  $bgs = contentRef.value?.querySelectorAll('.featured-projects__bg')
-  $items = contentRef.value?.querySelectorAll('.fpc__image-item')
-  $specs = contentRef.value?.querySelectorAll('.fpc__specs')
+const route = useRoute()
 
-  if (!$bgs || !$items || !$specs) {
-    return
-  }
-
-  setupInitialStates()
-})
+const onClick = () => {
+  route.meta.isProjectTransition = true
+}
 </script>
 
 <template>
@@ -225,6 +40,7 @@ onMounted(() => {
           <CustomImage
             v-for="(item, idx) in projects"
             :key="idx"
+            data-f-bg
             :src="item?.content?.cover?.filename"
             :alt="item?.content?.cover?.alt"
             class="featured-projects__bg"
@@ -236,17 +52,23 @@ onMounted(() => {
           to="/projects/"
           >{{ content?.button_text }}</NuxtLink
         >
-        <div class="featured-projects__card fpc">
-          <div class="fpc__assets">
+        <NuxtLink
+          :to="`/${activeProject.full_slug}`"
+          data-t-card
+          class="featured-projects__card fpc"
+          @click="onClick"
+        >
+          <div data-t-assets class="fpc__assets">
             <div
               v-for="(item, idx) in projects"
               :key="idx"
               class="fpc__image-item"
-              :class="{ active: activeProject === idx }"
               :style="{ zIndex: idx + 1 }"
             >
               <div class="fpc__img-wrapper">
                 <CustomImage
+                  data-t-img
+                  data-f-img
                   :src="item?.content?.cover?.filename"
                   :alt="item?.content?.cover?.alt"
                   class="fpc__img"
@@ -256,43 +78,21 @@ onMounted(() => {
             </div>
           </div>
           <div class="fpc__specs-wrapper">
-            <div v-for="(item, idx) in projects" :key="idx" class="fpc__specs">
-              <h2 class="fpc__title">
+            <div v-for="(item, idx) in projects" :key="idx" class="fpc__text">
+              <h2 class="fpc__title" data-f-title>
                 {{ item?.content?.name }}
               </h2>
-              <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
-              <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
-              <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
-              <NuxtLink :to="`/${item.full_slug}`" class="fpc__link">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M11 13V23H13V13H23V11H13V1H11V11H1V13H11Z"
-                    fill="url(#paint0_linear_1_2446)"
-                  />
-                  <defs>
-                    <linearGradient
-                      id="paint0_linear_1_2446"
-                      x1="12"
-                      y1="1"
-                      x2="12"
-                      y2="23"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop stop-color="#FFCE7E" />
-                      <stop offset="1" stop-color="#997C4B" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </NuxtLink>
+              <div data-f-text class="fpc__specs">
+                <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
+                <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
+                <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
+              </div>
             </div>
           </div>
-        </div>
+          <div aria-hidden="true" class="fpc__icon" aria-label="View project">
+            <IconsPlus />
+          </div>
+        </NuxtLink>
         <div class="featured-projects__text">
           <h2 class="featured-projects__title">{{ content?.title }}</h2>
           <div class="featured-projects__desc">{{ content?.text }}</div>
@@ -308,6 +108,8 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+@use '~/assets/styles/ui/card-hover' as *;
+
 .featured-projects {
   position: relative;
 }
@@ -372,6 +174,8 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
 
+  @include card-hover('.fpc__assets');
+
   @media (max-width: $br1) {
     width: auto;
     height: 65%;
@@ -427,7 +231,7 @@ onMounted(() => {
   }
 }
 
-.fpc__specs {
+.fpc__text {
   position: absolute;
   top: 0;
   left: 0;
@@ -451,9 +255,21 @@ onMounted(() => {
   }
 }
 
+.fpc__specs {
+  max-width: vw(177);
+
+  @media (max-width: $br1) {
+    max-width: 190px;
+  }
+}
+
+:global(.fpc__specs .e-line) {
+  line-height: 0.8em;
+}
+
 .fpc__spec {
   color: var(--neutral-200);
-  line-height: 1.25em;
+  line-height: 1em;
   font-size: vw(16);
   @include med;
 
@@ -462,7 +278,7 @@ onMounted(() => {
   }
 }
 
-.fpc__link {
+.fpc__icon {
   display: block;
   color: var(--accent-primary);
 

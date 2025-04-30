@@ -19,6 +19,7 @@ const onResize = () => {
     el: document.querySelector('#scroll-container'),
     passive: false,
     friction,
+    preventTouch: false,
     stepSize,
     scrollbar: true,
     raf,
@@ -48,6 +49,7 @@ onBeforeUnmount(() => {
 #scroll-container {
   overflow: hidden;
   height: 100vh;
+  height: 100svh;
 
   will-change: scroll-position;
   position: relative;

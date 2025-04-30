@@ -21,6 +21,16 @@ export default class NavbarPos {
   }
 
   mouseHandler(e) {
+    if (window.innerWidth < 560) {
+      return
+    }
+
+    if (document.documentElement.classList.contains('header-disabled')) {
+      document.body.classList.add('nav-hidden')
+      this.hovered = false
+      return
+    }
+
     if (e.screenY <= 200) {
       document.body.classList.remove('nav-hidden')
       this.hovered = true
@@ -45,7 +55,10 @@ export default class NavbarPos {
   }
 
   get isHidden() {
-    return this.top < this.scrollPos && this.scrollPos < 0 && -this.top >= 0
+    return (
+      (this.top < this.scrollPos && this.scrollPos < 0 && -this.top >= 0) ||
+      document.documentElement.classList.contains('header-disabled')
+    )
   }
 
   get isVisible() {

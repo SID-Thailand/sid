@@ -8,39 +8,63 @@ interface iProps {
   projectBtn: string
 }
 
-defineProps<iProps>()
+const props = defineProps<iProps>()
 
-const activeProject = ref(0)
+const contentRef = ref<HTMLElement | null>(null)
+
+const projectCount = computed(() => {
+  return props?.projects?.length || 0
+})
+
+const { activePage } = useFullPageCardSlider(
+  contentRef as Ref<HTMLElement>,
+  projectCount
+)
+
+const activeProject = computed(() => {
+  return props.projects[activePage.value - 1]
+})
+
+const route = useRoute()
+
+const onClick = () => {
+  route.meta.isProjectTransition = true
+}
+
+const replaceLineBreaks = (content: string) => {
+  return content.replace(/\n/g, '<br>')
+}
 </script>
 
 <template>
   <section class="projects">
-    <div class="projects__wrapper">
+    <div ref="contentRef" class="projects__wrapper">
       <div class="projects__slider container">
         <div
           v-for="(img, idx) in projects"
           :key="idx"
           class="projects__bg-wrapper"
-          :class="{ 'projects__bg-wrapper--active': activeProject === idx }"
         >
           <CustomImage
+            data-f-bg
             :src="img?.content?.cover?.filename"
             :aly="img?.content?.cover?.alt"
             class="projects__bg"
           />
-          <div class="projects__layer" />
         </div>
-        <div class="projects__card">
-          <div class="projects__assets">
+        <div class="projects__layer" />
+        <div class="projects__card" data-t-card>
+          <div data-t-assets class="projects__assets">
             <div
               v-for="(item, idx) in projects"
               :key="idx"
               class="projects__image-item"
-              :class="{ active: activeProject === idx }"
               :style="{ zIndex: idx + 1 }"
             >
               <div class="projects__img-wrapper">
                 <CustomImage
+                  data-f-img
+                  data-t-img
                   :src="item?.content?.cover?.filename"
                   :alt="item?.content?.cover?.alt"
                   class="projects__img"
@@ -56,33 +80,37 @@ const activeProject = ref(0)
               :key="index"
               class="projects__text"
             >
-              <h2 class="projects__title">
-                {{ project?.content?.name }}
-              </h2>
-              <p class="projects__desc">{{ project?.content?.description }}</p>
-              <Button
-                tag="nuxt-link"
-                :href="`/${project?.full_slug}`"
-                class="projects__link"
-              >
-                <span>
-                  {{ projectBtn }}
-                </span>
-                <LucideArrowUpRight />
-              </Button>
+              <h2
+                data-f-title
+                class="projects__title"
+                v-html="replaceLineBreaks(project?.content?.name)"
+              />
+
+              <p data-f-text class="projects__desc">
+                {{ project?.content?.description }}
+              </p>
             </div>
           </div>
+          <Button
+            tag="nuxt-link"
+            :href="`/${activeProject?.full_slug}`"
+            class="projects__link"
+            @click="onClick"
+          >
+            <span>
+              {{ projectBtn }}
+            </span>
+            <LucideArrowUpRight />
+          </Button>
         </div>
         <div class="projects__counter container">
-          <p class="projects__count">
-            {{ activeProject + 1 }}/{{ projects?.length }}
-          </p>
+          <p class="projects__count">{{ activePage }}/{{ projectCount }}</p>
           <div class="projects__pagination">
             <span
               v-for="(_, i) in projects?.length"
               :key="i"
               class="projects__pag-item"
-              :class="{ 'projects__pag-item--active': activeProject === i }"
+              :class="{ 'projects__pag-item--active': activePage - 1 === i }"
             />
           </div>
         </div>
@@ -92,10 +120,13 @@ const activeProject = ref(0)
 </template>
 
 <style scoped lang="scss">
+@use '~/assets/styles/ui/card-hover' as *;
+
 .projects__slider {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -107,12 +138,6 @@ const activeProject = ref(0)
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  &--active {
-    opacity: 1;
-  }
 }
 
 .projects__bg {
@@ -135,6 +160,7 @@ const activeProject = ref(0)
 .projects__card {
   flex: 0 1 auto;
   height: clamp(50%, vh(768), vw(768));
+
   aspect-ratio: 0.64;
   max-width: 100%;
   background-color: var(--neutral-600);
@@ -144,6 +170,7 @@ const activeProject = ref(0)
   padding-bottom: vw(32);
   display: flex;
   flex-direction: column;
+  @include card-hover('.projects__assets');
 
   @media (max-width: $br1) {
     width: auto;
@@ -154,10 +181,10 @@ const activeProject = ref(0)
 
   @media (max-width: $br4) {
     width: 100%;
-    height: fit-content;
+    height: 80%;
     aspect-ratio: unset;
     flex: 1;
-    max-height: 768px;
+    max-height: 600px;
   }
 }
 
@@ -215,7 +242,10 @@ const activeProject = ref(0)
 }
 
 .projects__title {
+  font-kerning: none;
   text-transform: uppercase;
+  margin: 0 auto;
+  width: 100%;
   @include subheading-h1;
 }
 .projects__desc {
@@ -235,14 +265,15 @@ const activeProject = ref(0)
   width: fit-content;
   margin: 0 auto;
   margin-top: vw(32);
-  padding-top: vw(19);
-  padding-bottom: vw(19);
+  padding-top: vw(16);
+  padding-bottom: vw(16);
   font-size: vw(14);
 
+  flex-shrink: 0;
   @media (max-width: $br1) {
     font-size: 14px;
-    padding-top: 19px;
-    padding-bottom: 19px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     margin-top: 24px;
   }
 }
@@ -260,8 +291,8 @@ const activeProject = ref(0)
   @media (max-width: $br1) {
     flex-direction: column;
     height: 100%;
-    padding-top: 53px;
-    padding-bottom: 61px;
+    padding-top: 32px;
+    padding-bottom: 32px;
   }
 }
 
@@ -299,12 +330,12 @@ const activeProject = ref(0)
   display: block;
   width: vw(4);
   height: vw(4);
-  border-radius: 100%;
+  border-radius: 9999px;
   background-color: var(--neutral-300);
   transition:
-    height 0.3s ease,
-    width 0.3s ease,
-    border-radius 0.3s ease;
+    height 1s ease,
+    width 1s ease,
+    background-color 1s ease;
 
   @media (max-width: $br1) {
     width: 4px;
@@ -316,12 +347,10 @@ const activeProject = ref(0)
 
     @media (min-width: $br1) {
       height: vw(16);
-      border-radius: vw(12);
     }
 
     @media (max-width: $br1) {
       width: 16px;
-      border-radius: 12px;
     }
   }
 }

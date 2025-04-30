@@ -8,7 +8,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
   prevRoute.value = String(from.name)
   currentRoute.value = String(to.name)
 
-  if (from.name === 'index' && to.name === 'projects-id') {
+  const isProjectTransition = from.meta.isProjectTransition
+
+  if (isProjectTransition && to.name === 'projects-id') {
     to.meta.pageTransition = projectTransition
     from.meta.pageTransition = projectTransition
 

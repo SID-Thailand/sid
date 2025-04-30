@@ -9,22 +9,35 @@ let $photo = null
 let leaveDoneCallback: () => void
 
 const prepareItem = ($item: HTMLElement) => {
-  const $parent = $item.closest('.fpc__assets')
+  const bounds = $item.getBoundingClientRect()
 
-  const bounds = $parent.getBoundingClientRect()
+  const $parent = $item.closest('[data-t-assets]') as HTMLElement
 
-  $item.style.position = 'fixed'
-  $item.style.top = `${bounds.top}px`
-  $item.style.left = `${bounds.left}px`
-  $item.style.width = `${bounds.width}px`
-  $item.style.height = `${bounds.height}px`
-  $item.style.objectFit = 'cover'
-  $item.style.zIndex = `10`
-  $item.style.opacity = `1`
+  const $clone = $item.cloneNode(true) as HTMLElement
 
-  document.body.appendChild($item)
+  document.body.appendChild($clone)
+  $item.style.opacity = '0'
 
-  return $item
+  if ($parent) {
+    $parent.style.opacity = '0'
+  }
+
+  const isDesktop = window.innerWidth > 860
+
+  $clone.style.position = 'fixed'
+  $clone.style.top = `${bounds.top}px`
+  $clone.style.left = `${bounds.left}px`
+  $clone.style.width = `${bounds.width}px`
+  $clone.style.height = `${bounds.height}px`
+  $clone.style.objectFit = 'cover'
+  $clone.style.zIndex = `10`
+  $clone.style.opacity = `1`
+
+  if (isDesktop) {
+    $clone.style.clipPath = `inset(2%)`
+  }
+
+  return $clone
 }
 
 export const projectTransition: TransitionProps = {
@@ -33,16 +46,22 @@ export const projectTransition: TransitionProps = {
   css: false,
   appear: true,
   async onEnter(el: HTMLElement, done) {
-    await delayPromise(20)
+    const { init } = useLoadingAnimation()
+
+    init(el, 0.85)
+
     el.style.width = '100%'
     el.style.position = 'fixed'
     el.style.top = '0'
     el.style.left = '0'
     el.style.zIndex = '3'
+    el.style.opacity = '0'
+    await delayPromise(200)
+    el.style.opacity = '1'
 
     const $to = el.querySelector('.project-hero__img-wrapper')
     const state = Flip.getState($photo, {
-      props: 'zIndex',
+      props: 'clipPath, zIndex',
     })
     Object.assign($photo.style, {
       position: 'relative',
@@ -51,13 +70,14 @@ export const projectTransition: TransitionProps = {
       width: '100%',
       height: '100%',
       margin: '0',
+      clipPath: 'inset(0%)',
     })
 
     $to.appendChild($photo)
 
     Flip.from(state, {
-      duration: 1.7,
-      ease: 'sine.inOut',
+      duration: 2.5,
+      ease: 'power2.inOut',
       absolute: true,
       zIndex: 1,
       onComplete: () => {
@@ -77,16 +97,28 @@ export const projectTransition: TransitionProps = {
     const route = useRoute()
     const slug = route.params.id
 
-    $photo = el.querySelector(`.fpc__img[data-slug="${slug}"]`)
+    $photo = el.querySelector(`[data-t-img][data-slug="${slug}"]`)
+
+    const $card = el.querySelector('[data-t-card]') as HTMLElement
+
+    const { offsetX, offsetY } = getOffsetFromCenter($card)
 
     $photo = prepareItem($photo)
 
     basicObject.onLeave()
 
-    gsap.to(el, {
-      duration: 0.5,
-      opacity: 0,
+    gsap.to($card, {
+      duration: 2,
+      scale: 2,
       ease: 'power2.inOut',
+      x: offsetX,
+      y: offsetY,
+    })
+
+    gsap.to(el, {
+      duration: 2,
+      opacity: 0,
+      ease: 'power2.out',
     })
   },
 }

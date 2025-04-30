@@ -43,6 +43,10 @@ watch(
   &--open {
     transform: translate(-50%, 0);
   }
+
+  @media (max-width: $br1) {
+    height: 100svh;
+  }
 }
 
 .slide-modal__wrapper {

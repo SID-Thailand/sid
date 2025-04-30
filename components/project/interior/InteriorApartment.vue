@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { gsap } from '~/libs/gsap'
 import type { iApartment } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -6,6 +7,52 @@ interface IProps {
 }
 
 defineProps<IProps>()
+
+const sliderRef = ref<HTMLUListElement | null>(null)
+const containerRef = ref<HTMLDivElement | null>(null)
+const activeIdx = ref(0)
+
+const isMobile = useMediaQuery('(max-width: 860px)')
+
+const slideTo = (idx: number) => {
+  if (!sliderRef.value || !containerRef.value) return
+
+  if (!isMobile.value) return
+
+  const slider = sliderRef.value
+  const target = slider.children[idx] as HTMLElement
+  if (!target) return
+
+  const prevSlide = slider.children[activeIdx.value] as HTMLElement
+
+  const direction = idx > activeIdx.value ? 1 : -1
+
+  const prevSlideWidth = prevSlide.getBoundingClientRect().width
+
+  const tl = gsap.timeline()
+
+  const widthOffset = direction === 1 ? prevSlideWidth / 2 : 0
+
+  const offsetLeft = target.offsetLeft - widthOffset
+  tl.to(slider, {
+    x: -offsetLeft,
+    duration: 1.5,
+    ease: 'power2.out',
+  })
+
+  activeIdx.value = idx
+}
+
+useSwipe(containerRef, {
+  threshold: 50,
+  onSwipeEnd: (_, direction) => {
+    if (direction === 'left') {
+      slideTo(activeIdx.value + 1)
+    } else if (direction === 'right') {
+      slideTo(activeIdx.value - 1)
+    }
+  },
+})
 </script>
 
 <template>
@@ -16,20 +63,16 @@ defineProps<IProps>()
     <p class="interior-apart__desc interior-apart__desc--mob">
       {{ apartment?.price }}
     </p>
-    <div class="interior-apart__img-list-wrapper">
-      <ul class="interior-apart__img-list">
-        <li
-          v-for="(img, idx) in apartment?.assets"
-          :key="idx"
-          class="interior-apart__img-item"
-          :class="{ 'interior-apart__img-item--active': idx === 0 }"
-        >
-          <CustomImage
-            :src="img?.filename"
-            :alt="img?.alt"
-            class="iterior-apart__img"
-          />
-        </li>
+    <div ref="containerRef" class="interior-apart__img-list-wrapper">
+      <ul ref="sliderRef" class="interior-apart__img-list">
+        <ProjectInteriorApartmentImg
+          v-for="(img, index) in apartment.assets"
+          :key="img._uid"
+          :img="img"
+          :idx="index"
+          :active="activeIdx === index"
+          @click="slideTo(index)"
+        />
       </ul>
     </div>
     <div class="interior-apart__content">
@@ -59,12 +102,13 @@ defineProps<IProps>()
           <div class="interior-apart__about-content">
             <p class="interior-apart__title">Plan</p>
             <a
-              :href="apartment?.plan[0]?.link?.url"
+              v-if="apartment?.plan?.[0]"
+              :href="apartment.plan[0]?.link?.url"
               target="_blank"
               rel="noopener noreferrer"
               class="interior-apart__text underline-reverse"
             >
-              {{ apartment?.area }}
+              {{ apartment.plan[0]?.label }}
             </a>
           </div>
         </div>
@@ -89,15 +133,15 @@ defineProps<IProps>()
 }
 
 .interior-apart__img-list-wrapper {
+  position: relative;
+
   @media (min-width: $br1) {
-    max-width: vw(900);
-    width: 100%;
+    width: vw(900);
   }
 
   @media (max-width: $br1) {
     position: relative;
     width: 100vw;
-    overflow-x: auto;
     margin-top: 40px;
     padding-right: 32px;
     padding-left: 32px;
@@ -112,50 +156,28 @@ defineProps<IProps>()
 }
 
 .interior-apart__img-list {
-  display: flex;
-
-  @media (min-width: $br1) {
-    flex-direction: column;
-    row-gap: vw(40);
-    width: 100%;
-  }
+  position: relative;
+  width: 100%;
 
   @media (max-width: $br1) {
+    display: flex;
     align-items: flex-start;
     min-width: max-content;
     gap: 16px;
-  }
-}
-
-.interior-apart__img-item {
-  @media (min-width: $br1) {
-    max-width: vw(336);
-
-    &--active {
-      max-width: 100%;
-      max-height: 100%;
-    }
-  }
-}
-
-.iterior-apart__img {
-  display: block;
-  height: auto;
-  width: fit-content;
-
-  @media (max-width: $br1) {
-    width: 100%;
-    height: 100%;
-    max-height: 222px;
+    height: 222px;
   }
 }
 
 .interior-apart__content {
   margin-top: vw(46);
-  width: 100%;
+
+  @media (min-width: $br1) {
+    width: vw(382);
+  }
 
   @media (max-width: $br1) {
     margin-top: 48px;
+    width: 100%;
   }
 }
 

@@ -32,6 +32,7 @@ const { headerColor, $headerRef } = useHeaderColor()
       <NuxtLink
         :to="selectedLang === defaultLocale() ? '/' : '/' + selectedLang"
         class="header__link"
+        aria-label="Site logo"
         @click="onClick"
       >
         <HeaderLogo />

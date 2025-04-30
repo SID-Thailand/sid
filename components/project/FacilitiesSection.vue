@@ -1,102 +1,32 @@
 <script lang="ts" setup>
-import { gsap, ScrollTrigger } from '~/libs/gsap'
-import { resize } from '@emotionagency/utils'
 import { LucidePlus } from 'lucide-vue-next'
+
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
   content: iCurrentProjectFacilities
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
+
+const $el = ref<HTMLElement | null>(null)
+
+useDetectHeaderColor($el as Ref<HTMLElement>)
+
+const itemsCount = computed(() => props.content?.slider?.length || 0)
 
 const contentRef = ref<HTMLElement | null>(null)
-const projectContentRef = ref<HTMLElement | null>(null)
-const assetsRef = ref<HTMLElement | null>(null)
-const $wrappers = ref<NodeListOf<HTMLElement>>(null)
 
-const activeIdx = ref(0)
-
-const dir = ref(1)
-const height = ref(0)
-const st = ref<ScrollTrigger | null>(null)
-
-const itemsCount = computed(() => {
-  if (!$wrappers.value) return 0
-  return $wrappers.value.length
-})
-
-const calcHeight = () => {
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1]?.scrollHeight
-
-  height.value = projectContentRef.value?.scrollHeight - lastItemHeight
-}
-
-const makeAnimation = () => {
-  if (!contentRef.value) return
-
-  if (!$wrappers.value?.length) return
-
-  const tl = gsap.timeline({
-    paused: true,
-  })
-
-  const lastItemHeight = $wrappers.value[itemsCount.value - 1].scrollHeight
-  const height = projectContentRef.value?.scrollHeight - lastItemHeight
-
-  tl.to(projectContentRef.value, {
-    duration: 1,
-    ease: 'none',
-    y: -height,
-  })
-
-  ScrollTrigger.create({
-    trigger: contentRef.value as HTMLElement,
-    start: () => 'top top',
-    end: () => 'bottom-=5% bottom',
-    scrub: true,
-
-    animation: tl,
-
-    onUpdate: ({ direction }) => {
-      dir.value = direction
-      $wrappers.value.forEach((wrapper, index) => {
-        const bounds = wrapper.getBoundingClientRect()
-        const assetsBounds = assetsRef.value?.getBoundingClientRect()
-
-        if (bounds?.top < 150 && window.innerWidth > 1060) {
-          activeIdx.value = index
-        }
-
-        if (
-          bounds?.top - 100 < assetsBounds?.bottom &&
-          window.innerWidth < 1060
-        ) {
-          activeIdx.value = index
-        }
-      })
-    },
-  })
-}
-
-onMounted(() => {
-  $wrappers.value = contentRef.value.querySelectorAll(
-    '.project-facilities__content-wrapper'
-  ) as NodeListOf<HTMLElement>
-
-  resize.on(calcHeight)
-
-  makeAnimation()
-})
-
-onBeforeUnmount(() => {
-  st.value?.kill(true)
-  resize.off(calcHeight)
-})
+const isMobile = useMediaQuery('(max-width: 560px)')
+const { activePage } = useFullPageAnimation(
+  contentRef as Ref<HTMLElement>,
+  itemsCount,
+  isMobile
+)
 </script>
 
 <template>
-  <section class="project-facilities">
+  <section ref="$el" class="project-facilities">
     <div class="project-facilities__wrapper container">
       <div class="project-facilities__top">
         <p class="project-facilities__subtitle">
@@ -113,17 +43,10 @@ onBeforeUnmount(() => {
               v-for="(item, idx) in content?.slider"
               :key="idx"
               class="project-facilities__image-item"
-              :class="
-                idx === activeIdx && 'project-facilities__image-item--active'
-              "
             >
-              <div
-                class="project-facilities__img-wrapper"
-                :class="
-                  idx <= activeIdx && 'project-facilities__img-wrapper--active'
-                "
-              >
+              <div class="project-facilities__img-wrapper">
                 <CustomImage
+                  data-f-asset
                   :src="item?.asset?.filename"
                   :alt="item?.asset?.alt"
                   class="project-facilities__img"
@@ -131,28 +54,30 @@ onBeforeUnmount(() => {
               </div>
             </div>
           </div>
-          <div ref="projectContentRef" class="project-facilities__content">
-            <div
-              v-for="(item, idx) in content?.slider"
-              :key="idx"
-              class="project-facilities__content-wrapper"
-              :class="
-                idx === activeIdx &&
-                'project-facilities__content-wrapper--active'
-              "
-              :style="{ zIndex: idx + 1 }"
-            >
-              <div class="project-facilities__item">
-                <div class="project-facilities__line" />
-                <div class="project-facilities__item-wrapper">
-                  <LucidePlus class="project-facilities__plus" />
-                  <div class="project-facilities__info">
-                    <h3 class="project-facilities__item-title">
-                      {{ item?.title }}
-                    </h3>
-                    <p class="project-facilities__item-text">
-                      {{ item?.description }}
-                    </p>
+          <div class="project-facilities__content-c">
+            <div data-f-scroller class="project-facilities__content">
+              <div
+                v-for="(item, idx) in content?.slider"
+                :key="idx"
+                data-f-text
+                class="project-facilities__content-wrapper"
+                :class="
+                  idx === activePage - 1 &&
+                  'project-facilities__content-wrapper--active'
+                "
+              >
+                <div class="project-facilities__item">
+                  <div class="project-facilities__line" />
+                  <div class="project-facilities__item-wrapper">
+                    <LucidePlus class="project-facilities__plus" />
+                    <div class="project-facilities__info">
+                      <h3 class="project-facilities__item-title">
+                        {{ item?.title }}
+                      </h3>
+                      <p class="project-facilities__item-text">
+                        {{ item?.description }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -224,14 +149,11 @@ onBeforeUnmount(() => {
 
 .project-facilities__block {
   position: relative;
-  height: 300vh;
   color: var(--basic-black);
 }
 
 .project-facilities__block-wrapper {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100svh;
   overflow: hidden;
   padding-top: vw(60);
 
@@ -252,12 +174,25 @@ onBeforeUnmount(() => {
   height: vw(440);
 
   @media (max-width: $br1) {
+    margin: 0 auto;
     margin-top: 16px;
-    width: 100%;
-    aspect-ratio: 440 / 440;
+    max-height: 50%;
+    aspect-ratio: 1;
     height: auto;
     z-index: 10;
     background-color: var(--neutral-100);
+  }
+
+  @media (max-width: $br3) {
+    width: 100%;
+    max-height: none;
+  }
+}
+
+.project-facilities__content-c {
+  @media (max-width: $br1) {
+    margin-top: 40px;
+    overflow: hidden;
   }
 }
 
@@ -311,12 +246,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
   width: 100%;
   height: 100%;
-
-  &--active {
-    .project-facilities__img {
-      transform: translateY(0) scale(1);
-    }
-  }
 }
 
 .project-facilities__img {
@@ -324,9 +253,7 @@ onBeforeUnmount(() => {
   display: block;
   width: 100%;
   height: auto;
-  transition: transform 3s $easing;
-  transform-origin: center top;
-  transform: translateY(100%) scale(1.3);
+  // transform-origin: center top;
   will-change: transform;
 }
 
@@ -362,7 +289,7 @@ onBeforeUnmount(() => {
   width: vw(20);
   height: vw(20);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 1s ease;
 
   @media (max-width: $br1) {
     width: 16px;

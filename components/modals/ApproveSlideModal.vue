@@ -36,7 +36,8 @@ const props = defineProps<IProps>()
   @include heading-h4;
 
   @media (max-width: $br1) {
-    max-width: 100%;
+    max-width: 80%;
+    margin: 0 auto;
   }
 }
 </style>

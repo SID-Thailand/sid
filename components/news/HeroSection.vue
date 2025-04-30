@@ -16,6 +16,7 @@ const emit = defineEmits(['filter', 'getAll'])
     <div class="news-hero__wrapper">
       <div class="news-hero__bg-wrapper">
         <CustomImage
+          data-full-image
           :src="content?.background?.filename"
           :alt="content?.background?.alt"
           class="news-hero__bg"
@@ -24,13 +25,14 @@ const emit = defineEmits(['filter', 'getAll'])
       </div>
 
       <div class="news-hero__content">
-        <h1 class="news-hero__title">
+        <h1 data-title class="news-hero__title">
           {{ content?.title }}
         </h1>
-        <p class="news-hero__description">
+        <p data-t class="news-hero__description">
           {{ content?.hero_text }}
         </p>
         <CategoryFilter
+          data-t
           :categories="categories"
           :label-all="content?.categories_all"
           @filter="emit('filter', $event)"

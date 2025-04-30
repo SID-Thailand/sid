@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ChevronDown, LucidePlus } from 'lucide-vue-next'
 import type { iApartment } from '~/types/currentProjectTypes'
+import { scrollTo } from '~/utils/scrollTo'
 
 interface IProps {
   apartmentsList: iApartment[]
@@ -18,13 +19,29 @@ const onSelect = (item: iApartment) => {
   handleToggleMenu()
 }
 
+const el = ref<HTMLElement | null>(null)
+
 const handleToggleMenu = () => {
   isOpen.value = !isOpen.value
 }
+
+watch(isOpen, val => {
+  if (val) {
+    const top = el.value?.getBoundingClientRect().top
+
+    scrollTo(top - 20, false, () => {
+      window.escroll.disabled = true
+      getScrollEl().classList.add('full-page')
+    })
+  } else {
+    window.escroll.disabled = false
+    getScrollEl().classList.remove('full-page')
+  }
+})
 </script>
 
 <template>
-  <div class="interior-dropdown">
+  <div ref="el" class="interior-dropdown">
     <button
       class="interior-dropdown__btn"
       :class="{ 'interior-dropdown__btn--opened': isOpen }"
@@ -118,18 +135,26 @@ const handleToggleMenu = () => {
   width: 100%;
   overflow-y: auto;
   background-color: var(--neutral-100);
-  transition: max-height 0.3s ease;
+  transition: max-height 0.8s ease;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
 
   @media (max-width: $br1) {
     max-width: 385px;
     top: 20px;
   }
 
+  @media (max-width: $br3) {
+    max-width: none;
+    width: 100vw;
+    margin-left: -16px;
+  }
+
   &--opened {
-    max-height: vw(350);
+    max-height: clamp(vw(500), vw(500), 50vh);
 
     @media (max-width: $br1) {
-      max-height: 300px;
+      height: 100vh;
+      max-height: 100vh;
     }
   }
 }

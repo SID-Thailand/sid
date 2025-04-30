@@ -1,11 +1,74 @@
 <script lang="ts" setup>
+import { gsap } from '~/libs/gsap'
 import type { iCurrentProjectExterior } from '~/types/currentProjectTypes'
+import type { iImage } from '~/types/story'
 
 interface IProps {
   content: iCurrentProjectExterior
 }
 
 defineProps<IProps>()
+
+const activeIdx = ref(0)
+
+const sliderRef = templateRef('sliderRef')
+const sliderContainerRef = templateRef('sliderContainerRef')
+
+const isDesktop = ref(true)
+const isFullImageModalOpened = ref(false)
+const activeImage = ref<iImage | null>(null)
+
+const slideTo = (idx: number) => {
+  if (!sliderRef.value) return
+
+  const target = sliderRef.value.children[idx] as HTMLElement
+  if (!target) return
+
+  const gap = parseFloat(getComputedStyle(sliderRef.value).gap) || 0
+  const itemWidth = target.getBoundingClientRect().width + gap
+
+  gsap.to(sliderRef.value, {
+    duration: 1,
+    x: -itemWidth * idx,
+    ease: 'power2.out',
+  })
+
+  activeIdx.value = idx
+}
+
+const onClick = (_e: MouseEvent, img: iImage, idx: number) => {
+  if (!isDesktop.value) {
+    isFullImageModalOpened.value = true
+    activeImage.value = img
+  } else {
+    if (idx === activeIdx.value) return
+    slideTo(idx)
+  }
+}
+
+useSwipe(sliderContainerRef, {
+  threshold: 50,
+  onSwipeEnd: (_, direction) => {
+    if (direction === 'left') {
+      slideTo(activeIdx.value + 1)
+    } else if (direction === 'right') {
+      slideTo(activeIdx.value - 1)
+    }
+  },
+})
+
+const handleCloseFullImageModal = () => {
+  isFullImageModalOpened.value = false
+  activeImage.value = null
+}
+
+onMounted(() => {
+  isDesktop.value = window.innerWidth > 860
+
+  window.addEventListener('resize', () => {
+    isDesktop.value = window.innerWidth > 860
+  })
+})
 </script>
 
 <template>
@@ -18,12 +81,14 @@ defineProps<IProps>()
         <p class="project-exterior__text">
           {{ content?.text }}
         </p>
-        <div class="project-exterior__slider">
-          <ul class="project-exterior__list">
+        <div ref="sliderContainerRef" class="project-exterior__slider">
+          <ul ref="sliderRef" class="project-exterior__list">
             <li
               v-for="(item, idx) in content?.assets"
               :key="idx"
               class="project-exterior__item"
+              :class="{ 'project-exterior__item--active': idx === activeIdx }"
+              @click="onClick($event, item, idx)"
             >
               <CustomImage
                 :src="item?.filename"
@@ -35,10 +100,21 @@ defineProps<IProps>()
         </div>
       </div>
     </div>
+    <Modal
+      :is-open="isFullImageModalOpened"
+      modal-window-class="project-exterior__modal-wrapper"
+      @close="handleCloseFullImageModal"
+    >
+      <CustomImage
+        :src="activeImage?.filename"
+        :alt="activeImage?.alt"
+        class="project-exterior__modal-img"
+      />
+    </Modal>
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .project-exterior {
   position: relative;
   padding-top: vw(40);
@@ -64,9 +140,14 @@ defineProps<IProps>()
 
 .project-exterior__content {
   margin-top: vw(200);
+  display: flex;
+  gap: vw(136);
+  height: vw(600);
 
   @media (max-width: $br1) {
     margin-top: 48px;
+    flex-direction: column;
+    height: auto;
   }
 }
 
@@ -74,6 +155,7 @@ defineProps<IProps>()
   line-height: 1.2em;
   max-width: vw(325);
   width: 100%;
+  flex-shrink: 0;
   @include text-t3;
 
   @media (max-width: $br1) {
@@ -82,15 +164,14 @@ defineProps<IProps>()
 }
 
 .project-exterior__slider {
-  margin-top: vw(90);
-  width: 100vw;
-  overflow-x: auto;
+  align-self: flex-end;
   padding-right: vw(40);
   padding-left: vw(40);
   margin-left: vw(-40);
 
   @media (max-width: $br1) {
     margin-top: 24px;
+    align-self: flex-start;
     padding-right: 32px;
     padding-left: 32px;
     margin-left: -32px;
@@ -112,14 +193,17 @@ defineProps<IProps>()
   @media (max-width: $br1) {
     align-items: flex-start;
     gap: 16px;
+    height: 285px;
   }
 }
 
 .project-exterior__item {
-  pointer-events: none;
   user-select: none;
   height: vw(224);
   width: vw(336);
+  cursor: pointer;
+  transition-property: width, height;
+  transition: 1.5s $easing;
 
   @media (max-width: $br1) {
     height: 109px;
@@ -139,7 +223,22 @@ defineProps<IProps>()
 
 .project-exterior__img {
   display: block;
+  object-fit: cover;
   width: 100%;
   height: 100%;
+}
+
+.project-exterior__modal-wrapper {
+  max-height: 100svh;
+  height: 100%;
+  width: 100%;
+  max-width: 100vw !important;
+}
+
+.project-exterior__modal-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
