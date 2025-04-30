@@ -12,8 +12,12 @@ const sliderRef = ref<HTMLUListElement | null>(null)
 const containerRef = ref<HTMLDivElement | null>(null)
 const activeIdx = ref(0)
 
+const isMobile = useMediaQuery('(max-width: 860px)')
+
 const slideTo = (idx: number) => {
   if (!sliderRef.value || !containerRef.value) return
+
+  if (!isMobile.value) return
 
   const slider = sliderRef.value
   const target = slider.children[idx] as HTMLElement

@@ -30,6 +30,10 @@ const route = useRoute()
 const onClick = () => {
   route.meta.isProjectTransition = true
 }
+
+const replaceLineBreaks = (content: string) => {
+  return content.replace(/\n/g, '<br>')
+}
 </script>
 
 <template>
@@ -76,9 +80,12 @@ const onClick = () => {
               :key="index"
               class="projects__text"
             >
-              <h2 data-f-title class="projects__title">
-                {{ project?.content?.name }}
-              </h2>
+              <h2
+                data-f-title
+                class="projects__title"
+                v-html="replaceLineBreaks(project?.content?.name)"
+              />
+
               <p data-f-text class="projects__desc">
                 {{ project?.content?.description }}
               </p>
@@ -235,18 +242,11 @@ const onClick = () => {
 }
 
 .projects__title {
+  font-kerning: none;
   text-transform: uppercase;
-  width: 70%;
   margin: 0 auto;
+  width: 100%;
   @include subheading-h1;
-
-  @media (max-width: $br1) {
-    width: 100%;
-  }
-
-  @media (max-width: $br4) {
-    width: 70%;
-  }
 }
 .projects__desc {
   font-size: vw(16);
