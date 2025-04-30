@@ -8,7 +8,13 @@ interface iProps {
   title?: string
 }
 
-defineProps<iProps>()
+const props = defineProps<iProps>()
+
+const allNews = computed(() => props.news ?? [])
+
+const slicedNews = computed(() => {
+  return allNews.value.slice(0, 4)
+})
 </script>
 
 <template>
@@ -20,7 +26,7 @@ defineProps<iProps>()
       <div class="other-news__list-wrapper">
         <ul class="other-news__list">
           <li
-            v-for="(currNews, idx) in news"
+            v-for="(currNews, idx) in slicedNews"
             :key="idx"
             class="other-news__card"
           >
