@@ -111,6 +111,7 @@ const animate = () => {
     start: 'top+=5% top',
     end: 'bottom-=2% bottom',
     scrub: true,
+    invalidateOnRefresh: true,
     onEnter,
     onEnterBack: onEnter,
     onLeaveBack: onLeave,

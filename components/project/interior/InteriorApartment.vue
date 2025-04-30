@@ -98,12 +98,13 @@ useSwipe(containerRef, {
           <div class="interior-apart__about-content">
             <p class="interior-apart__title">Plan</p>
             <a
-              :href="apartment?.plan[0]?.link?.url"
+              v-if="apartment?.plan?.[0]"
+              :href="apartment.plan[0]?.link?.url"
               target="_blank"
               rel="noopener noreferrer"
               class="interior-apart__text underline-reverse"
             >
-              {{ apartment?.area }}
+              {{ apartment.plan[0]?.label }}
             </a>
           </div>
         </div>
