@@ -8,11 +8,18 @@ const { params } = useRoute()
 const { story } = await useCurrentNewsStory(params?.id as string)
 const { news } = await useNewsStories()
 
+if (!story.value) {
+  showError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+  })
+}
+
 const content = computed(() => story.value?.content)
 </script>
 
 <template>
-  <div>
+  <div v-if="story">
     <HeroSection
       :title="content?.title"
       :date="story?.first_published_at"

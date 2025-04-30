@@ -12,6 +12,13 @@ import { useCurrentProjectStory } from '~/composables/stories/currentProjectStor
 const { params } = useRoute()
 const { story } = await useCurrentProjectStory(params?.id as string)
 
+if (!story.value) {
+  showError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+  })
+}
+
 const hero = computed(() => {
   return story?.value?.content
 })
@@ -37,7 +44,7 @@ const resolveSectionByName = (name: string) => {
 </script>
 
 <template>
-  <div>
+  <div v-if="story">
     <ProjectHeroSection :content="hero" />
 
     <template v-for="item in body" :key="item._uid">
