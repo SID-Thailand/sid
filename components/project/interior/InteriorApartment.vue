@@ -142,7 +142,6 @@ useSwipe(containerRef, {
   @media (max-width: $br1) {
     position: relative;
     width: 100vw;
-    overflow-x: auto;
     margin-top: 40px;
     padding-right: 32px;
     padding-left: 32px;
@@ -158,10 +157,7 @@ useSwipe(containerRef, {
 
 .interior-apart__img-list {
   position: relative;
-
-  @media (min-width: $br1) {
-    width: 100%;
-  }
+  width: 100%;
 
   @media (max-width: $br1) {
     display: flex;

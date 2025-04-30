@@ -79,11 +79,10 @@ const slicedNews = computed(() => {
             </NuxtLink>
           </li>
         </ul>
-
-        <Button tag="nuxt-link" href="/news" class="other-news__btn">
-          <span>ALL NEWS</span>
-        </Button>
       </div>
+      <Button tag="nuxt-link" href="/news" class="other-news__btn">
+        <span>ALL NEWS</span>
+      </Button>
     </div>
   </div>
 </template>
@@ -180,6 +179,15 @@ const slicedNews = computed(() => {
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
+  }
+
+  &:last-child {
+    @media (max-width: $br1) {
+      margin-right: 32px;
+    }
+    @media (max-width: $br3) {
+      margin-right: 16px;
+    }
   }
 }
 

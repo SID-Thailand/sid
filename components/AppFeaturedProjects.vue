@@ -175,11 +175,9 @@ const onClick = () => {
     overflow-x: auto;
     padding-right: 32px;
     padding-left: 32px;
-    margin-left: -32px;
   }
 
   @media (max-width: $br3) {
-    padding-right: 16px;
     padding-left: 16px;
     margin-left: -16px;
   }
@@ -190,6 +188,7 @@ const onClick = () => {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(4, 1fr);
+
     gap: vw(20);
     grid-auto-flow: row;
   }
@@ -199,6 +198,17 @@ const onClick = () => {
     align-items: center;
     min-width: max-content;
     column-gap: 16px;
+  }
+}
+
+.app-projects__card {
+  &:last-child {
+    @media (max-width: $br1) {
+      margin-right: 32px;
+    }
+    @media (max-width: $br3) {
+      margin-right: 16px;
+    }
   }
 }
 

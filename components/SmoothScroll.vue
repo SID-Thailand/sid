@@ -19,6 +19,7 @@ const onResize = () => {
     el: document.querySelector('#scroll-container'),
     passive: false,
     friction,
+    preventTouch: false,
     stepSize,
     scrollbar: true,
     raf,
