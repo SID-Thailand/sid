@@ -30,11 +30,11 @@ watch(isOpen, val => {
     const top = el.value?.getBoundingClientRect().top
 
     scrollTo(top - 20, false, () => {
-      window.escroll.disabled = true
+      // window.escroll.disabled = true
       getScrollEl().classList.add('full-page')
     })
   } else {
-    window.escroll.disabled = false
+    // window.escroll.disabled = false
     getScrollEl().classList.remove('full-page')
   }
 })
