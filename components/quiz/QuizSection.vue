@@ -92,7 +92,7 @@ const onSubmit = () => {
 
   setTimeout(() => {
     isShowThankYou.value = false
-  }, 4000)
+  }, 2000)
 }
 
 const elRef = ref<HTMLElement | null>(null)
