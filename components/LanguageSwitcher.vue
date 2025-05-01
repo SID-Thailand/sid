@@ -66,10 +66,13 @@ const changeLanguage = async (lang: string) => {
   transform: translateY(vw(18));
   transition:
     grid-template-rows 0.3s ease,
-    opacity 0.3s ease;
+    opacity 0.3s ease,
+    visibility 0.3s ease;
   font-size: vw(16);
   background: transparent;
   color: currentColor;
+  pointer-events: none;
+  visibility: hidden;
 
   @media (max-width: $br1) {
     font-size: 16px;
@@ -79,6 +82,8 @@ const changeLanguage = async (lang: string) => {
   &--opened {
     grid-template-rows: 1fr;
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 }
 
