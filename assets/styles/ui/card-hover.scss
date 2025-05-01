@@ -8,7 +8,6 @@
       clip-path: inset(0%);
     }
     &:hover {
-      transform: scale(0.98);
       #{$child} {
         clip-path: inset(2%);
       }
