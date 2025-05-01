@@ -129,9 +129,8 @@ watch(isOpen, val => {
   position: absolute;
   z-index: 10;
   top: vw(22);
-  left: 0;
+  left: vw(-3);
   max-height: 0;
-  max-width: vw(375);
   width: 100%;
   overflow-y: auto;
   background-color: var(--neutral-100);
@@ -141,6 +140,7 @@ watch(isOpen, val => {
   @media (max-width: $br1) {
     max-width: 385px;
     top: 20px;
+    left: 0;
   }
 
   @media (max-width: $br3) {
