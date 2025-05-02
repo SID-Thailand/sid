@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LucidePlus } from 'lucide-vue-next'
 import type { iHomeNumbers } from '~/types/homeTypes'
 
 interface IProps {
@@ -31,7 +30,7 @@ const { isFormModalOpened } = useAppState()
         @click="isFormModalOpened = true"
       >
         <span>{{ content?.button_text }}</span>
-        <LucidePlus />
+        <IconsPlus />
       </Button>
     </div>
   </section>

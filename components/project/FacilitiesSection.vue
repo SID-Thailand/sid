@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { LucidePlus } from 'lucide-vue-next'
-
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -69,7 +67,7 @@ const { activePage } = useFullPageAnimation(
                 <div class="project-facilities__item">
                   <div class="project-facilities__line" />
                   <div class="project-facilities__item-wrapper">
-                    <LucidePlus class="project-facilities__plus" />
+                    <IconsPlus class="project-facilities__plus" />
                     <div class="project-facilities__info">
                       <h3 class="project-facilities__item-title">
                         {{ item?.title }}
@@ -286,14 +284,15 @@ const { activePage } = useFullPageAnimation(
 .project-facilities__plus {
   display: block;
   color: var(--basic-black);
-  width: vw(20);
-  height: vw(20);
+  width: vw(17);
+  height: vw(17);
   opacity: 0;
   transition: opacity 1s ease;
+  flex: 1 0 auto;
 
   @media (max-width: $br1) {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
   }
 }
 
@@ -303,6 +302,8 @@ const { activePage } = useFullPageAnimation(
   align-items: flex-start;
   flex-direction: column;
   gap: vw(8);
+  flex: 0 1 auto;
+  width: 100%;
 
   @media (max-width: $br1) {
     gap: 4px;

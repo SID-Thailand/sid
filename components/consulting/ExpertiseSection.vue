@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LucidePlus } from 'lucide-vue-next'
 import type { iConsultingExpertise } from '~/types/consultingTypes'
 
 interface IProps {
@@ -26,7 +25,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
           </p>
           <Button class="cons-expertise__btn" type="button">
             <span>{{ content?.button_text }}</span>
-            <LucidePlus />
+            <IconsPlus />
           </Button>
         </div>
         <CustomImage
@@ -48,7 +47,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
             >
               <h3 class="cons-expertise__number-title">{{ item?.number }}</h3>
               <p class="cons-expertise__number-text">{{ item?.text }}</p>
-              <span class="cons-expertise__plus"><LucidePlus /></span>
+              <span class="cons-expertise__plus"><IconsPlus /></span>
             </li>
           </ul>
         </div>

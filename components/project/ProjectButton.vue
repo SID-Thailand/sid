@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { IEventArgs } from '@emotionagency/emotion-scroll'
-import { LucidePlus } from 'lucide-vue-next'
 
 const isVisible = ref(true)
 const swipeDownCount = ref(0)
@@ -51,7 +50,7 @@ onBeforeUnmount(() => {
     }"
   >
     <span>WHATSAPP</span>
-    <LucidePlus />
+    <IconsPlus />
   </Button>
 </template>
 
@@ -72,6 +71,17 @@ onBeforeUnmount(() => {
 
   &--visible {
     transform: translate(-50%, 0);
+  }
+
+  svg {
+    display: block;
+    width: vw(18);
+    height: vw(18);
+
+    @media (max-width: $br1) {
+      width: 14px;
+      height: 14px;
+    }
   }
 }
 </style>

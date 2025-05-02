@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChevronDown, LucidePlus } from 'lucide-vue-next'
+import { ChevronDown } from 'lucide-vue-next'
 import type { iApartment } from '~/types/currentProjectTypes'
 import { scrollTo } from '~/utils/scrollTo'
 
@@ -69,7 +69,7 @@ watch(isOpen, val => {
         >
           <div class="interior-dropdown__line" />
           <div class="interior-dropdown__info-wrapper">
-            <LucidePlus class="interior-dropdown__plus" />
+            <IconsPlus class="interior-dropdown__plus" />
 
             <div class="interior-dropdown__info">
               <h3 class="interior-dropdown__item-title">
@@ -234,9 +234,8 @@ watch(isOpen, val => {
 
 .interior-dropdown__plus {
   display: block;
-  color: var(--basic-black);
-  width: vw(20);
-  height: vw(20);
+  width: vw(16);
+  height: vw(16);
   opacity: 0;
   transition: opacity 0.3s ease;
 
