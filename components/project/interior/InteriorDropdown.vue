@@ -127,7 +127,7 @@ watch(isOpen, val => {
 
 .interior-dropdown__menu {
   position: absolute;
-  z-index: 10;
+  z-index: 15;
   top: vw(22);
   left: vw(-3);
   max-height: 0;
@@ -185,6 +185,7 @@ watch(isOpen, val => {
   @media (max-width: $br1) {
     margin-top: 30px;
     column-gap: 16px;
+    padding: 0 16px;
   }
 }
 
