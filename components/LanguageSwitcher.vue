@@ -1,7 +1,11 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-const isOpen = ref(false)
 const { selectedLang, languages, setLang } = useLang()
+const isOpen = ref(false)
+const langSwitcherRef = ref(null)
+
+onClickOutside(langSwitcherRef, () => {
+  isOpen.value = false
+})
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
@@ -18,7 +22,7 @@ const changeLanguage = async (lang: string) => {
 </script>
 
 <template>
-  <div class="lang-switch">
+  <div ref="langSwitcherRef" class="lang-switch">
     <button class="lang-switch__btn underline-reverse" @click="toggleDropdown">
       {{ selectedLang.toUpperCase() }}
     </button>
