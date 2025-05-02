@@ -273,5 +273,10 @@ useSwipe(containerRef, {
 
 .interior-apart__text {
   position: relative;
+  line-height: 1.25em !important;
+
+  &::before {
+    bottom: 0;
+  }
 }
 </style>
