@@ -41,7 +41,10 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
                 {{ expert?.content?.position }}
               </p>
             </div>
-            <div class="cons-experts__links">
+            <div
+              v-if="expert?.content?.links.length > 0"
+              class="cons-experts__links"
+            >
               <a
                 v-for="(item, id) in expert?.content?.links"
                 :key="id"

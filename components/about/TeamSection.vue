@@ -46,7 +46,10 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
                   {{ member?.content?.position }}
                 </p>
               </div>
-              <div class="ab-team__links">
+              <div
+                v-if="member?.content?.links.length > 0"
+                class="ab-team__links"
+              >
                 <a
                   v-for="(item, id) in member?.content?.links"
                   :key="id"
