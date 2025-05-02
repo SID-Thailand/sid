@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ArrowLeft, ArrowRight } from 'lucide-vue-next'
 import { gsap } from '~/libs/gsap'
 import type { iImage } from '~/types/story'
 
@@ -176,7 +175,7 @@ onUnmounted(() => {
           "
           @touchend="isIndicatorActive = false"
         >
-          <ArrowLeft />
+          <IconsArrowLeft />
         </button>
         <button
           type="button"
@@ -195,7 +194,7 @@ onUnmounted(() => {
           "
           @touchend="isIndicatorActive = false"
         >
-          <ArrowRight />
+          <IconsArrowRight />
         </button>
       </div>
 
@@ -207,8 +206,8 @@ onUnmounted(() => {
         ]"
         :style="{ left: `${cursorX}px`, top: `${cursorY}px` }"
       >
-        <ArrowLeft v-if="cursorType === 'left'" />
-        <ArrowRight v-else />
+        <IconsArrowLeft v-if="cursorType === 'left'" />
+        <IconsArrowRight v-else />
       </div>
     </div>
   </div>
@@ -309,13 +308,13 @@ onUnmounted(() => {
     align-items: center;
     width: 60px;
     height: 60px;
-    background-color: var(--basic-black);
+    background-color: transparent;
     color: var(--basic-white);
     border-radius: 50%;
 
     svg {
-      width: 30px;
-      height: 30px;
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -333,9 +332,7 @@ onUnmounted(() => {
   justify-content: center;
   width: vw(60);
   height: vw(60);
-  border-radius: 50%;
-  background: var(--basic-black);
-  color: var(--basic-white);
+  background-color: transparent;
   z-index: 50;
   opacity: 0;
   visibility: hidden;
@@ -347,8 +344,8 @@ onUnmounted(() => {
 
   &--left svg,
   &--right svg {
-    width: vw(30);
-    height: vw(30);
+    width: vw(22);
+    height: vw(22);
     opacity: 1;
   }
 
