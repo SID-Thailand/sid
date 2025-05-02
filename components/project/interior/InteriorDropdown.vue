@@ -86,7 +86,7 @@ watch(isOpen, val => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .interior-dropdown {
   position: relative;
 }
@@ -180,26 +180,33 @@ watch(isOpen, val => {
   display: flex;
   align-items: flex-start;
   column-gap: vw(16);
-  margin-top: vw(30);
+  padding: vw(30) 0;
+  transition: background-color 0.3s ease;
 
   @media (max-width: $br1) {
-    margin-top: 30px;
+    padding: 30px 0;
     column-gap: 16px;
     padding: 0 16px;
+  }
+
+  &:hover {
+    background-color: var(--neutral-500);
+
+    .interior-dropdown__item-title {
+      color: var(--basic-white);
+    }
+
+    .interior-dropdown__plus {
+      path {
+        fill: var(--basic-white);
+      }
+    }
   }
 }
 
 .interior-dropdown__item {
   cursor: pointer;
   width: 100%;
-
-  &:not(:first-child) {
-    margin-top: vw(30);
-
-    @media (max-width: $br1) {
-      margin-top: 30px;
-    }
-  }
 
   &--active {
     .interior-dropdown__plus {
@@ -238,7 +245,10 @@ watch(isOpen, val => {
   width: vw(16);
   height: vw(16);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    fill 0.3s ease;
+  flex: 1 0 auto;
 
   @media (max-width: $br1) {
     width: 16px;
@@ -252,6 +262,8 @@ watch(isOpen, val => {
   align-items: flex-start;
   flex-direction: column;
   gap: vw(8);
+  flex: 0 1 auto;
+  width: 100%;
 
   @media (max-width: $br1) {
     gap: 4px;
@@ -267,6 +279,7 @@ watch(isOpen, val => {
   font-size: vw(20);
   line-height: 1em;
   color: var(--basic-black);
+  transition: color 0.3s ease;
   @include med;
 
   @media (max-width: $br1) {

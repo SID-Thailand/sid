@@ -87,7 +87,7 @@ const { activePage } = useFullPageAnimation(
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .project-facilities {
   position: relative;
   padding: vw(40) 0;
@@ -258,7 +258,6 @@ const { activePage } = useFullPageAnimation(
 .project-facilities__item {
   @media (min-width: $br1) {
     width: vw(630);
-    padding-bottom: vw(24);
   }
 }
 
@@ -273,11 +272,26 @@ const { activePage } = useFullPageAnimation(
   display: flex;
   align-items: flex-start;
   gap: vw(12);
-  margin-top: vw(24);
+  padding: vw(24) 0;
+  transition: background-color 0.3s ease;
 
   @media (max-width: $br1) {
     gap: 16px;
-    margin-top: 20px;
+    padding: 20px 0;
+  }
+
+  &:hover {
+    background-color: var(--neutral-500);
+
+    .project-facilities__item-title {
+      color: var(--basic-white);
+    }
+
+    .project-facilities__plus {
+      path {
+        fill: var(--basic-white);
+      }
+    }
   }
 }
 
@@ -287,7 +301,9 @@ const { activePage } = useFullPageAnimation(
   width: vw(17);
   height: vw(17);
   opacity: 0;
-  transition: opacity 1s ease;
+  transition:
+    opacity 0.3s ease,
+    fill 0.3s ease;
   flex: 1 0 auto;
 
   @media (max-width: $br1) {
@@ -318,6 +334,7 @@ const { activePage } = useFullPageAnimation(
   text-transform: uppercase;
   font-size: vw(24);
   line-height: 1em;
+  transition: color 0.3s ease;
   @include med;
 
   @media (max-width: $br1) {
