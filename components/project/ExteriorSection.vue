@@ -14,9 +14,8 @@ const activeIdx = ref(0)
 const sliderRef = templateRef('sliderRef')
 const sliderContainerRef = templateRef('sliderContainerRef')
 
-const isDesktop = ref(true)
 const isFullImageModalOpened = ref(false)
-const activeImage = ref<iImage | null>(null)
+const selectedImage = ref<iImage | null>(null)
 
 const slideTo = (idx: number) => {
   if (!sliderRef.value) return
@@ -37,13 +36,12 @@ const slideTo = (idx: number) => {
 }
 
 const onClick = (_e: MouseEvent, img: iImage, idx: number) => {
-  if (!isDesktop.value) {
+  selectedImage.value = img
+  if (idx === activeIdx.value) {
     isFullImageModalOpened.value = true
-    activeImage.value = img
-  } else {
-    if (idx === activeIdx.value) return
-    slideTo(idx)
+    return
   }
+  slideTo(idx)
 }
 
 useSwipe(sliderContainerRef, {
@@ -59,16 +57,8 @@ useSwipe(sliderContainerRef, {
 
 const handleCloseFullImageModal = () => {
   isFullImageModalOpened.value = false
-  activeImage.value = null
+  selectedImage.value = null
 }
-
-onMounted(() => {
-  isDesktop.value = window.innerWidth > 860
-
-  window.addEventListener('resize', () => {
-    isDesktop.value = window.innerWidth > 860
-  })
-})
 </script>
 
 <template>
@@ -100,17 +90,23 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <Modal
+    <ModalsImageSliderModal
+      :is-open="isFullImageModalOpened"
+      :images="content?.assets"
+      :selected-image="selectedImage"
+      @close="handleCloseFullImageModal"
+    />
+    <!-- <Modal
       :is-open="isFullImageModalOpened"
       modal-window-class="project-exterior__modal-wrapper"
       @close="handleCloseFullImageModal"
     >
       <CustomImage
-        :src="activeImage?.filename"
-        :alt="activeImage?.alt"
+        :src="selectedImage?.filename"
+        :alt="selectedImage?.alt"
         class="project-exterior__modal-img"
       />
-    </Modal>
+    </Modal> -->
   </section>
 </template>
 
