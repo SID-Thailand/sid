@@ -189,7 +189,6 @@ const handleCloseFullImageModal = () => {
   @media (max-width: $br1) {
     align-items: flex-start;
     gap: 16px;
-    height: 285px;
   }
 }
 

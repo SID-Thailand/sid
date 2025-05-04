@@ -206,12 +206,6 @@ const { activePage } = useFullPageAnimation(
     column-gap: vw(20);
   }
 
-  @media (max-width: $br1) {
-    &:not(:first-child) {
-      margin-top: 24px;
-    }
-  }
-
   &--active {
     .project-facilities__plus {
       opacity: 1;
@@ -275,23 +269,25 @@ const { activePage } = useFullPageAnimation(
   padding: vw(24) 0;
   transition: background-color 0.3s ease;
 
+  @media (min-width: $br1) {
+    &:hover {
+      background-color: var(--neutral-500);
+
+      .project-facilities__item-title {
+        color: var(--basic-white);
+      }
+
+      .project-facilities__plus {
+        path {
+          fill: var(--basic-white);
+        }
+      }
+    }
+  }
+
   @media (max-width: $br1) {
     gap: 16px;
     padding: 20px 0;
-  }
-
-  &:hover {
-    background-color: var(--neutral-500);
-
-    .project-facilities__item-title {
-      color: var(--basic-white);
-    }
-
-    .project-facilities__plus {
-      path {
-        fill: var(--basic-white);
-      }
-    }
   }
 }
 
