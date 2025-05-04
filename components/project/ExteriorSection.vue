@@ -202,8 +202,8 @@ const handleCloseFullImageModal = () => {
   transition: 1.5s $easing;
 
   @media (max-width: $br1) {
-    height: 109px;
-    width: 164px;
+    height: 332px;
+    width: 332px;
   }
 
   &--active {
@@ -211,8 +211,8 @@ const handleCloseFullImageModal = () => {
     width: vw(600);
 
     @media (max-width: $br1) {
-      height: 285px;
-      width: 285px;
+      height: 332px;
+      width: 332px;
     }
   }
 }
