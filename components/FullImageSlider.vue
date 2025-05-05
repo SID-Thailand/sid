@@ -56,62 +56,32 @@ const handleChangeSlide = async () => {
 
   const dir = direction.value
 
-  const tl = gsap.timeline({
-    overwrite: true,
-  })
+  const tl = gsap.timeline({ overwrite: true })
 
   const from = 'inset(0 0 0 100%)'
   const to = 'inset(0 100% 0 0)'
 
-  tl.set($active, {
-    clipPath: dir === 1 ? from : to,
-  })
+  tl.set($active, { clipPath: dir === 1 ? from : to })
 
-  tl.set($activeImg, {
-    scale: 1.3,
-  })
+  tl.set($activeImg, { scale: 1.3 })
 
   if ($prev) {
     tl.to(
       $prev,
-      {
-        clipPath: dir === 1 ? to : from,
-        duration: 1.5,
-        ease: 'power2.out',
-      },
+      { clipPath: dir === 1 ? to : from, duration: 1.5, ease: 'power2.out' },
       0
     )
 
-    tl.to(
-      $prevImg,
-      {
-        scale: 1.3,
-        duration: 1.5,
-        ease: 'power2.out',
-      },
-      0
-    )
+    tl.to($prevImg, { scale: 1.3, duration: 1.5, ease: 'power2.out' }, 0)
   }
 
   tl.to(
     $active,
-    {
-      clipPath: 'inset(0 0% 0 0%)',
-      duration: 1.5,
-      ease: 'power2.out',
-    },
+    { clipPath: 'inset(0 0% 0 0%)', duration: 1.5, ease: 'power2.out' },
     0
   )
 
-  tl.to(
-    $activeImg,
-    {
-      scale: 1,
-      duration: 1.5,
-      ease: 'power2.out',
-    },
-    0
-  )
+  tl.to($activeImg, { scale: 1, duration: 1.5, ease: 'power2.out' }, 0)
 }
 
 watch(current, handleChangeSlide)
@@ -340,7 +310,7 @@ onUnmounted(() => {
     opacity 0.3s ease,
     transform 0.2s ease,
     visibility 0.3s ease;
-  transform: scale(1);
+  transform: scale(0);
 
   &--left svg,
   &--right svg {
@@ -352,6 +322,7 @@ onUnmounted(() => {
   &.visible {
     opacity: 1;
     visibility: visible;
+    transform: scale(1);
   }
 
   &.active {
