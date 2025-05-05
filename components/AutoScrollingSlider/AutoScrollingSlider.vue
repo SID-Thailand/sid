@@ -170,7 +170,7 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   pointer-events: none;
   opacity: 0;
-  transform: scale(1);
+  transform: scale(0.5);
   transition:
     transform 0.4s ease,
     opacity 0.4s ease;
@@ -183,6 +183,7 @@ onBeforeUnmount(() => {
 
   &.visible {
     opacity: 1;
+    transform: scale(1);
   }
 
   &.active {
