@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { iApartment } from '~/types/currentProjectTypes'
 import InteriorAppartmentSpecs from './InteriorAppartmentSpecs.vue'
+import { delayPromise } from '@emotionagency/utils'
+import { scrollTo } from '#imports'
 
 interface IProps {
   apartments: iApartment[]
@@ -8,15 +10,21 @@ interface IProps {
 
 defineProps<IProps>()
 
+const $el = useTemplateRef<HTMLElement | null>('el')
+
 const selectedApartment = defineModel<iApartment>()
 
-const onSelectApartment = (apartment: iApartment) => {
+const onSelectApartment = async (apartment: iApartment) => {
   selectedApartment.value = apartment
+
+  const top = $el.value?.getBoundingClientRect().top
+  await delayPromise(800)
+  scrollTo(top - 20, true)
 }
 </script>
 
 <template>
-  <div class="interior-aparts">
+  <div ref="el" class="interior-aparts">
     <Transition name="fade" mode="out-in">
       <ProjectInteriorApartment
         :key="selectedApartment._uid"
