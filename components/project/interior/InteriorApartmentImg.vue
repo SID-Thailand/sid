@@ -8,6 +8,8 @@ defineProps<{
   active: boolean
 }>()
 
+const emit = defineEmits(['open'])
+
 const $el = ref<HTMLSpanElement>()
 
 const getVw = (vw: number) => {
@@ -67,6 +69,7 @@ onMounted(async () => {
       :src="img?.filename"
       :alt="img?.alt"
       class="iterior-apart__img"
+      @click="emit('open')"
     />
   </li>
 </template>
@@ -99,6 +102,7 @@ onMounted(async () => {
   max-width: 100%;
   height: auto;
   max-height: 90vh;
+  cursor: pointer;
 
   @media (max-width: $br1) {
     width: auto;

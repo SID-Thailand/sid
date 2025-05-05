@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { gsap } from '~/libs/gsap'
 import type { iApartment } from '~/types/currentProjectTypes'
+import type { iImage } from '~/types/story'
 
 interface IProps {
   apartment: iApartment
@@ -11,6 +12,8 @@ defineProps<IProps>()
 const sliderRef = ref<HTMLUListElement | null>(null)
 const containerRef = ref<HTMLDivElement | null>(null)
 const activeIdx = ref(0)
+const isFullImageModalOpened = ref(false)
+const selectedImage = ref<iImage | null>(null)
 
 const isMobile = useMediaQuery('(max-width: 860px)')
 
@@ -43,6 +46,16 @@ const slideTo = (idx: number) => {
   activeIdx.value = idx
 }
 
+const handleModal = (img: iImage) => {
+  isFullImageModalOpened.value = true
+  selectedImage.value = img
+}
+
+const handleCloseFullImageModal = () => {
+  isFullImageModalOpened.value = false
+  selectedImage.value = null
+}
+
 useSwipe(containerRef, {
   threshold: 50,
   onSwipeEnd: (_, direction) => {
@@ -72,6 +85,7 @@ useSwipe(containerRef, {
           :idx="index"
           :active="activeIdx === index"
           @click="slideTo(index)"
+          @open="handleModal(img)"
         />
       </ul>
     </div>
@@ -114,6 +128,12 @@ useSwipe(containerRef, {
         </div>
       </div>
     </div>
+    <ModalsImageSliderModal
+      :is-open="isFullImageModalOpened"
+      :images="apartment?.assets"
+      :selected-image="selectedImage"
+      @close="handleCloseFullImageModal"
+    />
   </div>
 </template>
 

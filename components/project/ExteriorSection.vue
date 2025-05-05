@@ -96,17 +96,6 @@ const handleCloseFullImageModal = () => {
       :selected-image="selectedImage"
       @close="handleCloseFullImageModal"
     />
-    <!-- <Modal
-      :is-open="isFullImageModalOpened"
-      modal-window-class="project-exterior__modal-wrapper"
-      @close="handleCloseFullImageModal"
-    >
-      <CustomImage
-        :src="selectedImage?.filename"
-        :alt="selectedImage?.alt"
-        class="project-exterior__modal-img"
-      />
-    </Modal> -->
   </section>
 </template>
 
