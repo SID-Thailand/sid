@@ -9,46 +9,43 @@ interface IProps {
 
 defineProps<IProps>()
 
-const sliderRef = ref<HTMLUListElement | null>(null)
-const containerRef = ref<HTMLDivElement | null>(null)
 const activeIdx = ref(0)
+
+const sliderRef = ref<HTMLUListElement | null>(null)
+const sliderContainerRef = ref<HTMLDivElement | null>(null)
+
 const isFullImageModalOpened = ref(false)
 const selectedImage = ref<iImage | null>(null)
 
 const isMobile = useMediaQuery('(max-width: 860px)')
 
 const slideTo = (idx: number) => {
-  if (!sliderRef.value || !containerRef.value) return
+  if (!sliderRef.value || !sliderContainerRef.value) return
 
   if (!isMobile.value) return
 
-  const slider = sliderRef.value
-  const target = slider.children[idx] as HTMLElement
+  const target = sliderRef.value.children[idx] as HTMLElement
   if (!target) return
 
-  const prevSlide = slider.children[activeIdx.value] as HTMLElement
+  const gap = parseFloat(getComputedStyle(sliderRef.value).gap) || 0
+  const itemWidth = target.getBoundingClientRect().width + gap
 
-  const direction = idx > activeIdx.value ? 1 : -1
-
-  const prevSlideWidth = prevSlide.getBoundingClientRect().width
-
-  const tl = gsap.timeline()
-
-  const widthOffset = direction === 1 ? prevSlideWidth / 2 : 0
-
-  const offsetLeft = target.offsetLeft - widthOffset
-  tl.to(slider, {
-    x: -offsetLeft,
-    duration: 1.5,
+  gsap.to(sliderRef.value, {
+    duration: 1,
+    x: -itemWidth * idx,
     ease: 'power2.out',
   })
 
   activeIdx.value = idx
 }
 
-const handleModal = (img: iImage) => {
-  isFullImageModalOpened.value = true
+const handleModal = (_e: MouseEvent, img: iImage, idx: number) => {
   selectedImage.value = img
+  if (idx === activeIdx.value || !isMobile.value) {
+    isFullImageModalOpened.value = true
+    return
+  }
+  slideTo(idx)
 }
 
 const handleCloseFullImageModal = () => {
@@ -56,7 +53,7 @@ const handleCloseFullImageModal = () => {
   selectedImage.value = null
 }
 
-useSwipe(containerRef, {
+useSwipe(sliderContainerRef, {
   threshold: 50,
   onSwipeEnd: (_, direction) => {
     if (direction === 'left') {
@@ -76,16 +73,14 @@ useSwipe(containerRef, {
     <p class="interior-apart__desc interior-apart__desc--mob">
       {{ apartment?.price }}
     </p>
-    <div ref="containerRef" class="interior-apart__img-list-wrapper">
+    <div ref="sliderContainerRef" class="interior-apart__img-list-wrapper">
       <ul ref="sliderRef" class="interior-apart__img-list">
         <ProjectInteriorApartmentImg
           v-for="(img, index) in apartment.assets"
           :key="img._uid"
           :img="img"
           :idx="index"
-          :active="activeIdx === index"
-          @click="slideTo(index)"
-          @open="handleModal(img)"
+          @open="handleModal($event, img, index)"
         />
       </ul>
     </div>
@@ -184,7 +179,6 @@ useSwipe(containerRef, {
     align-items: flex-start;
     min-width: max-content;
     gap: 16px;
-    height: 222px;
   }
 }
 
@@ -192,6 +186,8 @@ useSwipe(containerRef, {
   margin-top: vw(46);
 
   @media (min-width: $br1) {
+    position: sticky;
+    top: calc(vw(46) + vw(20));
     width: vw(382);
   }
 

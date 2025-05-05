@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { IEventArgs } from '@emotionagency/emotion-scroll'
 
-const isVisible = ref(true)
+const isVisible = ref(false)
 const swipeDownCount = ref(0)
 const startY = ref(0)
 

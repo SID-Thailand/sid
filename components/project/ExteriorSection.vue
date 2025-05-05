@@ -11,8 +11,8 @@ defineProps<IProps>()
 
 const activeIdx = ref(0)
 
-const sliderRef = templateRef('sliderRef')
-const sliderContainerRef = templateRef('sliderContainerRef')
+const sliderRef = ref<HTMLUListElement | null>(null)
+const sliderContainerRef = ref<HTMLDivElement | null>(null)
 
 const isFullImageModalOpened = ref(false)
 const selectedImage = ref<iImage | null>(null)
@@ -44,6 +44,11 @@ const onClick = (_e: MouseEvent, img: iImage, idx: number) => {
   slideTo(idx)
 }
 
+const handleCloseFullImageModal = () => {
+  isFullImageModalOpened.value = false
+  selectedImage.value = null
+}
+
 useSwipe(sliderContainerRef, {
   threshold: 50,
   onSwipeEnd: (_, direction) => {
@@ -54,11 +59,6 @@ useSwipe(sliderContainerRef, {
     }
   },
 })
-
-const handleCloseFullImageModal = () => {
-  isFullImageModalOpened.value = false
-  selectedImage.value = null
-}
 </script>
 
 <template>
@@ -210,19 +210,9 @@ const handleCloseFullImageModal = () => {
   object-fit: cover;
   width: 100%;
   height: 100%;
-}
 
-.project-exterior__modal-wrapper {
-  max-height: 100svh;
-  height: 100%;
-  width: 100%;
-  max-width: 100vw !important;
-}
-
-.project-exterior__modal-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  @media (max-width: $br1) {
+    object-fit: cover;
+  }
 }
 </style>

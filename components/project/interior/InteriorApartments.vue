@@ -41,6 +41,8 @@ const onSelectApartment = (apartment: iApartment) => {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    position: sticky;
+    top: vw(20);
     gap: vw(76);
   }
 }
@@ -56,6 +58,7 @@ const onSelectApartment = (apartment: iApartment) => {
 .interior-aparts__dropdown {
   width: vw(382);
   position: relative;
+
   @media (max-width: $br1) {
     width: 100%;
   }

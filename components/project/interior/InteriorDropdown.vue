@@ -184,9 +184,8 @@ watch(isOpen, val => {
   transition: background-color 0.3s ease;
 
   @media (max-width: $br1) {
-    padding: 30px 0;
+    padding: 30px 16px;
     column-gap: 16px;
-    padding: 0 16px;
   }
 
   &:hover {
