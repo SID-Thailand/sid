@@ -7,10 +7,19 @@ export const scrollTo = (
 ) => {
   const scrollTop = getScrollEl().scrollTop + to
 
+  window.escroll.disabled = true
+
   gsap.to(getScrollEl(), {
     duration: immediate ? 0 : 0.8,
-    scrollTop,
-    ease: 'power2.out',
-    onComplete,
+    scrollTo: { y: scrollTop, autoKill: true },
+    onComplete: () => {
+      window.escroll.state.position = scrollTop
+      window.escroll.state.vsPosition = scrollTop
+      window.escroll.disabled = false
+
+      if (onComplete) {
+        onComplete()
+      }
+    },
   })
 }

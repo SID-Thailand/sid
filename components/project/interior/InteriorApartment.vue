@@ -186,8 +186,8 @@ useSwipe(sliderContainerRef, {
   margin-top: vw(46);
 
   @media (min-width: $br1) {
-    position: sticky;
-    top: calc(vw(46) + vw(20));
+    // position: sticky;
+    // top: calc(vw(46) + vw(20));
     width: vw(382);
   }
 

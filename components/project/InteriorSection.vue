@@ -20,6 +20,16 @@ const selectedAppart = reactiveComputed(() => {
     value: apparts?.value?.[0],
   }
 })
+
+useIntersectionObserver($el, ([entry]) => {
+  const isIntersecting = entry?.isIntersecting || false
+
+  if (isIntersecting) {
+    document.documentElement.classList.add('header-disabled')
+  } else {
+    document.documentElement.classList.remove('header-disabled')
+  }
+})
 </script>
 
 <template>

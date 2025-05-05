@@ -41,8 +41,8 @@ const onSelectApartment = (apartment: iApartment) => {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    position: sticky;
-    top: vw(20);
+    // position: sticky;
+    // top: vw(20);
     gap: vw(76);
   }
 }
