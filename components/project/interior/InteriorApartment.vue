@@ -11,8 +11,10 @@ defineProps<IProps>()
 
 const activeIdx = ref(0)
 
-const sliderRef = ref<HTMLUListElement | null>(null)
-const sliderContainerRef = ref<HTMLDivElement | null>(null)
+const sliderRef = useTemplateRef<HTMLUListElement | null>('sliderRef')
+const sliderContainerRef = useTemplateRef<HTMLDivElement | null>(
+  'sliderContainerRef'
+)
 
 const isFullImageModalOpened = ref(false)
 const selectedImage = ref<iImage | null>(null)
@@ -67,6 +69,7 @@ useSwipe(sliderContainerRef, {
 
 <template>
   <div class="interior-apart">
+    <slot />
     <h3 class="interior-apart__name interior-apart__name--mob">
       {{ apartment?.name }}
     </h3>
@@ -84,45 +87,6 @@ useSwipe(sliderContainerRef, {
         />
       </ul>
     </div>
-    <div class="interior-apart__content">
-      <h3 class="interior-apart__name">
-        {{ apartment?.name }}
-      </h3>
-      <p class="interior-apart__desc">
-        {{ apartment?.price }}
-      </p>
-      <div class="interior-apart__about">
-        <div class="interior-apart__about-wrapper">
-          <div class="interior-apart__line" />
-          <div class="interior-apart__about-content">
-            <p class="interior-apart__title">Area</p>
-            <p class="interior-apart__text">{{ apartment?.area }}</p>
-          </div>
-        </div>
-        <div class="interior-apart__about-wrapper">
-          <div class="interior-apart__line" />
-          <div class="interior-apart__about-content">
-            <p class="interior-apart__title">Info</p>
-            <p class="interior-apart__text">{{ apartment?.info }}</p>
-          </div>
-        </div>
-        <div class="interior-apart__about-wrapper">
-          <div class="interior-apart__line" />
-          <div class="interior-apart__about-content">
-            <p class="interior-apart__title">Plan</p>
-            <a
-              v-if="apartment?.plan?.[0]"
-              :href="apartment.plan[0]?.link?.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="interior-apart__text underline-reverse"
-            >
-              {{ apartment.plan[0]?.label }}
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
     <ModalsImageSliderModal
       :is-open="isFullImageModalOpened"
       :images="apartment?.assets"
@@ -132,13 +96,11 @@ useSwipe(sliderContainerRef, {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .interior-apart {
   display: flex;
   align-items: flex-start;
-  gap: vw(76);
   color: var(--basic-black);
-  margin-top: vw(-23);
 
   @media (max-width: $br1) {
     flex-direction: column;
@@ -183,11 +145,9 @@ useSwipe(sliderContainerRef, {
 }
 
 .interior-apart__content {
-  margin-top: vw(46);
+  margin-top: vw(24);
 
   @media (min-width: $br1) {
-    // position: sticky;
-    // top: calc(vw(46) + vw(20));
     width: vw(382);
   }
 

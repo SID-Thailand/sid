@@ -7,7 +7,7 @@ interface IProps {
 
 const props = defineProps<IProps>()
 
-const $el = ref<HTMLElement | null>(null)
+const $el = useTemplateRef<HTMLElement | null>('el')
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
 
@@ -33,7 +33,7 @@ useIntersectionObserver($el, ([entry]) => {
 </script>
 
 <template>
-  <section ref="$el" class="project-interior">
+  <section ref="el" class="project-interior">
     <div class="project-interior__wrapper container">
       <div class="project-interior__content">
         <h2 class="project-interior__title">
