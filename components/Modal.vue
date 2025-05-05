@@ -129,6 +129,7 @@ watch(
   height: vw(22);
   background: transparent;
   border: none;
+  z-index: 10;
   cursor: pointer;
 
   &::before,

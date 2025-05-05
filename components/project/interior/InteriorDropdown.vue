@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChevronDown, LucidePlus } from 'lucide-vue-next'
+import { ChevronDown } from 'lucide-vue-next'
 import type { iApartment } from '~/types/currentProjectTypes'
 import { scrollTo } from '~/utils/scrollTo'
 
@@ -30,11 +30,11 @@ watch(isOpen, val => {
     const top = el.value?.getBoundingClientRect().top
 
     scrollTo(top - 20, false, () => {
-      window.escroll.disabled = true
+      // window.escroll.disabled = true
       getScrollEl().classList.add('full-page')
     })
   } else {
-    window.escroll.disabled = false
+    // window.escroll.disabled = false
     getScrollEl().classList.remove('full-page')
   }
 })
@@ -69,7 +69,7 @@ watch(isOpen, val => {
         >
           <div class="interior-dropdown__line" />
           <div class="interior-dropdown__info-wrapper">
-            <LucidePlus class="interior-dropdown__plus" />
+            <IconsPlus class="interior-dropdown__plus" />
 
             <div class="interior-dropdown__info">
               <h3 class="interior-dropdown__item-title">
@@ -86,7 +86,7 @@ watch(isOpen, val => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .interior-dropdown {
   position: relative;
 }
@@ -127,11 +127,10 @@ watch(isOpen, val => {
 
 .interior-dropdown__menu {
   position: absolute;
-  z-index: 10;
+  z-index: 15;
   top: vw(22);
-  left: 0;
+  left: vw(-3);
   max-height: 0;
-  max-width: vw(375);
   width: 100%;
   overflow-y: auto;
   background-color: var(--neutral-100);
@@ -141,6 +140,7 @@ watch(isOpen, val => {
   @media (max-width: $br1) {
     max-width: 385px;
     top: 20px;
+    left: 0;
   }
 
   @media (max-width: $br3) {
@@ -180,25 +180,32 @@ watch(isOpen, val => {
   display: flex;
   align-items: flex-start;
   column-gap: vw(16);
-  margin-top: vw(30);
+  padding: vw(30) 0;
+  transition: background-color 0.3s ease;
 
   @media (max-width: $br1) {
-    margin-top: 30px;
+    padding: 30px 16px;
     column-gap: 16px;
+  }
+
+  &:hover {
+    background-color: var(--neutral-500);
+
+    .interior-dropdown__item-title {
+      color: var(--basic-white);
+    }
+
+    .interior-dropdown__plus {
+      path {
+        fill: var(--basic-white);
+      }
+    }
   }
 }
 
 .interior-dropdown__item {
   cursor: pointer;
   width: 100%;
-
-  &:not(:first-child) {
-    margin-top: vw(30);
-
-    @media (max-width: $br1) {
-      margin-top: 30px;
-    }
-  }
 
   &--active {
     .interior-dropdown__plus {
@@ -234,11 +241,13 @@ watch(isOpen, val => {
 
 .interior-dropdown__plus {
   display: block;
-  color: var(--basic-black);
-  width: vw(20);
-  height: vw(20);
+  width: vw(16);
+  height: vw(16);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    fill 0.3s ease;
+  flex: 1 0 auto;
 
   @media (max-width: $br1) {
     width: 16px;
@@ -252,6 +261,8 @@ watch(isOpen, val => {
   align-items: flex-start;
   flex-direction: column;
   gap: vw(8);
+  flex: 0 1 auto;
+  width: 100%;
 
   @media (max-width: $br1) {
     gap: 4px;
@@ -267,6 +278,7 @@ watch(isOpen, val => {
   font-size: vw(20);
   line-height: 1em;
   color: var(--basic-black);
+  transition: color 0.3s ease;
   @include med;
 
   @media (max-width: $br1) {

@@ -90,7 +90,7 @@ const onClick = () => {
             </div>
           </div>
           <div aria-hidden="true" class="fpc__icon" aria-label="View project">
-            <IconsPlus />
+            <IconsGradientPlus />
           </div>
         </NuxtLink>
         <div class="featured-projects__text">

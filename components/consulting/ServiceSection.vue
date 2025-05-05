@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { LucidePlus } from 'lucide-vue-next'
 import type { iConsultingService } from '~/types/consultingTypes'
 
 interface IProps {
@@ -66,7 +65,7 @@ const { activePage } = useFullPageAnimation(
                 <div class="cons-service__item">
                   <div class="cons-service__line" />
                   <div class="cons-service__item-wrapper">
-                    <LucidePlus class="cons-service__plus" />
+                    <IconsPlus class="cons-service__plus" />
                     <div class="cons-service__info">
                       <h3 class="cons-service__item-title">
                         {{ item?.text }}
@@ -83,7 +82,7 @@ const { activePage } = useFullPageAnimation(
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .cons-service {
   position: relative;
   padding: vw(40) 0;
@@ -277,15 +276,18 @@ const { activePage } = useFullPageAnimation(
 
 .cons-service__plus {
   display: block;
-  color: var(--basic-white);
-  width: vw(20);
-  height: vw(20);
+  width: vw(16);
+  height: vw(16);
   opacity: 0;
   transition: opacity 0.3s ease;
 
   @media (max-width: $br1) {
     width: 16px;
     height: 16px;
+  }
+
+  path {
+    fill: var(--basic-white);
   }
 }
 

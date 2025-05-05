@@ -92,7 +92,7 @@ const onSubmit = () => {
 
   setTimeout(() => {
     isShowThankYou.value = false
-  }, 4000)
+  }, 2000)
 }
 
 const elRef = ref<HTMLElement | null>(null)
@@ -237,6 +237,7 @@ onBeforeUnmount(() => {
   justify-content: center;
   align-items: center;
   gap: vw(24);
+  z-index: 50;
 
   @media (max-width: $br1) {
     gap: 16px;

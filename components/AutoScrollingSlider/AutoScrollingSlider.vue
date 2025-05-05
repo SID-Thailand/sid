@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
-import { LucidePlus } from 'lucide-vue-next'
 import { delayPromise } from '@emotionagency/utils'
 import { Slider } from '~/utils/InfiniteSlider'
 
@@ -48,8 +47,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="scrolling-slider">
     <div class="scrolling-slider__plus-wrapper">
-      <LucidePlus />
-      <LucidePlus />
+      <IconsPlus />
+      <IconsPlus />
     </div>
     <div
       ref="el"
@@ -133,8 +132,8 @@ onBeforeUnmount(() => {
     color: var(--basic-black);
 
     @media (max-width: $br1) {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
   }
 }

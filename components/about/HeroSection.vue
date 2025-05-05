@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LucidePlus } from 'lucide-vue-next'
 import type { iAboutHero } from '~/types/aboutTypes'
 
 interface IProps {
@@ -37,7 +36,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
         >
           <h3 class="about-hero__number-title">{{ item?.number }}</h3>
           <p class="about-hero__number-text">{{ item?.text }}</p>
-          <span class="about-hero__plus"><LucidePlus /></span>
+          <span class="about-hero__plus"><IconsPlus /></span>
         </li>
       </ul>
       <VideoInterview
