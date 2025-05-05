@@ -124,7 +124,8 @@ watch(isOpen, val => {
   top: vw(22);
   left: vw(-3);
   max-height: 0;
-  width: 100%;
+  height: 100vh;
+  width: 101%;
   overflow-y: auto;
   background-color: var(--neutral-100);
   transition: max-height 0.8s ease;
@@ -143,7 +144,7 @@ watch(isOpen, val => {
   }
 
   &--opened {
-    max-height: clamp(vw(500), vw(500), 50vh);
+    max-height: clamp(vw(500), vw(500), 100vh);
 
     @media (max-width: $br1) {
       height: 100vh;
