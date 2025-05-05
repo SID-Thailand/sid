@@ -43,22 +43,21 @@ const handleChangeSlide = () => {
   const $active = $items.value[current.value]
   const $prev = prev.value != null ? $items.value[prev.value] : null
   const $activeImg = $active?.querySelector('img')
-  const $prevImg = $prev?.querySelector('img')
+  // const $prevImg = $prev?.querySelector('img')
 
   gsap.set($active, { opacity: 0, zIndex: 2 })
 
   const tl = gsap.timeline({ overwrite: true })
 
   if ($prev) {
-    tl.to(
-      $prev,
-      { opacity: 0, zIndex: 1, duration: 1, ease: 'power2.out' },
-      0
-    ).to($prevImg, { scale: 1.3, duration: 1, ease: 'power2.out' }, 0)
+    tl.to($prev, { opacity: 0, zIndex: 1, duration: 1, ease: 'power2.out' }, 0)
   }
 
-  tl.to($active, { opacity: 1, duration: 1, ease: 'power2.out' }, 0).to(
+  tl.to($active, { opacity: 1, duration: 1, ease: 'power2.out' }, 0)
+
+  tl.fromTo(
     $activeImg,
+    { scale: 1.1 },
     { scale: 1, duration: 1, ease: 'power2.out' },
     0
   )
