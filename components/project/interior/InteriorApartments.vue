@@ -2,7 +2,7 @@
 import type { iApartment } from '~/types/currentProjectTypes'
 import InteriorAppartmentSpecs from './InteriorAppartmentSpecs.vue'
 import { delayPromise } from '@emotionagency/utils'
-import { scrollTo } from '#imports'
+import { scrollTo } from '~/utils/scrollTo'
 
 interface IProps {
   apartments: iApartment[]
