@@ -112,10 +112,18 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resize.off(getHeight)
 })
+
+const isAnimating = ref(false)
 </script>
 
 <template>
-  <section ref="elRef" class="quiz">
+  <section
+    ref="elRef"
+    class="quiz"
+    :class="{
+      'is-animating': isAnimating,
+    }"
+  >
     <div class="quiz__wrapper">
       <h2 class="quiz__title">{{ content?.quiz?.content?.title }}</h2>
       <div
@@ -134,6 +142,7 @@ onBeforeUnmount(() => {
           :prev-idx="prevIdx"
           :size="steps?.length + 1"
           class="quiz__item"
+          @animating="isAnimating = $event"
         />
         <QuizForm
           v-model="formData"
@@ -188,6 +197,9 @@ onBeforeUnmount(() => {
   position: relative;
   padding: vw(100);
   background-color: var(--basic-black);
+  &.is-animating {
+    pointer-events: none;
+  }
 
   @media (max-width: $br1) {
     padding: 60px 16px;

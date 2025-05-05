@@ -10,8 +10,11 @@ interface IProps {
 }
 
 const props = defineProps<IProps>()
+const emit = defineEmits(['animating'])
 
 const itemRef = ref<HTMLElement | null>(null)
+
+const isAnimating = ref(false)
 
 const distanceFromActive = computed(() => {
   const distance = Math.abs(props.activeIdx - props.idx)
@@ -23,10 +26,6 @@ const background = computed(() => {
     return 'var(--gradient-secondary)'
   }
 
-  // if (distanceFromActive.value === 2) {
-  //   return 'var(--accent-quaternary)'
-  // }
-
   return '#57534C'
 })
 
@@ -34,7 +33,13 @@ const animate = async () => {
   const el = itemRef.value
   if (!el) return
 
-  const tl = gsap.timeline()
+  isAnimating.value = true
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      isAnimating.value = false
+    },
+  })
   const isActive = props.activeIdx === props.idx
   const wasActive = props.prevIdx === props.idx
   const distance = distanceFromActive.value
@@ -50,7 +55,7 @@ const animate = async () => {
     tl.fromTo(
       el,
       {
-        y: props.activeIdx > props.prevIdx ? '100%' : '-100%',
+        y: '100%',
         scale: targetScale,
       },
       {
@@ -94,6 +99,10 @@ watch(
     animate()
   }
 )
+
+watch(isAnimating, val => {
+  emit('animating', val)
+})
 
 onMounted(() => {
   animate()
