@@ -45,7 +45,7 @@ const answer = defineModel<string | null>()
   margin-top: vw(60);
 
   @media (max-width: $br1) {
-    margin-top: 40px;
+    margin-top: 24px;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     row-gap: 40px;

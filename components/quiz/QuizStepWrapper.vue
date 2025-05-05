@@ -153,7 +153,7 @@ onMounted(() => {
 
   @media (max-width: $br1) {
     border-radius: 20px 20px 0 0;
-    padding: 50px 25px;
+    padding: 25px;
   }
 
   @media (max-width: $br3) {
@@ -178,6 +178,9 @@ onMounted(() => {
   color: var(--neutral-200);
   text-align: center;
   @include subheading-h3;
+  @media (max-width: $br4) {
+    font-size: 14px;
+  }
 }
 
 .quiz-step__quiz-name {
@@ -190,12 +193,13 @@ onMounted(() => {
   @include med;
 
   @media (max-width: $br1) {
-    margin-top: 12px;
-    font-size: size(40, 24);
+    margin-top: 4px;
+    max-width: none;
+    font-size: size(40, 16);
   }
 
   @media (max-width: $br4) {
-    font-size: 24px;
+    font-size: 16px;
   }
 }
 </style>
