@@ -55,6 +55,7 @@ const onClick = () => {
         <NuxtLink
           :to="`/${activeProject.full_slug}`"
           data-t-card
+          :data-slug="activeProject?.slug"
           class="featured-projects__card fpc"
           @click="onClick"
         >

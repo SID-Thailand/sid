@@ -56,7 +56,11 @@ const replaceLineBreaks = (content: string) => {
         </div>
 
         <div class="projects__layer" />
-        <div class="projects__card" data-t-card>
+        <div
+          class="projects__card"
+          data-t-card
+          :data-slug="activeProject?.slug"
+        >
           <div data-t-assets class="projects__assets">
             <div
               v-for="(item, idx) in projects"

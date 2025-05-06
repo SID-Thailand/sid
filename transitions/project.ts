@@ -99,7 +99,9 @@ export const projectTransition: TransitionProps = {
 
     $photo = el.querySelector(`[data-t-img][data-slug="${slug}"]`)
 
-    const $card = el.querySelector('[data-t-card]') as HTMLElement
+    const $card = el.querySelector(
+      `[data-t-card][data-slug="${slug}"]`
+    ) as HTMLElement
 
     const { offsetX, offsetY } = getOffsetFromCenter($card)
 
