@@ -173,8 +173,9 @@ const onClick = () => {
   @media (max-width: $br1) {
     width: 100vw;
     overflow-x: auto;
-    padding-right: 32px;
+
     padding-left: 32px;
+    margin-left: -32px;
   }
 
   @media (max-width: $br3) {
