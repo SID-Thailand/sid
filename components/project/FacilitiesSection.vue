@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { resize } from '@emotionagency/utils'
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -21,6 +22,50 @@ const { activePage } = useFullPageAnimation(
   itemsCount,
   isMobile
 )
+
+const overlay = ref({
+  y: 0,
+  height: 0,
+})
+
+const $overlay = useTemplateRef('overlayRef')
+
+const setOverlay = (el: HTMLElement) => {
+  const rect = el.getBoundingClientRect()
+  const overlayRect = $overlay.value?.getBoundingClientRect()
+  if (!overlayRect) return
+
+  overlay.value = {
+    y: el.offsetTop,
+    height: rect.height,
+  }
+}
+
+const onChange = () => {
+  if (!import.meta.client) return
+  if (!contentRef.value) return
+
+  const $items = contentRef.value?.querySelectorAll(
+    '.project-facilities__content-wrapper'
+  )
+  const $active = $items?.[activePage.value - 1] as HTMLElement
+
+  if (!$active) return
+
+  setOverlay($active)
+}
+
+watchImmediate(activePage, () => {
+  onChange()
+})
+
+onMounted(() => {
+  resize.on(onChange)
+})
+
+onBeforeUnmount(() => {
+  resize.off(onChange)
+})
 </script>
 
 <template>
@@ -54,6 +99,15 @@ const { activePage } = useFullPageAnimation(
           </div>
           <div class="project-facilities__content-c">
             <div data-f-scroller class="project-facilities__content">
+              <div
+                ref="overlayRef"
+                aria-hidden="true"
+                class="project-facilities__overlay"
+                :style="{
+                  '--top': overlay.y + 'px',
+                  '--height': overlay.height + 'px',
+                }"
+              />
               <div
                 v-for="(item, idx) in content?.slider"
                 :key="idx"
@@ -199,6 +253,7 @@ const { activePage } = useFullPageAnimation(
 }
 
 .project-facilities__content-wrapper {
+  position: relative;
   @media (min-width: $br1) {
     display: flex;
     justify-content: flex-end;
@@ -210,6 +265,34 @@ const { activePage } = useFullPageAnimation(
     .project-facilities__plus {
       opacity: 1;
     }
+
+    @media (min-width: $br1) {
+      .project-facilities__item-title {
+        color: var(--basic-white);
+      }
+
+      .project-facilities__plus {
+        path {
+          fill: var(--basic-white);
+        }
+      }
+    }
+  }
+}
+
+.project-facilities__overlay {
+  position: absolute;
+  left: 0;
+  transition: all 0.8s ease;
+  transition-property: top, height;
+  top: var(--top);
+  width: 100%;
+  height: var(--height);
+  background-color: var(--neutral-500);
+  z-index: 0;
+
+  @media (max-width: $br1) {
+    display: none;
   }
 }
 
@@ -266,24 +349,7 @@ const { activePage } = useFullPageAnimation(
   display: flex;
   align-items: flex-start;
   gap: vw(12);
-  padding: vw(24) 0;
-  transition: background-color 0.3s ease;
-
-  @media (min-width: $br1) {
-    &:hover {
-      background-color: var(--neutral-500);
-
-      .project-facilities__item-title {
-        color: var(--basic-white);
-      }
-
-      .project-facilities__plus {
-        path {
-          fill: var(--basic-white);
-        }
-      }
-    }
-  }
+  padding: vw(24) vw(20);
 
   @media (max-width: $br1) {
     gap: 16px;
@@ -298,8 +364,8 @@ const { activePage } = useFullPageAnimation(
   height: vw(17);
   opacity: 0;
   transition:
-    opacity 0.3s ease,
-    fill 0.3s ease;
+    opacity 0.8s ease,
+    fill 0.8s ease;
   flex: 1 0 auto;
 
   @media (max-width: $br1) {
@@ -330,7 +396,7 @@ const { activePage } = useFullPageAnimation(
   text-transform: uppercase;
   font-size: vw(24);
   line-height: 1em;
-  transition: color 0.3s ease;
+  transition: color 0.8s ease;
   @include med;
 
   @media (max-width: $br1) {
