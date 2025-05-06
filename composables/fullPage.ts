@@ -171,6 +171,8 @@ export const useFullPage = (
     window.removeEventListener('touchstart', onTouchStart, false)
     window.removeEventListener('touchmove', onScroll)
     window.removeEventListener('keydown', onKeydown)
+
+    getScrollEl().classList.remove('full-page')
   })
 
   return { isFullPage, activePage, prevPage, direction }

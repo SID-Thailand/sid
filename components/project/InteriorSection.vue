@@ -30,6 +30,10 @@ useIntersectionObserver($el, ([entry]) => {
     document.documentElement.classList.remove('header-disabled')
   }
 })
+
+onBeforeUnmount(() => {
+  document.documentElement.classList.remove('header-disabled')
+})
 </script>
 
 <template>
