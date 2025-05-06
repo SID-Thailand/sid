@@ -73,11 +73,8 @@ const togglePlay = () => {
 
   @media (max-width: $br1) {
     width: 100%;
-    height: size(370, 229);
-  }
-
-  @media (max-width: $br4) {
-    height: 229px;
+    height: auto;
+    aspect-ratio: 16/9;
   }
 }
 

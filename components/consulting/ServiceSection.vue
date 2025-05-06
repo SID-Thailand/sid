@@ -11,7 +11,7 @@ const contentRef = ref<HTMLElement | null>(null)
 
 const itemsCount = computed(() => props?.content?.service?.length || 0)
 
-const isMobile = computed(() => window.innerWidth < 768)
+const isMobile = computed(() => window.innerWidth <= 768)
 
 const { activePage } = useFullPageAnimation(
   contentRef as Ref<HTMLElement>,
