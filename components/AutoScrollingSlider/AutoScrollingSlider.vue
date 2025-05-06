@@ -42,6 +42,14 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   sliderInstance?.destroy()
 })
+
+useIntersectionObserver(el, ([entry]) => {
+  const isIntersecting = entry?.isIntersecting || false
+
+  if (!isIntersecting) {
+    isIndicatorVisible.value = false
+  }
+})
 </script>
 
 <template>

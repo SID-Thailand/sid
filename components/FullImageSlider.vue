@@ -15,16 +15,22 @@ const direction = ref<1 | -1>(1)
 const cursorX = ref(0)
 const cursorY = ref(0)
 const cursorType = ref<'left' | 'right' | null>(null)
-const isIndicatorActive = ref(false)
+const isIndicatorVisible = ref(false)
 
 const $items = ref<HTMLElement[]>([])
+const $el = useTemplateRef('el')
 
 const handleMouseMove = (e: MouseEvent) => {
   cursorX.value = e.clientX
   cursorY.value = e.clientY
+
+  isIndicatorVisible.value = true
 }
 
 const setCursor = (type: 'left' | 'right' | null) => {
+  if (type === null) {
+    isIndicatorVisible.value = false
+  }
   cursorType.value = type
 }
 
@@ -102,10 +108,18 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
+
+useIntersectionObserver($el, ([entry]) => {
+  const isIntersecting = entry?.isIntersecting || false
+
+  if (!isIntersecting) {
+    setCursor(null)
+  }
+})
 </script>
 
 <template>
-  <div class="full-slider">
+  <div ref="el" class="full-slider">
     <div
       class="full-slider__wrapper"
       @mousemove="handleMouseMove"
@@ -131,38 +145,18 @@ onUnmounted(() => {
         <button
           type="button"
           class="full-slider__btn"
-          :class="{ active: isIndicatorActive && cursorType === 'left' }"
+          :class="{ visible: cursorType === 'left' }"
           @click="throttledNavigate(-1)"
           @mouseenter="setCursor('left')"
-          @mouseleave="setCursor(null)"
-          @mousedown="isIndicatorActive = true"
-          @mouseup="isIndicatorActive = false"
-          @touchstart="
-            () => {
-              isIndicatorActive = true
-              setCursor('left')
-            }
-          "
-          @touchend="isIndicatorActive = false"
         >
           <IconsArrowLeft />
         </button>
         <button
           type="button"
           class="full-slider__btn"
-          :class="{ active: isIndicatorActive && cursorType === 'right' }"
+          :class="{ visible: cursorType === 'right' }"
           @click="throttledNavigate(1)"
           @mouseenter="setCursor('right')"
-          @mouseleave="setCursor(null)"
-          @mousedown="isIndicatorActive = true"
-          @mouseup="isIndicatorActive = false"
-          @touchstart="
-            () => {
-              isIndicatorActive = true
-              setCursor('right')
-            }
-          "
-          @touchend="isIndicatorActive = false"
         >
           <IconsArrowRight />
         </button>
@@ -172,9 +166,12 @@ onUnmounted(() => {
         class="full-slider__cursor"
         :class="[
           `full-slider__cursor--${cursorType}`,
-          { visible: cursorType !== null, active: isIndicatorActive },
+          isIndicatorVisible && 'visible',
         ]"
-        :style="{ left: `${cursorX}px`, top: `${cursorY}px` }"
+        :style="{
+          '--indicator-x': cursorX + 'px',
+          '--indicator-y': cursorY + 'px',
+        }"
       >
         <IconsArrowLeft v-if="cursorType === 'left'" />
         <IconsArrowRight v-else />
@@ -188,6 +185,10 @@ onUnmounted(() => {
   position: relative;
   height: 100dvh;
   width: 100%;
+  cursor: none;
+  * {
+    cursor: none;
+  }
 }
 
 .full-slider__wrapper {
@@ -251,7 +252,6 @@ onUnmounted(() => {
 }
 
 .full-slider__btn {
-  cursor: none;
   background-color: transparent;
   transform: scale(1);
   transition: transform 0.2s ease;
@@ -296,19 +296,20 @@ onUnmounted(() => {
 .full-slider__cursor {
   pointer-events: none;
   position: fixed;
-  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
   width: vw(60);
   height: vw(60);
+  top: calc(var(--indicator-y, 0px) - vw(30));
+  left: calc(var(--indicator-x, 0px) - vw(30));
   background-color: transparent;
   z-index: 50;
   opacity: 0;
   visibility: hidden;
   transition:
     opacity 0.3s ease,
-    transform 0.2s ease,
+    transform 0.5s ease,
     visibility 0.3s ease;
   transform: scale(0);
 
@@ -323,10 +324,6 @@ onUnmounted(() => {
     opacity: 1;
     visibility: visible;
     transform: scale(1);
-  }
-
-  &.active {
-    transform: scale(0.8);
   }
 
   @media (max-width: $br1) {
