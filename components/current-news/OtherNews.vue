@@ -104,12 +104,13 @@ const slicedNews = computed(() => {
 
 .other-news__wrapper {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
   row-gap: vw(100);
 
   @media (max-width: $br1) {
     row-gap: 40px;
+    align-items: flex-start;
   }
 }
 
@@ -288,11 +289,9 @@ const slicedNews = computed(() => {
 
 .other-news__btn {
   display: block;
-  margin-top: vw(100);
 
   @media (max-width: $br1) {
     margin: 0 auto;
-    margin-top: 40px;
     width: fit-content;
     padding: 25px 20px !important;
   }
