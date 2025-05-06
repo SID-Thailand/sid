@@ -40,18 +40,21 @@ const replaceLineBreaks = (content: string) => {
   <section class="projects">
     <div ref="contentRef" class="projects__wrapper">
       <div class="projects__slider container">
-        <div
-          v-for="(img, idx) in projects"
-          :key="idx"
-          class="projects__bg-wrapper"
-        >
-          <CustomImage
-            data-f-bg
-            :src="img?.content?.cover?.filename"
-            :aly="img?.content?.cover?.alt"
-            class="projects__bg"
-          />
+        <div class="projects__bgs">
+          <div
+            v-for="(img, idx) in projects"
+            :key="idx"
+            class="projects__bg-wrapper"
+          >
+            <CustomImage
+              data-f-bg
+              :src="img?.content?.cover?.filename"
+              :alt="img?.content?.cover?.alt"
+              class="projects__bg"
+            />
+          </div>
         </div>
+
         <div class="projects__layer" />
         <div class="projects__card" data-t-card>
           <div data-t-assets class="projects__assets">
@@ -132,12 +135,27 @@ const replaceLineBreaks = (content: string) => {
   align-items: center;
 }
 
+.projects__bgs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
 .projects__bg-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  &:not(:first-child) {
+    .projects__bg {
+      clip-path: inset(100% 0 0 0);
+    }
+  }
 }
 
 .projects__bg {
@@ -155,6 +173,7 @@ const replaceLineBreaks = (content: string) => {
   height: 100%;
   background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
   mix-blend-mode: hard-light;
+  z-index: 1;
 }
 
 .projects__card {
@@ -205,6 +224,12 @@ const replaceLineBreaks = (content: string) => {
 
   &:first-child {
     position: relative;
+  }
+
+  &:not(:first-child) {
+    img {
+      clip-path: inset(100% 0 0 0);
+    }
   }
 }
 
@@ -283,6 +308,7 @@ const replaceLineBreaks = (content: string) => {
   top: 50%;
   transform: translateY(-50%);
   left: 0;
+  z-index: 3;
   display: flex;
   justify-content: space-between;
   align-items: center;
