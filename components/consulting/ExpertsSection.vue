@@ -158,7 +158,8 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   }
 
   @media (max-width: $br1) {
-    height: 344px;
+    height: auto;
+    aspect-ratio: 1;
   }
 }
 
