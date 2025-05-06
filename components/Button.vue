@@ -71,7 +71,7 @@ withDefaults(defineProps<IProps>(), {
   }
 
   &:disabled {
-    opacity: 0.6;
+    filter: brightness(0.6);
     cursor: not-allowed;
   }
 
