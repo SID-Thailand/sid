@@ -117,6 +117,9 @@ const isShouldRenderImage = pageTransitionObject.name !== 'project'
   @media (max-width: $br1) {
     gap: 20px;
   }
+  @media (max-width: $br3) {
+    flex-direction: column;
+  }
 }
 
 .project-hero__item {
