@@ -28,6 +28,7 @@ export interface iService {
   asset: iImage
   component: string
   text: string
+  description?: string
   _uid: string
 }
 

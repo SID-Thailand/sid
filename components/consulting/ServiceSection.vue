@@ -70,6 +70,9 @@ const { activePage } = useFullPageAnimation(
                       <h3 class="cons-service__item-title">
                         {{ item?.text }}
                       </h3>
+                      <p class="cons-service__item-desc">
+                        {{ item?.description }}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -209,6 +212,10 @@ const { activePage } = useFullPageAnimation(
     .cons-service__item-title {
       color: var(--basic-white);
     }
+
+    .cons-service__item-desc {
+      color: var(--basic-white);
+    }
   }
 }
 
@@ -279,6 +286,7 @@ const { activePage } = useFullPageAnimation(
   width: vw(16);
   height: vw(16);
   opacity: 0;
+  flex-shrink: 0;
   transition: opacity 0.3s ease;
 
   @media (max-width: $br1) {
@@ -299,7 +307,7 @@ const { activePage } = useFullPageAnimation(
   gap: vw(8);
 
   @media (max-width: $br1) {
-    gap: 4px;
+    gap: 12px;
   }
 
   @media (max-width: $br4) {
@@ -321,6 +329,18 @@ const { activePage } = useFullPageAnimation(
 
   @media (max-width: $br4) {
     font-size: 18px;
+  }
+}
+
+.cons-service__item-desc {
+  transition: color 2s $easing;
+  line-height: 1.25em !important;
+  font-size: vw(16);
+  color: var(--neutral-300);
+  @include med;
+
+  @media (max-width: $br1) {
+    font-size: 16px;
   }
 }
 </style>
