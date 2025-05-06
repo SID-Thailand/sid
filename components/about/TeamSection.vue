@@ -245,7 +245,8 @@ watchImmediate(isMobile, () => {
   }
 
   @media (max-width: $br1) {
-    height: 344px;
+    height: auto;
+    aspect-ratio: 1;
   }
 }
 
