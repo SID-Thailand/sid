@@ -185,9 +185,11 @@ useIntersectionObserver($el, ([entry]) => {
   position: relative;
   height: 100dvh;
   width: 100%;
-  cursor: none;
-  * {
+  @media (min-width: $br1) {
     cursor: none;
+    * {
+      cursor: none;
+    }
   }
 }
 
