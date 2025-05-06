@@ -184,7 +184,7 @@ const replaceLineBreaks = (content: string) => {
   max-width: 100%;
   background-color: var(--neutral-600);
   position: relative;
-  z-index: 2;
+  z-index: 3;
   padding: vw(16);
   padding-bottom: vw(32);
   display: flex;
@@ -308,7 +308,7 @@ const replaceLineBreaks = (content: string) => {
   top: 50%;
   transform: translateY(-50%);
   left: 0;
-  z-index: 3;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
