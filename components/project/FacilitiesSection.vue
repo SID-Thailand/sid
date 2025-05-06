@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import { resize } from '@emotionagency/utils'
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -22,50 +21,6 @@ const { activePage } = useFullPageAnimation(
   itemsCount,
   isMobile
 )
-
-// const overlay = ref({
-//   y: 0,
-//   height: 0,
-// })
-
-// const $overlay = useTemplateRef('overlayRef')
-
-// const setOverlay = (el: HTMLElement) => {
-//   const rect = el.getBoundingClientRect()
-//   const overlayRect = $overlay.value?.getBoundingClientRect()
-//   if (!overlayRect) return
-
-//   overlay.value = {
-//     y: el.offsetTop,
-//     height: rect.height,
-//   }
-// }
-
-// const onChange = () => {
-//   if (!import.meta.client) return
-//   if (!contentRef.value) return
-
-//   const $items = contentRef.value?.querySelectorAll(
-//     '.project-facilities__content-wrapper'
-//   )
-//   const $active = $items?.[activePage.value - 1] as HTMLElement
-
-//   if (!$active) return
-
-//   setOverlay($active)
-// }
-
-// watchImmediate(activePage, () => {
-//   onChange()
-// })
-
-// onMounted(() => {
-//   resize.on(onChange)
-// })
-
-// onBeforeUnmount(() => {
-//   resize.off(onChange)
-// })
 </script>
 
 <template>
@@ -99,15 +54,6 @@ const { activePage } = useFullPageAnimation(
           </div>
           <div class="project-facilities__content-c">
             <div data-f-scroller class="project-facilities__content">
-              <!-- <div
-                ref="overlayRef"
-                aria-hidden="true"
-                class="project-facilities__overlay"
-                :style="{
-                  '--top': overlay.y + 'px',
-                  '--height': overlay.height + 'px',
-                }"
-              /> -->
               <div
                 v-for="(item, idx) in content?.slider"
                 :key="idx"
