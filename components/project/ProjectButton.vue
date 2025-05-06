@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { IEventArgs } from '@emotionagency/emotion-scroll'
+import { delayPromise } from '@emotionagency/utils'
 
 const isVisible = ref(false)
 const swipeDownCount = ref(0)
@@ -23,7 +24,9 @@ const onTouchEnd = (e: TouchEvent) => {
 }
 
 const setupDesktopScroll = () => {
-  window.escroll?.on?.((e: IEventArgs) => {
+  window.escroll?.on?.(async (e: IEventArgs) => {
+    !isVisible.value && (await delayPromise(1000))
+
     isVisible.value = e.direction === -1
   })
 }
