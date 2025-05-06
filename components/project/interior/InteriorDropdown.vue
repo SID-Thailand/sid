@@ -206,21 +206,26 @@ watch(isOpen, val => {
   width: 100%;
   position: relative;
 
-  &--active,
-  &:hover {
-    .interior-dropdown-item__overlay {
-      transform: scaleX(1);
-    }
+  @media (min-width: $br1) {
+    &:hover {
+      .interior-dropdown-item__overlay {
+        transform: scaleX(1);
+      }
 
-    .interior-dropdown__item-title {
-      color: var(--basic-white);
+      .interior-dropdown__item-title {
+        color: var(--basic-white);
+      }
+      .interior-dropdown__plus {
+        path {
+          fill: var(--basic-white);
+        }
+      }
     }
+  }
 
+  &--active {
     .interior-dropdown__plus {
       opacity: 1;
-      path {
-        fill: var(--basic-white);
-      }
     }
   }
 }
@@ -250,9 +255,13 @@ watch(isOpen, val => {
   height: vw(16);
   opacity: 0;
   transition:
-    opacity 0.38 ease,
+    opacity 0.8 ease,
     fill 0.8s ease;
   flex: 1 0 auto;
+
+  path {
+    transition: fill 0.8s ease;
+  }
 
   @media (max-width: $br1) {
     width: 16px;
