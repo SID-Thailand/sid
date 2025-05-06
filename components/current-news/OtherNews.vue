@@ -10,7 +10,18 @@ interface iProps {
 
 const props = defineProps<iProps>()
 
-const allNews = computed(() => props.news ?? [])
+const route = useRoute()
+const slug = route.params.id
+
+console.log(slug)
+
+const allNews = computed(() => {
+  const news = props.news
+  if (news.length > 0) {
+    return news.filter(article => article?.slug !== slug)
+  }
+  return []
+})
 
 const slicedNews = computed(() => {
   return allNews.value.slice(0, 4)
