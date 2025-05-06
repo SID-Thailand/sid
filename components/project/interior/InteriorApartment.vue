@@ -69,7 +69,6 @@ useSwipe(sliderContainerRef, {
 
 <template>
   <div class="interior-apart">
-    <slot />
     <h3 class="interior-apart__name interior-apart__name--mob">
       {{ apartment?.name }}
     </h3>

@@ -8,6 +8,7 @@ interface IProps {
 const props = defineProps<IProps>()
 
 const $el = useTemplateRef<HTMLElement | null>('el')
+const $appartments = useTemplateRef<HTMLElement | null>('appartments')
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
 
@@ -21,7 +22,7 @@ const selectedAppart = reactiveComputed(() => {
   }
 })
 
-useIntersectionObserver($el, ([entry]) => {
+useIntersectionObserver($appartments, ([entry]) => {
   const isIntersecting = entry?.isIntersecting || false
 
   if (isIntersecting) {
@@ -54,7 +55,7 @@ onBeforeUnmount(() => {
           />
         </div>
       </div>
-      <div class="project-interior__apartments-wrapper">
+      <div ref="appartments" class="project-interior__apartments-wrapper">
         <div class="project-interior__apartments">
           <ProjectInteriorApartments
             v-model="selectedAppart.value"

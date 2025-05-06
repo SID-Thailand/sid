@@ -25,8 +25,10 @@ const handleToggleMenu = () => {
   isOpen.value = !isOpen.value
 }
 
+const isMobile = useMediaQuery('max-width: 860px')
+
 watch(isOpen, val => {
-  if (val) {
+  if (val && isMobile.value) {
     const top = el.value?.getBoundingClientRect().top
     scrollTo(top - 20, false)
   }
@@ -46,7 +48,6 @@ watch(isOpen, val => {
 
     <div
       class="interior-dropdown__menu"
-      data-scroll-ignore="true"
       :class="{ 'interior-dropdown__menu--opened': isOpen }"
     >
       <ul class="interior-dropdown__list">
@@ -60,6 +61,7 @@ watch(isOpen, val => {
           }"
           @click="onSelect(item)"
         >
+          <div aria-hidden="true" class="interior-dropdown-item__overlay" />
           <div class="interior-dropdown__line" />
           <div class="interior-dropdown__info-wrapper">
             <IconsPlus class="interior-dropdown__plus" />
@@ -175,41 +177,50 @@ watch(isOpen, val => {
   align-items: flex-start;
   column-gap: vw(16);
   padding: vw(30) vw(20);
-  transition: background-color 0.3s ease;
+  position: relative;
+  z-index: 2;
 
   @media (max-width: $br1) {
     padding: 30px 16px;
     column-gap: 16px;
   }
+}
 
+.interior-dropdown-item__overlay {
+  position: absolute;
+  left: 0;
+  z-index: 0;
+  transition: all 0.8s ease;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition-property: transform;
+
+  width: 100%;
+  height: 100%;
+  background-color: var(--neutral-500);
+  z-index: 0;
+}
+
+.interior-dropdown__item {
+  cursor: pointer;
+  width: 100%;
+  position: relative;
+
+  &--active,
   &:hover {
-    background-color: var(--neutral-500);
+    .interior-dropdown-item__overlay {
+      transform: scaleX(1);
+    }
 
     .interior-dropdown__item-title {
       color: var(--basic-white);
     }
 
     .interior-dropdown__plus {
+      opacity: 1;
       path {
         fill: var(--basic-white);
       }
-    }
-  }
-}
-
-.interior-dropdown__item {
-  cursor: pointer;
-  width: 100%;
-
-  &--active {
-    .interior-dropdown__plus {
-      opacity: 1;
-    }
-  }
-
-  &:hover {
-    .interior-dropdown__plus {
-      opacity: 1;
     }
   }
 }
@@ -239,8 +250,8 @@ watch(isOpen, val => {
   height: vw(16);
   opacity: 0;
   transition:
-    opacity 0.3s ease,
-    fill 0.3s ease;
+    opacity 0.38 ease,
+    fill 0.8s ease;
   flex: 1 0 auto;
 
   @media (max-width: $br1) {
@@ -272,7 +283,7 @@ watch(isOpen, val => {
   font-size: vw(20);
   line-height: 1em;
   color: var(--basic-black);
-  transition: color 0.3s ease;
+  transition: color 0.8s ease;
   @include med;
 
   @media (max-width: $br1) {

@@ -19,24 +19,23 @@ const onSelectApartment = async (apartment: iApartment) => {
 
   const top = $el.value?.getBoundingClientRect().top
   await delayPromise(800)
-  scrollTo(top - 20, true)
+  scrollTo(top - 20)
 }
 </script>
 
 <template>
   <div ref="el" class="interior-aparts">
+    <ProjectInteriorDropdown
+      :apartments-list="apartments"
+      :selected-apartment="selectedApartment"
+      class="interior-aparts__dropdown interior-aparts__dropdown--mob"
+      @select="onSelectApartment"
+    />
     <Transition name="fade" mode="out-in">
       <ProjectInteriorApartment
         :key="selectedApartment._uid"
         :apartment="selectedApartment"
-      >
-        <ProjectInteriorDropdown
-          :apartments-list="apartments"
-          :selected-apartment="selectedApartment"
-          class="interior-aparts__dropdown interior-aparts__dropdown--mob"
-          @select="onSelectApartment"
-        />
-      </ProjectInteriorApartment>
+      />
     </Transition>
 
     <div class="interior-aparts__text-wrapper">
@@ -74,7 +73,6 @@ const onSelectApartment = async (apartment: iApartment) => {
   width: vw(382);
   position: relative;
   &--mob {
-    margin-bottom: 16px;
     @media (min-width: $br1) {
       display: none;
     }
