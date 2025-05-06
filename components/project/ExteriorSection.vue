@@ -11,12 +11,11 @@ defineProps<IProps>()
 
 const activeIdx = ref(0)
 
-const sliderRef = templateRef('sliderRef')
-const sliderContainerRef = templateRef('sliderContainerRef')
+const sliderRef = ref<HTMLUListElement | null>(null)
+const sliderContainerRef = ref<HTMLDivElement | null>(null)
 
-const isDesktop = ref(true)
 const isFullImageModalOpened = ref(false)
-const activeImage = ref<iImage | null>(null)
+const selectedImage = ref<iImage | null>(null)
 
 const slideTo = (idx: number) => {
   if (!sliderRef.value) return
@@ -37,13 +36,17 @@ const slideTo = (idx: number) => {
 }
 
 const onClick = (_e: MouseEvent, img: iImage, idx: number) => {
-  if (!isDesktop.value) {
+  selectedImage.value = img
+  if (idx === activeIdx.value) {
     isFullImageModalOpened.value = true
-    activeImage.value = img
-  } else {
-    if (idx === activeIdx.value) return
-    slideTo(idx)
+    return
   }
+  slideTo(idx)
+}
+
+const handleCloseFullImageModal = () => {
+  isFullImageModalOpened.value = false
+  selectedImage.value = null
 }
 
 useSwipe(sliderContainerRef, {
@@ -55,19 +58,6 @@ useSwipe(sliderContainerRef, {
       slideTo(activeIdx.value - 1)
     }
   },
-})
-
-const handleCloseFullImageModal = () => {
-  isFullImageModalOpened.value = false
-  activeImage.value = null
-}
-
-onMounted(() => {
-  isDesktop.value = window.innerWidth > 860
-
-  window.addEventListener('resize', () => {
-    isDesktop.value = window.innerWidth > 860
-  })
 })
 </script>
 
@@ -100,17 +90,12 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <Modal
+    <ModalsImageSliderModal
       :is-open="isFullImageModalOpened"
-      modal-window-class="project-exterior__modal-wrapper"
+      :images="content?.assets"
+      :selected-image="selectedImage"
       @close="handleCloseFullImageModal"
-    >
-      <CustomImage
-        :src="activeImage?.filename"
-        :alt="activeImage?.alt"
-        class="project-exterior__modal-img"
-      />
-    </Modal>
+    />
   </section>
 </template>
 
@@ -193,7 +178,6 @@ onMounted(() => {
   @media (max-width: $br1) {
     align-items: flex-start;
     gap: 16px;
-    height: 285px;
   }
 }
 
@@ -206,8 +190,8 @@ onMounted(() => {
   transition: 1.5s $easing;
 
   @media (max-width: $br1) {
-    height: 109px;
-    width: 164px;
+    height: 332px;
+    width: 332px;
   }
 
   &--active {
@@ -215,8 +199,8 @@ onMounted(() => {
     width: vw(600);
 
     @media (max-width: $br1) {
-      height: 285px;
-      width: 285px;
+      height: 332px;
+      width: 332px;
     }
   }
 }
@@ -226,19 +210,9 @@ onMounted(() => {
   object-fit: cover;
   width: 100%;
   height: 100%;
-}
 
-.project-exterior__modal-wrapper {
-  max-height: 100svh;
-  height: 100%;
-  width: 100%;
-  max-width: 100vw !important;
-}
-
-.project-exterior__modal-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  @media (max-width: $br1) {
+    object-fit: cover;
+  }
 }
 </style>

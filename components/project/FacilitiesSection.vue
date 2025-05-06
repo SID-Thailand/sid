@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { LucidePlus } from 'lucide-vue-next'
-
+import { resize } from '@emotionagency/utils'
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -23,6 +22,50 @@ const { activePage } = useFullPageAnimation(
   itemsCount,
   isMobile
 )
+
+const overlay = ref({
+  y: 0,
+  height: 0,
+})
+
+const $overlay = useTemplateRef('overlayRef')
+
+const setOverlay = (el: HTMLElement) => {
+  const rect = el.getBoundingClientRect()
+  const overlayRect = $overlay.value?.getBoundingClientRect()
+  if (!overlayRect) return
+
+  overlay.value = {
+    y: el.offsetTop,
+    height: rect.height,
+  }
+}
+
+const onChange = () => {
+  if (!import.meta.client) return
+  if (!contentRef.value) return
+
+  const $items = contentRef.value?.querySelectorAll(
+    '.project-facilities__content-wrapper'
+  )
+  const $active = $items?.[activePage.value - 1] as HTMLElement
+
+  if (!$active) return
+
+  setOverlay($active)
+}
+
+watchImmediate(activePage, () => {
+  onChange()
+})
+
+onMounted(() => {
+  resize.on(onChange)
+})
+
+onBeforeUnmount(() => {
+  resize.off(onChange)
+})
 </script>
 
 <template>
@@ -57,6 +100,15 @@ const { activePage } = useFullPageAnimation(
           <div class="project-facilities__content-c">
             <div data-f-scroller class="project-facilities__content">
               <div
+                ref="overlayRef"
+                aria-hidden="true"
+                class="project-facilities__overlay"
+                :style="{
+                  '--top': overlay.y + 'px',
+                  '--height': overlay.height + 'px',
+                }"
+              />
+              <div
                 v-for="(item, idx) in content?.slider"
                 :key="idx"
                 data-f-text
@@ -69,7 +121,7 @@ const { activePage } = useFullPageAnimation(
                 <div class="project-facilities__item">
                   <div class="project-facilities__line" />
                   <div class="project-facilities__item-wrapper">
-                    <LucidePlus class="project-facilities__plus" />
+                    <IconsPlus class="project-facilities__plus" />
                     <div class="project-facilities__info">
                       <h3 class="project-facilities__item-title">
                         {{ item?.title }}
@@ -89,7 +141,7 @@ const { activePage } = useFullPageAnimation(
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .project-facilities {
   position: relative;
   padding: vw(40) 0;
@@ -201,6 +253,7 @@ const { activePage } = useFullPageAnimation(
 }
 
 .project-facilities__content-wrapper {
+  position: relative;
   @media (min-width: $br1) {
     display: flex;
     justify-content: flex-end;
@@ -208,16 +261,38 @@ const { activePage } = useFullPageAnimation(
     column-gap: vw(20);
   }
 
-  @media (max-width: $br1) {
-    &:not(:first-child) {
-      margin-top: 24px;
-    }
-  }
-
   &--active {
     .project-facilities__plus {
       opacity: 1;
     }
+
+    @media (min-width: $br1) {
+      .project-facilities__item-title {
+        color: var(--basic-white);
+      }
+
+      .project-facilities__plus {
+        path {
+          fill: var(--basic-white);
+        }
+      }
+    }
+  }
+}
+
+.project-facilities__overlay {
+  position: absolute;
+  left: 0;
+  transition: all 0.8s ease;
+  transition-property: top, height;
+  top: var(--top);
+  width: 100%;
+  height: var(--height);
+  background-color: var(--neutral-500);
+  z-index: 0;
+
+  @media (max-width: $br1) {
+    display: none;
   }
 }
 
@@ -260,7 +335,6 @@ const { activePage } = useFullPageAnimation(
 .project-facilities__item {
   @media (min-width: $br1) {
     width: vw(630);
-    padding-bottom: vw(24);
   }
 }
 
@@ -275,25 +349,28 @@ const { activePage } = useFullPageAnimation(
   display: flex;
   align-items: flex-start;
   gap: vw(12);
-  margin-top: vw(24);
+  padding: vw(24) vw(20);
 
   @media (max-width: $br1) {
     gap: 16px;
-    margin-top: 20px;
+    padding: 20px 0;
   }
 }
 
 .project-facilities__plus {
   display: block;
   color: var(--basic-black);
-  width: vw(20);
-  height: vw(20);
+  width: vw(17);
+  height: vw(17);
   opacity: 0;
-  transition: opacity 1s ease;
+  transition:
+    opacity 0.8s ease,
+    fill 0.8s ease;
+  flex: 1 0 auto;
 
   @media (max-width: $br1) {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
   }
 }
 
@@ -303,6 +380,8 @@ const { activePage } = useFullPageAnimation(
   align-items: flex-start;
   flex-direction: column;
   gap: vw(8);
+  flex: 0 1 auto;
+  width: 100%;
 
   @media (max-width: $br1) {
     gap: 4px;
@@ -317,6 +396,7 @@ const { activePage } = useFullPageAnimation(
   text-transform: uppercase;
   font-size: vw(24);
   line-height: 1em;
+  transition: color 0.8s ease;
   @include med;
 
   @media (max-width: $br1) {

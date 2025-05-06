@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ArrowLeft, ArrowRight } from 'lucide-vue-next'
 import { gsap } from '~/libs/gsap'
 import type { iImage } from '~/types/story'
 
@@ -16,16 +15,22 @@ const direction = ref<1 | -1>(1)
 const cursorX = ref(0)
 const cursorY = ref(0)
 const cursorType = ref<'left' | 'right' | null>(null)
-const isIndicatorActive = ref(false)
+const isIndicatorVisible = ref(false)
 
 const $items = ref<HTMLElement[]>([])
+const $el = useTemplateRef('el')
 
 const handleMouseMove = (e: MouseEvent) => {
   cursorX.value = e.clientX
   cursorY.value = e.clientY
+
+  isIndicatorVisible.value = true
 }
 
 const setCursor = (type: 'left' | 'right' | null) => {
+  if (type === null) {
+    isIndicatorVisible.value = false
+  }
   cursorType.value = type
 }
 
@@ -57,62 +62,32 @@ const handleChangeSlide = async () => {
 
   const dir = direction.value
 
-  const tl = gsap.timeline({
-    overwrite: true,
-  })
+  const tl = gsap.timeline({ overwrite: true })
 
   const from = 'inset(0 0 0 100%)'
   const to = 'inset(0 100% 0 0)'
 
-  tl.set($active, {
-    clipPath: dir === 1 ? from : to,
-  })
+  tl.set($active, { clipPath: dir === 1 ? from : to })
 
-  tl.set($activeImg, {
-    scale: 1.3,
-  })
+  tl.set($activeImg, { scale: 1.3 })
 
   if ($prev) {
     tl.to(
       $prev,
-      {
-        clipPath: dir === 1 ? to : from,
-        duration: 1.5,
-        ease: 'power2.out',
-      },
+      { clipPath: dir === 1 ? to : from, duration: 1.5, ease: 'power2.out' },
       0
     )
 
-    tl.to(
-      $prevImg,
-      {
-        scale: 1.3,
-        duration: 1.5,
-        ease: 'power2.out',
-      },
-      0
-    )
+    tl.to($prevImg, { scale: 1.3, duration: 1.5, ease: 'power2.out' }, 0)
   }
 
   tl.to(
     $active,
-    {
-      clipPath: 'inset(0 0% 0 0%)',
-      duration: 1.5,
-      ease: 'power2.out',
-    },
+    { clipPath: 'inset(0 0% 0 0%)', duration: 1.5, ease: 'power2.out' },
     0
   )
 
-  tl.to(
-    $activeImg,
-    {
-      scale: 1,
-      duration: 1.5,
-      ease: 'power2.out',
-    },
-    0
-  )
+  tl.to($activeImg, { scale: 1, duration: 1.5, ease: 'power2.out' }, 0)
 }
 
 watch(current, handleChangeSlide)
@@ -133,10 +108,18 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
+
+useIntersectionObserver($el, ([entry]) => {
+  const isIntersecting = entry?.isIntersecting || false
+
+  if (!isIntersecting) {
+    setCursor(null)
+  }
+})
 </script>
 
 <template>
-  <div class="full-slider">
+  <div ref="el" class="full-slider">
     <div
       class="full-slider__wrapper"
       @mousemove="handleMouseMove"
@@ -162,40 +145,20 @@ onUnmounted(() => {
         <button
           type="button"
           class="full-slider__btn"
-          :class="{ active: isIndicatorActive && cursorType === 'left' }"
+          :class="{ visible: cursorType === 'left' }"
           @click="throttledNavigate(-1)"
           @mouseenter="setCursor('left')"
-          @mouseleave="setCursor(null)"
-          @mousedown="isIndicatorActive = true"
-          @mouseup="isIndicatorActive = false"
-          @touchstart="
-            () => {
-              isIndicatorActive = true
-              setCursor('left')
-            }
-          "
-          @touchend="isIndicatorActive = false"
         >
-          <ArrowLeft />
+          <IconsArrowLeft />
         </button>
         <button
           type="button"
           class="full-slider__btn"
-          :class="{ active: isIndicatorActive && cursorType === 'right' }"
+          :class="{ visible: cursorType === 'right' }"
           @click="throttledNavigate(1)"
           @mouseenter="setCursor('right')"
-          @mouseleave="setCursor(null)"
-          @mousedown="isIndicatorActive = true"
-          @mouseup="isIndicatorActive = false"
-          @touchstart="
-            () => {
-              isIndicatorActive = true
-              setCursor('right')
-            }
-          "
-          @touchend="isIndicatorActive = false"
         >
-          <ArrowRight />
+          <IconsArrowRight />
         </button>
       </div>
 
@@ -203,12 +166,15 @@ onUnmounted(() => {
         class="full-slider__cursor"
         :class="[
           `full-slider__cursor--${cursorType}`,
-          { visible: cursorType !== null, active: isIndicatorActive },
+          isIndicatorVisible && 'visible',
         ]"
-        :style="{ left: `${cursorX}px`, top: `${cursorY}px` }"
+        :style="{
+          '--indicator-x': cursorX + 'px',
+          '--indicator-y': cursorY + 'px',
+        }"
       >
-        <ArrowLeft v-if="cursorType === 'left'" />
-        <ArrowRight v-else />
+        <IconsArrowLeft v-if="cursorType === 'left'" />
+        <IconsArrowRight v-else />
       </div>
     </div>
   </div>
@@ -219,6 +185,12 @@ onUnmounted(() => {
   position: relative;
   height: 100dvh;
   width: 100%;
+  @media (min-width: $br1) {
+    cursor: none;
+    * {
+      cursor: none;
+    }
+  }
 }
 
 .full-slider__wrapper {
@@ -282,7 +254,6 @@ onUnmounted(() => {
 }
 
 .full-slider__btn {
-  cursor: none;
   background-color: transparent;
   transform: scale(1);
   transition: transform 0.2s ease;
@@ -309,13 +280,13 @@ onUnmounted(() => {
     align-items: center;
     width: 60px;
     height: 60px;
-    background-color: var(--basic-black);
+    background-color: transparent;
     color: var(--basic-white);
     border-radius: 50%;
 
     svg {
-      width: 30px;
-      height: 30px;
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -327,38 +298,34 @@ onUnmounted(() => {
 .full-slider__cursor {
   pointer-events: none;
   position: fixed;
-  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
   width: vw(60);
   height: vw(60);
-  border-radius: 50%;
-  background: var(--basic-black);
-  color: var(--basic-white);
+  top: calc(var(--indicator-y, 0px) - vw(30));
+  left: calc(var(--indicator-x, 0px) - vw(30));
+  background-color: transparent;
   z-index: 50;
   opacity: 0;
   visibility: hidden;
   transition:
     opacity 0.3s ease,
-    transform 0.2s ease,
+    transform 0.5s ease,
     visibility 0.3s ease;
-  transform: scale(1);
+  transform: scale(0);
 
   &--left svg,
   &--right svg {
-    width: vw(30);
-    height: vw(30);
+    width: vw(22);
+    height: vw(22);
     opacity: 1;
   }
 
   &.visible {
     opacity: 1;
     visibility: visible;
-  }
-
-  &.active {
-    transform: scale(0.8);
+    transform: scale(1);
   }
 
   @media (max-width: $br1) {

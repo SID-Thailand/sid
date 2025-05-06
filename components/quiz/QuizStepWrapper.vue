@@ -10,8 +10,11 @@ interface IProps {
 }
 
 const props = defineProps<IProps>()
+const emit = defineEmits(['animating'])
 
 const itemRef = ref<HTMLElement | null>(null)
+
+const isAnimating = ref(false)
 
 const distanceFromActive = computed(() => {
   const distance = Math.abs(props.activeIdx - props.idx)
@@ -23,10 +26,6 @@ const background = computed(() => {
     return 'var(--gradient-secondary)'
   }
 
-  // if (distanceFromActive.value === 2) {
-  //   return 'var(--accent-quaternary)'
-  // }
-
   return '#57534C'
 })
 
@@ -34,7 +33,13 @@ const animate = async () => {
   const el = itemRef.value
   if (!el) return
 
-  const tl = gsap.timeline()
+  isAnimating.value = true
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      isAnimating.value = false
+    },
+  })
   const isActive = props.activeIdx === props.idx
   const wasActive = props.prevIdx === props.idx
   const distance = distanceFromActive.value
@@ -50,7 +55,7 @@ const animate = async () => {
     tl.fromTo(
       el,
       {
-        y: props.activeIdx > props.prevIdx ? '100%' : '-100%',
+        y: '100%',
         scale: targetScale,
       },
       {
@@ -94,6 +99,10 @@ watch(
     animate()
   }
 )
+
+watch(isAnimating, val => {
+  emit('animating', val)
+})
 
 onMounted(() => {
   animate()
@@ -144,7 +153,7 @@ onMounted(() => {
 
   @media (max-width: $br1) {
     border-radius: 20px 20px 0 0;
-    padding: 50px 25px;
+    padding: 25px;
   }
 
   @media (max-width: $br3) {
@@ -169,6 +178,9 @@ onMounted(() => {
   color: var(--neutral-200);
   text-align: center;
   @include subheading-h3;
+  @media (max-width: $br4) {
+    font-size: 14px;
+  }
 }
 
 .quiz-step__quiz-name {
@@ -181,12 +193,13 @@ onMounted(() => {
   @include med;
 
   @media (max-width: $br1) {
-    margin-top: 12px;
-    font-size: size(40, 24);
+    margin-top: 4px;
+    max-width: none;
+    font-size: size(40, 16);
   }
 
   @media (max-width: $br4) {
-    font-size: 24px;
+    font-size: 16px;
   }
 }
 </style>

@@ -5,7 +5,7 @@ interface IProps {
   content: iConsultingYoutube
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 </script>
 
 <template>

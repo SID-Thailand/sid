@@ -35,7 +35,8 @@ export const useInput = (
     }
   }
 
-  const onChange = () => {
+  const onChange = async () => {
+    await nextTick()
     validate()
 
     emit('input', {

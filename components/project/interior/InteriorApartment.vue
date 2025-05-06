@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { gsap } from '~/libs/gsap'
 import type { iApartment } from '~/types/currentProjectTypes'
+import type { iImage } from '~/types/story'
 
 interface IProps {
   apartment: iApartment
@@ -8,42 +9,53 @@ interface IProps {
 
 defineProps<IProps>()
 
-const sliderRef = ref<HTMLUListElement | null>(null)
-const containerRef = ref<HTMLDivElement | null>(null)
 const activeIdx = ref(0)
+
+const sliderRef = useTemplateRef<HTMLUListElement | null>('sliderRef')
+const sliderContainerRef = useTemplateRef<HTMLDivElement | null>(
+  'sliderContainerRef'
+)
+
+const isFullImageModalOpened = ref(false)
+const selectedImage = ref<iImage | null>(null)
 
 const isMobile = useMediaQuery('(max-width: 860px)')
 
 const slideTo = (idx: number) => {
-  if (!sliderRef.value || !containerRef.value) return
+  if (!sliderRef.value || !sliderContainerRef.value) return
 
   if (!isMobile.value) return
 
-  const slider = sliderRef.value
-  const target = slider.children[idx] as HTMLElement
+  const target = sliderRef.value.children[idx] as HTMLElement
   if (!target) return
 
-  const prevSlide = slider.children[activeIdx.value] as HTMLElement
+  const gap = parseFloat(getComputedStyle(sliderRef.value).gap) || 0
+  const itemWidth = target.getBoundingClientRect().width + gap
 
-  const direction = idx > activeIdx.value ? 1 : -1
-
-  const prevSlideWidth = prevSlide.getBoundingClientRect().width
-
-  const tl = gsap.timeline()
-
-  const widthOffset = direction === 1 ? prevSlideWidth / 2 : 0
-
-  const offsetLeft = target.offsetLeft - widthOffset
-  tl.to(slider, {
-    x: -offsetLeft,
-    duration: 1.5,
+  gsap.to(sliderRef.value, {
+    duration: 1,
+    x: -itemWidth * idx,
     ease: 'power2.out',
   })
 
   activeIdx.value = idx
 }
 
-useSwipe(containerRef, {
+const handleModal = (_e: MouseEvent, img: iImage, idx: number) => {
+  selectedImage.value = img
+  if (idx === activeIdx.value || !isMobile.value) {
+    isFullImageModalOpened.value = true
+    return
+  }
+  slideTo(idx)
+}
+
+const handleCloseFullImageModal = () => {
+  isFullImageModalOpened.value = false
+  selectedImage.value = null
+}
+
+useSwipe(sliderContainerRef, {
   threshold: 50,
   onSwipeEnd: (_, direction) => {
     if (direction === 'left') {
@@ -57,73 +69,38 @@ useSwipe(containerRef, {
 
 <template>
   <div class="interior-apart">
+    <slot />
     <h3 class="interior-apart__name interior-apart__name--mob">
       {{ apartment?.name }}
     </h3>
     <p class="interior-apart__desc interior-apart__desc--mob">
       {{ apartment?.price }}
     </p>
-    <div ref="containerRef" class="interior-apart__img-list-wrapper">
+    <div ref="sliderContainerRef" class="interior-apart__img-list-wrapper">
       <ul ref="sliderRef" class="interior-apart__img-list">
         <ProjectInteriorApartmentImg
           v-for="(img, index) in apartment.assets"
           :key="img._uid"
           :img="img"
           :idx="index"
-          :active="activeIdx === index"
-          @click="slideTo(index)"
+          @open="handleModal($event, img, index)"
         />
       </ul>
     </div>
-    <div class="interior-apart__content">
-      <h3 class="interior-apart__name">
-        {{ apartment?.name }}
-      </h3>
-      <p class="interior-apart__desc">
-        {{ apartment?.price }}
-      </p>
-      <div class="interior-apart__about">
-        <div class="interior-apart__about-wrapper">
-          <div class="interior-apart__line" />
-          <div class="interior-apart__about-content">
-            <p class="interior-apart__title">Area</p>
-            <p class="interior-apart__text">{{ apartment?.area }}</p>
-          </div>
-        </div>
-        <div class="interior-apart__about-wrapper">
-          <div class="interior-apart__line" />
-          <div class="interior-apart__about-content">
-            <p class="interior-apart__title">Info</p>
-            <p class="interior-apart__text">{{ apartment?.info }}</p>
-          </div>
-        </div>
-        <div class="interior-apart__about-wrapper">
-          <div class="interior-apart__line" />
-          <div class="interior-apart__about-content">
-            <p class="interior-apart__title">Plan</p>
-            <a
-              v-if="apartment?.plan?.[0]"
-              :href="apartment.plan[0]?.link?.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="interior-apart__text underline-reverse"
-            >
-              {{ apartment.plan[0]?.label }}
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ModalsImageSliderModal
+      :is-open="isFullImageModalOpened"
+      :images="apartment?.assets"
+      :selected-image="selectedImage"
+      @close="handleCloseFullImageModal"
+    />
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .interior-apart {
   display: flex;
   align-items: flex-start;
-  gap: vw(76);
   color: var(--basic-black);
-  margin-top: vw(-23);
 
   @media (max-width: $br1) {
     flex-direction: column;
@@ -164,12 +141,11 @@ useSwipe(containerRef, {
     align-items: flex-start;
     min-width: max-content;
     gap: 16px;
-    height: 222px;
   }
 }
 
 .interior-apart__content {
-  margin-top: vw(46);
+  margin-top: vw(24);
 
   @media (min-width: $br1) {
     width: vw(382);
@@ -273,5 +249,10 @@ useSwipe(containerRef, {
 
 .interior-apart__text {
   position: relative;
+  line-height: 1.25em !important;
+
+  &::before {
+    bottom: 0;
+  }
 }
 </style>

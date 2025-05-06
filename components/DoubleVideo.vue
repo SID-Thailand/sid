@@ -93,7 +93,7 @@ onBeforeUnmount(() => {
               :class="{ 'd-video__phone-btn--active': isClicked }"
               @click="togglePlay"
             >
-              <span>REC</span>
+              <span>PLAY</span>
             </button>
           </div>
         </div>

@@ -1,8 +1,9 @@
 import { pageTransition } from './transitions/base'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
+
+  compatibilityDate: '2025-05-05',
 
   css: ['~/assets/styles/index.scss'],
 

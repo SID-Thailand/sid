@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
-import { LucidePlus } from 'lucide-vue-next'
 import { delayPromise } from '@emotionagency/utils'
 import { Slider } from '~/utils/InfiniteSlider'
 
@@ -43,13 +42,21 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   sliderInstance?.destroy()
 })
+
+useIntersectionObserver(el, ([entry]) => {
+  const isIntersecting = entry?.isIntersecting || false
+
+  if (!isIntersecting) {
+    isIndicatorVisible.value = false
+  }
+})
 </script>
 
 <template>
   <div class="scrolling-slider">
     <div class="scrolling-slider__plus-wrapper">
-      <LucidePlus />
-      <LucidePlus />
+      <IconsPlus />
+      <IconsPlus />
     </div>
     <div
       ref="el"
@@ -133,8 +140,8 @@ onBeforeUnmount(() => {
     color: var(--basic-black);
 
     @media (max-width: $br1) {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
   }
 }
@@ -171,7 +178,7 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   pointer-events: none;
   opacity: 0;
-  transform: scale(1);
+  transform: scale(0.5);
   transition:
     transform 0.4s ease,
     opacity 0.4s ease;
@@ -184,6 +191,7 @@ onBeforeUnmount(() => {
 
   &.visible {
     opacity: 1;
+    transform: scale(1);
   }
 
   &.active {
