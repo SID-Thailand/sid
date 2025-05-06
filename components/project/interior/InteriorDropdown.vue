@@ -174,7 +174,7 @@ watch(isOpen, val => {
   display: flex;
   align-items: flex-start;
   column-gap: vw(16);
-  padding: vw(30) 0;
+  padding: vw(30) vw(20);
   transition: background-color 0.3s ease;
 
   @media (max-width: $br1) {
