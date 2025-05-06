@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { resize } from '@emotionagency/utils'
+// import { resize } from '@emotionagency/utils'
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
@@ -23,49 +23,49 @@ const { activePage } = useFullPageAnimation(
   isMobile
 )
 
-const overlay = ref({
-  y: 0,
-  height: 0,
-})
+// const overlay = ref({
+//   y: 0,
+//   height: 0,
+// })
 
-const $overlay = useTemplateRef('overlayRef')
+// const $overlay = useTemplateRef('overlayRef')
 
-const setOverlay = (el: HTMLElement) => {
-  const rect = el.getBoundingClientRect()
-  const overlayRect = $overlay.value?.getBoundingClientRect()
-  if (!overlayRect) return
+// const setOverlay = (el: HTMLElement) => {
+//   const rect = el.getBoundingClientRect()
+//   const overlayRect = $overlay.value?.getBoundingClientRect()
+//   if (!overlayRect) return
 
-  overlay.value = {
-    y: el.offsetTop,
-    height: rect.height,
-  }
-}
+//   overlay.value = {
+//     y: el.offsetTop,
+//     height: rect.height,
+//   }
+// }
 
-const onChange = () => {
-  if (!import.meta.client) return
-  if (!contentRef.value) return
+// const onChange = () => {
+//   if (!import.meta.client) return
+//   if (!contentRef.value) return
 
-  const $items = contentRef.value?.querySelectorAll(
-    '.project-facilities__content-wrapper'
-  )
-  const $active = $items?.[activePage.value - 1] as HTMLElement
+//   const $items = contentRef.value?.querySelectorAll(
+//     '.project-facilities__content-wrapper'
+//   )
+//   const $active = $items?.[activePage.value - 1] as HTMLElement
 
-  if (!$active) return
+//   if (!$active) return
 
-  setOverlay($active)
-}
+//   setOverlay($active)
+// }
 
-watchImmediate(activePage, () => {
-  onChange()
-})
+// watchImmediate(activePage, () => {
+//   onChange()
+// })
 
-onMounted(() => {
-  resize.on(onChange)
-})
+// onMounted(() => {
+//   resize.on(onChange)
+// })
 
-onBeforeUnmount(() => {
-  resize.off(onChange)
-})
+// onBeforeUnmount(() => {
+//   resize.off(onChange)
+// })
 </script>
 
 <template>
@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
           </div>
           <div class="project-facilities__content-c">
             <div data-f-scroller class="project-facilities__content">
-              <div
+              <!-- <div
                 ref="overlayRef"
                 aria-hidden="true"
                 class="project-facilities__overlay"
@@ -107,7 +107,7 @@ onBeforeUnmount(() => {
                   '--top': overlay.y + 'px',
                   '--height': overlay.height + 'px',
                 }"
-              />
+              /> -->
               <div
                 v-for="(item, idx) in content?.slider"
                 :key="idx"
@@ -118,6 +118,7 @@ onBeforeUnmount(() => {
                   'project-facilities__content-wrapper--active'
                 "
               >
+                <div aria-hidden="true" class="project-facilities__overlay" />
                 <div class="project-facilities__item">
                   <div class="project-facilities__line" />
                   <div class="project-facilities__item-wrapper">
@@ -254,6 +255,7 @@ onBeforeUnmount(() => {
 
 .project-facilities__content-wrapper {
   position: relative;
+  overflow: hidden;
   @media (min-width: $br1) {
     display: flex;
     justify-content: flex-end;
@@ -276,6 +278,10 @@ onBeforeUnmount(() => {
           fill: var(--basic-white);
         }
       }
+
+      .project-facilities__overlay {
+        transform: scaleX(1);
+      }
     }
   }
 }
@@ -283,11 +289,14 @@ onBeforeUnmount(() => {
 .project-facilities__overlay {
   position: absolute;
   left: 0;
+  z-index: 0;
   transition: all 0.8s ease;
-  transition-property: top, height;
-  top: var(--top);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition-property: transform;
+
   width: 100%;
-  height: var(--height);
+  height: 100%;
   background-color: var(--neutral-500);
   z-index: 0;
 
@@ -333,6 +342,8 @@ onBeforeUnmount(() => {
 }
 
 .project-facilities__item {
+  position: relative;
+  z-index: 1;
   @media (min-width: $br1) {
     width: vw(630);
   }
