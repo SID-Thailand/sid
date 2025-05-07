@@ -39,28 +39,41 @@ const handleTouchEnd = (e: TouchEvent) => {
   if (Math.abs(delta) > 50) throttledNavigate(delta > 0 ? 1 : -1)
 }
 
-const handleChangeSlide = () => {
-  const $active = $items.value[current.value]
-  const $prev = prev.value != null ? $items.value[prev.value] : null
-  const $activeImg = $active?.querySelector('img')
-  // const $prevImg = $prev?.querySelector('img')
+const handleChangeSlide = async () => {
+  const $active = $items.value[current.value] as HTMLElement
+  const $prev = $items.value[prev.value] as HTMLElement
 
-  gsap.set($active, { opacity: 0, zIndex: 2 })
+  const $activeImg = $active.querySelector('img') as HTMLImageElement
+  const $prevImg = $prev?.querySelector('img') as HTMLImageElement
+
+  const dir = direction.value
 
   const tl = gsap.timeline({ overwrite: true })
 
+  const from = 'inset(0 0 0 100%)'
+  const to = 'inset(0 100% 0 0)'
+
+  tl.set($active, { clipPath: dir === 1 ? from : to })
+
+  tl.set($activeImg, { scale: 1.3, opacity: 1 })
+
   if ($prev) {
-    tl.to($prev, { opacity: 0, zIndex: 1, duration: 1, ease: 'power2.out' }, 0)
+    tl.to(
+      $prev,
+      { clipPath: dir === 1 ? to : from, duration: 1.5, ease: 'power2.out' },
+      0
+    )
+
+    tl.to($prevImg, { opacity: 0, duration: 1.5, ease: 'power2.out' }, 0)
   }
 
-  tl.to($active, { opacity: 1, duration: 1, ease: 'power2.out' }, 0)
-
-  tl.fromTo(
-    $activeImg,
-    { scale: 1.1 },
-    { scale: 1, duration: 1, ease: 'power2.out' },
+  tl.to(
+    $active,
+    { clipPath: 'inset(0 0% 0 0%)', duration: 1.5, ease: 'power2.out' },
     0
   )
+
+  tl.to($activeImg, { scale: 1, duration: 1.5, ease: 'power2.out' }, 0)
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -205,16 +218,18 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   z-index: 0;
-  opacity: 0;
   user-select: none;
-  transition: opacity 0.2s ease;
+  clip-path: inset(0px 0px 0px 100%);
 
   &.active {
-    opacity: 1;
     z-index: 2;
   }
   &.prev {
     z-index: 1;
+  }
+
+  &:first-child {
+    clip-path: inset(0 0 0 0);
   }
 }
 
