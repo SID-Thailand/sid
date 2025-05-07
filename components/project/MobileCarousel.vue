@@ -58,6 +58,9 @@ const chooseHandler = (e: MouseEvent, item: iImage, idx: number) => {
 <style lang="scss">
 .pmc {
   --swiper-wrapper-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  @media (min-width: $br1) {
+    display: none;
+  }
 }
 
 .pmc__item {
