@@ -7,9 +7,14 @@ interface IProps {
   content: iCurrentProjectExterior
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const activeIdx = ref(0)
+
+const duplicatedAssets = computed(() => {
+  if (!props.content?.assets) return []
+  return [...props.content.assets, ...props.content.assets]
+})
 
 const sliderRef = ref<HTMLUListElement | null>(null)
 const sliderContainerRef = ref<HTMLDivElement | null>(null)
@@ -17,22 +22,46 @@ const sliderContainerRef = ref<HTMLDivElement | null>(null)
 const isFullImageModalOpened = ref(false)
 const selectedImage = ref<iImage | null>(null)
 
+const isMobile = useMediaQuery('(max-width: 860px)')
+
 const slideTo = (idx: number) => {
   if (!sliderRef.value) return
 
-  const target = sliderRef.value.children[idx] as HTMLElement
+  let realIdx = idx
+
+  const tl = gsap.timeline()
+
+  if (idx > props.content.assets.length && isMobile.value) {
+    realIdx = 1
+
+    tl.to(
+      sliderRef.value,
+      {
+        duration: 0,
+        overwrite: true,
+        x: 0,
+      },
+      0
+    )
+  }
+
+  const target = sliderRef.value.children[realIdx] as HTMLElement
   if (!target) return
 
   const gap = parseFloat(getComputedStyle(sliderRef.value).gap) || 0
   const itemWidth = target.getBoundingClientRect().width + gap
 
-  gsap.to(sliderRef.value, {
-    duration: 1,
-    x: -itemWidth * idx,
-    ease: 'power2.out',
-  })
+  tl.to(
+    sliderRef.value,
+    {
+      duration: 1,
+      x: -itemWidth * realIdx,
+      ease: 'power2.out',
+    },
+    0.01
+  )
 
-  activeIdx.value = idx
+  activeIdx.value = realIdx
 }
 
 const onClick = (_e: MouseEvent, img: iImage, idx: number) => {
@@ -84,7 +113,7 @@ useSwipe(sliderContainerRef, {
         <div ref="sliderContainerRef" class="project-exterior__slider">
           <ul ref="sliderRef" class="project-exterior__list">
             <li
-              v-for="(item, idx) in content?.assets"
+              v-for="(item, idx) in duplicatedAssets"
               :key="idx"
               class="project-exterior__item"
               :class="{ 'project-exterior__item--active': idx === activeIdx }"
