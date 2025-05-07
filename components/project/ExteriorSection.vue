@@ -7,22 +7,15 @@ interface IProps {
   content: iCurrentProjectExterior
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const activeIdx = ref(0)
-
-// const duplicatedAssets = computed(() => {
-//   if (!props.content?.assets) return []
-//   return [...props.content.assets, ...props.content.assets]
-// })
 
 const sliderRef = ref<HTMLUListElement | null>(null)
 const sliderContainerRef = ref<HTMLDivElement | null>(null)
 
 const isFullImageModalOpened = ref(false)
 const selectedImage = ref<iImage | null>(null)
-
-const isMobile = useMediaQuery('(max-width: 860px)')
 
 const slideTo = (idx: number) => {
   if (!sliderRef.value) return
@@ -61,27 +54,6 @@ const handleCloseFullImageModal = () => {
   isFullImageModalOpened.value = false
   selectedImage.value = null
 }
-
-const dir = ref('down')
-
-useSwipe(sliderContainerRef, {
-  threshold: 50,
-  onSwipe: () => {
-    if (dir.value === 'left' || dir.value === 'right') {
-      window.escroll.disabled = true
-    }
-  },
-  onSwipeEnd: (_, direction) => {
-    dir.value = direction
-
-    if (direction === 'left') {
-      slideTo(activeIdx.value + 1)
-    } else if (direction === 'right') {
-      slideTo(activeIdx.value - 1)
-    }
-    window.escroll.disabled = false
-  },
-})
 </script>
 
 <template>
@@ -110,6 +82,7 @@ useSwipe(sliderContainerRef, {
               />
             </li>
           </ul>
+          <ProjectMobileCarousel :assets="content?.assets" @choose="onClick" />
         </div>
       </div>
     </div>
@@ -180,15 +153,15 @@ useSwipe(sliderContainerRef, {
   @media (max-width: $br1) {
     margin-top: 24px;
     align-self: flex-start;
-    padding-right: 32px;
+    padding-right: 0;
     padding-left: 32px;
     margin-left: -32px;
+    width: 100vw;
   }
 
   @media (max-width: $br3) {
-    padding-right: 16px;
-    padding-left: 16px;
     margin-left: -16px;
+    padding-left: 16px;
   }
 }
 
@@ -199,6 +172,7 @@ useSwipe(sliderContainerRef, {
   min-width: max-content;
 
   @media (max-width: $br1) {
+    display: none;
     align-items: flex-start;
     gap: 16px;
   }
@@ -233,9 +207,5 @@ useSwipe(sliderContainerRef, {
   object-fit: cover;
   width: 100%;
   height: 100%;
-
-  @media (max-width: $br1) {
-    object-fit: cover;
-  }
 }
 </style>

@@ -58,8 +58,7 @@ const handleCloseFullImageModal = () => {
 const dir = ref('down')
 
 useSwipe(sliderContainerRef, {
-  threshold: 50,
-
+  threshold: 20,
   onSwipe: () => {
     if (dir.value === 'left' || dir.value === 'right') {
       window.escroll.disabled = true
@@ -67,11 +66,6 @@ useSwipe(sliderContainerRef, {
   },
   onSwipeEnd: (_, direction) => {
     dir.value = direction
-    if (direction === 'left') {
-      slideTo(activeIdx.value + 1)
-    } else if (direction === 'right') {
-      slideTo(activeIdx.value - 1)
-    }
     window.escroll.disabled = false
   },
 })
@@ -95,6 +89,10 @@ useSwipe(sliderContainerRef, {
           @open="handleModal($event, img, index)"
         />
       </ul>
+      <ProjectMobileCarousel
+        :assets="apartment?.assets"
+        @choose="handleModal"
+      />
     </div>
     <ModalsImageSliderModal
       :is-open="isFullImageModalOpened"
@@ -129,13 +127,12 @@ useSwipe(sliderContainerRef, {
     position: relative;
     width: 100vw;
     margin-top: 40px;
-    padding-right: 32px;
+    padding-right: 0;
     padding-left: 32px;
     margin-left: -32px;
   }
 
   @media (max-width: $br3) {
-    padding-right: 16px;
     padding-left: 16px;
     margin-left: -16px;
   }
@@ -150,6 +147,7 @@ useSwipe(sliderContainerRef, {
     align-items: flex-start;
     min-width: max-content;
     gap: 16px;
+    display: none;
   }
 }
 
