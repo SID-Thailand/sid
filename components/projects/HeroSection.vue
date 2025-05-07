@@ -83,7 +83,11 @@ const emit = defineEmits(['filter', 'getAll'])
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(36, 36, 36, 0) 0%, #242424 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(36, 36, 36, 0) 0%,
+    rgba(36, 36, 36, 0.6) 100%
+  );
   mix-blend-mode: multiply;
 }
 

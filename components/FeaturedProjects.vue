@@ -135,7 +135,7 @@ const onClick = () => {
 
   will-change: transform;
 
-  filter: brightness(0.7) contrast(1.2) saturate(0);
+  filter: brightness(0.9) contrast(1.2) saturate(0);
 }
 
 .featured-projects__scroll-wrapper {

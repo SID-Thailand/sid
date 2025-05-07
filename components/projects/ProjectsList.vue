@@ -175,7 +175,11 @@ const replaceLineBreaks = (content: string) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
+  background-image: linear-gradient(
+    180deg,
+    #3a3838 0%,
+    rgba(#202020, 0.5) 100%
+  );
   mix-blend-mode: hard-light;
   z-index: 1;
 }
