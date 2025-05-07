@@ -49,14 +49,24 @@ const handleCloseFullImageModal = () => {
   selectedImage.value = null
 }
 
+const dir = ref('down')
+
 useSwipe(sliderContainerRef, {
   threshold: 50,
+  onSwipe: () => {
+    if (dir.value === 'left' || dir.value === 'right') {
+      window.escroll.disabled = true
+    }
+  },
   onSwipeEnd: (_, direction) => {
+    dir.value = direction
+
     if (direction === 'left') {
       slideTo(activeIdx.value + 1)
     } else if (direction === 'right') {
       slideTo(activeIdx.value - 1)
     }
+    window.escroll.disabled = false
   },
 })
 </script>
