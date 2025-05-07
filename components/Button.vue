@@ -104,17 +104,17 @@ withDefaults(defineProps<IProps>(), {
 
   :global(svg) {
     display: block;
-    width: vw(24);
-    height: vw(24);
+    width: vw(20);
+    height: vw(20);
 
     @media (max-width: $br1) {
-      width: size(24, 18);
-      height: size(24, 18);
+      width: size(20, 16);
+      height: size(20, 16);
     }
 
     @media (max-width: $br4) {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
     }
   }
 
