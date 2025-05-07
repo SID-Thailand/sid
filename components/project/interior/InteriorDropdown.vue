@@ -131,7 +131,6 @@ watch(isOpen, val => {
   overflow-y: auto;
   background-color: var(--neutral-100);
   transition: max-height 0.8s ease;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
 
   @media (max-width: $br1) {
     max-width: 385px;
