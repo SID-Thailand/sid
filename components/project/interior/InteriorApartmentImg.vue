@@ -38,8 +38,8 @@ const emit = defineEmits(['open'])
 
 .interior-apart__img {
   display: block;
-  width: auto;
-  height: vw(600);
+  width: 100%;
+  // height: vw(600);
   cursor: pointer;
 
   @media (max-width: $br1) {

@@ -64,7 +64,7 @@ onMounted(() => {
     '.navigation__image-wrapper'
   )
 
-  if ($images) {
+  if ($images?.length) {
     $images.forEach($image => {
       gsap.set($image, {
         clipPath: 'inset(100% 0 0 0)',
@@ -77,7 +77,7 @@ onMounted(() => {
 const { selectedLang, defaultLocale } = useLang()
 
 const updatedLinks = computed(() => {
-  return props.links.map(item => {
+  return props.links?.map(item => {
     if (item?.link?.cached_url.includes('home')) {
       return {
         ...item,

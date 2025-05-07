@@ -47,6 +47,7 @@ const onClick = () => {
             :style="{ zIndex: idx + 1 }"
           />
         </div>
+        <div class="featured-projects__layer" />
         <NuxtLink
           class="featured-projects__link featured-projects__link--mob underline-reverse"
           to="/projects/"
@@ -125,6 +126,21 @@ const onClick = () => {
   z-index: 0;
 }
 
+.featured-projects__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(
+    180deg,
+    #3a3838 0%,
+    rgba(#202020, 0.5) 100%
+  );
+  mix-blend-mode: hard-light;
+  z-index: 1;
+}
+
 .featured-projects__bg {
   position: absolute;
   inset: 0;
@@ -135,7 +151,7 @@ const onClick = () => {
 
   will-change: transform;
 
-  filter: brightness(0.9) contrast(1.2) saturate(0);
+  // filter: brightness(0.9) contrast(1.2) saturate(0);
 }
 
 .featured-projects__scroll-wrapper {
