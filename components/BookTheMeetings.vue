@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { iCTA } from '~/types/story'
-import { LucideArrowUpRight } from 'lucide-vue-next'
+
 import { gsap, ScrollTrigger } from '~/libs/gsap'
 import { delayPromise } from '@emotionagency/utils'
 
@@ -90,7 +90,7 @@ onBeforeUnmount(async () => {
         </div>
         <Button type="button" class="meetings__btn" @click="handleForm">
           <span> {{ cta?.content?.button_text }}</span>
-          <LucideArrowUpRight />
+          <IconsArrowTopRight />
         </Button>
       </div>
     </div>

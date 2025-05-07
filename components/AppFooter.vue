@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useFooterStory } from '~/composables/stories/footerStory'
-import { LucideArrowUpRight } from 'lucide-vue-next'
+
 import Validation from '~/utils/Validation'
 
 const { story } = await useFooterStory()
@@ -108,7 +108,7 @@ const { story } = await useFooterStory()
           />
           <Button type="submit" class="footer__form-btn">
             <span>{{ story?.content?.button }}</span>
-            <LucideArrowUpRight />
+            <IconsArrowTopRight />
           </Button>
         </form>
       </div>

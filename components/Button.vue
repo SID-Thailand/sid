@@ -103,6 +103,7 @@ withDefaults(defineProps<IProps>(), {
   }
 
   :global(svg) {
+    flex-shrink: 0;
     display: block;
     width: vw(20);
     height: vw(20);

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LucideArrowUpRight } from 'lucide-vue-next'
 import type { iProjectsContent } from '~/types/projectsTypes'
 import type { iStory } from '~/types/story'
 
@@ -107,7 +106,7 @@ const replaceLineBreaks = (content: string) => {
             <span>
               {{ projectBtn }}
             </span>
-            <LucideArrowUpRight />
+            <IconsArrowTopRight />
           </Button>
         </div>
         <div class="projects__counter container">

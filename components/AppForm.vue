@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LucideArrowUpRight } from 'lucide-vue-next'
 import { useFormStory } from '~/composables/stories/formStory'
 import type { IForm } from '~/types/form'
 
@@ -113,7 +112,7 @@ const onSubmit = () => {
         :disabled="!isFormValid"
       >
         <span>{{ btnText }}</span>
-        <LucideArrowUpRight />
+        <IconsArrowTopRight />
       </Button>
     </div>
   </form>

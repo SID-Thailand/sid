@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { iImage } from '~/types/story'
 import { ScrollTrigger } from '~/libs/gsap'
-import { LucideArrowUpRight } from 'lucide-vue-next'
+
 import Play from './icons/Play.vue'
 import type { iYoutubeButton } from '~/types/consultingTypes'
 
@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
         class="d-video__btn"
       >
         {{ button?.label }}
-        <span><LucideArrowUpRight /></span>
+        <span><IconsArrowTopRight /></span>
       </Button>
     </div>
     <div v-if="addressText" class="d-video__address">
