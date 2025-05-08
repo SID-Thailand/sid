@@ -44,7 +44,7 @@ const animate = async () => {
   const zBase = 20
   const targetScale = 0.93
 
-  const duration = 2
+  const duration = 1.5
 
   const distancePrev = distance - 1
   const isForward = direction.value === 'forward'
@@ -158,11 +158,11 @@ onMounted(() => {
   transform-origin: top;
   overflow: hidden;
   will-change: transform, opacity;
-  transition: box-shadow 2s ease;
+  transition: box-shadow 1.5s ease;
   &:not(&--active) {
     .quiz-step__overlay {
       opacity: 1;
-      transition: opacity 2s ease;
+      transition: opacity 1.5s ease;
     }
   }
 
