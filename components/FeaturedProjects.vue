@@ -8,10 +8,10 @@ interface IProps {
 const { content } = defineProps<IProps>()
 
 const projects = computed(() => {
-  return content?.featured_projects || []
+  return content?.featured_projects?.filter(project => project.content) || []
 })
 const projectCount = computed(() => {
-  return content?.featured_projects.length || 0
+  return projects.value.length || 0
 })
 
 const contentRef = ref<HTMLElement | null>(null)
@@ -22,7 +22,7 @@ const { activePage } = useFullPageCardSlider(
 )
 
 const activeProject = computed(() => {
-  return projects.value[activePage.value - 1]
+  return projects.value?.[activePage.value - 1 || 0]
 })
 
 const route = useRoute()
@@ -30,13 +30,15 @@ const route = useRoute()
 const onClick = () => {
   route.meta.isProjectTransition = true
 }
+
+console.log(projects.value, activeProject.value)
 </script>
 
 <template>
   <section class="featured-projects">
     <div ref="contentRef" class="featured-projects__scroll-wrapper">
       <div class="featured-projects__content">
-        <div class="featured-projects__bg-wrapper">
+        <div v-if="projects?.length" class="featured-projects__bg-wrapper">
           <CustomImage
             v-for="(item, idx) in projects"
             :key="idx"
@@ -55,7 +57,7 @@ const onClick = () => {
           >{{ content?.button_text }}</NuxtLink
         >
         <NuxtLink
-          :to="`/${activeProject.full_slug}`"
+          :to="`/${activeProject?.full_slug}`"
           data-t-card
           :data-slug="activeProject?.slug"
           class="featured-projects__card fpc"
