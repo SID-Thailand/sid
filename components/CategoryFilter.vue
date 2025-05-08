@@ -35,7 +35,7 @@ const handleGetAll = () => {
       >
         {{ labelAll }}
       </button>
-      <span>|</span>
+      <span role="separator" aria-orientation="vertical">|</span>
     </li>
 
     <li
@@ -52,7 +52,12 @@ const handleGetAll = () => {
       >
         {{ category }}
       </button>
-      <span v-if="categories.length - 1 !== idx">|</span>
+      <span
+        v-if="categories.length - 1 !== idx"
+        role="separator"
+        aria-orientation="vertical"
+        >|</span
+      >
     </li>
   </ul>
 </template>
@@ -76,7 +81,7 @@ const handleGetAll = () => {
 
 .category-filter__item {
   span {
-    color: var(--neutral-300);
+    color: currentColor;
     margin: 0 vw(20);
 
     @media (max-width: $br1) {
