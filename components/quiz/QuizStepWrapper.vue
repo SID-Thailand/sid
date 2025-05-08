@@ -39,8 +39,6 @@ const animate = async () => {
   const isActive = props.activeIdx === props.idx
   const isPrev = props.prevIdx === props.idx
 
-  console.log(direction.value)
-
   const distance = distanceFromActive.value
 
   const zBase = 20
