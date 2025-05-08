@@ -60,43 +60,45 @@ const onClick = () => {
                 <h3 class="app-projects__name">
                   {{ project?.content?.name }}
                 </h3>
-                <div class="app-projects__specs">
-                  <p class="app-projects__spec">
-                    {{ project?.content?.spec_1 }}
-                  </p>
-                  <p class="app-projects__spec">
-                    {{ project?.content?.spec_2 }}
-                  </p>
-                  <p class="app-projects__spec">
-                    {{ project?.content?.spec_3 }}
-                  </p>
-                </div>
-                <div class="app-projects__plus">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 13V23H13V13H23V11H13V1H11V11H1V13H11Z"
-                      fill="url(#paint0_linear_1_2446)"
-                    />
-                    <defs>
-                      <linearGradient
-                        id="paint0_linear_1_2446"
-                        x1="12"
-                        y1="1"
-                        x2="12"
-                        y2="23"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stop-color="#FFCE7E" />
-                        <stop offset="1" stop-color="#997C4B" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
+                <div class="app-prjects__info-content">
+                  <div class="app-projects__specs">
+                    <p class="app-projects__spec">
+                      {{ project?.content?.spec_1 }}
+                    </p>
+                    <p class="app-projects__spec">
+                      {{ project?.content?.spec_2 }}
+                    </p>
+                    <p class="app-projects__spec">
+                      {{ project?.content?.spec_3 }}
+                    </p>
+                  </div>
+                  <div class="app-projects__plus">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M11 13V23H13V13H23V11H13V1H11V11H1V13H11Z"
+                        fill="url(#paint0_linear_1_2446)"
+                      />
+                      <defs>
+                        <linearGradient
+                          id="paint0_linear_1_2446"
+                          x1="12"
+                          y1="1"
+                          x2="12"
+                          y2="23"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop stop-color="#FFCE7E" />
+                          <stop offset="1" stop-color="#997C4B" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </NuxtLink>
@@ -186,35 +188,37 @@ const onClick = () => {
 }
 
 .app-projects__list {
-  @media (min-width: $br1) {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  display: grid;
+  gap: vw(20);
+  grid-auto-flow: row;
 
-    gap: vw(20);
-    grid-auto-flow: row;
+  @media (min-width: $br1) {
+    width: 100%;
   }
 
   @media (max-width: $br1) {
-    display: flex;
-    align-items: center;
-    min-width: max-content;
-    column-gap: 16px;
+    grid-template-columns: repeat(100, 1fr);
+    // min-width: max-content;
+    gap: 16px;
+    &::after {
+      content: '';
+      width: 1px;
+      display: block;
+      height: 1px;
+    }
   }
 }
 
 .app-projects__card {
-  &:last-child {
-    @media (max-width: $br1) {
-      margin-right: 32px;
-    }
-    @media (max-width: $br3) {
-      margin-right: 16px;
-    }
+  height: 100%;
+  @media (max-width: $br1) {
+    width: 300px;
   }
 }
 
 .app-projects__link {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -225,16 +229,22 @@ const onClick = () => {
 
   @media (max-width: $br1) {
     padding: 16px;
-    row-gap: 40px;
+    row-gap: 24px;
   }
 }
 
+.app-projects__info {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100%;
+}
+
 .app-projects__img {
-  aspect-ratio: 292 / 292;
+  aspect-ratio: 1;
   object-fit: cover;
 
   @media (max-width: $br1) {
-    aspect-ratio: 268 / 268;
     height: 268px;
   }
 }
