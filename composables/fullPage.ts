@@ -154,7 +154,6 @@ export const useFullPage = (
   }
 
   onMounted(() => {
-    console.log(pagesCount.value)
     if (pagesCount.value < 2) {
       return
     }

@@ -13,8 +13,6 @@ const props = defineProps<iProps>()
 const route = useRoute()
 const slug = route.params.id
 
-console.log(slug)
-
 const allNews = computed(() => {
   const news = props.news
   if (news.length > 0) {

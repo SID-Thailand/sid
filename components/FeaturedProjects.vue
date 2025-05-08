@@ -30,8 +30,6 @@ const route = useRoute()
 const onClick = () => {
   route.meta.isProjectTransition = true
 }
-
-console.log(projects.value, activeProject.value)
 </script>
 
 <template>
@@ -270,6 +268,9 @@ console.log(projects.value, activeProject.value)
 
 :global(.fpc__specs .e-line) {
   line-height: 0.8em;
+  @media (max-width: $br1) {
+    line-height: 1em;
+  }
 }
 
 .fpc__spec {
@@ -280,6 +281,7 @@ console.log(projects.value, activeProject.value)
 
   @media (max-width: $br1) {
     font-size: 16px;
+    line-height: 1.2em;
   }
 }
 
