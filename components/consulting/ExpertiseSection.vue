@@ -10,6 +10,8 @@ defineProps<IProps>()
 const $el = ref<HTMLElement | null>(null)
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
+
+const { isFormModalOpened } = useAppState()
 </script>
 
 <template>
@@ -23,7 +25,11 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
           <p class="cons-expertise__description">
             {{ content?.text }}
           </p>
-          <Button class="cons-expertise__btn" type="button">
+          <Button
+            class="cons-expertise__btn"
+            type="button"
+            @click="isFormModalOpened = true"
+          >
             <span>{{ content?.button_text }}</span>
             <IconsPlus />
           </Button>
