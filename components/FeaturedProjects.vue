@@ -333,6 +333,7 @@ const onClick = () => {
 .featured-projects__link {
   position: relative;
   width: fit-content;
+  z-index: 3;
   display: block;
   text-transform: uppercase;
   margin-top: vw(48);
