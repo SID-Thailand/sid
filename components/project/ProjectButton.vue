@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import type { IEventArgs } from '@emotionagency/emotion-scroll'
 import { delayPromise } from '@emotionagency/utils'
+import { useMenuStory } from '~/composables/stories/menuStory'
+
+const { story } = await useMenuStory()
+
+const link = computed(() => {
+  return story.value?.content?.socials?.find(s => s?.label === 'Whatsapp')
+})
 
 const isVisible = ref(false)
 const swipeDownCount = ref(0)
@@ -46,13 +53,15 @@ onBeforeUnmount(() => {
 
 <template>
   <Button
-    type="button"
+    v-if="link"
+    :href="link?.link?.cached_url"
+    tag="a"
     class="project-w-btn"
     :class="{
       'project-w-btn--visible': isVisible,
     }"
   >
-    <span>WHATSAPP</span>
+    <span>{{ link?.label }}</span>
     <IconsPlus />
   </Button>
 </template>
