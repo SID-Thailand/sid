@@ -144,7 +144,7 @@ const onClick = () => {
 
 .app-projects__title {
   text-transform: uppercase;
-  line-height: 1.25em;
+  line-height: 1em;
   font-size: vw(68);
   max-width: vw(350);
   @include med;

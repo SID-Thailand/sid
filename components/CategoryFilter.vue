@@ -83,16 +83,6 @@ const handleGetAll = () => {
       display: none;
     }
   }
-
-  &--active {
-    .category-filter__btn {
-      color: var(--basic-white);
-
-      &:before {
-        background-color: var(--basic-white);
-      }
-    }
-  }
 }
 
 .category-filter__btn {
@@ -101,12 +91,13 @@ const handleGetAll = () => {
   line-height: 1.2em;
   text-transform: uppercase;
   background: transparent;
-  color: var(--neutral-300);
+  color: var(--basic-white);
+
   transition: color 0.3s ease;
   @include med;
 
   &:before {
-    background-color: var(--neutral-300);
+    background-color: currentColor;
   }
 
   @media (max-width: $br1) {
