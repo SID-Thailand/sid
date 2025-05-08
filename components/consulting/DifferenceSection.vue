@@ -42,7 +42,7 @@ const { activePage } = useFullPageCardSlider(
             class="cons-diff__bg"
           />
         </div>
-        <div class="cons-diff__layer" />
+        <DarkLayer />
 
         <div class="cons-diff__content">
           <div class="cons-diff__texts">
@@ -139,25 +139,13 @@ const { activePage } = useFullPageCardSlider(
   object-fit: cover;
 }
 
-.cons-diff__layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  background-image: linear-gradient(180deg, #3a3838 0%, #202020 100%);
-
-  mix-blend-mode: hard-light;
-}
-
 .cons-diff__content {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 3;
   position: relative;
   width: vw(784);
   margin: 0 auto;
@@ -271,6 +259,7 @@ const { activePage } = useFullPageCardSlider(
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  z-index: 2;
 
   @media (max-width: $br1) {
     flex-direction: column;

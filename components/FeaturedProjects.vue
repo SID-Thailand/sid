@@ -47,7 +47,8 @@ const onClick = () => {
             :style="{ zIndex: idx + 1 }"
           />
         </div>
-        <div class="featured-projects__layer" />
+        <DarkLayer />
+
         <NuxtLink
           class="featured-projects__link featured-projects__link--mob underline-reverse"
           to="/projects/"
@@ -124,21 +125,6 @@ const onClick = () => {
   left: 0;
   overflow: hidden;
   z-index: 0;
-}
-
-.featured-projects__layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(
-    180deg,
-    #3a3838 0%,
-    rgba(#202020, 0.5) 100%
-  );
-  mix-blend-mode: hard-light;
-  z-index: 1;
 }
 
 .featured-projects__bg {

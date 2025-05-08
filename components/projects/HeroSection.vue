@@ -21,6 +21,7 @@ const emit = defineEmits(['filter', 'getAll'])
           :alt="content?.background?.alt"
           class="projects-hero__bg"
         />
+
         <div class="projects-hero__layer" />
       </div>
 

@@ -54,7 +54,7 @@ const replaceLineBreaks = (content: string) => {
           </div>
         </div>
 
-        <div class="projects__layer" />
+        <DarkLayer />
         <div
           class="projects__card"
           data-t-card
@@ -166,21 +166,6 @@ const replaceLineBreaks = (content: string) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.projects__layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(
-    180deg,
-    #3a3838 0%,
-    rgba(#202020, 0.5) 100%
-  );
-  mix-blend-mode: hard-light;
-  z-index: 1;
 }
 
 .projects__card {
