@@ -69,8 +69,8 @@ const { activePage } = useFullPageCardSlider(
             >
               <CustomImage
                 data-f-img
-                :src="img?.background_asset?.filename"
-                :aly="img?.background_asset?.alt"
+                :src="img?.asset?.filename"
+                :aly="img?.asset?.alt"
                 class="cons-diff__img"
               />
             </div>
