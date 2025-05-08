@@ -5,11 +5,13 @@ interface IProps {
   url: string
   videoAttributes?: VideoHTMLAttributes & ReservedProps
   isPlaying?: boolean
+  isFullscreen?: boolean
 }
 
 const props = defineProps<IProps>()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
+const emit = defineEmits(['exitFullscreen'])
 
 watch(
   () => props.isPlaying,
@@ -24,6 +26,34 @@ watch(
   },
   { immediate: true }
 )
+
+watch(
+  () => props.isFullscreen,
+  newVal => {
+    if (videoRef.value) {
+      if (newVal) {
+        videoRef.value.requestFullscreen()
+      } else {
+        document.exitFullscreen()
+        emit('exitFullscreen')
+      }
+    }
+  }
+)
+
+const fullScreenHandler = () => {
+  if (!document.fullscreenElement) {
+    emit('exitFullscreen')
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('fullscreenchange', fullScreenHandler)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', fullScreenHandler)
+})
 </script>
 
 <template>

@@ -10,12 +10,11 @@ interface IProps {
 defineProps<IProps>()
 
 const isPlaying = ref(true)
-const isClicked = ref(false)
 
-const togglePlay = () => {
-  isPlaying.value = !isPlaying.value
+const isFullscreen = ref(false)
 
-  isClicked.value = true
+const toggleFullScreen = () => {
+  isFullscreen.value = true
 }
 </script>
 
@@ -28,9 +27,15 @@ const togglePlay = () => {
         }"
         :url="asset?.filename"
         :is-playing="isPlaying"
+        :is-fullscreen="isFullscreen"
         class="interview__video"
+        @exitFullscreen="isFullscreen = false"
       />
-      <button type="button" class="interview__play-btn" @click="togglePlay">
+      <button
+        type="button"
+        class="interview__play-btn"
+        @click="toggleFullScreen"
+      >
         <IconsPlay />
       </button>
     </div>
