@@ -135,7 +135,7 @@ const onClick = () => {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  row-gap: vw(100);
+  row-gap: vw(32);
 
   @media (max-width: $br1) {
     row-gap: 40px;
