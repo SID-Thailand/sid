@@ -249,7 +249,7 @@ const isAnimating = ref(false)
   justify-content: center;
   align-items: center;
   gap: vw(24);
-  z-index: 2;
+  z-index: 50;
 
   @media (max-width: $br1) {
     gap: 16px;

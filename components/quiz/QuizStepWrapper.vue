@@ -21,12 +21,8 @@ const distanceFromActive = computed(() => {
   return distance
 })
 
-const background = computed(() => {
-  if (props.activeIdx === props.idx) {
-    return 'var(--gradient-secondary)'
-  }
-
-  return '#57534C'
+const direction = computed(() => {
+  return props.activeIdx > props.prevIdx ? 'forward' : 'reverse'
 })
 
 const animate = async () => {
@@ -41,55 +37,70 @@ const animate = async () => {
     },
   })
   const isActive = props.activeIdx === props.idx
-  const wasActive = props.prevIdx === props.idx
+  const isPrev = props.prevIdx === props.idx
+
+  console.log(direction.value)
+
   const distance = distanceFromActive.value
 
   const zBase = 20
-  const targetScale = 1 - distance * 0.07
+  const targetScale = 0.93
 
-  const duration = 1
+  const duration = 2
+
+  const distancePrev = distance - 1
+  const isForward = direction.value === 'forward'
 
   if (isActive) {
-    el.style.zIndex = `${zBase}`
+    tl.set(el, { zIndex: 30, opacity: 1 })
+    tl.fromTo(
+      el,
+      {
+        scale: targetScale,
+        yPercent: 20,
+      },
+      {
+        duration,
+        scale: 1,
+        yPercent: 0,
+        ease: 'power2.out',
+      }
+    )
+  } else {
+    let zIndex = zBase
+
+    if (isForward && isPrev) {
+      zIndex = zBase - distancePrev
+    } else {
+      zIndex = zBase - distance
+    }
+
+    tl.set(el, { zIndex, opacity: 1 })
 
     tl.fromTo(
       el,
       {
-        y: '100%',
-        scale: targetScale,
+        scale: 1 - distancePrev * 0.07,
+        yPercent: -3 * distance - 1,
       },
       {
         duration,
-        y: 0,
-        scale: 1,
+        scale: 1 - distance * 0.07,
+        yPercent: -3 * distance,
         ease: 'power2.out',
       }
     )
-  } else if (wasActive) {
-    el.style.zIndex = `${zBase - 1}`
 
-    const newDistance = Math.abs(props.activeIdx - props.idx)
-    const newScale = 1 - newDistance * 0.07
-    const newY = -newDistance * 20
-
-    tl.to(el, {
-      duration,
-      y: newY,
-      scale: newScale,
-      ease: 'power2.out',
-      onComplete: () => {
-        el.style.zIndex = `${zBase - newDistance - 2}`
-      },
-    })
-  } else {
-    el.style.zIndex = `${zBase - distance - 2}`
-
-    tl.to(el, {
-      duration,
-      y: -distance * 20,
-      scale: targetScale,
-      ease: 'power2.out',
-    })
+    if (distance > 2) {
+      tl.to(
+        el,
+        {
+          opacity: 0,
+          duration: duration / 3,
+        },
+        0
+      )
+    }
   }
 }
 
@@ -113,13 +124,15 @@ onMounted(() => {
   <div
     ref="itemRef"
     class="quiz-step"
+    :class="{
+      'quiz-step--active': props.activeIdx === props.idx,
+    }"
     :style="{
-      background,
-      visibility: distanceFromActive <= 2 ? 'visible' : 'hidden',
       boxShadow:
         distanceFromActive >= 1 ? `0 0 20px 0 rgba(0, 0, 0, 0.3)` : 'none',
     }"
   >
+    <div class="quiz-step__overlay" />
     <div class="quiz-step__wrapper">
       <div class="quiz-step__content">
         <p class="quiz-step__count">
@@ -144,7 +157,14 @@ onMounted(() => {
   position: absolute;
   background: var(--gradient-secondary);
   transform-origin: top;
+  overflow: hidden;
   will-change: transform, opacity;
+  &:not(&--active) {
+    .quiz-step__overlay {
+      opacity: 1;
+      transition: opacity 2s ease;
+    }
+  }
 
   &:first-child {
     position: relative;
@@ -157,8 +177,16 @@ onMounted(() => {
   }
 
   @media (max-width: $br3) {
-    transform-origin: center 20%;
+    transform-origin: center 15%;
   }
+}
+
+.quiz-step__overlay {
+  position: absolute;
+  inset: 0;
+  background: #57534c;
+  pointer-events: none;
+  opacity: 0;
 }
 
 .quiz-step__wrapper {
