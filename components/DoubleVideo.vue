@@ -66,7 +66,7 @@ onBeforeUnmount(() => {
         <div class="d-video__landscape">
           <CustomVideo
             :video-attributes="{
-              preload: 'true',
+              preload: 'auto',
             }"
             :url="asset?.filename"
             :is-playing="isPlaying"
@@ -80,6 +80,7 @@ onBeforeUnmount(() => {
               v-if="isYoutube"
               :href="button?.link?.url"
               target="_blank"
+              aria-label="Open Youtube"
               rel="noopener noreferrer"
               type="button"
               class="d-video__youtube"

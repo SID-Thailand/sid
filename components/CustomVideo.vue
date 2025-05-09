@@ -61,10 +61,9 @@ onBeforeUnmount(() => {
     <video
       ref="videoRef"
       :autoplay="isPlaying"
-      lazy
       loop
       muted
-      playsinline="true"
+      :playsinline="true"
       preload="metadata"
       v-bind="videoAttributes"
     >

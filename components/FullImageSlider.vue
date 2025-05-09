@@ -145,6 +145,7 @@ useIntersectionObserver($el, ([entry]) => {
         <button
           type="button"
           class="full-slider__btn"
+          aria-label="previous slide"
           :class="{ visible: cursorType === 'left' }"
           @click="throttledNavigate(-1)"
           @mouseenter="setCursor('left')"
@@ -154,6 +155,7 @@ useIntersectionObserver($el, ([entry]) => {
         <button
           type="button"
           class="full-slider__btn"
+          aria-label="next slide"
           :class="{ visible: cursorType === 'right' }"
           @click="throttledNavigate(1)"
           @mouseenter="setCursor('right')"

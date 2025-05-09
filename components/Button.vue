@@ -21,14 +21,14 @@ withDefaults(defineProps<IProps>(), {
     :href="href"
     :disabled="disabled"
   >
-    <div class="btn__content-wrapper">
-      <div class="btn__content">
+    <span class="btn__content-wrapper">
+      <span class="btn__content">
         <slot />
-      </div>
-      <div aria-hidden="true" class="btn__content btn__content--duplicate">
+      </span>
+      <span aria-hidden="true" class="btn__content btn__content--duplicate">
         <slot />
-      </div>
-    </div>
+      </span>
+    </span>
   </HeadlessButton>
 </template>
 
@@ -84,6 +84,7 @@ withDefaults(defineProps<IProps>(), {
 .btn__content-wrapper {
   position: relative;
   overflow: hidden;
+  display: block;
 }
 
 .btn__content {

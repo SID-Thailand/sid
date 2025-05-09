@@ -23,7 +23,7 @@ const toggleFullScreen = () => {
     <div class="interview__video-wrapper">
       <CustomVideo
         :video-attributes="{
-          preload: 'true',
+          preload: 'auto',
         }"
         :url="asset?.filename"
         :is-playing="isPlaying"
@@ -34,6 +34,7 @@ const toggleFullScreen = () => {
       <button
         type="button"
         class="interview__play-btn"
+        aria-label="Open video in fullscreen"
         @click="toggleFullScreen"
       >
         <IconsPlay />
