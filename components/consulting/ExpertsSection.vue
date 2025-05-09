@@ -28,18 +28,20 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
             :key="idx"
             class="cons-experts__item"
           >
-            <CustomImage
-              class="cons-experts__img"
-              :src="expert?.content?.photo?.filename"
-              :alt="expert?.content?.photo?.alt"
-            />
-            <div class="cons-experts__info">
-              <p class="cons-experts__name">
-                {{ expert?.content?.name }}
-              </p>
-              <p class="cons-experts__position">
-                {{ expert?.content?.position }}
-              </p>
+            <div class="cons-experts__item-wrapper">
+              <CustomImage
+                class="cons-experts__img"
+                :src="expert?.content?.photo?.filename"
+                :alt="expert?.content?.photo?.alt"
+              />
+              <div class="cons-experts__info">
+                <p class="cons-experts__name">
+                  {{ expert?.content?.name }}
+                </p>
+                <p class="cons-experts__position">
+                  {{ expert?.content?.position }}
+                </p>
+              </div>
             </div>
             <div
               v-if="expert?.content?.links.length > 0"
@@ -146,6 +148,12 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
     row-gap: 48px;
     margin-top: 24px;
   }
+}
+
+.cons-experts__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .cons-experts__img {

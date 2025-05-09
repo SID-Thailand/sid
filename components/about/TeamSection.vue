@@ -93,18 +93,20 @@ watchImmediate(isMobile, () => {
                 :key="index"
                 class="ab-team__member"
               >
-                <CustomImage
-                  :src="member?.content?.photo?.filename"
-                  :alt="member?.content?.photo?.alt"
-                  class="ab-team__img"
-                />
-                <div class="ab-team__info">
-                  <h4 class="ab-team__name">
-                    {{ member?.content?.name }}
-                  </h4>
-                  <p class="ab-team__pos">
-                    {{ member?.content?.position }}
-                  </p>
+                <div class="ab-team__member-wrapper">
+                  <CustomImage
+                    :src="member?.content?.photo?.filename"
+                    :alt="member?.content?.photo?.alt"
+                    class="ab-team__img"
+                  />
+                  <div class="ab-team__info">
+                    <h4 class="ab-team__name">
+                      {{ member?.content?.name }}
+                    </h4>
+                    <p class="ab-team__pos">
+                      {{ member?.content?.position }}
+                    </p>
+                  </div>
                 </div>
                 <div
                   v-if="member?.content?.links.length > 0"
@@ -233,6 +235,12 @@ watchImmediate(isMobile, () => {
     flex-direction: column;
     row-gap: 48px;
   }
+}
+
+.ab-team__member {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .ab-team__img {
