@@ -27,7 +27,7 @@ const content = computed(() => story.value?.content)
       :asset="content?.asset"
     />
     <DynamicBlockRenderer :blocks="content?.body" />
-    <FormSection :background="content?.form_bg" :title="content?.title" />
+    <FormSection :background="content?.form_bg" :title="content?.form_title" />
     <CurrentNewsOtherNews
       :news="news"
       class="current-news-list"
