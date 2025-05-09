@@ -131,7 +131,7 @@ watch(isMenuOpened, () => {
       :aria-expanded="isMenuOpened"
       @click="toggleMenu"
     >
-      <span>{{ content?.menu_button_text }}</span>
+      <span class="burget-menu__text">{{ content?.menu_button_text }}</span>
       <span
         class="burger-menu__lines"
         :class="isMenuOpened && 'burger-menu__lines--opened'"
@@ -174,11 +174,11 @@ watch(isMenuOpened, () => {
     align-items: center;
     column-gap: vw(12);
   }
+}
 
+.burget-menu__text {
   @media (max-width: $br1) {
-    > span {
-      display: none;
-    }
+    display: none;
   }
 }
 
