@@ -141,5 +141,10 @@ defineProps<iProps>()
       margin-top: 18px;
     }
   }
+
+  .center-text {
+    text-align: center;
+    display: inline-block;
+  }
 }
 </style>

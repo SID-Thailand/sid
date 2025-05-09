@@ -20,11 +20,12 @@ export const useGetStories = async (opts: ISbStoriesParams) => {
 
   const getStories = async (attempt?: number) => {
     if (!response.value) {
+      console.log(config.public.ENVIROMENT)
       try {
         const { data }: tResStory = await storyapi.get('cdn/stories/', {
           sort_by: 'name:asc',
           version:
-            config.public.ENVIROMENT === 'development' || isInEditor.value
+            config.public.env === 'development' || isInEditor.value
               ? 'draft'
               : 'published',
           cv: Date.now(),
