@@ -132,13 +132,13 @@ watch(isMenuOpened, () => {
       @click="toggleMenu"
     >
       <span>{{ content?.menu_button_text }}</span>
-      <div
+      <span
         class="burger-menu__lines"
         :class="isMenuOpened && 'burger-menu__lines--opened'"
       >
         <span class="burger-menu__line" />
         <span class="burger-menu__line" />
-      </div>
+      </span>
     </button>
     <Teleport to="#teleports">
       <Transition v-bind="menuTransition">
