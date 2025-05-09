@@ -15,7 +15,7 @@ const projectCount = computed(() => {
   return props?.projects?.length || 0
 })
 
-const { activePage } = useFullPageCardSlider(
+const { activePage, onInit } = useFullPageCardSlider(
   contentRef as Ref<HTMLElement>,
   projectCount
 )
@@ -33,6 +33,33 @@ const onClick = () => {
 const replaceLineBreaks = (content: string) => {
   return content.replace(/\n/g, '<br>')
 }
+
+const longestTextLinesIdx = ref(0)
+
+const findLongestTextLinesIdx = () => {
+  if (!contentRef.value) return 0
+
+  const items = [...contentRef.value.querySelectorAll('.projects__text')]
+
+  let maxLines = 0
+  let maxIndex = 0
+
+  items.forEach((item, index) => {
+    const textLines = item.querySelectorAll('.e-line').length
+
+    console.log(textLines)
+    if (textLines > maxLines) {
+      maxLines = textLines
+      maxIndex = index
+    }
+  })
+
+  return maxIndex
+}
+
+onInit(() => {
+  longestTextLinesIdx.value = findLongestTextLinesIdx()
+})
 </script>
 
 <template>
@@ -65,7 +92,10 @@ const replaceLineBreaks = (content: string) => {
               v-for="(item, idx) in projects"
               :key="idx"
               class="projects__image-item"
-              :style="{ zIndex: idx + 1 }"
+              :style="{
+                zIndex: idx + 1,
+                position: longestTextLinesIdx === idx ? 'relative' : 'absolute',
+              }"
             >
               <div class="projects__img-wrapper">
                 <CustomImage
@@ -85,6 +115,10 @@ const replaceLineBreaks = (content: string) => {
               v-for="(project, index) in projects"
               :key="index"
               class="projects__text"
+              :style="{
+                position:
+                  longestTextLinesIdx === index ? 'relative' : 'absolute',
+              }"
             >
               <h2
                 data-f-title
@@ -214,10 +248,6 @@ const replaceLineBreaks = (content: string) => {
   left: 0;
   will-change: transform;
 
-  &:first-child {
-    position: relative;
-  }
-
   &:not(:first-child) {
     img {
       clip-path: inset(100% 0 0 0);
@@ -252,10 +282,6 @@ const replaceLineBreaks = (content: string) => {
   left: 0;
   height: 100%;
   width: 100%;
-
-  &:first-child {
-    position: relative;
-  }
 }
 
 .projects__title {

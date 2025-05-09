@@ -1,6 +1,7 @@
 import { delayPromise } from '@emotionagency/utils'
 import { TextSplitter } from './../utils/textSplitter'
 import { gsap } from '~/libs/gsap'
+import Emitter from 'tiny-emitter/dist/tinyemitter'
 
 const animateWords = (
   words: NodeListOf<Element> | any[],
@@ -79,6 +80,8 @@ export const useFullPageCardSlider = (
 
   let titlesSplitter: (typeof TextSplitter.prototype)[] = []
   let textsSplitter: (typeof TextSplitter.prototype)[] = []
+
+  const emitter = new Emitter()
 
   const setupInitialStates = async () => {
     $bgs.value?.forEach((bg, index) => {
@@ -167,9 +170,14 @@ export const useFullPageCardSlider = (
 
   watch(activePage, animateSections)
 
+  const onInit = (cb: (...agrs: any) => any) => {
+    emitter.on('init', () => {
+      cb()
+    })
+  }
+
   onMounted(async () => {
     await delayPromise(500)
-
     $bgs.value = target.value?.querySelectorAll(
       '[data-f-bg]'
     ) as NodeListOf<HTMLElement>
@@ -187,11 +195,13 @@ export const useFullPageCardSlider = (
     ) as NodeListOf<HTMLElement>
 
     await setupInitialStates()
+    emitter.emit('init')
   })
 
   return {
     activePage,
     prevPage,
     direction,
+    onInit,
   }
 }
