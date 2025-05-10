@@ -63,7 +63,7 @@ onInit(() => {
 </script>
 
 <template>
-  <section class="projects">
+  <section data-o class="projects">
     <div ref="contentRef" class="projects__wrapper">
       <div class="projects__slider container">
         <div class="projects__bgs">

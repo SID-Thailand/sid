@@ -15,7 +15,8 @@ export const useLoadingAnimation = () => {
     const $title = $el.querySelector('[data-title]') as HTMLElement | null
     const $logo = $el.querySelector('.header__logo') as HTMLElement | null
     const $t = $el.querySelectorAll('[data-t]')
-    return { $image, $fullImage, $title, $logo, $t }
+    const $o = $el.querySelectorAll('[data-o]')
+    return { $image, $fullImage, $title, $logo, $t, $o }
   }
 
   const getLogoOffset = ($logo: HTMLElement) => {
@@ -35,7 +36,7 @@ export const useLoadingAnimation = () => {
     document.documentElement.style.cursor = 'wait'
     document.body.style.pointerEvents = 'none'
 
-    const { $image, $fullImage, $title, $logo, $t } = getElements(parent)
+    const { $image, $fullImage, $title, $logo, $t, $o } = getElements(parent)
     await delayPromise(200)
 
     const delay = isFirstLoad.value ? 1.7 : wait
@@ -63,6 +64,7 @@ export const useLoadingAnimation = () => {
     }
 
     tl.set($t, { opacity: 0, y: 50 })
+    tl.set($o, { opacity: 0 })
 
     if (isFirstLoad.value && $logo) {
       const { x, y } = getLogoOffset($logo)
@@ -146,6 +148,19 @@ export const useLoadingAnimation = () => {
           ease: 'power2.out',
         },
         delay + 0.3
+      )
+    }
+
+    if ($o.length) {
+      tl.to(
+        $o,
+        {
+          duration: 2,
+          opacity: 1,
+          stagger: 0.2,
+          ease: 'power2.out',
+        },
+        delay + 1.2
       )
     }
 

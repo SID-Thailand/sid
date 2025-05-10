@@ -30,7 +30,7 @@ const viewMoreHandler = () => {
 </script>
 
 <template>
-  <div class="news-list">
+  <div data-o class="news-list">
     <div class="news-list__wrapper container">
       <h2 v-if="title" class="news-list__main-title">
         {{ title }}
@@ -93,14 +93,18 @@ const viewMoreHandler = () => {
           </li>
         </ul>
 
-        <Button
-          v-if="allNews.length > maxCards && allNews.length > slicedNews.length"
-          class="news-list__btn"
-          type="button"
-          @click="viewMoreHandler"
-        >
-          <span>{{ 'MORE' }}</span>
-        </Button>
+        <ClientOnly>
+          <Button
+            v-if="
+              allNews.length > maxCards && allNews.length > slicedNews.length
+            "
+            class="news-list__btn"
+            type="button"
+            @click="viewMoreHandler"
+          >
+            <span>{{ 'MORE' }}</span>
+          </Button>
+        </ClientOnly>
       </div>
     </div>
   </div>

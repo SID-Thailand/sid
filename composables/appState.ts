@@ -7,12 +7,12 @@ export const useAppState = () => {
   const isMenuOpened = useState('isMenuOpened', () => false)
   const isSlideModalOpened = useState('isSlideModalOpened', () => false)
   const isFormModalOpened = useState('isFormModalOpened', () => false)
-  const isUseLoader = useState(
-    'isUseLoader',
-    () => config.public.env === 'production'
-  )
+  // const isUseLoader = useState(
+  //   'isUseLoader',
+  //   () => config.public.env === 'production'
+  // )
 
-  // const isUseLoader = useState('isUseLoader', () => true)
+  const isUseLoader = useState('isUseLoader', () => true)
 
   const isFullPage = useState('isFullPage', () => false)
 

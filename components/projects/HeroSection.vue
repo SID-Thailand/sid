@@ -14,9 +14,8 @@ const emit = defineEmits(['filter', 'getAll'])
 <template>
   <section class="projects-hero container">
     <div class="projects-hero__wrapper">
-      <div class="projects-hero__bg-wrapper">
+      <div data-full-image class="projects-hero__bg-wrapper">
         <CustomImage
-          data-full-image
           :src="content?.background?.filename"
           :alt="content?.background?.alt"
           class="projects-hero__bg"
