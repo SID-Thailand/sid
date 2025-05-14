@@ -132,7 +132,23 @@ const onSubmit = async () => {
       <div class="footer__bottom">
         <p class="footer__small-text">SID COMPANY</p>
         <p class="footer__small-text">ALL RIGHTS RESERVED</p>
-        <p class="footer__small-text">MADE BY GROWDIENT</p>
+        <NuxtLink
+          :to="`/${story?.content?.privacy_policy_link[0]?.link?.cached_url}`"
+          class="footer__small-text footer__small-text--link underline-reverse"
+        >
+          {{ story?.content?.privacy_policy_link[0]?.label }}
+        </NuxtLink>
+        <p class="footer__small-text">
+          {{ story?.content?.made_by_text }}
+          <a
+            :href="story?.content?.designer[0]?.link?.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer__small-text-link footer__small-text--link underline-reverse"
+          >
+            {{ story?.content?.designer[0]?.label }}
+          </a>
+        </p>
       </div>
     </div>
   </footer>
@@ -296,12 +312,14 @@ const onSubmit = async () => {
 }
 
 .footer__small-text {
-  &:nth-of-type(1) {
+  &:nth-child(1) {
+    color: var(--basic-white);
+
     @media (min-width: $br1) {
       @include col(1, 6);
     }
   }
-  &:nth-of-type(2) {
+  &:nth-child(2) {
     @media (min-width: $br1) {
       @include col(7, 12);
     }
@@ -310,15 +328,31 @@ const onSubmit = async () => {
       margin-top: 2px;
     }
   }
-  &:nth-of-type(3) {
+  &:nth-child(3) {
     @media (min-width: $br1) {
-      @include col(13, 24);
+      @include col(13, 20);
+    }
+
+    @media (max-width: $br1) {
+      margin-top: 20px;
+    }
+  }
+
+  &:nth-child(4) {
+    @media (min-width: $br1) {
+      @include col(21, 24);
       justify-self: end;
     }
 
     @media (max-width: $br1) {
-      margin-top: 18px;
+      margin-top: 20px;
     }
+  }
+
+  &--link {
+    color: var(--basic-white);
+    position: relative;
+    width: fit-content;
   }
 }
 </style>
