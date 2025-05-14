@@ -182,3 +182,10 @@ export interface iFormContent {
   phone_label: string
   thankyou_text: string
 }
+
+export interface iGlobalMetaContent {
+  component: string
+  title: string
+  description: string
+  social_image: iImage
+}

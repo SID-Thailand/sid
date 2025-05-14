@@ -21,14 +21,6 @@ useHead({
 
 <template>
   <div id="app">
-    <Head>
-      <Title>SID</Title>
-      <Meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-      ></Meta>
-      <Link rel="icon" type="image/x-icon" href="/favicon.ico"></Link>
-    </Head>
     <AppGrid />
     <!-- <Landscape /> -->
     <SmoothScroll>

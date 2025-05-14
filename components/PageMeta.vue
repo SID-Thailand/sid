@@ -14,7 +14,7 @@ if (props.schema) {
     script: [
       {
         type: 'application/ld+json',
-        children: props.schema,
+        innerHTML: props.schema,
       },
     ],
   })

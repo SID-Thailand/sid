@@ -34,6 +34,11 @@ onErrorCaptured(error => {
 </script>
 
 <template>
+  <Head>
+    <Meta name="viewport" content="width=device-width, initial-scale=1"></Meta>
+    <Link rel="icon" type="image/x-icon" href="/favicon.ico"></Link>
+  </Head>
+  <GlobalMeta />
   <Transition name="loader">
     <Preloader v-if="isFirstLoad" />
   </Transition>
