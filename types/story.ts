@@ -175,6 +175,9 @@ export interface iFooterContent {
   email_label: string
   newsletter_title: string
   contacts: iContacts
+  privacy_policy_link: iContactItem[]
+  designer: iContactItem[]
+  made_by_text: string
 }
 
 export interface iFormContent {
