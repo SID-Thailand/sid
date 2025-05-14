@@ -10,10 +10,6 @@ interface IProps {
 
 defineProps<IProps>()
 
-const onSubmit = (data: any) => {
-  console.log(data)
-}
-
 const formData = defineModel<IForm>()
 </script>
 
@@ -30,7 +26,6 @@ const formData = defineModel<IForm>()
       form-id="feedback"
       class="quiz__form"
       :show-button="false"
-      @submit="onSubmit"
     />
   </QuizStepWrapper>
 </template>

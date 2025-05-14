@@ -7,15 +7,22 @@ const onCloseModal = () => {
   isFormModalOpened.value = false
 }
 
-const onSubmit = (data: any) => {
-  console.log(data)
-}
+const { submitHandler, isFetching } = useFormSend()
 
 const formData = ref<IForm>({
   name: { value: '', error: false },
   phone: { value: '', error: false },
   email: { value: '', error: false },
 })
+
+const onSubmit = async (data: IForm) => {
+  await submitHandler(data)
+
+  formData.value.name.value = ''
+  formData.value.phone.value = ''
+  formData.value.email.value = ''
+  isFormModalOpened.value = false
+}
 </script>
 
 <template>
@@ -27,6 +34,7 @@ const formData = ref<IForm>({
       title="fill out the form"
       description="We will definitely contact you"
       :show-button="true"
+      :is-loading="isFetching"
       btn-text="BOOK THE MEETING"
       @submit="onSubmit"
     />

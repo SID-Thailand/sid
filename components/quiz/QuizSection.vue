@@ -64,15 +64,28 @@ const hasError = computed(() => {
   )
 })
 
-const isShowThankYou = ref(false)
-const onSubmit = () => {
-  console.log(answers.value, formData)
+const { submitHandler, isFetching } = useFormSend()
 
+const onSubmit = async () => {
   if (hasError.value) {
     return
   }
 
-  isShowThankYou.value = true
+  const convertedAnswers = answers.value?.reduce(
+    (acc, { question, answer }) => {
+      acc[question] = { value: answer }
+      return acc
+    },
+    {} as Record<string, { value: string }>
+  )
+
+  const data = {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+  }
+
+  await submitHandler({ ...data, ...convertedAnswers })
 
   formData.name = initialFormValue.name
   formData.email = initialFormValue.email
@@ -89,10 +102,6 @@ const onSubmit = () => {
     activeIdx.value = 0
     prevIdx.value = 0
   }, 4000)
-
-  setTimeout(() => {
-    isShowThankYou.value = false
-  }, 2000)
 }
 
 const elRef = ref<HTMLElement | null>(null)
@@ -159,6 +168,7 @@ const isAnimating = ref(false)
           v-if="activeIdx > 0"
           type="button"
           class="quiz__btn"
+          :disabled="isFetching"
           @click="prev"
         >
           <IconsArrowTopLeft />
@@ -169,11 +179,11 @@ const isAnimating = ref(false)
           v-if="activeIdx === steps.length"
           type="button"
           class="quiz__btn"
-          :disabled="hasError"
+          :disabled="hasError || isFetching"
           @click="onSubmit"
         >
-          <span>{{ content?.quiz?.content?.send_button }}</span>
-
+          <Loader v-if="isFetching" />
+          <span v-else>{{ content?.quiz?.content?.send_button }}</span>
           <IconsArrowTopRight />
         </Button>
         <Button
@@ -188,7 +198,6 @@ const isAnimating = ref(false)
         </Button>
       </div>
     </div>
-    <ModalsApproveSlideModal :is-open="isShowThankYou" />
   </section>
 </template>
 

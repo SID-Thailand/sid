@@ -4,13 +4,11 @@ import { useFonts } from '~/composables/fonts'
 useFonts()
 
 onMounted(async () => {
-  const { hello } = await import('~/utils/hello')
   const { detectOrientationChanges } = await import(
     '~/utils/detectLandscapeOrientation'
   )
 
   detectOrientationChanges()
-  hello()
 })
 
 useHead({

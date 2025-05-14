@@ -9,6 +9,7 @@ interface IProps {
   btnText?: string
   btnPosition?: 'left' | 'right' | 'center'
   showButton?: boolean
+  isLoading?: boolean
 }
 
 const props = withDefaults(defineProps<IProps>(), {
@@ -66,7 +67,6 @@ const isFormValid = computed(() => {
 
 const onSubmit = () => {
   if (isFormValid.value) {
-    // Handle form submission
     emit('submit', model.value)
   } else {
     // Handle form validation errors
@@ -109,9 +109,10 @@ const onSubmit = () => {
         v-if="showButton"
         type="submit"
         class="form__btn"
-        :disabled="!isFormValid"
+        :disabled="!isFormValid || isLoading"
       >
-        <span>{{ btnText }}</span>
+        <Loader v-if="isLoading" />
+        <span v-else>{{ btnText }}</span>
         <IconsArrowTopRight />
       </Button>
     </div>

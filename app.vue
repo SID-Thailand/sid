@@ -39,6 +39,9 @@ onErrorCaptured(error => {
   </Transition>
   <NuxtLayout>
     <FormModal />
+    <ClientOnly>
+      <ModalsApproveSlideModal />
+    </ClientOnly>
 
     <NuxtPage />
   </NuxtLayout>

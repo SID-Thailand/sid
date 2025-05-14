@@ -4,6 +4,20 @@ import { useFooterStory } from '~/composables/stories/footerStory'
 import Validation from '~/utils/Validation'
 
 const { story } = await useFooterStory()
+
+const { submitHandler, isFetching } = useFormSend()
+
+const formData = ref<IData>({
+  email: { value: '', error: false },
+})
+
+const onSubmit = async () => {
+  if (formData.value.email.error || !formData.value.email.value) return
+
+  await submitHandler(formData.value)
+
+  formData.value.email.value = ''
+}
 </script>
 
 <template>
@@ -89,16 +103,18 @@ const { story } = await useFooterStory()
             </a>
           </div>
         </div>
-        <form class="footer__form" novalidate @submit.prevent>
+        <form class="footer__form" novalidate @submit.prevent="onSubmit">
           <legend class="footer__title">
             {{ story?.content?.newsletter_title }}
           </legend>
           <AppInput
             id="subscribe-email"
+            v-model="formData.email.value"
+            v-model:errors="formData.email.error"
+            :value="formData.email.value"
             class="footer__input"
             name="email"
             type="email"
-            value=""
             placeholder="YOUR EMAIL"
             :required="true"
             :error="true"
@@ -106,8 +122,9 @@ const { story } = await useFooterStory()
               Validation.email('Please enter a valid email address'),
             ]"
           />
-          <Button type="submit" class="footer__form-btn">
-            <span>{{ story?.content?.button }}</span>
+          <Button type="submit" class="footer__form-btn" :disabled="isFetching">
+            <Loader v-if="isFetching" />
+            <span v-else>{{ story?.content?.button }}</span>
             <IconsArrowTopRight />
           </Button>
         </form>

@@ -3,15 +3,11 @@ import { useFormStory } from '~/composables/stories/formStory'
 
 const { story } = await useFormStory()
 
-interface IProps {
-  isOpen: boolean
-}
-
-const props = defineProps<IProps>()
+const { isShowThankYou } = useThankyouScreen()
 </script>
 
 <template>
-  <SlideModal :is-open="props.isOpen">
+  <SlideModal :is-open="isShowThankYou">
     <div class="approve-modal">
       <h2 class="approve-modal__text" v-html="story?.content?.thankyou_text" />
     </div>
