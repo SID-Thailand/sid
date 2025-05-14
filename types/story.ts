@@ -200,4 +200,5 @@ export interface iLegalContent {
   title: string
   description: string
   body: ISbRichtext[]
+  cta: iCTA
 }

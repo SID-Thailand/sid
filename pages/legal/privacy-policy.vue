@@ -5,31 +5,32 @@ const { story } = await usePolicyStory()
 </script>
 
 <template>
-  <section class="privacy-policy">
-    <div class="privacy-policy__wrapper">
-      <h1 class="privacy-policy__title">
-        {{ story?.content?.title }}
-      </h1>
-      <p class="privacy-policy__description">
-        {{ story?.content?.description }}
-      </p>
-    </div>
-    <div class="privacy-policy__wrapper privacy-policy__wrapper--content">
-      <div class="privacy-policy__content">
-        <DynamicBlockRenderer :blocks="story?.content?.body" is-privacy />
+  <div>
+    <section class="privacy-policy">
+      <div class="privacy-policy__wrapper">
+        <h1 class="privacy-policy__title">
+          {{ story?.content?.title }}
+        </h1>
+        <p class="privacy-policy__description">
+          {{ story?.content?.description }}
+        </p>
       </div>
-    </div>
-  </section>
+      <div class="privacy-policy__wrapper privacy-policy__wrapper--content">
+        <div class="privacy-policy__content">
+          <DynamicBlockRenderer :blocks="story?.content?.body" is-privacy />
+        </div>
+      </div>
+    </section>
+    <BookTheMeetings :cta="story?.content?.cta" />
+  </div>
 </template>
 
 <style scoped lang="scss">
 .privacy-policy {
   padding-top: vw(226);
-  padding-bottom: vw(200);
 
   @media (max-width: $br1) {
     padding-top: 128px;
-    padding-bottom: 140px;
   }
 }
 
