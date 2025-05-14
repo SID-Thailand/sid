@@ -101,7 +101,7 @@ const onSubmit = async () => {
   setTimeout(() => {
     activeIdx.value = 0
     prevIdx.value = 0
-  }, 4000)
+  }, 2000)
 }
 
 const elRef = ref<HTMLElement | null>(null)
