@@ -5,7 +5,7 @@ import TextOnAssetSection from './current-news/TextOnAssetSection.vue'
 
 interface iProps {
   blocks: any[]
-  isPrivacy: boolean
+  isPrivacy?: boolean
 }
 
 defineProps<iProps>()
