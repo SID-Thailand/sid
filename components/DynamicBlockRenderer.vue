@@ -5,6 +5,7 @@ import TextOnAssetSection from './current-news/TextOnAssetSection.vue'
 
 interface iProps {
   blocks: any[]
+  isPrivacy: boolean
 }
 
 defineProps<iProps>()
@@ -27,6 +28,7 @@ const resolveSectionByName = (name: string) => {
       v-if="resolveSectionByName(blok?.component)"
       v-editable="blok?.content"
       :blok="blok"
+      is-privacy
     />
     <div v-else>
       <p>Unknown component: {{ blok?.component }}</p>

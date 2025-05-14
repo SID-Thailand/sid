@@ -133,7 +133,7 @@ const onSubmit = async () => {
         <p class="footer__small-text">SID COMPANY</p>
         <p class="footer__small-text">ALL RIGHTS RESERVED</p>
         <NuxtLink
-          :to="story?.content?.privacy_policy_link[0]?.link?.cached_url"
+          :to="`/${story?.content?.privacy_policy_link[0]?.link?.cached_url}`"
           class="footer__small-text footer__small-text--link underline-reverse"
         >
           {{ story?.content?.privacy_policy_link[0]?.label }}
