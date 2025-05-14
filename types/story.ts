@@ -1,3 +1,5 @@
+import type { ISbRichtext } from 'storyblok-js-client'
+
 export interface iMeta {
   title: string
   description?: string
@@ -188,4 +190,11 @@ export interface iGlobalMetaContent {
   title: string
   description: string
   social_image: iImage
+}
+
+export interface iLegalContent {
+  component: string
+  title: string
+  description: string
+  body: ISbRichtext[]
 }
