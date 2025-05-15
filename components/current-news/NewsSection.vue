@@ -5,13 +5,17 @@ interface iProps {
   blok: {
     content: ISbRichtext
   }
+  isPrivacy: boolean
 }
 
 defineProps<iProps>()
 </script>
 
 <template>
-  <div class="curr-news-content container">
+  <div
+    class="curr-news-content container"
+    :class="{ 'privacy-content': isPrivacy }"
+  >
     <RichText :text="blok.content" />
   </div>
 </template>
@@ -142,9 +146,81 @@ defineProps<iProps>()
     }
   }
 
+  p + ul,
+  ul + p {
+    margin-top: vw(16);
+
+    @media (max-width: $br1) {
+      margin-top: 18px;
+    }
+  }
+
   .center-text {
     text-align: center;
     display: inline-block;
+  }
+
+  ul {
+    li {
+      position: relative;
+      margin-left: vw(4);
+      padding-left: vw(14);
+
+      &::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        @include text-t3;
+      }
+
+      @media (max-width: $br1) {
+        margin-left: 4px;
+        padding-left: 14px;
+      }
+    }
+
+    li + li {
+      margin-top: vw(16);
+
+      @media (max-width: $br1) {
+        margin-top: 18px;
+      }
+    }
+  }
+}
+
+.privacy-content {
+  padding: 0;
+  p {
+    @media (max-width: $br1) {
+      color: var(--neutral-200);
+    }
+  }
+
+  h2 {
+    position: relative;
+    text-transform: uppercase;
+    font-size: vw(40);
+    line-height: 1em;
+    color: var(--basic-white);
+    width: 100% !important;
+    transform: none;
+    left: auto;
+    padding: 0;
+    text-align: left;
+
+    @media (max-width: $br1) {
+      font-size: size(40, 24);
+      line-height: 1.17em;
+    }
+
+    @media (max-width: $br4) {
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: $br1) {
+    max-width: 100%;
   }
 }
 </style>
