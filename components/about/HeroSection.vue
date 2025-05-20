@@ -40,7 +40,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
         </li>
       </ul>
       <VideoInterview
-        :asset="content?.interview?.content?.interview"
+        :asset="content?.interview?.content?.interview?.[0]"
         :title="content?.interview?.content?.interview_title"
         :description="content?.interview?.content?.interview_position"
       />

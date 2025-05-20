@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { iImage } from '~/types/story'
+import type { CustomVideo } from '~/types/story'
 
 interface IProps {
-  asset: iImage
+  asset: CustomVideo
   title?: string
   description?: string
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const isPlaying = ref(true)
 
@@ -16,16 +16,29 @@ const isFullscreen = ref(false)
 const toggleFullScreen = () => {
   isFullscreen.value = true
 }
+
+onMounted(() => {
+  console.log(props.asset)
+})
 </script>
 
 <template>
   <div class="interview">
     <div class="interview__video-wrapper">
+      <EmbedVideo
+        v-if="asset?.embed_link"
+        :url="asset?.embed_link"
+        :width="asset?.embed_width"
+        :height="asset?.embed_height"
+        :is-fullscreen="isFullscreen"
+        @exitFullscreen="isFullscreen = false"
+      />
       <CustomVideo
+        v-else
         :video-attributes="{
           preload: 'auto',
         }"
-        :url="asset?.filename"
+        :url="asset?.asset?.filename"
         :is-playing="isPlaying"
         :is-fullscreen="isFullscreen"
         class="interview__video"
@@ -73,14 +86,10 @@ const toggleFullScreen = () => {
 
 .interview__video {
   display: block;
-  object-fit: cover;
-  height: vw(370);
   width: 100%;
 
   @media (max-width: $br1) {
     width: 100%;
-    height: auto;
-    aspect-ratio: 16/9;
   }
 }
 

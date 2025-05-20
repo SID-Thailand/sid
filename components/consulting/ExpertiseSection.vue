@@ -5,7 +5,7 @@ interface IProps {
   content: iConsultingExpertise
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
 const $el = ref<HTMLElement | null>(null)
 
@@ -58,7 +58,7 @@ const { isFormModalOpened } = useAppState()
           </ul>
         </div>
         <VideoInterview
-          :asset="content?.interview?.content?.interview"
+          :asset="content?.interview?.content?.interview?.[0]"
           :title="content?.interview?.content?.interview_title"
           :description="content?.interview?.content?.interview_position"
         />

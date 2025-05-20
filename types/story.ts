@@ -99,10 +99,17 @@ export interface iNumber {
   _uid: string
 }
 
+export interface CustomVideo {
+  asset?: iImage
+  embed_link?: string
+  embed_width?: number
+  embed_height?: number
+}
+
 export interface iMember {
   content: {
     component: string
-    interview?: iImage
+    interview?: CustomVideo[]
     interview_position?: string
     interview_title?: string
     links: { label: string; component: string; link: iLink }[]
