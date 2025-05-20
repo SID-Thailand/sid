@@ -11,7 +11,7 @@ interface IProps {
 const props = defineProps<IProps>()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
-const emit = defineEmits(['exitFullscreen'])
+const emit = defineEmits(['fullscreen'])
 
 watch(
   () => props.isPlaying,
@@ -27,32 +27,18 @@ watch(
   { immediate: true }
 )
 
+const { isFullscreen: fullScreen, enter, exit } = useFullscreen(videoRef)
+
 watch(
   () => props.isFullscreen,
   newVal => {
-    if (videoRef.value) {
-      if (newVal) {
-        videoRef.value.requestFullscreen()
-      } else {
-        document.exitFullscreen()
-        emit('exitFullscreen')
-      }
-    }
+    if (!videoRef.value) return
+    newVal ? enter() : exit()
   }
 )
 
-const fullScreenHandler = () => {
-  if (!document.fullscreenElement) {
-    emit('exitFullscreen')
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('fullscreenchange', fullScreenHandler)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('fullscreenchange', fullScreenHandler)
+watch(fullScreen, newVal => {
+  emit('fullscreen', newVal)
 })
 </script>
 
@@ -63,9 +49,9 @@ onBeforeUnmount(() => {
       :autoplay="isPlaying"
       loop
       muted
-      :playsinline="true"
       preload="metadata"
       v-bind="videoAttributes"
+      playsinline
     >
       <source :src="url" type="video/mp4" />
     </video>
@@ -80,10 +66,6 @@ onBeforeUnmount(() => {
     object-fit: cover;
     width: 100%;
     height: 100%;
-
-    @media (max-width: $br3) {
-      aspect-ratio: 1;
-    }
   }
 }
 </style>

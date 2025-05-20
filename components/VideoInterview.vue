@@ -7,7 +7,7 @@ interface IProps {
   description?: string
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const isPlaying = ref(true)
 
@@ -16,25 +16,20 @@ const isFullscreen = ref(false)
 const toggleFullScreen = () => {
   isFullscreen.value = true
 }
-
-onMounted(() => {
-  console.log(props.asset)
-})
 </script>
 
 <template>
   <div class="interview">
     <div class="interview__video-wrapper">
-      <EmbedVideo
+      <!-- <EmbedVideo
         v-if="asset?.embed_link"
         :url="asset?.embed_link"
         :width="asset?.embed_width"
         :height="asset?.embed_height"
         :is-fullscreen="isFullscreen"
-        @exitFullscreen="isFullscreen = false"
-      />
+        @fullscreen="isFullscreen = $event"
+      /> -->
       <CustomVideo
-        v-else
         :video-attributes="{
           preload: 'auto',
         }"
@@ -42,7 +37,7 @@ onMounted(() => {
         :is-playing="isPlaying"
         :is-fullscreen="isFullscreen"
         class="interview__video"
-        @exitFullscreen="isFullscreen = false"
+        @fullscreen="isFullscreen = $event"
       />
       <button
         type="button"

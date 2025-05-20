@@ -14,33 +14,26 @@ const props = withDefaults(defineProps<IProps>(), {
   width: 1920,
   height: 1080,
 })
-const emit = defineEmits(['exitFullscreen'])
+const emit = defineEmits(['fullscreen'])
 
 const $iframe = useTemplateRef('iframe')
 const $el = useTemplateRef('el')
 const aspect = computed(() => +props.width / +props.height)
 const embedUrl = ref('')
 
-// Watch for fullscreen change
+const { isFullscreen: fullScreen, enter, exit } = useFullscreen($el)
+
 watch(
   () => props.isFullscreen,
   newVal => {
-    if ($iframe.value) {
-      if (newVal) {
-        $el.value.requestFullscreen()
-      } else {
-        document.exitFullscreen()
-        emit('exitFullscreen')
-      }
-    }
+    if (!$el.value) return
+    newVal ? enter() : exit()
   }
 )
 
-const fullScreenHandler = () => {
-  if (!document.fullscreenElement) {
-    emit('exitFullscreen')
-  }
-}
+watch(fullScreen, newVal => {
+  emit('fullscreen', newVal)
+})
 
 // Determine platform and extract ID
 const getEmbedUrl = (url?: string): string => {
@@ -73,13 +66,7 @@ const getEmbedUrl = (url?: string): string => {
 }
 
 onMounted(() => {
-  document.addEventListener('fullscreenchange', fullScreenHandler)
-
   embedUrl.value = getEmbedUrl(props.url)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('fullscreenchange', fullScreenHandler)
 })
 
 const embedUrlWithParams = computed(() => {
@@ -107,7 +94,7 @@ const embedUrlWithParams = computed(() => {
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       referrerpolicy="strict-origin-when-cross-origin"
-    ></iframe>
+    />
   </div>
 </template>
 
