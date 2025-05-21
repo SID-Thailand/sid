@@ -63,7 +63,6 @@ watch(fullScreen, newVal => {
   video {
     display: block;
     max-width: 100%;
-    object-fit: cover;
     width: 100%;
     height: 100%;
   }
