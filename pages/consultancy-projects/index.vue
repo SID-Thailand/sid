@@ -20,6 +20,7 @@ const categories = computed(() => {
   return projects.value
     .map(project => project?.content?.category?.content?.name)
     .filter((name, idx, arr) => arr.indexOf(name) === idx)
+    .filter(name => !!name)
 })
 
 const onFilter = (category: string) => {
