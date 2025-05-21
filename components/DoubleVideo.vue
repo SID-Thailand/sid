@@ -164,6 +164,9 @@ onBeforeUnmount(() => {
   @media (max-width: $br1) {
     margin-top: 48px;
   }
+  video {
+    object-fit: cover;
+  }
 }
 
 .d-video__landscape {
