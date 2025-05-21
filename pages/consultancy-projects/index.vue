@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { TransitionProps } from 'vue'
 import HeroSection from '~/components/projects/HeroSection.vue'
-import { useProjectsStories } from '~/composables/stories/projectsStories'
-import { useProjectsStory } from '~/composables/stories/projectsStory'
+import { useConsProjectsStories } from '~/composables/stories/consProjectsStories'
+import { useConsProjectsStory } from '~/composables/stories/consProjectsStory'
+
 import { gsap } from '~/libs/gsap'
 import { pageTransition } from '~/transitions/base'
 
@@ -10,8 +11,8 @@ definePageMeta({
   pageTransition,
 })
 
-const { story } = await useProjectsStory()
-const { projects } = await useProjectsStories()
+const { story } = await useConsProjectsStory()
+const { projects } = await useConsProjectsStories()
 
 const filteredProjects = ref(projects.value)
 
@@ -19,7 +20,6 @@ const categories = computed(() => {
   return projects.value
     .map(project => project?.content?.category?.content?.name)
     .filter((name, idx, arr) => arr.indexOf(name) === idx)
-    .filter(name => !!name)
 })
 
 const onFilter = (category: string) => {
@@ -86,10 +86,6 @@ const projectFilterTransition: TransitionProps = {
     })
   },
 }
-
-onMounted(() => {
-  console.log(projects.value)
-})
 </script>
 
 <template>

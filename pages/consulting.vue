@@ -28,7 +28,7 @@ const resolveSectionByName = (name: string) => {
     consulting_experts: ExpertsSection,
     consulting_service: ServiceSection,
     consulting_youtube: YoutubeSection,
-    featured_projects: FeaturedProjects,
+    consultancy_featured_projects: FeaturedProjects,
     quiz_block: QuizSection,
   }
 

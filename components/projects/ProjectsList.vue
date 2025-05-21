@@ -47,7 +47,6 @@ const findLongestTextLinesIdx = () => {
   items.forEach((item, index) => {
     const textLines = item.querySelectorAll('.e-line').length
 
-    console.log(textLines)
     if (textLines > maxLines) {
       maxLines = textLines
       maxIndex = index

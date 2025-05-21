@@ -101,9 +101,10 @@ const onClick = () => {
           <div class="featured-projects__desc">{{ content?.text }}</div>
           <NuxtLink
             class="featured-projects__link underline-reverse"
-            to="/projects/"
-            >{{ content?.button_text }}</NuxtLink
+            :to="content?.all_projects_link?.cached_url || '/projects/'"
           >
+            {{ content?.button_text }}
+          </NuxtLink>
         </div>
       </div>
     </div>

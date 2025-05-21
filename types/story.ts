@@ -88,6 +88,7 @@ export interface iFeaturedProjects {
   component: string
   text: string
   button_text: string
+  all_projects_link: iLink
   featured_projects: iFeaturedProject[]
   _uid: string
 }

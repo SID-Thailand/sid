@@ -10,7 +10,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const isProjectTransition = from.meta.isProjectTransition
 
-  if (isProjectTransition && to.name === 'projects-id') {
+  if (
+    isProjectTransition &&
+    (to.name === 'projects-id' || to.name === 'consultancy-projects-id')
+  ) {
     to.meta.pageTransition = projectTransition
     from.meta.pageTransition = projectTransition
 
