@@ -51,7 +51,7 @@ const onClick = () => {
 
         <NuxtLink
           class="featured-projects__link featured-projects__link--mob underline-reverse"
-          to="/projects/"
+          :to="content?.all_projects_link?.cached_url || '/projects/'"
           >{{ content?.button_text }}</NuxtLink
         >
         <NuxtLink
