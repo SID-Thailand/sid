@@ -21,15 +21,16 @@ const toggleFullScreen = () => {
 <template>
   <div class="interview">
     <div class="interview__video-wrapper">
-      <!-- <EmbedVideo
+      <EmbedVideo
         v-if="asset?.embed_link"
         :url="asset?.embed_link"
         :width="asset?.embed_width"
         :height="asset?.embed_height"
         :is-fullscreen="isFullscreen"
         @fullscreen="isFullscreen = $event"
-      /> -->
+      />
       <CustomVideo
+        v-else
         :video-attributes="{
           preload: 'auto',
         }"

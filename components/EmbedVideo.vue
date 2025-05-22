@@ -76,7 +76,7 @@ const embedUrlWithParams = computed(() => {
     mute: props.isFullscreen ? '0' : '1',
     loop: '1',
     rel: '0',
-    controls: '0',
+    controls: props.isFullscreen ? '1' : '0',
     background: props.isFullscreen ? '0' : '1',
   })
   return `${embedUrl.value}?${params.toString()}`
