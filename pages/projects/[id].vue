@@ -52,6 +52,9 @@ const resolveSectionByName = (name: string) => {
         :is="resolveSectionByName(item.component)"
         v-if="resolveSectionByName(item.component)"
         v-editable="item"
+        v-bind="
+          item.component === 'form' ? { projectName: story?.content?.name } : {}
+        "
         :content="item"
       />
       <div v-else>
@@ -59,7 +62,10 @@ const resolveSectionByName = (name: string) => {
       </div>
     </template>
 
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings
+      :cta="story?.content?.cta"
+      :page="'Project' + story?.content?.name"
+    />
     <ProjectButton />
   </div>
 </template>

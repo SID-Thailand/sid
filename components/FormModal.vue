@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { IForm } from '~/types/form'
 
-const { isFormModalOpened } = useAppState()
+const { isFormModalOpened, formModalFrom } = useAppState()
 
 const onCloseModal = () => {
   isFormModalOpened.value = false
 }
 
-const { submitHandler, isFetching } = useFormSend()
+const { submitHandler, isFetching } = useFormSend(formModalFrom)
 
 const formData = ref<IForm>({
   name: { value: '', error: false },

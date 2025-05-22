@@ -5,11 +5,12 @@ import type { iImage } from '~/types/story'
 interface IProps {
   background: iImage
   title: string
+  newsTitle: string
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
-const { submitHandler, isFetching } = useFormSend()
+const { submitHandler, isFetching } = useFormSend('Article: ' + props.newsTitle)
 
 const onSubmit = async (data: IForm) => {
   await submitHandler(data)

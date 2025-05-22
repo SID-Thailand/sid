@@ -27,13 +27,20 @@ const content = computed(() => story.value?.content)
       :asset="content?.asset"
     />
     <DynamicBlockRenderer :blocks="content?.body" />
-    <FormSection :background="content?.form_bg" :title="content?.form_title" />
+    <FormSection
+      :background="content?.form_bg"
+      :title="content?.form_title"
+      :news-title="content?.title"
+    />
     <CurrentNewsOtherNews
       :news="news"
       class="current-news-list"
       title="Other news"
     />
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings
+      :cta="story?.content?.cta"
+      :page="'Article' + content?.title"
+    />
   </div>
 </template>
 

@@ -5,13 +5,13 @@ interface IProps {
   content: iConsultingExpertise
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const $el = ref<HTMLElement | null>(null)
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
 
-const { isFormModalOpened } = useAppState()
+const { openFormModal } = useAppState()
 </script>
 
 <template>
@@ -28,7 +28,7 @@ const { isFormModalOpened } = useAppState()
           <Button
             class="cons-expertise__btn"
             type="button"
-            @click="isFormModalOpened = true"
+            @click="openFormModal('Consulting Page')"
           >
             <span>{{ content?.button_text }}</span>
             <IconsPlus />

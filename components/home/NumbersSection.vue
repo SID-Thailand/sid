@@ -7,7 +7,7 @@ interface IProps {
 
 defineProps<IProps>()
 
-const { isFormModalOpened } = useAppState()
+const { openFormModal } = useAppState()
 </script>
 
 <template>
@@ -27,7 +27,7 @@ const { isFormModalOpened } = useAppState()
       <Button
         type="button"
         class="numbers-stat__btn"
-        @click="isFormModalOpened = true"
+        @click="openFormModal('Home page')"
       >
         <span>{{ content?.button_text }}</span>
         <IconsPlus />

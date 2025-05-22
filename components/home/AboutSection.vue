@@ -9,7 +9,7 @@ interface IProps {
 
 defineProps<IProps>()
 
-const { isFormModalOpened } = useAppState()
+const { openFormModal } = useAppState()
 
 const $el = ref<HTMLElement | null>(null)
 
@@ -26,7 +26,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
         type="button"
         view="dark"
         class="connect__btn"
-        @click="isFormModalOpened = true"
+        @click="openFormModal('Home page')"
       >
         <span>{{ content?.button_text }}</span>
       </Button>

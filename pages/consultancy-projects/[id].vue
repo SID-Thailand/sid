@@ -59,7 +59,10 @@ const resolveSectionByName = (name: string) => {
       </div>
     </template>
 
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings
+      :cta="story?.content?.cta"
+      :page="'Consultancy Project' + story?.content?.name"
+    />
     <ProjectButton />
   </div>
 </template>

@@ -6,11 +6,12 @@ import { delayPromise } from '@emotionagency/utils'
 
 interface IProps {
   cta: iCTA
+  page?: string
 }
 
 defineProps<IProps>()
 
-const { isFormModalOpened } = useAppState()
+const { openFormModal } = useAppState()
 
 const imgRef = ref<HTMLElement | null>(null)
 
@@ -36,10 +37,6 @@ const animate = () => {
     end: () => `bottom+=${window.innerHeight} bottom`,
     scrub: true,
   })
-}
-
-const handleForm = () => {
-  isFormModalOpened.value = true
 }
 
 onMounted(() => {
@@ -88,7 +85,11 @@ onBeforeUnmount(async () => {
             {{ cta?.content?.manager?.content?.position }}
           </p>
         </div>
-        <Button type="button" class="meetings__btn" @click="handleForm">
+        <Button
+          type="button"
+          class="meetings__btn"
+          @click="openFormModal(page + ' Book the meetings')"
+        >
           <span> {{ cta?.content?.button_text }}</span>
           <IconsArrowTopRight />
         </Button>

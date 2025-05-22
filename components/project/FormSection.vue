@@ -4,11 +4,14 @@ import type { iCurrentProjectForm } from '~/types/currentProjectTypes'
 
 interface IProps {
   content: iCurrentProjectForm
+  projectName: string
 }
 
-defineProps<IProps>()
+const props = defineProps<IProps>()
 
-const { submitHandler, isFetching } = useFormSend()
+const { submitHandler, isFetching } = useFormSend(
+  'Project: ' + props.projectName
+)
 
 const onSubmit = async (data: IForm) => {
   await submitHandler(data)

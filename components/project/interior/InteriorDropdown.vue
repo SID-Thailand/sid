@@ -12,7 +12,7 @@ defineProps<IProps>()
 
 const emit = defineEmits(['select'])
 
-const isOpen = ref(false)
+const isOpen = ref(true)
 
 const onSelect = (item: iApartment) => {
   emit('select', item)

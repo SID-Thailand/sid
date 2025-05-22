@@ -30,7 +30,7 @@ const meta = computed(() => {
     <PageMeta v-if="meta" v-bind="meta" />
     <HeroSection :content="story?.content" />
     <FormSection :content="story?.content" />
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings :cta="story?.content?.cta" page="Contact" />
   </div>
 </template>
 

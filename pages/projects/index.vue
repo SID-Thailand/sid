@@ -114,7 +114,7 @@ onMounted(() => {
         :project-btn="story?.content?.view_project_btn"
       />
     </Transition>
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings :cta="story?.content?.cta" page="Projects" />
   </div>
 </template>
 

@@ -5,7 +5,7 @@ import Validation from '~/utils/Validation'
 
 const { story } = await useFooterStory()
 
-const { submitHandler, isFetching } = useFormSend()
+const { submitHandler, isFetching } = useFormSend('Footer')
 
 const formData = ref<IData>({
   email: { value: '', error: false },

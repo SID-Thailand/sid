@@ -21,7 +21,7 @@ const { story } = await usePolicyStory()
         </div>
       </div>
     </section>
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings :cta="story?.content?.cta" page="Privacy Policy" />
   </div>
 </template>
 

@@ -64,7 +64,7 @@ const hasError = computed(() => {
   )
 })
 
-const { submitHandler, isFetching } = useFormSend()
+const { submitHandler, isFetching } = useFormSend('Quiz')
 
 const onSubmit = async () => {
   if (hasError.value) {

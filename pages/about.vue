@@ -61,7 +61,7 @@ const meta = computed(() => {
       </div>
     </template>
 
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings :cta="story?.content?.cta" page="About" />
   </div>
 </template>
 

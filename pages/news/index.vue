@@ -68,7 +68,7 @@ const meta = computed(() => {
       <p>Unknown component: {{ story?.content?.component }}</p>
     </div>
     <NewsList :news="filteredNews" />
-    <BookTheMeetings :cta="story?.content?.cta" />
+    <BookTheMeetings :cta="story?.content?.cta" page="News" />
   </div>
 </template>
 

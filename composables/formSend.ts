@@ -5,7 +5,7 @@ export interface IData {
   [key: string]: Omit<iInputData, 'id'>
 }
 
-export const useFormSend = () => {
+export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
   const isFetching = ref(false)
 
   const { showThankYou } = useThankyouScreen()
@@ -20,7 +20,7 @@ export const useFormSend = () => {
 
     const formData = new FormData()
 
-    formData.append('page', route.path)
+    formData.append('from', toValue(from) || route.path)
 
     items.forEach(item => {
       const [key, value] = item

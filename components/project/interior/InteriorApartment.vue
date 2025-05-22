@@ -80,9 +80,13 @@ useSwipe(sliderContainerRef, {
       {{ apartment?.price }}
     </p>
     <div ref="sliderContainerRef" class="interior-apart__img-list-wrapper">
-      <ul ref="sliderRef" class="interior-apart__img-list">
+      <ul
+        v-if="apartment?.assets"
+        ref="sliderRef"
+        class="interior-apart__img-list"
+      >
         <ProjectInteriorApartmentImg
-          v-for="(img, index) in apartment.assets"
+          v-for="(img, index) in apartment?.assets"
           :key="img._uid"
           :img="img"
           :idx="index"

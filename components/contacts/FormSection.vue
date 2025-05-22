@@ -8,7 +8,7 @@ interface IProps {
 
 defineProps<IProps>()
 
-const { submitHandler, isFetching } = useFormSend()
+const { submitHandler, isFetching } = useFormSend('Contacts')
 
 const onSubmit = async (data: IForm) => {
   await submitHandler(data)
