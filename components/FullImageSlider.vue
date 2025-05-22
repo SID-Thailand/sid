@@ -92,21 +92,8 @@ const handleChangeSlide = async () => {
 
 watch(current, handleChangeSlide)
 
-const handleKeyDown = (e: KeyboardEvent) => {
-  if (e.key === 'ArrowLeft') {
-    throttledNavigate(-1)
-  } else if (e.key === 'ArrowRight') {
-    throttledNavigate(1)
-  }
-}
-
 onMounted(() => {
   prev.value = $items.value.length - 1
-  window.addEventListener('keydown', handleKeyDown)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
 })
 
 useIntersectionObserver($el, ([entry]) => {
@@ -124,6 +111,8 @@ useIntersectionObserver($el, ([entry]) => {
       class="full-slider__wrapper"
       @mousemove="handleMouseMove"
       @mouseleave="setCursor(null)"
+      @keydown.left="throttledNavigate(-1)"
+      @keydown.right="throttledNavigate(1)"
     >
       <ul class="full-slider__list">
         <li
