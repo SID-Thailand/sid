@@ -33,7 +33,7 @@ const onSelectApartment = async (apartment: iApartment) => {
     />
     <Transition name="fade" mode="out-in">
       <ProjectInteriorApartment
-        :key="selectedApartment._uid"
+        :key="selectedApartment?._uid"
         :apartment="selectedApartment"
       />
     </Transition>
@@ -47,7 +47,7 @@ const onSelectApartment = async (apartment: iApartment) => {
       />
       <Transition name="fade" mode="out-in">
         <InteriorAppartmentSpecs
-          :key="selectedApartment._uid"
+          :key="selectedApartment?._uid"
           :apartment="selectedApartment"
         />
       </Transition>
