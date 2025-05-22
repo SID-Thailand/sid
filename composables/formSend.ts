@@ -13,10 +13,14 @@ export const useFormSend = () => {
   const config = useDecocedRuntimeConfig()
   const { toast } = useToasts()
 
+  const route = useRoute()
+
   const submitHandler = async (data: IData, thankyouDelay = 300) => {
     const items = Object.entries(data)
 
     const formData = new FormData()
+
+    formData.append('page', route.path)
 
     items.forEach(item => {
       const [key, value] = item
