@@ -14,26 +14,9 @@ const props = withDefaults(defineProps<IProps>(), {
   width: 1920,
   height: 1080,
 })
-const emit = defineEmits(['fullscreen'])
 
-const $iframe = useTemplateRef('iframe')
-const $el = useTemplateRef('el')
 const aspect = computed(() => +props.width / +props.height)
 const embedUrl = ref('')
-
-const { isFullscreen: fullScreen, enter, exit } = useFullscreen($el)
-
-watch(
-  () => props.isFullscreen,
-  newVal => {
-    if (!$el.value) return
-    newVal ? enter() : exit()
-  }
-)
-
-watch(fullScreen, newVal => {
-  emit('fullscreen', newVal)
-})
 
 // Determine platform and extract ID
 const getEmbedUrl = (url?: string): string => {
@@ -73,10 +56,10 @@ const embedUrlWithParams = computed(() => {
   if (!embedUrl.value) return ''
   const params = new URLSearchParams({
     autoplay: '1',
-    mute: props.isFullscreen ? '0' : '1',
+    mute: '1',
     loop: '1',
     rel: '0',
-    controls: props.isFullscreen ? '1' : '0',
+    controls: '1',
     background: props.isFullscreen ? '0' : '1',
   })
   return `${embedUrl.value}?${params.toString()}`
@@ -89,10 +72,10 @@ const embedUrlWithParams = computed(() => {
       v-if="embedUrl"
       ref="iframe"
       :src="embedUrlWithParams"
-      :style="{ pointerEvents: isFullscreen ? 'auto' : 'none' }"
       title="Video player"
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
       referrerpolicy="strict-origin-when-cross-origin"
     />
   </div>
@@ -105,7 +88,6 @@ const embedUrlWithParams = computed(() => {
   iframe {
     display: block;
     max-width: 100%;
-    pointer-events: none;
     height: 100%;
     object-fit: cover;
     width: 100%;

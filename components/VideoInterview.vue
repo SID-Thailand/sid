@@ -26,8 +26,6 @@ const toggleFullScreen = () => {
         :url="asset?.embed_link"
         :width="asset?.embed_width"
         :height="asset?.embed_height"
-        :is-fullscreen="isFullscreen"
-        @fullscreen="isFullscreen = $event"
       />
       <CustomVideo
         v-else
@@ -41,6 +39,7 @@ const toggleFullScreen = () => {
         @fullscreen="isFullscreen = $event"
       />
       <button
+        v-if="!asset?.embed_link"
         type="button"
         class="interview__play-btn"
         aria-label="Open video in fullscreen"
