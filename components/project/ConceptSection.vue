@@ -42,11 +42,28 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
           </p>
         </div>
         <div class="project-concept__big-block">
-          <CustomImage
+          <EmbedVideo
+            v-if="content?.big_asset?.[0]?.embed_link"
+            :width="content?.big_asset?.[0]?.embed_width"
+            :height="content?.big_asset?.[0]?.embed_height"
+            :url="content?.big_asset?.[0]?.embed_link"
             class="project-concept__img project-concept__img--big"
-            :src="content?.big_asset?.filename"
-            :alt="content?.big_asset?.alt"
           />
+          <template v-else>
+            <CustomImage
+              v-if="isPicture(content?.big_asset?.[0]?.asset?.filename)"
+              data-full-image
+              :src="content?.big_asset?.[0].asset?.filename"
+              :alt="content?.big_asset?.[0].asset?.alt"
+              class="project-concept__img project-concept__img--big"
+            />
+            <CustomVideo
+              v-if="isVideo(content?.big_asset?.[0]?.asset?.filename)"
+              :url="content?.big_asset?.[0].asset?.filename"
+              class="project-concept__img project-concept__img--big"
+              :is-playing="true"
+            />
+          </template>
           <p
             class="project-concept__description project-concept__description--big"
           >

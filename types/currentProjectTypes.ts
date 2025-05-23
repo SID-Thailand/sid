@@ -1,4 +1,5 @@
 import type {
+  CustomVideo,
   iCTA,
   iFeaturedProject,
   iImage,
@@ -39,7 +40,7 @@ export interface iCurrentProjectGallery {
 }
 
 export interface iCurrentProjectConcept {
-  big_asset: iImage
+  big_asset: CustomVideo[]
   big_asset_description: string
   component: string
   small_asset: iImage
