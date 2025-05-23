@@ -3,6 +3,7 @@ import type { iApartment } from '~/types/currentProjectTypes'
 import InteriorAppartmentSpecs from './InteriorAppartmentSpecs.vue'
 import { delayPromise } from '@emotionagency/utils'
 import { scrollTo } from '~/utils/scrollTo'
+import { useProjectsStory } from '~/composables/stories/projectsStory'
 
 interface IProps {
   apartments: iApartment[]
@@ -21,6 +22,12 @@ const onSelectApartment = async (apartment: iApartment) => {
   await delayPromise(800)
   scrollTo(top - 20)
 }
+
+const { story } = await useProjectsStory()
+
+onMounted(() => {
+  console.log(story.value)
+})
 </script>
 
 <template>
@@ -28,6 +35,7 @@ const onSelectApartment = async (apartment: iApartment) => {
     <ProjectInteriorDropdown
       :apartments-list="apartments"
       :selected-apartment="selectedApartment"
+      :button-text="story?.content?.project_interior_menu_text"
       class="interior-aparts__dropdown interior-aparts__dropdown--mob"
       @select="onSelectApartment"
     />
@@ -42,6 +50,7 @@ const onSelectApartment = async (apartment: iApartment) => {
       <ProjectInteriorDropdown
         :apartments-list="apartments"
         :selected-apartment="selectedApartment"
+        :button-text="story?.content?.project_interior_menu_text"
         class="interior-aparts__dropdown"
         @select="onSelectApartment"
       />
@@ -49,6 +58,9 @@ const onSelectApartment = async (apartment: iApartment) => {
         <InteriorAppartmentSpecs
           :key="selectedApartment?._uid"
           :apartment="selectedApartment"
+          :spec1-name="story?.content?.project_template_spec_1"
+          :spec2-name="story?.content?.project_template_spec_2"
+          :spec3-name="story?.content?.project_template_spec_3"
         />
       </Transition>
     </div>

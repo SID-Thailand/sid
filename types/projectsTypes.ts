@@ -21,4 +21,8 @@ export interface iProjectsHeroContent {
   cta: iCTA
   view_project_btn: string
   background: iImage
+  project_template_spec_1: string
+  project_template_spec_2: string
+  project_template_spec_3: string
+  project_interior_menu_text: string
 }

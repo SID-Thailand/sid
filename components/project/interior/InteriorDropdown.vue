@@ -6,6 +6,7 @@ import { scrollTo } from '~/utils/scrollTo'
 interface IProps {
   apartmentsList: iApartment[]
   selectedApartment: iApartment
+  buttonText?: string
 }
 
 defineProps<IProps>()
@@ -42,7 +43,7 @@ watch(isOpen, val => {
       :class="{ 'interior-dropdown__btn--opened': isOpen }"
       @click="handleToggleMenu"
     >
-      Choose apartment
+      {{ buttonText }}
       <ChevronDown />
     </button>
 
