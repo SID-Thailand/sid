@@ -18,12 +18,29 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
       <h1 data-title class="about-hero__main-title">
         {{ content?.title }}
       </h1>
-      <ParallaxImg
-        data-full-image
-        :src="content?.asset?.filename"
-        :alt="content?.asset?.alt"
-        class="about-hero__main-img"
+      <EmbedVideo
+        v-if="content?.asset?.[0]?.embed_link"
+        :width="content?.asset?.[0]?.embed_width"
+        :height="content?.asset?.[0]?.embed_height"
+        :url="content?.asset?.[0]?.embed_link"
+        controls="0"
+        class="about-hero__main-img about-hero__main-img--embed"
       />
+      <template v-else>
+        <ParallaxImg
+          v-if="isPicture(content?.asset?.[0]?.asset?.filename)"
+          data-full-image
+          :src="content?.asset?.[0].asset?.filename"
+          :alt="content?.asset?.[0].asset?.alt"
+          class="about-hero__main-img"
+        />
+        <CustomVideo
+          v-if="isVideo(content?.asset?.[0]?.asset?.filename)"
+          :url="content?.asset?.[0].asset?.filename"
+          class="about-hero__main-img"
+          :is-playing="true"
+        />
+      </template>
 
       <div class="about-hero__text">
         {{ content?.text }}
@@ -75,13 +92,21 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
 
 .about-hero__main-img {
   margin-top: vw(118);
-  height: 100vh;
   width: 100%;
   object-fit: cover;
+  pointer-events: none;
+  &:not(&--embed) {
+    height: 100vh;
+  }
+  &:deep(video) {
+    object-fit: cover;
+  }
 
   @media (max-width: $br1) {
     margin-top: 40px;
-    height: 243px;
+    &:not(&--embed) {
+      height: 243px;
+    }
   }
 }
 

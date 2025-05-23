@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { IframeHTMLAttributes, ReservedProps } from 'vue'
 
+type ZeroOrOne = '0' | '1'
+
 interface IProps {
   url?: string
   width: number | string
@@ -8,11 +10,22 @@ interface IProps {
 
   videoAttributes?: IframeHTMLAttributes & ReservedProps
   isFullscreen?: boolean
+
+  autoplay?: ZeroOrOne
+  mute?: ZeroOrOne
+  loop?: ZeroOrOne
+  rel?: ZeroOrOne
+  controls?: ZeroOrOne
 }
 
 const props = withDefaults(defineProps<IProps>(), {
   width: 1920,
   height: 1080,
+  autoplay: '1',
+  mute: '1',
+  loop: '1',
+  rel: '0',
+  controls: '1',
 })
 
 const aspect = computed(() => +props.width / +props.height)
@@ -55,11 +68,11 @@ onMounted(() => {
 const embedUrlWithParams = computed(() => {
   if (!embedUrl.value) return ''
   const params = new URLSearchParams({
-    autoplay: '1',
-    mute: '1',
-    loop: '1',
-    rel: '0',
-    controls: '1',
+    autoplay: props.autoplay,
+    mute: props.mute,
+    loop: props.loop,
+    rel: props.rel,
+    controls: props.controls,
     background: props.isFullscreen ? '0' : '1',
   })
   return `${embedUrl.value}?${params.toString()}`

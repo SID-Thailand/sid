@@ -23,7 +23,7 @@ export const useGetStory = async (route: string) => {
       try {
         const { data }: tResStory = await storyapi.get(`cdn/stories/${route}`, {
           version:
-            config.public.env === 'development' || isInEditor.value
+            config.public.ENVIROMENT === 'development' || isInEditor.value
               ? 'draft'
               : 'published',
           cv: Date.now(),

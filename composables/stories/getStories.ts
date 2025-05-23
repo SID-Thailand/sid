@@ -25,7 +25,7 @@ export const useGetStories = async (opts: ISbStoriesParams) => {
         const { data }: tResStory = await storyapi.get('cdn/stories/', {
           sort_by: 'name:asc',
           version:
-            config.public.env === 'development' || isInEditor.value
+            config.public.ENVIROMENT === 'development' || isInEditor.value
               ? 'draft'
               : 'published',
           cv: Date.now(),
