@@ -20,6 +20,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
       </h1>
       <EmbedVideo
         v-if="content?.asset?.[0]?.embed_link"
+        data-full-image
         :width="content?.asset?.[0]?.embed_width"
         :height="content?.asset?.[0]?.embed_height"
         :url="content?.asset?.[0]?.embed_link"
@@ -38,6 +39,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
           v-if="isVideo(content?.asset?.[0]?.asset?.filename)"
           :url="content?.asset?.[0].asset?.filename"
           class="about-hero__main-img"
+          data-full-image
           :is-playing="true"
         />
       </template>
