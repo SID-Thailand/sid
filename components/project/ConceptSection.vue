@@ -193,6 +193,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
   display: block;
   width: 100%;
   height: auto;
+  pointer-events: none;
 }
 
 .project-concept__description {

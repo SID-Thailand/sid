@@ -6,9 +6,13 @@ interface IProps {
   spec1Name?: string
   spec2Name?: string
   spec3Name?: string
+  formButton?: string
+  projectName?: string
 }
 
 defineProps<IProps>()
+
+const { openFormModal } = useAppState()
 </script>
 
 <template>
@@ -38,7 +42,15 @@ defineProps<IProps>()
         <div class="interior-apart__line" />
         <div class="interior-apart__about-content">
           <p class="interior-apart__title">{{ spec3Name }}</p>
-          <a
+          <button
+            class="interior-apart__text underline-reverse uppercase"
+            @click="
+              openFormModal(projectName + ' Appartment: ' + apartment?.name)
+            "
+          >
+            {{ formButton }}
+          </button>
+          <!-- <a
             v-if="apartment?.plan?.[0]"
             :href="apartment.plan[0]?.link?.url"
             target="_blank"
@@ -46,7 +58,7 @@ defineProps<IProps>()
             class="interior-apart__text underline-reverse"
           >
             {{ apartment.plan[0]?.label }}
-          </a>
+          </a> -->
         </div>
       </div>
     </div>

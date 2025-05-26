@@ -7,6 +7,7 @@ import { useProjectsStory } from '~/composables/stories/projectsStory'
 
 interface IProps {
   apartments: iApartment[]
+  projectName: string
 }
 
 defineProps<IProps>()
@@ -61,6 +62,8 @@ onMounted(() => {
           :spec1-name="story?.content?.project_template_spec_1"
           :spec2-name="story?.content?.project_template_spec_2"
           :spec3-name="story?.content?.project_template_spec_3"
+          :form-button="story?.content?.project_interior_form_button"
+          :project-name="projectName"
         />
       </Transition>
     </div>

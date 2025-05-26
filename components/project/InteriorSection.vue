@@ -3,6 +3,7 @@ import type { iCurrentProjectInterior } from '~/types/currentProjectTypes'
 
 interface IProps {
   content: iCurrentProjectInterior
+  projectName: string
 }
 
 const props = defineProps<IProps>()
@@ -59,6 +60,7 @@ onBeforeUnmount(() => {
         <div class="project-interior__apartments">
           <ProjectInteriorApartments
             v-model="selectedAppart.value"
+            :project-name="projectName"
             :apartments="apparts"
           />
         </div>

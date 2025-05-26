@@ -53,7 +53,9 @@ const resolveSectionByName = (name: string) => {
         v-if="resolveSectionByName(item.component)"
         v-editable="item"
         v-bind="
-          item.component === 'form' ? { projectName: story?.content?.name } : {}
+          item.component === 'form' || 'project_interior'
+            ? { projectName: story?.content?.name }
+            : {}
         "
         :content="item"
       />
