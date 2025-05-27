@@ -33,12 +33,4 @@ defineProps<IProps>()
     padding-bottom: 60px;
   }
 }
-
-.cons-youtube__videos {
-  .d-video__title {
-    @media (min-width: $br1) {
-      max-width: vw(488);
-    }
-  }
-}
 </style>
