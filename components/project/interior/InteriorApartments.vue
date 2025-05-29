@@ -25,10 +25,6 @@ const onSelectApartment = async (apartment: iApartment) => {
 }
 
 const { story } = await useProjectsStory()
-
-onMounted(() => {
-  console.log(story.value)
-})
 </script>
 
 <template>

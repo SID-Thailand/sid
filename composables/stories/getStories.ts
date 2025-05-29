@@ -18,12 +18,14 @@ export const useGetStories = async (opts: ISbStoriesParams) => {
 
   const maxRetries = 3
 
+  const { selectedLang } = useLang()
+
   const getStories = async (attempt?: number) => {
     if (!response.value) {
-      console.log(config.public.ENVIROMENT)
       try {
         const { data }: tResStory = await storyapi.get('cdn/stories/', {
           sort_by: 'name:asc',
+          language: selectedLang.value,
           version:
             config.public.ENVIROMENT === 'development' || isInEditor.value
               ? 'draft'

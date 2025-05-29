@@ -86,10 +86,6 @@ const projectFilterTransition: TransitionProps = {
     })
   },
 }
-
-onMounted(() => {
-  console.log(projects.value)
-})
 </script>
 
 <template>

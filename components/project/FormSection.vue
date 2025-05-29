@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { IForm } from '~/types/form'
 import type { iCurrentProjectForm } from '~/types/currentProjectTypes'
-import { useFormStory } from '~/composables/stories/formStory'
 
 interface IProps {
   content: iCurrentProjectForm
