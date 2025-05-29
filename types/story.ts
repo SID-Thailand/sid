@@ -194,6 +194,9 @@ export interface iFormContent {
   full_name_label: string
   phone_label: string
   thankyou_text: string
+  form_popup_title: string
+  form_popup_text: string
+  form_popup_button: string
 }
 
 export interface iGlobalMetaContent {

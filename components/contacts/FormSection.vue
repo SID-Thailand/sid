@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFormStory } from '~/composables/stories/formStory'
 import type { iContactContent } from '~/types/contactTypes'
 import type { IForm } from '~/types/form'
 
@@ -22,6 +23,8 @@ const formData = ref<IForm>({
   phone: { value: '', error: false },
   email: { value: '', error: false },
 })
+
+const { story } = await useFormStory()
 </script>
 
 <template>
@@ -46,11 +49,11 @@ const formData = ref<IForm>({
         v-model="formData"
         form-id="global-form"
         class="contacts-form__form"
-        title="fill out the form"
-        description="We will definitely contact you"
+        :title="story?.content?.form_popup_title"
+        :description="story?.content?.form_popup_text"
+        :btn-text="story?.content?.form_popup_button"
         :show-button="true"
         :is-loading="isFetching"
-        btn-text="BOOK THE MEETING"
         @submit="onSubmit"
       />
     </div>

@@ -15,6 +15,7 @@ interface IProps {
 const props = withDefaults(defineProps<IProps>(), {
   showButton: true,
   btnPosition: 'center',
+  btnText: 'Submit',
 })
 
 const emit = defineEmits(['submit'])

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { IForm } from '~/types/form'
 import type { iCurrentProjectForm } from '~/types/currentProjectTypes'
+import { useFormStory } from '~/composables/stories/formStory'
 
 interface IProps {
   content: iCurrentProjectForm
@@ -61,7 +62,7 @@ const formData = ref<IForm>({
           class="project__form"
           :show-button="true"
           :is-loading="isFetching"
-          btn-text="SUBMIT FORM"
+          :btn-text="content.button_text"
           btn-position="left"
           @submit="onSubmit"
         />
