@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CustomVideo from './current-news/CustomVideo.vue'
 import GallerySection from './current-news/GallerySection.vue'
 import NewsSection from './current-news/NewsSection.vue'
 import TextOnAssetSection from './current-news/TextOnAssetSection.vue'
@@ -8,17 +9,22 @@ interface iProps {
   isPrivacy?: boolean
 }
 
-defineProps<iProps>()
+const props = defineProps<iProps>()
 
 const resolveSectionByName = (name: string) => {
   const sections = {
     news_section: NewsSection,
     gallery: GallerySection,
     text_on_asset: TextOnAssetSection,
+    'Custom video': CustomVideo,
   }
 
   return sections[name]
 }
+
+onMounted(() => {
+  console.log(props.blocks)
+})
 </script>
 
 <template>
