@@ -263,6 +263,7 @@ useSwipe(sliderContainerRef, {
 
 .interior-apart__text {
   position: relative;
+  background: transparent;
   line-height: 1.25em !important;
 
   &::before {
