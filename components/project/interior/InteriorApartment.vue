@@ -264,6 +264,7 @@ useSwipe(sliderContainerRef, {
 .interior-apart__text {
   position: relative;
   background: transparent;
+  color: inherit;
   line-height: 1.25em !important;
 
   &::before {
