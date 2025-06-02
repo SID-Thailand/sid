@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { iApartment } from '~/types/currentProjectTypes'
 import InteriorAppartmentSpecs from './InteriorAppartmentSpecs.vue'
-import { delayPromise } from '@emotionagency/utils'
+
 import { scrollTo } from '~/utils/scrollTo'
 import { useProjectsStory } from '~/composables/stories/projectsStory'
 
@@ -16,11 +16,11 @@ const $el = useTemplateRef<HTMLElement | null>('el')
 
 const selectedApartment = defineModel<iApartment>()
 
-const onSelectApartment = async (apartment: iApartment) => {
+const onSelectApartment = (apartment: iApartment) => {
   selectedApartment.value = apartment
 
   const top = $el.value?.getBoundingClientRect().top
-  await delayPromise(800)
+
   scrollTo(top - 20)
 }
 

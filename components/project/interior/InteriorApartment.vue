@@ -112,6 +112,9 @@ useSwipe(sliderContainerRef, {
   display: flex;
   align-items: flex-start;
   color: var(--basic-black);
+  @media (min-width: $br1) {
+    min-height: 100vh;
+  }
 
   @media (max-width: $br1) {
     flex-direction: column;
