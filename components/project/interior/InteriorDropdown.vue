@@ -147,7 +147,7 @@ watch(isOpen, val => {
   }
 
   &--opened {
-    max-height: clamp(vw(500), vw(500), 100vh);
+    max-height: 92.2vh;
 
     @media (max-width: $br1) {
       height: 100vh;
