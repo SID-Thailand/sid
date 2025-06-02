@@ -102,6 +102,7 @@ const { story } = await useProjectsStory()
   width: 100%;
   @media (min-width: $br1) {
     position: sticky;
+    height: 92.2vh;
     top: 20px;
   }
 }
