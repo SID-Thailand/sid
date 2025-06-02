@@ -49,6 +49,7 @@ watch(isOpen, val => {
 
     <div
       class="interior-dropdown__menu"
+      data-scroll-ignore
       :class="{ 'interior-dropdown__menu--opened': isOpen }"
     >
       <ul class="interior-dropdown__list">

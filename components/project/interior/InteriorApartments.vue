@@ -73,6 +73,7 @@ const { story } = await useProjectsStory()
   align-items: flex-start;
   gap: vw(76);
   position: relative;
+  min-height: 100vh;
   @media (max-width: $br1) {
     flex-direction: column;
     gap: 0;
