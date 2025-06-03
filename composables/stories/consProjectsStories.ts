@@ -17,7 +17,7 @@ export const useConsProjectsStories: tProjectsStories = async () => {
       const res = await useGetStories({
         by_slugs: `consultancy-projects/*`,
         content_type: 'project',
-        sort_by: 'sort_by=position:desc',
+        sort_by: 'position:asc',
       })
 
       projects.value = res.value

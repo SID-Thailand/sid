@@ -14,7 +14,7 @@ export const useProjectsStories: tProjectsStories = async () => {
       const res = await useGetStories({
         by_slugs: `projects/*`,
         content_type: 'project',
-        sort_by: 'sort_by=position:desc',
+        sort_by: 'position:asc',
       })
 
       projects.value = res.value
