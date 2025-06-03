@@ -19,5 +19,6 @@ export interface iNewsHeroContent {
   component: string
   meta: iMeta[]
   cta: iCTA
+  other_news_title: string
   background: iImage
 }

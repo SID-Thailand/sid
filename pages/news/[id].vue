@@ -3,10 +3,12 @@ import FormSection from '~/components/current-news/FormSection.vue'
 import HeroSection from '~/components/current-news/HeroSection.vue'
 import { useCurrentNewsStory } from '~/composables/stories/currentNewsStory'
 import { useNewsStories } from '~/composables/stories/newsStories'
+import { useNewsStory } from '~/composables/stories/newsStory'
 
 const { params } = useRoute()
 const { story } = await useCurrentNewsStory(params?.id as string)
 const { news } = await useNewsStories()
+const { story: newsIndex } = await useNewsStory()
 
 if (!story.value) {
   showError({
@@ -35,7 +37,7 @@ const content = computed(() => story.value?.content)
     <CurrentNewsOtherNews
       :news="news"
       class="current-news-list"
-      title="Other news"
+      :title="newsIndex?.content?.other_news_title || 'Other News'"
     />
     <BookTheMeetings
       :cta="story?.content?.cta"
