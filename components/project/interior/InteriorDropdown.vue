@@ -157,7 +157,7 @@ watch(isOpen, val => {
 }
 
 .interior-dropdown__list {
-  padding: vw(16);
+  padding: vw(16) vw(5);
   width: 100%;
 
   @media (max-width: $br1) {
