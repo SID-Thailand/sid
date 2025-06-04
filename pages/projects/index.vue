@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { TransitionProps } from 'vue'
 import HeroSection from '~/components/projects/HeroSection.vue'
-import { useProjectsStories } from '~/composables/stories/projectsStories'
-import { useProjectsStory } from '~/composables/stories/projectsStory'
+import { useProjectsStories } from '~/composables/stories/projects/projectsStories'
+import { useProjectsStory } from '~/composables/stories/projects/projectsStory'
 import { gsap } from '~/libs/gsap'
 import { pageTransition } from '~/transitions/base'
 
@@ -10,8 +10,8 @@ definePageMeta({
   pageTransition,
 })
 
-const { story } = await useProjectsStory()
-const { projects } = await useProjectsStories()
+const { story } = await useProjectsStory('projects')
+const { projects } = await useProjectsStories('projects')
 
 const filteredProjects = ref(projects.value)
 

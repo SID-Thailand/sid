@@ -3,7 +3,7 @@ import type { iApartment } from '~/types/currentProjectTypes'
 import InteriorAppartmentSpecs from './InteriorAppartmentSpecs.vue'
 
 import { scrollTo } from '~/utils/scrollTo'
-import { useProjectsStory } from '~/composables/stories/projectsStory'
+import { useProjectsStory } from '~/composables/stories/projects/projectsStory'
 
 interface IProps {
   apartments: iApartment[]
@@ -24,7 +24,7 @@ const onSelectApartment = (apartment: iApartment) => {
   scrollTo(top - 20)
 }
 
-const { story } = await useProjectsStory()
+const { story } = await useProjectsStory('projects')
 </script>
 
 <template>

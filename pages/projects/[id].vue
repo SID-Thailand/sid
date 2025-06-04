@@ -7,10 +7,10 @@ import FeaturedProjectsSection from '~/components/project/FeaturedProjectsSectio
 import FormSection from '~/components/project/FormSection.vue'
 import GallerySection from '~/components/project/GallerySection.vue'
 import InteriorSection from '~/components/project/InteriorSection.vue'
-import { useCurrentProjectStory } from '~/composables/stories/currentProjectStory'
+import { useCurrentProjectStory } from '~/composables/stories/projects/currentProjectStory'
 
 const { params } = useRoute()
-const { story } = await useCurrentProjectStory(params?.id as string)
+const { story } = await useCurrentProjectStory(params?.id as string, 'projects')
 
 if (!story.value) {
   showError({

@@ -7,10 +7,13 @@ import FeaturedProjectsSection from '~/components/project/FeaturedProjectsSectio
 import FormSection from '~/components/project/FormSection.vue'
 import GallerySection from '~/components/project/GallerySection.vue'
 import InteriorSection from '~/components/project/InteriorSection.vue'
-import { useCurrentConsProjectStory } from '~/composables/stories/currentConsProjectStory'
+import { useCurrentProjectStory } from '~/composables/stories/projects/currentProjectStory'
 
 const { params } = useRoute()
-const { story } = await useCurrentConsProjectStory(params?.id as string)
+const { story } = await useCurrentProjectStory(
+  params?.id as string,
+  'consultancy-projects'
+)
 
 if (!story.value) {
   showError({
@@ -52,6 +55,11 @@ const resolveSectionByName = (name: string) => {
         :is="resolveSectionByName(item.component)"
         v-if="resolveSectionByName(item.component)"
         v-editable="item"
+        v-bind="
+          item.component === 'form' || 'project_interior'
+            ? { projectName: story?.content?.name }
+            : {}
+        "
         :content="item"
       />
       <div v-else>

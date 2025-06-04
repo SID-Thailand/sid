@@ -1,20 +1,23 @@
 import type { iCurrentProjectContent } from '~/types/currentProjectTypes'
-import { useGetStory } from './getStory'
+import { useGetStory } from '../getStory'
 import type { iStory } from '~/types/story'
 
-type tProjectStory = (id: string) => Promise<{
+type tProjectStory = (
+  id: string,
+  slug: string
+) => Promise<{
   story: Ref<iStory<iCurrentProjectContent>>
 }>
 
-export const useCurrentProjectStory: tProjectStory = async id => {
+export const useCurrentProjectStory: tProjectStory = async (id, slug) => {
   const story = useState<iStory<iCurrentProjectContent>>(
-    `projects/${id}`,
+    `${slug}/${id}`,
     () => null
   )
 
   try {
     if (!story.value) {
-      const res = await useGetStory(`projects/${id}`)
+      const res = await useGetStory(`${slug}/${id}`)
 
       story.value = res.value
     }
