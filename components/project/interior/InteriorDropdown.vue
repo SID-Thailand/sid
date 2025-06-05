@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { resize } from '@emotionagency/utils'
 import { ChevronDown } from 'lucide-vue-next'
 import type { iApartment } from '~/types/currentProjectTypes'
 import { scrollTo } from '~/utils/scrollTo'
@@ -20,7 +21,7 @@ const onSelect = (item: iApartment) => {
   handleToggleMenu()
 }
 
-const el = ref<HTMLElement | null>(null)
+const el = useTemplateRef<HTMLElement | null>('el')
 
 const handleToggleMenu = () => {
   isOpen.value = !isOpen.value
@@ -28,11 +29,30 @@ const handleToggleMenu = () => {
 
 const isMobile = useMediaQuery('max-width: 860px')
 
+const calcContentHeight = () => {
+  const content = el.value?.querySelector('.interior-dropdown__list')
+  const itemsHeight = content?.scrollHeight
+
+  el.value.style.setProperty('--height', itemsHeight + 'px')
+}
+
 watch(isOpen, val => {
   if (val && isMobile.value) {
     const top = el.value?.getBoundingClientRect().top
     scrollTo(top - 20, false)
   }
+
+  if (import.meta.client) {
+    calcContentHeight()
+  }
+})
+
+onMounted(() => {
+  resize.on(calcContentHeight)
+})
+
+onUnmounted(() => {
+  resize.off(calcContentHeight)
 })
 </script>
 
@@ -150,8 +170,8 @@ watch(isOpen, val => {
     max-height: 92.2vh;
 
     @media (max-width: $br1) {
-      height: 100vh;
-      max-height: 100vh;
+      height: var(--height);
+      max-height: var(--height);
     }
   }
 }
