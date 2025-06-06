@@ -42,7 +42,15 @@ export default defineNuxtConfig({
     },
   },
 
+  gtm: {
+    id: process.env.GTM_ID || 'GTM-XXXXXXX',
+    enabled: process.env.NODE_ENV === 'production',
+    debug: false,
+    pageTracking: true,
+  },
+
   modules: [
+    '@zadigetvoltaire/nuxt-gtm',
     '@vueuse/nuxt',
     '@nuxt/eslint',
     'nuxt-i18n-micro',
