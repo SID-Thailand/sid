@@ -8,6 +8,7 @@ export interface IData {
 export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
   const isFetching = ref(false)
 
+  const { selectedLang } = useLang()
   const { showThankYou } = useThankyouScreen()
 
   const config = useDecocedRuntimeConfig()
@@ -20,6 +21,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     const formData = new FormData()
 
+    formData.append('sitelang', selectedLang.value || '-')
     formData.append('from', toValue(from) || route.path)
 
     items.forEach(item => {
