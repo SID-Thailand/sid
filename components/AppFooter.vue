@@ -130,7 +130,7 @@ const onSubmit = async () => {
         </form>
       </div>
       <div class="footer__bottom">
-        <p class="footer__small-text">SID COMPANY</p>
+        <p class="footer__small-text">SID Thailand</p>
         <p class="footer__small-text">ALL RIGHTS RESERVED</p>
         <NuxtLink
           :to="`/${story?.content?.privacy_policy_link[0]?.link?.cached_url}`"
