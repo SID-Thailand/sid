@@ -52,6 +52,7 @@ export default defineNuxtConfig({
         accessToken: process.env.STORYBLOK_TOKEN,
       },
     ],
+    '@nuxtjs/robots',
   ],
 
   runtimeConfig: {
