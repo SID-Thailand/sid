@@ -9,6 +9,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
   const isFetching = ref(false)
 
   const { showThankYou } = useThankyouScreen()
+  const { selectedLang } = useLang()
 
   const config = useDecocedRuntimeConfig()
   const { toast } = useToasts()
@@ -20,6 +21,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     const formData = new FormData()
 
+    formData.append('sitelang', selectedLang.value || '-')
     formData.append('from', toValue(from) || route.path)
 
     items.forEach(item => {
