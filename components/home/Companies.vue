@@ -87,6 +87,7 @@ defineProps<IProps>()
 
   @media (max-width: $br2) {
     width: 100%;
+    max-width: 254px;
     gap: 24px;
   }
 }
