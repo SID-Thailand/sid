@@ -18,6 +18,13 @@ export interface iHomeAbout {
   _uid: string
 }
 
+export interface IHomeCompanies {
+  title: string
+  text: string
+  asset: iImage
+  button_text: string
+}
+
 export interface iHomeNumber {
   asset: iImage
   description: string

@@ -8,6 +8,7 @@ import { useHomeStory } from '~/composables/stories/homeStory'
 import PageMeta from '../PageMeta.vue'
 import CompanyDirections from '../CompanyDirections.vue'
 import FeaturedProjects from '../FeaturedProjects.vue'
+import Companies from './Companies.vue'
 
 const { story } = await useHomeStory()
 
@@ -19,6 +20,7 @@ const resolveSectionByName = (name: string) => {
   const sections = {
     home_hero: HeroSection,
     home_about: AboutSection,
+    home_companies: Companies,
     company_directions: CompanyDirections,
     home_numbers: NumbersSection,
     home_video: VideoSection,
