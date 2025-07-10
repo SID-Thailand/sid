@@ -49,11 +49,15 @@ const onClick = () => {
         </div>
         <DarkLayer />
 
-        <NuxtLink
-          class="featured-projects__link featured-projects__link--mob underline-reverse"
-          :to="content?.all_projects_link?.cached_url || '/projects/'"
-          >{{ content?.button_text }}</NuxtLink
+        <Button
+          class="featured-projects__link featured-projects__link--mob"
+          tag="nuxt-link"
+          :href="content?.all_projects_link?.cached_url || '/projects/'"
         >
+          <span> {{ content?.button_text }}</span>
+          <IconsArrowTopRight />
+        </Button>
+
         <NuxtLink
           :to="`/${activeProject?.full_slug}`"
           data-t-card
@@ -99,12 +103,15 @@ const onClick = () => {
         <div class="featured-projects__text">
           <h2 class="featured-projects__title">{{ content?.title }}</h2>
           <div class="featured-projects__desc">{{ content?.text }}</div>
-          <NuxtLink
-            class="featured-projects__link underline-reverse"
-            :to="content?.all_projects_link?.cached_url || '/projects/'"
+
+          <Button
+            class="featured-projects__link"
+            tag="nuxt-link"
+            :href="content?.all_projects_link?.cached_url || '/projects/'"
           >
-            {{ content?.button_text }}
-          </NuxtLink>
+            <span> {{ content?.button_text }}</span>
+            <IconsArrowTopRight />
+          </Button>
         </div>
       </div>
     </div>
@@ -328,7 +335,7 @@ const onClick = () => {
   display: block;
   text-transform: uppercase;
   margin-top: vw(48);
-  @include caption-c1;
+  @include caption-c4;
 
   @media (min-width: $br1) {
     &--mob {
@@ -339,6 +346,7 @@ const onClick = () => {
   @media (max-width: $br1) {
     margin: 0 auto;
     margin-top: 8px;
+
     &:not(&--mob) {
       display: none;
     }

@@ -307,3 +307,13 @@
     font-size: 10px;
   }
 }
+
+@mixin mobile-caption-c2 {
+  @include med;
+  font-size: 14px;
+  line-height: 1em;
+
+  @media (max-width: $br1) {
+    font-size: 14px;
+  }
+}

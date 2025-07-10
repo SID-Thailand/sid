@@ -7,8 +7,8 @@ const breakpoint = 1024
 const onResize = () => {
   window.escroll?.destroy()
 
-  let friction = 0.05
-  let stepSize = 0.5
+  let friction = 0.055
+  let stepSize = 0.6
 
   if (window.innerWidth <= breakpoint) {
     friction = 0.07
