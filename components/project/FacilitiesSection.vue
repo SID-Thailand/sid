@@ -39,51 +39,55 @@ const hoverAnimation = (idx: number) => {
     return
   }
 
+  if (isAnimating.value && activeIdx.value === idx) return
+
   const prevIdx = activeIdx.value
   activeIdx.value = idx
 
   if (prevIdx === null) return
 
   const $current = $assets.value[idx]
-  const $prev = $assets.value[prevIdx]
+  const $prev = prevIdx !== null ? $assets.value[prevIdx] : null
+
+  if (!$current || idx === prevIdx) return
 
   const dir = prevIdx > idx ? -1 : 1
+  const length = $assets.value.length
 
-  const tl = gsap.timeline({
+  const hoverTL = gsap.timeline({
     defaults: {
       duration: 1.5,
+      // overwrite: true,
     },
   })
 
-  const length = $assets.value?.length
-
   $assets.value.forEach((a, i) => {
     if (i === idx) {
-      tl.set(a.parentElement, {
+      hoverTL.set(a.parentElement, {
         zIndex: length + 1,
       })
       return
     }
 
     if (i === prevIdx) {
-      tl.set(a.parentElement, {
+      hoverTL.set(a.parentElement, {
         zIndex: length,
       })
       return
     }
 
-    tl.set(a.parentElement, {
+    hoverTL.set(a.parentElement, {
       zIndex: dir === 1 ? i : length - i,
     })
   })
 
-  tl.set($current, {
+  hoverTL.set($current, {
     scale: 1.3,
     clipPath: 'inset(100% 0 0 0)',
   })
 
   if ($prev) {
-    tl.to(
+    hoverTL.to(
       $prev,
       {
         scale: 1.3,
@@ -93,7 +97,7 @@ const hoverAnimation = (idx: number) => {
     )
   }
 
-  tl.to(
+  hoverTL.to(
     $current,
     {
       display: 'block',
@@ -130,7 +134,7 @@ onMounted(async () => {
       </div>
       <div ref="contentRef" class="project-facilities__block">
         <div class="project-facilities__block-wrapper">
-          <div ref="assetsRef" class="project-facilities__assets">
+          <div class="project-facilities__assets">
             <div
               v-for="(item, idx) in content?.slider"
               :key="idx"
