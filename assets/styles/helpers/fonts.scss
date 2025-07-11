@@ -104,6 +104,14 @@
   @include med;
   font-size: vw(40);
   line-height: 1em;
+
+  @media (max-width: $br1) {
+    font-size: size(40, 24);
+  }
+
+  @media (max-width: $br4) {
+    font-size: 24px;
+  }
 }
 
 // SUBHEADINGS
