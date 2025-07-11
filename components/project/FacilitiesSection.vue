@@ -14,6 +14,8 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
 
 const contentRef = ref<HTMLElement | null>(null)
 const $assets = ref<NodeListOf<HTMLElement> | null>(null)
+const activeIdx = ref(null)
+const isAnimating = ref(false)
 
 const initAnimation = () => {
   $assets.value = contentRef.value?.querySelectorAll(
@@ -33,10 +35,19 @@ const initAnimation = () => {
 }
 
 const hoverAnimation = (idx: number) => {
-  const $current = $assets.value[idx]
-  const $prev = $assets.value[idx - 1]
+  if (window.innerWidth < 860) {
+    return
+  }
 
-  if (!$current) return
+  const prevIdx = activeIdx.value
+  activeIdx.value = idx
+
+  if (prevIdx === null) return
+
+  const $current = $assets.value[idx]
+  const $prev = $assets.value[prevIdx]
+
+  const dir = prevIdx > idx ? -1 : 1
 
   const tl = gsap.timeline({
     defaults: {
@@ -44,27 +55,58 @@ const hoverAnimation = (idx: number) => {
     },
   })
 
-  if ($prev) tl.to($prev, { scale: 1.3, clipPath: `inset(0 0 0 0)` }, 0)
+  const length = $assets.value?.length
 
-  tl.to($current, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
-}
+  $assets.value.forEach((a, i) => {
+    if (i === idx) {
+      tl.set(a.parentElement, {
+        zIndex: length + 1,
+      })
+      return
+    }
 
-const hoverOutAnimation = (idx: number) => {
-  const $current = $assets.value[idx]
-  const $first = $assets.value[0]
+    if (i === prevIdx) {
+      tl.set(a.parentElement, {
+        zIndex: length,
+      })
+      return
+    }
 
-  if (!$current) return
-
-  const tl = gsap.timeline({
-    defaults: {
-      duration: 1.5,
-    },
+    tl.set(a.parentElement, {
+      zIndex: dir === 1 ? i : length - i,
+    })
   })
 
-  if ($current)
-    tl.to($current, { scale: 1.3, clipPath: `inset(100% 0 0 0)` }, 0)
+  tl.set($current, {
+    scale: 1.3,
+    clipPath: 'inset(100% 0 0 0)',
+  })
 
-  tl.to($first, { scale: 1, clipPath: 'inset(0% 0 0 0)' }, 0)
+  if ($prev) {
+    tl.to(
+      $prev,
+      {
+        scale: 1.3,
+        clipPath: `inset(0 0 0 0)`,
+      },
+      0
+    )
+  }
+
+  tl.to(
+    $current,
+    {
+      display: 'block',
+      scale: 1,
+      clipPath: 'inset(0% 0 0 0)',
+      onComplete: () => {
+        isAnimating.value = false
+      },
+    },
+    0
+  )
+
+  isAnimating.value = true
 }
 
 onMounted(async () => {
@@ -94,28 +136,30 @@ onMounted(async () => {
               :key="idx"
               class="project-facilities__image-item"
             >
-              <div class="project-facilities__img-wrapper">
-                <CustomImage
-                  data-f-asset
-                  :src="item?.asset?.filename"
-                  :alt="item?.asset?.alt"
-                  class="project-facilities__img"
-                />
-              </div>
+              <CustomImage
+                data-f-asset
+                :src="item?.asset?.filename"
+                :alt="item?.asset?.alt"
+                class="project-facilities__img"
+              />
             </div>
           </div>
           <div class="project-facilities__content-c">
-            <div data-f-scroller class="project-facilities__content">
+            <div class="project-facilities__content">
               <div
                 v-for="(item, idx) in content?.slider"
                 :key="idx"
                 data-f-text
                 class="project-facilities__content-wrapper"
                 @mouseenter="hoverAnimation(idx)"
-                @mouseleave="hoverOutAnimation(idx)"
               >
                 <div aria-hidden="true" class="project-facilities__overlay" />
                 <div class="project-facilities__item">
+                  <CustomImage
+                    :src="item?.asset?.filename"
+                    :alt="item?.asset?.alt"
+                    class="project-facilities__img project-facilities__img--mob"
+                  />
                   <div class="project-facilities__line" />
                   <div class="project-facilities__item-wrapper">
                     <IconsPlus class="project-facilities__plus" />
@@ -202,8 +246,6 @@ onMounted(async () => {
 }
 
 .project-facilities__block-wrapper {
-  height: 100svh;
-  overflow: hidden;
   padding-top: vw(60);
 
   @media (min-width: $br1) {
@@ -223,18 +265,7 @@ onMounted(async () => {
   height: vw(440);
 
   @media (max-width: $br1) {
-    margin: 0 auto;
-    margin-top: 16px;
-    max-height: 50%;
-    aspect-ratio: 1;
-    height: auto;
-    z-index: 10;
-    background-color: var(--neutral-100);
-  }
-
-  @media (max-width: $br3) {
-    width: 100%;
-    max-height: none;
+    display: none;
   }
 }
 
@@ -261,19 +292,16 @@ onMounted(async () => {
   }
 
   &:hover {
-    .project-facilities__plus {
-      opacity: 1;
-    }
-
     @media (min-width: $br1) {
-      .project-facilities__item-title {
-        color: var(--basic-white);
-      }
-
       .project-facilities__plus {
+        opacity: 1;
         path {
           fill: var(--basic-white);
         }
+      }
+
+      .project-facilities__item-title {
+        color: var(--basic-white);
       }
 
       .project-facilities__overlay {
@@ -303,30 +331,13 @@ onMounted(async () => {
 }
 
 .project-facilities__image-item {
+  overflow: hidden;
   position: absolute;
   left: 0;
   top: 0;
-  text-transform: uppercase;
-  @include subheading-h5;
-
-  @media (min-width: $br1) {
-    width: 100%;
-    height: 100%;
-    max-width: vw(600);
-  }
-
-  @media (max-width: $br1) {
-    width: 100%;
-    height: auto;
-  }
-}
-
-.project-facilities__img-wrapper {
-  display: block;
-  position: relative;
-  overflow: hidden;
   width: 100%;
   height: 100%;
+  max-width: vw(600);
 }
 
 .project-facilities__img {
@@ -336,6 +347,15 @@ onMounted(async () => {
   height: auto;
   // transform-origin: center top;
   will-change: transform;
+  &--mob {
+    @media (min-width: $br1) {
+      display: none;
+    }
+  }
+
+  @media (max-width: $br1) {
+    margin-bottom: 24px;
+  }
 }
 
 .project-facilities__item {
@@ -377,8 +397,7 @@ onMounted(async () => {
   flex: 1 0 auto;
 
   @media (max-width: $br1) {
-    width: 17px;
-    height: 17px;
+    display: none;
   }
 }
 
@@ -409,6 +428,7 @@ onMounted(async () => {
 
   @media (max-width: $br1) {
     font-size: size(24, 18);
+    // margin-top: 24px;
   }
 
   @media (max-width: $br4) {
