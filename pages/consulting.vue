@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import CompanyDirections from '~/components/CompanyDirections.vue'
 import DifferenceSection from '~/components/consulting/DifferenceSection.vue'
 import ExpertiseSection from '~/components/consulting/ExpertiseSection.vue'
 import ExpertsSection from '~/components/consulting/ExpertsSection.vue'
@@ -27,6 +28,7 @@ const resolveSectionByName = (name: string) => {
     consulting_difference: DifferenceSection,
     consulting_experts: ExpertsSection,
     consulting_service: ServiceSection,
+    company_directions: CompanyDirections,
     consulting_youtube: YoutubeSection,
     consultancy_featured_projects: FeaturedProjects,
     quiz_block: QuizSection,
