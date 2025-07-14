@@ -312,6 +312,10 @@ onMounted(async () => {
       .project-facilities__overlay {
         transform: scaleX(1);
       }
+
+      .project-facilities__item-text {
+        color: var(--basic-white);
+      }
     }
   }
 }
@@ -446,6 +450,7 @@ onMounted(async () => {
 .project-facilities__item-text {
   line-height: 1.25em !important;
   color: var(--neutral-300);
+  transition: color 0.8s ease;
   @include text-t4;
 }
 </style>
