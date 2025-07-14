@@ -293,6 +293,7 @@ watchImmediate(isMobile, () => {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  direction: ltr;
   column-gap: vw(20);
   margin-top: vw(24);
 
