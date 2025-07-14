@@ -1,26 +1,124 @@
 <script lang="ts" setup>
+import { gsap } from '~/libs/gsap'
 import type { iCurrentProjectFacilities } from '~/types/currentProjectTypes'
 
 interface IProps {
   content: iCurrentProjectFacilities
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 
 const $el = ref<HTMLElement | null>(null)
 
 useDetectHeaderColor($el as Ref<HTMLElement>)
 
-const itemsCount = computed(() => props.content?.slider?.length || 0)
-
 const contentRef = ref<HTMLElement | null>(null)
+const $assets = ref<NodeListOf<HTMLElement> | null>(null)
+const activeIdx = ref(null)
+const isAnimating = ref(false)
 
-const isMobile = useMediaQuery('(max-width: 560px)')
-const { activePage } = useFullPageAnimation(
-  contentRef as Ref<HTMLElement>,
-  itemsCount,
-  isMobile
-)
+const initAnimation = () => {
+  $assets.value = contentRef.value?.querySelectorAll(
+    '[data-f-asset]'
+  ) as NodeListOf<HTMLElement>
+
+  if (!$assets.value) return
+
+  $assets.value.forEach((item, index) => {
+    if (index > 0) {
+      gsap.set(item, {
+        scale: 1.3,
+        clipPath: 'inset(100% 0 0 0)',
+      })
+    }
+  })
+}
+
+const hoverAnimation = (idx: number) => {
+  if (window.innerWidth < 860) {
+    return
+  }
+
+  if (isAnimating.value && activeIdx.value === idx) return
+
+  const prevIdx = activeIdx.value
+  activeIdx.value = idx
+
+  if (prevIdx === null) return
+
+  const $current = $assets.value[idx]
+  const $prev = prevIdx !== null ? $assets.value[prevIdx] : null
+
+  if (!$current || idx === prevIdx) return
+
+  const dir = prevIdx > idx ? -1 : 1
+  const length = $assets.value.length
+
+  const hoverTL = gsap.timeline({
+    defaults: {
+      duration: 1.5,
+      // overwrite: true,
+    },
+  })
+
+  $assets.value.forEach((a, i) => {
+    if (i === idx) {
+      hoverTL.set(a.parentElement, {
+        zIndex: length + 1,
+      })
+      return
+    }
+
+    if (i === prevIdx) {
+      hoverTL.set(a.parentElement, {
+        zIndex: length,
+      })
+      return
+    }
+
+    hoverTL.set(a.parentElement, {
+      zIndex: dir === 1 ? i : length - i,
+    })
+  })
+
+  hoverTL.set($current, {
+    scale: 1.3,
+    clipPath: 'inset(100% 0 0 0)',
+  })
+
+  if ($prev) {
+    hoverTL.to(
+      $prev,
+      {
+        scale: 1.3,
+        clipPath: `inset(0 0 0 0)`,
+      },
+      0
+    )
+  }
+
+  hoverTL.to(
+    $current,
+    {
+      display: 'block',
+      scale: 1,
+      clipPath: 'inset(0% 0 0 0)',
+      onComplete: () => {
+        isAnimating.value = false
+      },
+    },
+    0
+  )
+
+  isAnimating.value = true
+}
+
+onMounted(async () => {
+  await nextTick()
+
+  if (!contentRef.value) return
+  initAnimation()
+})
 </script>
 
 <template>
@@ -36,36 +134,36 @@ const { activePage } = useFullPageAnimation(
       </div>
       <div ref="contentRef" class="project-facilities__block">
         <div class="project-facilities__block-wrapper">
-          <div ref="assetsRef" class="project-facilities__assets">
+          <div class="project-facilities__assets">
             <div
               v-for="(item, idx) in content?.slider"
               :key="idx"
               class="project-facilities__image-item"
             >
-              <div class="project-facilities__img-wrapper">
-                <CustomImage
-                  data-f-asset
-                  :src="item?.asset?.filename"
-                  :alt="item?.asset?.alt"
-                  class="project-facilities__img"
-                />
-              </div>
+              <CustomImage
+                data-f-asset
+                :src="item?.asset?.filename"
+                :alt="item?.asset?.alt"
+                class="project-facilities__img"
+              />
             </div>
           </div>
           <div class="project-facilities__content-c">
-            <div data-f-scroller class="project-facilities__content">
+            <div class="project-facilities__content">
               <div
                 v-for="(item, idx) in content?.slider"
                 :key="idx"
                 data-f-text
                 class="project-facilities__content-wrapper"
-                :class="
-                  idx === activePage - 1 &&
-                  'project-facilities__content-wrapper--active'
-                "
+                @mouseenter="hoverAnimation(idx)"
               >
                 <div aria-hidden="true" class="project-facilities__overlay" />
                 <div class="project-facilities__item">
+                  <CustomImage
+                    :src="item?.asset?.filename"
+                    :alt="item?.asset?.alt"
+                    class="project-facilities__img project-facilities__img--mob"
+                  />
                   <div class="project-facilities__line" />
                   <div class="project-facilities__item-wrapper">
                     <IconsPlus class="project-facilities__plus" />
@@ -152,8 +250,6 @@ const { activePage } = useFullPageAnimation(
 }
 
 .project-facilities__block-wrapper {
-  height: 100svh;
-  overflow: hidden;
   padding-top: vw(60);
 
   @media (min-width: $br1) {
@@ -173,18 +269,7 @@ const { activePage } = useFullPageAnimation(
   height: vw(440);
 
   @media (max-width: $br1) {
-    margin: 0 auto;
-    margin-top: 16px;
-    max-height: 50%;
-    aspect-ratio: 1;
-    height: auto;
-    z-index: 10;
-    background-color: var(--neutral-100);
-  }
-
-  @media (max-width: $br3) {
-    width: 100%;
-    max-height: none;
+    display: none;
   }
 }
 
@@ -202,6 +287,7 @@ const { activePage } = useFullPageAnimation(
 .project-facilities__content-wrapper {
   position: relative;
   overflow: hidden;
+  cursor: pointer;
   @media (min-width: $br1) {
     display: flex;
     justify-content: flex-end;
@@ -209,20 +295,17 @@ const { activePage } = useFullPageAnimation(
     column-gap: vw(20);
   }
 
-  &--active {
-    .project-facilities__plus {
-      opacity: 1;
-    }
-
+  &:hover {
     @media (min-width: $br1) {
-      .project-facilities__item-title {
-        color: var(--basic-white);
-      }
-
       .project-facilities__plus {
+        opacity: 1;
         path {
           fill: var(--basic-white);
         }
+      }
+
+      .project-facilities__item-title {
+        color: var(--basic-white);
       }
 
       .project-facilities__overlay {
@@ -252,30 +335,13 @@ const { activePage } = useFullPageAnimation(
 }
 
 .project-facilities__image-item {
+  overflow: hidden;
   position: absolute;
   left: 0;
   top: 0;
-  text-transform: uppercase;
-  @include subheading-h5;
-
-  @media (min-width: $br1) {
-    width: 100%;
-    height: 100%;
-    max-width: vw(600);
-  }
-
-  @media (max-width: $br1) {
-    width: 100%;
-    height: auto;
-  }
-}
-
-.project-facilities__img-wrapper {
-  display: block;
-  position: relative;
-  overflow: hidden;
   width: 100%;
   height: 100%;
+  max-width: vw(600);
 }
 
 .project-facilities__img {
@@ -285,6 +351,15 @@ const { activePage } = useFullPageAnimation(
   height: auto;
   // transform-origin: center top;
   will-change: transform;
+  &--mob {
+    @media (min-width: $br1) {
+      display: none;
+    }
+  }
+
+  @media (max-width: $br1) {
+    margin-bottom: 24px;
+  }
 }
 
 .project-facilities__item {
@@ -326,8 +401,7 @@ const { activePage } = useFullPageAnimation(
   flex: 1 0 auto;
 
   @media (max-width: $br1) {
-    width: 17px;
-    height: 17px;
+    display: none;
   }
 }
 
@@ -358,6 +432,7 @@ const { activePage } = useFullPageAnimation(
 
   @media (max-width: $br1) {
     font-size: size(24, 18);
+    // margin-top: 24px;
   }
 
   @media (max-width: $br4) {
