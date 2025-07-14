@@ -195,6 +195,7 @@ onMounted(async () => {
 
   @media (max-width: $br1) {
     padding: 24px 0;
+    padding-bottom: 0;
   }
 }
 
@@ -385,7 +386,9 @@ onMounted(async () => {
 
   @media (max-width: $br1) {
     gap: 16px;
-    padding: 20px 0;
+    padding: 0;
+    padding-top: 24px;
+    padding-bottom: 56px;
   }
 }
 
