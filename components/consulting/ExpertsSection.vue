@@ -139,6 +139,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
     grid-template-columns: repeat(3, 1fr);
     grid-auto-flow: row;
     column-gap: vw(20);
+    row-gap: vw(100);
     max-width: vw(1015);
   }
 
