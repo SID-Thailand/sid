@@ -1,64 +1,6 @@
 import { delayPromise } from '@emotionagency/utils'
-import { TextSplitter } from './../utils/textSplitter'
 import { gsap } from '~/libs/gsap'
 import Emitter from 'tiny-emitter/dist/tinyemitter'
-
-const animateWords = (
-  words: NodeListOf<Element> | any[],
-  isForward: boolean,
-  time: number,
-  offset = 0
-) => {
-  if (!words.length) return
-
-  const y = isForward ? '130%' : '-130%'
-
-  gsap.fromTo(words, { y }, { y: '0%', duration: time, delay: offset })
-}
-
-const animateWordExit = (
-  words: NodeListOf<Element> | any[],
-  isForward: boolean,
-  time: number,
-  offset = 0
-) => {
-  if (!words.length) return
-
-  const y = isForward ? '-130%' : '130%'
-
-  gsap.to(words, { y, duration: time, delay: offset })
-}
-
-const getWords = (selector: HTMLElement | null) =>
-  selector?.querySelectorAll(`.word`) ?? []
-
-const resetSplitters = (splitters: (typeof TextSplitter.prototype)[]) => {
-  if (!splitters?.length) return
-  splitters.forEach(splitter => {
-    splitter.revert()
-  })
-  splitters = []
-}
-
-const splitTexts = (items: NodeListOf<HTMLElement>) => {
-  const splitters: (typeof TextSplitter.prototype)[] = []
-
-  items?.forEach((item, idx) => {
-    const textSplitter = new TextSplitter(item, {
-      splitTypeTypes: 'lines,words',
-    })
-
-    splitters.push(textSplitter)
-
-    if (idx === 0) {
-      return
-    }
-
-    gsap.set(item.querySelectorAll('.word'), { y: '120%' })
-  })
-
-  return splitters
-}
 
 export const useFullPageCardSlider = (
   el: MaybeRefOrGetter<HTMLElement>,

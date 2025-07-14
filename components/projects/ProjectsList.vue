@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { delayPromise } from '@emotionagency/utils'
+import { gsap } from '~/libs/gsap'
 import type { iProjectsContent } from '~/types/projectsTypes'
 import type { iStory } from '~/types/story'
 
@@ -15,13 +17,13 @@ const projectCount = computed(() => {
   return props?.projects?.length || 0
 })
 
-const { activePage, onInit } = useFullPageCardSlider(
-  contentRef as Ref<HTMLElement>,
-  projectCount
+const { current, prev, direction, throttledNavigate } = useSlider(
+  projectCount.value,
+  1300
 )
 
 const activeProject = computed(() => {
-  return props.projects[activePage.value - 1]
+  return props.projects[current.value]
 })
 
 const route = useRoute()
@@ -56,9 +58,163 @@ const findLongestTextLinesIdx = () => {
   return maxIndex
 }
 
-onInit(() => {
+const $bgs = ref<NodeListOf<HTMLElement> | null>(null)
+const $bgsImages = ref<NodeListOf<HTMLElement> | null>(null)
+const $images = ref<NodeListOf<HTMLElement> | null>(null)
+const $imagesImg = ref<NodeListOf<HTMLElement> | null>(null)
+const $titles = ref<NodeListOf<HTMLElement> | null>(null)
+const $texts = ref<NodeListOf<HTMLElement> | null>(null)
+
+let titlesSplitter: (typeof TextSplitter.prototype)[] = []
+let textsSplitter: (typeof TextSplitter.prototype)[] = []
+
+const setupInitialStates = async () => {
+  $bgs.value?.forEach((bg, index) => {
+    if (index > 0) {
+      gsap.set(bg, {
+        clipPath: 'inset(0 0 0 100%)',
+      })
+
+      gsap.set($bgsImages[index], {
+        scale: 1.3,
+      })
+
+      gsap.set($images.value[index], {
+        clipPath: 'inset(0 0 0 100%)',
+      })
+
+      gsap.set($imagesImg.value[index], {
+        scale: 1.3,
+      })
+    }
+  })
+
+  resetSplitters(titlesSplitter)
+  resetSplitters(textsSplitter)
+
+  await nextTick()
+
+  titlesSplitter = splitTexts($titles.value as NodeListOf<HTMLElement>)
+  textsSplitter = splitTexts($texts.value as NodeListOf<HTMLElement>)
+}
+
+onMounted(async () => {
+  await delayPromise(500)
+  const target = contentRef.value
+  $bgs.value = target?.querySelectorAll(
+    '[data-f-bg]'
+  ) as NodeListOf<HTMLElement>
+
+  $bgsImages.value = target?.querySelectorAll(
+    '[data-f-bg-i]'
+  ) as NodeListOf<HTMLElement>
+
+  $images.value = target?.querySelectorAll(
+    '[data-f-img]'
+  ) as NodeListOf<HTMLElement>
+
+  $imagesImg.value = target?.querySelectorAll(
+    '[data-f-img-i]'
+  ) as NodeListOf<HTMLElement>
+
+  $titles.value = target?.querySelectorAll(
+    '[data-f-title]'
+  ) as NodeListOf<HTMLElement>
+
+  $texts.value = target?.querySelectorAll(
+    '[data-f-text]'
+  ) as NodeListOf<HTMLElement>
+
+  await setupInitialStates()
   longestTextLinesIdx.value = findLongestTextLinesIdx()
 })
+
+const animate = () => {
+  const currentIndex = current.value
+  const prevIndex = prev.value
+
+  const els = {
+    current: {
+      bg: $bgs.value[currentIndex],
+      bgImg: $bgsImages.value[currentIndex],
+      item: $images.value[currentIndex],
+      itemImg: $imagesImg.value[currentIndex],
+      title: $titles.value[currentIndex],
+      text: $texts.value[currentIndex],
+    },
+    prev: {
+      bg: $bgs.value[prevIndex],
+      bgImg: $bgsImages.value[prevIndex],
+      item: $images.value[prevIndex],
+      itemImg: $imagesImg.value[prevIndex],
+      title: $titles.value[prevIndex],
+      text: $texts.value[prevIndex],
+    },
+  }
+
+  const duration = 1.5
+  const textDuration = 1
+
+  const tl = gsap.timeline({
+    defaults: {
+      duration,
+      ease: 'power2.out',
+    },
+  })
+
+  const isForward = direction.value === 1
+
+  const from = 'inset(0 0 0 100%)'
+  const to = 'inset(0 100% 0 0)'
+
+  tl.set(els.current.bg, { clipPath: isForward ? from : to })
+  tl.set(els.current.item, { clipPath: isForward ? from : to })
+
+  tl.set(els.current.bgImg, { scale: 1.3 })
+  tl.set(els.current.itemImg, { scale: 1.3 })
+
+  els.prev.bg &&
+    tl.to(
+      els.prev.bg,
+      {
+        clipPath: isForward ? to : from,
+      },
+      0
+    )
+
+  els.prev.bgImg &&
+    tl.to(
+      els.prev.bgImg,
+      {
+        scale: 1.3,
+      },
+      0
+    )
+
+  els.prev.item && tl.to(els.prev.item, { clipPath: isForward ? to : from }, 0)
+
+  els.prev.itemImg && tl.to(els.prev.itemImg, { scale: 1.3 }, 0)
+
+  tl.to(els.current.bg, { clipPath: 'inset(0 0% 0 0%)' }, 0)
+  tl.to(els.current.item, { clipPath: 'inset(0 0% 0 0%)' }, 0)
+
+  tl.to(els.current.bgImg, { scale: 1 }, 0)
+  tl.to(els.current.itemImg, { scale: 1 }, 0)
+
+  const curTitleWords = getWords(els.current.title as HTMLElement)
+  const prevTitleWords = getWords(els.prev.title as HTMLElement)
+
+  const curTextWords = getWords(els.current.text as HTMLElement)
+  const prevTextWords = getWords(els.prev.text as HTMLElement)
+
+  animateWordExit(prevTitleWords, isForward, textDuration, 0)
+  animateWords(curTitleWords, isForward, textDuration, 0)
+
+  animateWordExit(prevTextWords, isForward, textDuration, 0)
+  animateWords(curTextWords, isForward, textDuration, 0)
+}
+
+watch(current, animate)
 </script>
 
 <template>
@@ -69,17 +225,18 @@ onInit(() => {
           <div
             v-for="(img, idx) in projects"
             :key="idx"
+            data-f-bg
             class="projects__bg-wrapper"
+            :class="{ active: idx === current, prev: idx === prev }"
           >
             <CustomImage
-              data-f-bg
+              data-f-bg-i
               :src="img?.content?.cover?.filename"
               :alt="img?.content?.cover?.alt"
               class="projects__bg"
             />
           </div>
         </div>
-
         <DarkLayer />
         <div
           class="projects__card"
@@ -90,15 +247,16 @@ onInit(() => {
             <div
               v-for="(item, idx) in projects"
               :key="idx"
+              data-f-img
               class="projects__image-item"
+              :class="{ active: idx === current, prev: idx === prev }"
               :style="{
-                zIndex: idx + 1,
+                // zIndex: idx + 1,
                 position: longestTextLinesIdx === idx ? 'relative' : 'absolute',
               }"
             >
-              <div class="projects__img-wrapper">
+              <div class="projects__img-wrapper" data-f-img-i>
                 <CustomImage
-                  data-f-img
                   data-t-img
                   :src="item?.content?.cover?.filename"
                   :alt="item?.content?.cover?.alt"
@@ -143,15 +301,21 @@ onInit(() => {
           </Button>
         </div>
         <div class="projects__counter container">
-          <p class="projects__count">{{ activePage }}/{{ projectCount }}</p>
-          <div class="projects__pagination">
-            <span
-              v-for="(_, i) in projects?.length"
-              :key="i"
-              class="projects__pag-item"
-              :class="{ 'projects__pag-item--active': activePage - 1 === i }"
-            />
-          </div>
+          <button class="projects__prev" @click="throttledNavigate(-1)">
+            <IconsArrowLeft />
+          </button>
+          <p class="projects__count">{{ current + 1 }}/{{ projectCount }}</p>
+          <button class="projects__next" @click="throttledNavigate(1)">
+            <IconsArrowRight />
+          </button>
+        </div>
+        <div class="projects__pagination">
+          <span
+            v-for="(_, i) in projects?.length"
+            :key="i"
+            class="projects__pag-item"
+            :class="{ 'projects__pag-item--active': current === i }"
+          />
         </div>
       </div>
     </div>
@@ -160,6 +324,8 @@ onInit(() => {
 
 <style scoped lang="scss">
 @use '~/assets/styles/ui/card-hover' as *;
+
+$clip-path: inset(0 0 0 100%);
 
 .projects__slider {
   position: relative;
@@ -188,9 +354,14 @@ onInit(() => {
   width: 100%;
   height: 100%;
   &:not(:first-child) {
-    .projects__bg {
-      clip-path: inset(100% 0 0 0);
-    }
+    clip-path: $clip-path;
+  }
+
+  &.active {
+    z-index: 2;
+  }
+  &.prev {
+    z-index: 1;
   }
 }
 
@@ -247,10 +418,15 @@ onInit(() => {
   left: 0;
   will-change: transform;
 
+  &.active {
+    z-index: 2;
+  }
+  &.prev {
+    z-index: 1;
+  }
+
   &:not(:first-child) {
-    img {
-      clip-path: inset(100% 0 0 0);
-    }
+    clip-path: $clip-path;
   }
 }
 
@@ -358,15 +534,10 @@ onInit(() => {
   display: flex;
   align-items: center;
   width: fit-content;
-
-  @media (min-width: $br1) {
-    flex-direction: column;
-    row-gap: vw(8);
-  }
-
-  @media (max-width: $br1) {
-    column-gap: 8px;
-  }
+  position: absolute;
+  bottom: vh(20);
+  z-index: 10;
+  column-gap: 8px;
 }
 
 .projects__pag-item {
@@ -388,13 +559,11 @@ onInit(() => {
   &--active {
     background-color: var(--basic-white);
 
-    @media (min-width: $br1) {
-      height: vw(16);
-    }
-
-    @media (max-width: $br1) {
-      width: 16px;
-    }
+    width: 16px;
   }
+}
+
+.projects__next {
+  background-color: transparent;
 }
 </style>
