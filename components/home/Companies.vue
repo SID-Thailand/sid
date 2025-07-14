@@ -25,8 +25,13 @@ defineProps<IProps>()
           <p class="home-companies__text">
             {{ content?.text }}
           </p>
-          <Button class="home-compaines__btn">
-            <span>{{ content?.button_text }}</span>
+          <Button
+            v-if="content.button?.[0]"
+            class="home-compaines__btn"
+            tag="nuxt-link"
+            :href="content.button?.[0]?.link?.cached_url"
+          >
+            <span>{{ content.button?.[0]?.label }}</span>
             <IconsPlus />
           </Button>
         </div>
@@ -49,6 +54,10 @@ defineProps<IProps>()
   width: 100%;
 
   @include heading-h2;
+
+  @media (max-width: $br1) {
+    @include heading-h1;
+  }
 
   @media (min-width: $br2) {
     width: vw(900);

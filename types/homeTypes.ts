@@ -1,4 +1,4 @@
-import type { iCTA, iImage, iMeta, iQuiz } from './story'
+import type { iCTA, iImage, iLink, iMeta, iQuiz } from './story'
 
 export interface iHomeHero {
   address: string
@@ -22,7 +22,10 @@ export interface IHomeCompanies {
   title: string
   text: string
   asset: iImage
-  button_text: string
+  button: {
+    label: string
+    link: iLink
+  }[]
 }
 
 export interface iHomeNumber {
