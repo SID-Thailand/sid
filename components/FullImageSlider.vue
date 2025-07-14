@@ -6,11 +6,7 @@ interface IProps {
   images: iImage[]
 }
 
-defineProps<IProps>()
-
-const current = ref(0)
-const prev = ref(null)
-const direction = ref<1 | -1>(1)
+const props = defineProps<IProps>()
 
 const cursorX = ref(0)
 const cursorY = ref(0)
@@ -34,24 +30,9 @@ const setCursor = (type: 'left' | 'right' | null) => {
   cursorType.value = type
 }
 
-const handlePrev = () => {
-  prev.value = current.value
-  current.value =
-    (current.value - 1 + $items.value.length) % $items.value.length
-  direction.value = -1
-}
-
-const handleNext = () => {
-  prev.value = current.value
-  current.value = (current.value + 1) % $items.value.length
-  direction.value = 1
-}
-
-const navigate = (direction: 1 | -1) => {
-  direction === 1 ? handleNext() : handlePrev()
-}
-
-const throttledNavigate = useThrottleFn(navigate, 700)
+const { prev, current, direction, throttledNavigate } = useSlider(
+  props.images.length
+)
 
 const handleChangeSlide = async () => {
   const $active = $items.value[current.value] as HTMLElement
