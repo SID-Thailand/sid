@@ -119,7 +119,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
     max-width: vw(324);
     margin-top: vw(40);
     margin-left: auto;
-    margin-right: vw(221);
+    margin-right: vw(230);
   }
 
   @media (max-width: $br1) {

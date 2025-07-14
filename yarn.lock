@@ -319,10 +319,10 @@
   dependencies:
     tslib "^2.4.0"
 
-"@emotionagency/emotion-scroll@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@emotionagency/emotion-scroll/-/emotion-scroll-2.0.1.tgz#12c9f499d6a1efd95d651604c357eeedb0230f2b"
-  integrity sha512-Bcf5YGCdF7yscJ9iaS/JIsRV7d4trQ31SFmCgufTTkzbPF4RyvzT4OuQ0+/t480twpuwfym3yM0WJdwui5jZWw==
+"@emotionagency/emotion-scroll@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@emotionagency/emotion-scroll/-/emotion-scroll-2.0.2.tgz#0a8307c84afdc333db2363426e92eb0098375600"
+  integrity sha512-HT/NCHZ5Zejb/6PXbFyqXIK8OXmFB333X+uOmSCcz95rqkv8p+RrrCGJxiCdHMx6v7lAUaj0jlHRWqV24nICYg==
   dependencies:
     "@emotionagency/utils" "^2.0.1"
     tiny-emitter "^2.1.0"

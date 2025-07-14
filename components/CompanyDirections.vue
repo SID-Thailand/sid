@@ -69,7 +69,7 @@ defineProps<IProps>()
   @include heading-h1;
 
   @media (min-width: $br1) {
-    width: vw(936);
+    width: vw(960);
   }
 }
 

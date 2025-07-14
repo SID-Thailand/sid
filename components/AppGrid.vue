@@ -24,7 +24,7 @@ onBeforeUnmount(() => {
     class="app-grid container grid"
     :class="{ 'app-grid--visible': isVisible }"
   >
-    <div v-for="n in 12" :key="n" class="app-grid__col"></div>
+    <div v-for="n in 24" :key="n" class="app-grid__col"></div>
   </div>
 </template>
 
