@@ -127,7 +127,21 @@ onMounted(async () => {
 
   await setupInitialStates()
   longestTextLinesIdx.value = findLongestTextLinesIdx()
+
+  window.addEventListener('keydown', handleKeyDown)
 })
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyDown)
+})
+
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (e.key === 'ArrowLeft') {
+    throttledNavigate(-1)
+  } else if (e.key === 'ArrowRight') {
+    throttledNavigate(1)
+  }
+}
 
 const animate = () => {
   const currentIndex = current.value
@@ -301,21 +315,35 @@ watch(current, animate)
           </Button>
         </div>
         <div class="projects__counter container">
-          <button class="projects__prev" @click="throttledNavigate(-1)">
-            <IconsArrowLeft />
-          </button>
           <p class="projects__count">{{ current + 1 }}/{{ projectCount }}</p>
-          <button class="projects__next" @click="throttledNavigate(1)">
+          <button
+            class="projects__nav-btn projects__nav-btn--next"
+            @click="throttledNavigate(1)"
+          >
             <IconsArrowRight />
           </button>
         </div>
-        <div class="projects__pagination">
-          <span
-            v-for="(_, i) in projects?.length"
-            :key="i"
-            class="projects__pag-item"
-            :class="{ 'projects__pag-item--active': current === i }"
-          />
+        <div class="projects__pagination-wrapper">
+          <button
+            class="projects__nav-btn projects__nav-btn--mob projects__nav-btn--prev"
+            @click="throttledNavigate(-1)"
+          >
+            <IconsChevronLeft />
+          </button>
+          <div class="projects__pagination">
+            <span
+              v-for="(_, i) in projects?.length"
+              :key="i"
+              class="projects__pag-item"
+              :class="{ 'projects__pag-item--active': current === i }"
+            />
+          </div>
+          <button
+            class="projects__nav-btn projects__nav-btn--mob projects__nav-btn--next"
+            @click="throttledNavigate(1)"
+          >
+            <IconsChevronRight />
+          </button>
         </div>
       </div>
     </div>
@@ -530,13 +558,21 @@ $clip-path: inset(0 0 0 100%);
   }
 }
 
+.projects__pagination-wrapper {
+  width: 100%;
+  position: absolute;
+  bottom: vh(20);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
 .projects__pagination {
   display: flex;
   align-items: center;
   width: fit-content;
-  position: absolute;
-  bottom: vh(20);
-  z-index: 10;
   column-gap: 8px;
 }
 
@@ -563,7 +599,19 @@ $clip-path: inset(0 0 0 100%);
   }
 }
 
-.projects__next {
+.projects__nav-btn {
   background-color: transparent;
+
+  &--mob {
+    @media (min-width: $br1) {
+      display: none;
+    }
+  }
+
+  &:not(&--mob) {
+    @media (max-width: $br1) {
+      display: none;
+    }
+  }
 }
 </style>
