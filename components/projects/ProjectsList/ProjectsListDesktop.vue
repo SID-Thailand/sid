@@ -315,7 +315,12 @@ watch(current, animate)
           </Button>
         </div>
         <div class="projects__counter container">
-          <p class="projects__count">{{ current + 1 }}/{{ projectCount }}</p>
+          <button
+            class="projects__nav-btn projects__nav-btn--prev"
+            @click="throttledNavigate(-1)"
+          >
+            <IconsArrowLeft />
+          </button>
           <button
             class="projects__nav-btn projects__nav-btn--next"
             @click="throttledNavigate(1)"
@@ -330,14 +335,7 @@ watch(current, animate)
           >
             <IconsChevronLeft />
           </button>
-          <div class="projects__pagination">
-            <span
-              v-for="(_, i) in projects?.length"
-              :key="i"
-              class="projects__pag-item"
-              :class="{ 'projects__pag-item--active': current === i }"
-            />
-          </div>
+
           <button
             class="projects__nav-btn projects__nav-btn--mob projects__nav-btn--next"
             @click="throttledNavigate(1)"

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { TransitionProps } from 'vue'
 import HeroSection from '~/components/projects/HeroSection.vue'
+import ProjectsList from '~/components/projects/ProjectsList/ProjectsList.vue'
 import { useProjectsStories } from '~/composables/stories/projects/projectsStories'
 import { useProjectsStory } from '~/composables/stories/projects/projectsStory'
 

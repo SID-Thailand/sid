@@ -1,11 +1,10 @@
 // composables/useSSRMediaQuery.ts
 import { useRequestHeaders } from 'nuxt/app'
 import { useMediaQuery } from '@vueuse/core'
-import { ref, computed, watch, onMounted } from 'vue'
 import { UAParser } from 'ua-parser-js'
 
 export function useSSRMediaQuery(query: string) {
-  const isMatch = ref(false)
+  const isMatch = useState('isSSRMatch', () => false)
 
   // Server-side detection using UA
   if (import.meta.server) {
@@ -36,7 +35,9 @@ export function useSSRMediaQuery(query: string) {
     const clientMatch = useMediaQuery(query)
 
     onMounted(() => {
-      isMatch.value = clientMatch.value
+      if (isMatch.value !== clientMatch.value) {
+        isMatch.value = clientMatch.value
+      }
     })
 
     watch(clientMatch, val => {
