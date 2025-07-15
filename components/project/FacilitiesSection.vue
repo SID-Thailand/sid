@@ -166,7 +166,6 @@ onMounted(async () => {
                   />
                   <div class="project-facilities__line" />
                   <div class="project-facilities__item-wrapper">
-                    <IconsPlus class="project-facilities__plus" />
                     <div class="project-facilities__info">
                       <h3 class="project-facilities__item-title">
                         {{ item?.title }}
@@ -298,13 +297,6 @@ onMounted(async () => {
 
   &:hover {
     @media (min-width: $br1) {
-      .project-facilities__plus {
-        opacity: 1;
-        path {
-          fill: var(--basic-white);
-        }
-      }
-
       .project-facilities__item-title {
         color: var(--basic-white);
       }
