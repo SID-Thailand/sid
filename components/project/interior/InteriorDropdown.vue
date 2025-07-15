@@ -198,11 +198,13 @@ onUnmounted(() => {
   align-items: flex-start;
   column-gap: vw(16);
   padding: vw(30) vw(20);
+  padding-left: vw(5);
   position: relative;
   z-index: 2;
 
   @media (max-width: $br1) {
     padding: 30px 16px;
+    padding-left: 5px;
     column-gap: 16px;
   }
 }
