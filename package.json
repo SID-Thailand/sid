@@ -42,6 +42,7 @@
     "nuxt-i18n-micro": "^1.83.0",
     "split-type": "^0.3.4",
     "swiper": "^11.2.6",
+    "ua-parser-js": "^2.0.4",
     "vue": "latest"
   }
 }
