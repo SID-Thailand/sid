@@ -20,6 +20,7 @@ export interface iProjectsHeroContent {
   meta: iMeta[]
   cta: iCTA
   view_project_btn: string
+  more_projects_btn: string
   background: iImage
   project_template_spec_1: string
   project_template_spec_2: string

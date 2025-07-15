@@ -109,6 +109,7 @@ const projectFilterTransition: TransitionProps = {
         :key="key"
         :projects="filteredProjects"
         :project-btn="story?.content?.view_project_btn"
+        :more-projects-btn="story?.content?.more_projects_btn"
       />
     </Transition>
     <BookTheMeetings :cta="story?.content?.cta" page="Projects" />

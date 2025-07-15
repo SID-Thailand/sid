@@ -5,6 +5,7 @@ import type { iStory } from '~/types/story'
 interface iProps {
   projects: iStory<iProjectsContent>[]
   projectBtn: string
+  moreProjectsBtn: string | undefined
 }
 
 const props = defineProps<iProps>()
@@ -87,8 +88,9 @@ const viewMoreHandler = () => {
           "
           class="projects-m__more-btn"
           @click="viewMoreHandler"
-          >More</Button
         >
+          {{ moreProjectsBtn || 'More' }}
+        </Button>
       </ClientOnly>
     </div>
   </section>
