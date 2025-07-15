@@ -337,6 +337,10 @@ const onClick = () => {
   margin-top: vw(48);
   @include caption-c4;
 
+  @media (max-width: $br1) {
+    @include caption-c2;
+  }
+
   @media (min-width: $br1) {
     &--mob {
       display: none;
