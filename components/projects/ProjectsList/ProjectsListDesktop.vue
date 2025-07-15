@@ -541,64 +541,33 @@ $clip-path: inset(0 0 0 100%);
   }
 }
 
-.projects__count {
-  text-transform: uppercase;
-  line-height: 1.2em;
-  font-size: vw(20);
-  @include med;
-
-  @media (max-width: $br1) {
-    font-size: size(20, 16);
-  }
-
-  @media (max-width: $br4) {
-    font-size: 16px;
-  }
-}
-
-.projects__pagination-wrapper {
-  width: 100%;
-  position: absolute;
-  bottom: vh(20);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-}
-
-.projects__pagination {
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  column-gap: 8px;
-}
-
-.projects__pag-item {
-  display: block;
-  width: vw(4);
-  height: vw(4);
-  border-radius: 9999px;
-  background-color: var(--neutral-300);
-  transition:
-    height 1s ease,
-    width 1s ease,
-    background-color 1s ease;
-
-  @media (max-width: $br1) {
-    width: 4px;
-    height: 4px;
-  }
-
-  &--active {
-    background-color: var(--basic-white);
-
-    width: 16px;
-  }
-}
-
 .projects__nav-btn {
+  position: relative;
   background-color: transparent;
+  padding: vw(12);
+  border-radius: 50%;
+  display: block;
+
+  &::before {
+    content: '';
+    border-radius: 50%;
+    background-color: var(--neutral-600);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.3s ease;
+    will-change: transform;
+    z-index: -1;
+  }
+
+  &:hover {
+    &::before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
 
   &--mob {
     @media (min-width: $br1) {
