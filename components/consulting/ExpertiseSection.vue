@@ -193,7 +193,7 @@ const { openFormModal } = useAppState()
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    column-gap: vw(78);
+    column-gap: vw(135);
     row-gap: vw(100);
   }
 
