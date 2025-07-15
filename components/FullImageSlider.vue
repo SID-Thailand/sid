@@ -284,10 +284,10 @@ useIntersectionObserver($el, ([entry]) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: vw(60);
-  height: vw(60);
-  top: calc(var(--indicator-y, 0px) - vw(30));
-  left: calc(var(--indicator-x, 0px) - vw(30));
+  width: vw(44);
+  height: vw(44);
+  top: calc(var(--indicator-y, 0px) - vw(22));
+  left: calc(var(--indicator-x, 0px) - vw(22));
   background-color: transparent;
   z-index: 50;
   opacity: 0;
@@ -298,10 +298,24 @@ useIntersectionObserver($el, ([entry]) => {
     visibility 0.3s ease;
   transform: scale(0);
 
+  &::before {
+    content: '';
+    border-radius: 50%;
+    background-color: var(--neutral-600);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
   &--left svg,
   &--right svg {
-    width: vw(22);
-    height: vw(22);
+    width: vw(20);
+    height: vw(20);
     opacity: 1;
   }
 
