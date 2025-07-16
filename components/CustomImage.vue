@@ -34,11 +34,11 @@ const attrs = computed(() => {
     preload: props.preload,
     format: 'webp',
     provider: 'storyblok',
+    loading: 'lazy',
     densities: '1x',
     sizes: `sm:100vw md:${props.width || 1920}px`,
     onLoad: () => {
       loaded.value = true
-      console.log('test')
     },
   }
 
