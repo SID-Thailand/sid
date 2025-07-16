@@ -1,12 +1,13 @@
 import emitter from 'tiny-emitter/instance'
 
-import { raf, resize, lerp, matrixTransform } from '@emotionagency/utils'
+import { resize, lerp, matrixTransform } from '@emotionagency/utils'
 
 import { resetState, state } from './state'
 import { DraggableController } from './controllers/Draggable'
 
 import { KeyboardController } from './controllers/Keyboard'
 import { AutoController } from './controllers/Auto'
+import { gsap } from '~/libs/gsap'
 
 interface IControllers {
   draggable: typeof DraggableController.prototype
@@ -50,7 +51,8 @@ export class Slider {
     this.animate = this.animate.bind(this)
     this.resize = this.resize.bind(this)
 
-    raf.on(this.animate)
+    gsap.ticker.add(this.animate)
+
     resize.on(this.resize)
   }
 
@@ -114,7 +116,7 @@ export class Slider {
       this.controllers[key]?.unsubscribe()
     })
 
-    raf.off(this.animate)
+    gsap.ticker.remove(this.animate)
     resize.off(this.resize)
 
     resetState()

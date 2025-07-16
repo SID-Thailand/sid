@@ -45,6 +45,7 @@ const onClick = () => {
             :alt="item?.content?.cover?.alt"
             class="featured-projects__bg"
             :style="{ zIndex: idx + 1 }"
+            :width="1920"
           />
         </div>
         <DarkLayer />
@@ -80,6 +81,7 @@ const onClick = () => {
                   :alt="item?.content?.cover?.alt"
                   class="fpc__img"
                   :data-slug="item?.slug"
+                  :width="1920"
                 />
               </div>
             </div>

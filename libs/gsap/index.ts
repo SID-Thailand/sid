@@ -28,6 +28,11 @@ if (globalThis.document) {
   })
 
   gsap.ticker.lagSmoothing(0)
+
+  gsap.ticker.add(() => {
+    window?.escroll?.update()
+  })
+
   // ScrollTrigger.normalizeScroll(true)
 }
 

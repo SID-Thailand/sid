@@ -44,6 +44,7 @@ const { activePage } = useFullPageAnimation(
                   data-f-asset
                   :src="item?.asset?.filename"
                   :alt="item?.asset?.alt"
+                  :width="900"
                   class="cons-service__img"
                 />
               </div>

@@ -97,6 +97,7 @@ watchImmediate(isMobile, () => {
                   <CustomImage
                     :src="member?.content?.photo?.filename"
                     :alt="member?.content?.photo?.alt"
+                    :width="700"
                     class="ab-team__img"
                   />
                   <div class="ab-team__info">

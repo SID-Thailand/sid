@@ -13,10 +13,9 @@ interface iProps {
 
 const props = withDefaults(defineProps<iProps>(), {
   alt: '',
-  quality: 82,
+  quality: 70,
   width: 0,
   height: 0,
-  isWebgl: false,
   preload: false,
 })
 
@@ -24,43 +23,58 @@ const imgRef = ref<HTMLImageElement | null>(null)
 
 defineExpose({ imgRef })
 
-const currentSrc = computed(() => {
-  return useStoryblokImage(props.src, {
-    format: 'webp',
-    quality: props.quality,
-    size: `${props.width}x${props.height}`,
-  })
-})
+const loaded = ref(false)
 
-if (props.preload) {
-  useHead({
-    link: [
-      {
-        rel: 'preload',
-        as: 'image',
-        href: currentSrc.value,
-      },
-    ],
-  })
-}
+const attrs = computed(() => {
+  const obj: any = {
+    src: props.src,
+    alt: props.alt,
+    placeholder: [50, 25, 75, 5],
+    quality: props.quality,
+    preload: props.preload,
+    format: 'webp',
+    provider: 'storyblok',
+    densities: '1x',
+    sizes: `sm:100vw md:${props.width || 1920}px`,
+    onLoad: () => {
+      loaded.value = true
+      console.log('test')
+    },
+  }
+
+  if (props.width) {
+    obj.width = props.width
+  }
+
+  if (props.height) {
+    obj.height = props.height
+  }
+
+  return obj
+})
 </script>
 
 <template>
   <NuxtImg
     ref="imgRef"
-    :src="currentSrc"
-    :alt="alt"
     class="custom-image"
-    :placeholder="[50, 25, 75, 5]"
+    :class="{
+      'custom-image--loading': !loaded,
+      'custom-image--loaded': loaded,
+    }"
     :img-attrs="imgAttributes"
+    v-bind="attrs"
   />
-  <!-- <img
-    ref="imgRef"
-    :src="currentSrc"
-    :alt="alt"
-    class="custom-image"
-    v-bind="imgAttributes"
-  /> -->
 </template>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped>
+// .custom-image {
+//   transition: opacity 0.6s ease-in-out;
+//   &--loading {
+//     opacity: 0;
+//   }
+//   &--loaded {
+//     opacity: 1;
+//   }
+// }
+</style>

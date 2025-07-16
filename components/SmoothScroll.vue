@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import EmotionScroll from '@emotionagency/emotion-scroll'
-import { raf, resize } from '@emotionagency/utils'
+import { resize } from '@emotionagency/utils'
+import { ScrollTrigger } from '~/libs/gsap'
 
 const breakpoint = 1024
 
@@ -22,8 +23,10 @@ const onResize = () => {
     preventTouch: false,
     stepSize,
     scrollbar: true,
-    raf,
+    autoRaf: false,
   })
+
+  window.escroll.on(ScrollTrigger.update)
 }
 
 onMounted(() => {

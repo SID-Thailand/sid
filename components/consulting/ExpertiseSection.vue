@@ -38,6 +38,7 @@ const { openFormModal } = useAppState()
           class="cons-expertise__img"
           :src="content?.asset?.filename"
           :alt="content?.asset?.alt"
+          :width="700"
         />
       </div>
       <div class="cons-expertise__bottom">

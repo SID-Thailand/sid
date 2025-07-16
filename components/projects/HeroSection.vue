@@ -19,6 +19,7 @@ const emit = defineEmits(['filter', 'getAll'])
           :src="content?.background?.filename"
           :alt="content?.background?.alt"
           class="projects-hero__bg"
+          :width="1920"
         />
 
         <div class="projects-hero__layer" />

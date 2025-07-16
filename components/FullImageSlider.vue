@@ -118,6 +118,7 @@ useIntersectionObserver($el, ([entry]) => {
             :src="img?.filename"
             :alt="img?.alt"
             class="full-slider__img"
+            :width="1920"
           />
         </li>
       </ul>

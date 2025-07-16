@@ -247,6 +247,7 @@ watch(current, animate)
               data-f-bg-i
               :src="img?.content?.cover?.filename"
               :alt="img?.content?.cover?.alt"
+              :width="1920"
               class="projects__bg"
             />
           </div>
@@ -276,6 +277,7 @@ watch(current, animate)
                   :alt="item?.content?.cover?.alt"
                   class="projects__img"
                   :data-slug="item?.slug"
+                  :width="1920"
                 />
               </div>
             </div>

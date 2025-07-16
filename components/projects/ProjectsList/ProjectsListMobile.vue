@@ -46,6 +46,7 @@ const viewMoreHandler = () => {
               :src="item?.content?.cover?.filename"
               :alt="item?.content?.cover?.alt"
               class="project-m__bg"
+              :width="800"
             />
             <DarkLayer />
           </div>
@@ -57,6 +58,7 @@ const viewMoreHandler = () => {
                 :alt="item?.content?.cover?.alt"
                 class="project-m__card-img"
                 :data-slug="item?.slug"
+                :width="800"
               />
             </div>
             <div class="project-m__content">

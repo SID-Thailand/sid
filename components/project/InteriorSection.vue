@@ -53,6 +53,7 @@ onBeforeUnmount(() => {
             class="project-interior__img"
             :src="content?.asset?.filename"
             :alt="content?.asset?.alt"
+            :width="1920"
           />
         </div>
       </div>

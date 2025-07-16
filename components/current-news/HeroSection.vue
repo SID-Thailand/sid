@@ -31,6 +31,7 @@ defineProps<IProps>()
         data-full-image
         :src="asset?.filename"
         :alt="asset?.alt"
+        :width="1920"
         class="curr-news-hero__img"
       />
     </div>

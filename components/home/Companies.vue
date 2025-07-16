@@ -20,6 +20,7 @@ defineProps<IProps>()
           v-if="content?.asset?.filename"
           class="home-compaines__asset"
           :src="content?.asset?.filename"
+          :width="1000"
         />
         <div class="home-companies__text-content">
           <p class="home-companies__text">
@@ -80,6 +81,7 @@ defineProps<IProps>()
 .home-compaines__asset {
   max-width: 100%;
   flex-grow: 0;
+  height: 100%;
   width: vw(900);
 
   @media (max-width: $br2) {

@@ -33,6 +33,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
                 class="cons-experts__img"
                 :src="expert?.content?.photo?.filename"
                 :alt="expert?.content?.photo?.alt"
+                :width="650"
               />
               <div class="cons-experts__info">
                 <p class="cons-experts__name">

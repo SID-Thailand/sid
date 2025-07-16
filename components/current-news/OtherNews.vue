@@ -45,6 +45,7 @@ const slicedNews = computed(() => {
                   :src="currNews?.content?.asset?.filename"
                   :alt="currNews?.content?.asset?.alt"
                   class="other-news__img"
+                  :width="600"
                 />
                 <div class="other-news__info">
                   <p class="other-news__category">

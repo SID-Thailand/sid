@@ -34,6 +34,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
             class="project-concept__img project-concept__img--small"
             :src="content?.small_asset?.filename"
             :alt="content?.small_asset?.alt"
+            :width="700"
           />
           <p
             class="project-concept__description project-concept__description--small"
@@ -55,6 +56,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
               data-full-image
               :src="content?.big_asset?.[0].asset?.filename"
               :alt="content?.big_asset?.[0].asset?.alt"
+              :width="1200"
               class="project-concept__img project-concept__img--big"
             />
             <CustomVideo

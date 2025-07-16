@@ -144,6 +144,7 @@ onMounted(async () => {
                 data-f-asset
                 :src="item?.asset?.filename"
                 :alt="item?.asset?.alt"
+                :width="900"
                 class="project-facilities__img"
               />
             </div>
@@ -162,6 +163,7 @@ onMounted(async () => {
                   <CustomImage
                     :src="item?.asset?.filename"
                     :alt="item?.asset?.alt"
+                    :width="900"
                     class="project-facilities__img project-facilities__img--mob"
                   />
                   <div class="project-facilities__line" />

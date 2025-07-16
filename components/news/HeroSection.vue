@@ -18,6 +18,7 @@ const emit = defineEmits(['filter', 'getAll'])
         <CustomImage
           :src="content?.background?.filename"
           :alt="content?.background?.alt"
+          :width="1920"
           class="news-hero__bg"
         />
         <div class="news-hero__layer" />

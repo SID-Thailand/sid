@@ -20,6 +20,7 @@ defineProps<IProps>()
         class="cons-hero__bg"
         :alt="content?.asset?.alt"
         :src="content?.asset?.filename"
+        :width="1920"
       />
     </div>
   </section>

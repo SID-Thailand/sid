@@ -26,6 +26,7 @@ const radioHandler = () => {
         :src="item?.asset?.filename"
         :alt="item?.asset?.alt"
         class="quiz-radio__img"
+        :width="500"
       />
       <button
         type="button"

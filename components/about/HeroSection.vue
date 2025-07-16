@@ -34,6 +34,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
           :src="content?.asset?.[0].asset?.filename"
           :alt="content?.asset?.[0].asset?.alt"
           class="about-hero__main-img"
+          :width="1920"
         />
         <CustomVideo
           v-if="isVideo(content?.asset?.[0]?.asset?.filename)"

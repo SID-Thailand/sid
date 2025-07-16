@@ -118,7 +118,11 @@ const updatedLinks = computed(() => {
           zIndex: idx,
         }"
       >
-        <CustomImage :src="item?.asset?.filename" :alt="item?.asset?.alt" />
+        <CustomImage
+          :src="item?.asset?.filename"
+          :alt="item?.asset?.alt"
+          :width="320"
+        />
       </div>
     </div>
   </nav>

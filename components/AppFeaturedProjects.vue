@@ -54,6 +54,7 @@ const onClick = () => {
                 :alt="project?.content?.cover?.alt"
                 class="app-projects__img"
                 data-t-img
+                :width="1920"
                 :data-slug="project?.slug"
               />
               <div class="app-projects__info">

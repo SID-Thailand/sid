@@ -31,7 +31,12 @@ onMounted(async () => {
 
 <template>
   <span ref="$el" class="inline-img" :style="{ '--aspect': aspectRatio }">
-    <ParallaxImg class="inline-img__img" :src="src" :alt="alt || ''" />
+    <ParallaxImg
+      class="inline-img__img"
+      :src="src"
+      :alt="alt || ''"
+      :width="500"
+    />
   </span>
 </template>
 

@@ -62,12 +62,15 @@ onBeforeUnmount(async () => {
         :src="cta?.content?.backdrop_asset?.filename"
         :alt="cta?.content?.backdrop_asset?.alt"
         class="meetings__bg"
+        :width="1920"
       />
       <div class="mettings__manager-wrapper">
         <div ref="imgRef" class="meetings__manager">
           <CustomImage
             :src="cta?.content?.manager?.content?.masked_photo?.filename"
             :alt="cta?.content?.manager?.content?.masked_photo?.alt"
+            :width="536"
+            :height="793"
           />
         </div>
       </div>

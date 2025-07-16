@@ -1,4 +1,4 @@
-import { raf } from '@emotionagency/utils'
+import { gsap } from '~/libs/gsap'
 
 export default class NavbarPos {
   scrollPos = 0
@@ -17,7 +17,8 @@ export default class NavbarPos {
   init() {
     this.scrollPos = 0
     this.scrollNav = this.scrollNav.bind(this)
-    raf.on(this.scrollNav)
+
+    gsap.ticker.add(this.scrollNav)
   }
 
   mouseHandler(e) {
@@ -84,6 +85,6 @@ export default class NavbarPos {
 
   destroy() {
     this.scrollPos = 0
-    raf.off(this.scrollNav)
+    gsap.ticker.remove(this.scrollNav)
   }
 }

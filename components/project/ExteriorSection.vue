@@ -78,6 +78,7 @@ const handleCloseFullImageModal = () => {
               <CustomImage
                 :src="item?.filename"
                 :alt="item?.alt"
+                :width="1920"
                 class="project-exterior__img"
               />
             </li>

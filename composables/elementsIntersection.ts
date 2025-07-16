@@ -1,4 +1,4 @@
-import { raf } from '@emotionagency/utils'
+import { gsap } from '~/libs/gsap'
 
 export function useIntersection(
   targetA: Ref<HTMLElement | null>,
@@ -29,11 +29,11 @@ export function useIntersection(
   }
 
   const init = () => {
-    raf.on(update)
+    gsap.ticker.add(update)
   }
 
   const cleanup = () => {
-    raf.off(update)
+    gsap.ticker.remove(update)
   }
 
   return {

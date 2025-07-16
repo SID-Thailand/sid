@@ -12,7 +12,7 @@ defineProps<IProps>()
 
 <template>
   <div :data-slide="index" class="scrolling-slider__item">
-    <CustomImage :src="item?.filename" :alt="item?.alt" />
+    <CustomImage :src="item?.filename" :alt="item?.alt" :width="510" />
   </div>
 </template>
 

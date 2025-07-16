@@ -12,6 +12,7 @@ defineProps<iProps>()
       :src="blok?.asset?.filename"
       :alt="blok?.asset?.alt"
       class="text-asset__img"
+      :width="1920"
     />
     <p class="text-asset__text">{{ blok?.text }}</p>
   </div>

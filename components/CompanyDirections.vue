@@ -27,6 +27,7 @@ defineProps<IProps>()
               class="cd-item__asset"
               :src="item?.asset?.filename"
               :alt="item?.asset?.alt"
+              :width="700"
             />
             <p class="cd-item__text">
               {{ item?.description }}

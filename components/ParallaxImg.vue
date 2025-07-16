@@ -10,6 +10,7 @@ interface iProps {
   storyblok?: boolean
   format?: 'webp' | 'jpg' | 'png' | null
   quality?: number
+  preload?: boolean
   imageAttrs?: Record<string, string>
 }
 
@@ -56,6 +57,7 @@ onMounted(() => {
         :format="format"
         :width="width"
         :height="height"
+        :preload="preload"
       />
     </div>
   </div>

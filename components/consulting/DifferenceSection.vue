@@ -40,6 +40,7 @@ const { activePage } = useFullPageCardSlider(
             :src="img?.background_asset?.filename"
             :aly="img?.background_asset?.alt"
             class="cons-diff__bg"
+            :width="1920"
           />
         </div>
         <DarkLayer />
@@ -72,6 +73,7 @@ const { activePage } = useFullPageCardSlider(
                 :src="img?.asset?.filename"
                 :aly="img?.asset?.alt"
                 class="cons-diff__img"
+                :width="700"
               />
             </div>
           </div>

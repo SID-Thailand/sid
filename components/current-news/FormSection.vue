@@ -37,6 +37,7 @@ const { story } = await useFormStory()
           class="curr-news-form__bg"
           :src="background?.filename"
           :alt="background?.alt"
+          :width="1920"
         />
         <div class="curr-news-form__layer" />
       </div>

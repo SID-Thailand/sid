@@ -21,6 +21,7 @@ useDetectHeaderColor($el as Ref<HTMLElement>)
     <ParallaxImg
       :src="card?.asset?.filename"
       :alt="card?.asset?.alt"
+      :width="600"
       class="numbers-stat__img"
     />
   </li>

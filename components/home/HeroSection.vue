@@ -18,6 +18,8 @@ defineProps<IProps>()
           :src="content?.asset?.filename"
           :alt="content?.asset?.alt"
           data-preload="true"
+          :width="1920"
+          preload
           class="hero__img"
         />
         <h1 data-title class="hero__title">{{ content?.title }}</h1>

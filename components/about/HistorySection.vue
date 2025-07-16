@@ -31,6 +31,7 @@ defineProps<IProps>()
                 :src="item?.asset?.filename"
                 :alt="item?.asset?.alt"
                 class="ab-history__img"
+                :width="900"
               />
             </div>
             <div class="ab-history__about-wrapper">

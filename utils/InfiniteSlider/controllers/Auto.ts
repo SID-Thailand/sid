@@ -1,6 +1,6 @@
-import { raf } from '@emotionagency/utils'
 import { state } from '../state'
 import type { IController } from './IController'
+import { gsap } from '~/libs/gsap'
 
 export class AutoController implements IController {
   constructor(
@@ -37,10 +37,10 @@ export class AutoController implements IController {
   }
 
   subscribe() {
-    raf.on(this.move)
+    gsap.ticker.add(this.move)
   }
 
   unsubscribe() {
-    raf.off(this.move)
+    gsap.ticker.remove(this.move)
   }
 }

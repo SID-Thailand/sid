@@ -48,6 +48,7 @@ const viewMoreHandler = () => {
                 <CustomImage
                   :src="currNews?.content?.asset?.filename"
                   :alt="currNews?.content?.asset?.alt"
+                  :width="600"
                   class="news-list__img"
                 />
                 <div class="news-list__info">
