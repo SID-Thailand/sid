@@ -242,15 +242,11 @@ const { openFormModal } = useAppState()
 .cons-expertise__number-title {
   text-transform: uppercase;
   line-height: 1em;
-  font-size: vw(60);
-  @include med;
+
+  @include heading-h4;
 
   @media (max-width: $br1) {
-    font-size: size(60, 44);
-  }
-
-  @media (max-width: $br4) {
-    font-size: 44px;
+    @include heading-h3;
   }
 }
 
