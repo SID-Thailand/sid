@@ -46,7 +46,7 @@ export default defineNuxtConfig({
     id: process.env.GTM_ID || 'GTM-XXXXXXX',
     enabled: process.env.NODE_ENV === 'production',
     debug: false,
-    pageTracking: true,
+    defer: true,
   },
 
   modules: [
@@ -60,8 +60,14 @@ export default defineNuxtConfig({
         accessToken: process.env.STORYBLOK_TOKEN,
       },
     ],
-    '@nuxtjs/robots',
+    '@nuxt/image',
   ],
+
+  image: {
+    storyblok: {
+      baseURL: 'https://a2.storyblok.com',
+    },
+  },
 
   runtimeConfig: {
     public: {

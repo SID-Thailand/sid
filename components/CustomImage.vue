@@ -46,13 +46,21 @@ if (props.preload) {
 </script>
 
 <template>
-  <img
+  <NuxtImg
+    ref="imgRef"
+    :src="currentSrc"
+    :alt="alt"
+    class="custom-image"
+    :placeholder="[50, 25, 75, 5]"
+    :img-attrs="imgAttributes"
+  />
+  <!-- <img
     ref="imgRef"
     :src="currentSrc"
     :alt="alt"
     class="custom-image"
     v-bind="imgAttributes"
-  />
+  /> -->
 </template>
 
 <style scoped lang="scss"></style>
