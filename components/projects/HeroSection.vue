@@ -20,6 +20,7 @@ const emit = defineEmits(['filter', 'getAll'])
           :alt="content?.background?.alt"
           class="projects-hero__bg"
           :width="1920"
+          preload
         />
 
         <div class="projects-hero__layer" />

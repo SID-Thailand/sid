@@ -21,6 +21,7 @@ defineProps<IProps>()
         :alt="content?.asset?.alt"
         :src="content?.asset?.filename"
         :width="1920"
+        preload
       />
     </div>
   </section>

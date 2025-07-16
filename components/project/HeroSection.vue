@@ -28,6 +28,7 @@ const isShouldRenderImage = pageTransitionObject.name !== 'project'
           v-if="isShouldRenderImage"
           data-full-image
           :width="1920"
+          preload
           :src="content?.cover?.filename"
           :alt="content?.cover?.alt"
           class="project-hero__img"

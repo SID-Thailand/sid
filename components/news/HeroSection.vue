@@ -19,6 +19,7 @@ const emit = defineEmits(['filter', 'getAll'])
           :src="content?.background?.filename"
           :alt="content?.background?.alt"
           :width="1920"
+          preload
           class="news-hero__bg"
         />
         <div class="news-hero__layer" />

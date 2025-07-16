@@ -32,6 +32,7 @@ defineProps<IProps>()
         :src="asset?.filename"
         :alt="asset?.alt"
         :width="1920"
+        preload
         class="curr-news-hero__img"
       />
     </div>
