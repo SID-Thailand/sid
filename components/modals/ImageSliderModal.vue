@@ -43,7 +43,7 @@ const handleChangeSlide = async () => {
   const $active = $items.value[current.value] as HTMLElement
   const $prev = $items.value[prev.value] as HTMLElement
 
-  const $activeImg = $active.querySelector('img') as HTMLImageElement
+  const $activeImg = $active?.querySelector('img') as HTMLImageElement
   const $prevImg = $prev?.querySelector('img') as HTMLImageElement
 
   const dir = direction.value
@@ -90,6 +90,7 @@ watch(
     const idx = props.images.findIndex(
       img => img.filename === props.selectedImage!.filename
     )
+
     if (idx !== -1) {
       current.value = idx
       prev.value = (idx - 1 + props.images.length) % props.images.length

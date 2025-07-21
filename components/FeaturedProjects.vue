@@ -10,19 +10,11 @@ const { content } = defineProps<IProps>()
 const projects = computed(() => {
   return content?.featured_projects?.filter(project => project.content) || []
 })
-const projectCount = computed(() => {
-  return projects.value.length || 0
-})
 
 const contentRef = ref<HTMLElement | null>(null)
 
-const { activePage } = useFullPageCardSlider(
-  contentRef as Ref<HTMLElement>,
-  projectCount
-)
-
 const activeProject = computed(() => {
-  return projects.value?.[activePage.value - 1 || 0]
+  return projects.value?.[0]
 })
 
 const route = useRoute()
@@ -38,13 +30,10 @@ const onClick = () => {
       <div class="featured-projects__content">
         <div v-if="projects?.length" class="featured-projects__bg-wrapper">
           <CustomImage
-            v-for="(item, idx) in projects"
-            :key="idx"
             data-f-bg
-            :src="item?.content?.cover?.filename"
-            :alt="item?.content?.cover?.alt"
+            :src="activeProject?.content?.cover?.filename"
+            :alt="activeProject?.content?.cover?.alt"
             class="featured-projects__bg"
-            :style="{ zIndex: idx + 1 }"
             :width="1920"
           />
         </div>
@@ -67,34 +56,35 @@ const onClick = () => {
           @click="onClick"
         >
           <div data-t-assets class="fpc__assets">
-            <div
-              v-for="(item, idx) in projects"
-              :key="idx"
-              class="fpc__image-item"
-              :style="{ zIndex: idx + 1 }"
-            >
+            <div class="fpc__image-item">
               <div class="fpc__img-wrapper">
                 <CustomImage
                   data-t-img
                   data-f-img
-                  :src="item?.content?.cover?.filename"
-                  :alt="item?.content?.cover?.alt"
+                  :src="activeProject?.content?.cover?.filename"
+                  :alt="activeProject?.content?.cover?.alt"
                   class="fpc__img"
-                  :data-slug="item?.slug"
+                  :data-slug="activeProject?.slug"
                   :width="1920"
                 />
               </div>
             </div>
           </div>
           <div class="fpc__specs-wrapper">
-            <div v-for="(item, idx) in projects" :key="idx" class="fpc__text">
+            <div class="fpc__text">
               <h2 class="fpc__title" data-f-title>
-                {{ item?.content?.name }}
+                {{ activeProject?.content?.name }}
               </h2>
               <div data-f-text class="fpc__specs">
-                <div class="fpc__spec">{{ item?.content?.spec_1 }}</div>
-                <div class="fpc__spec">{{ item?.content?.spec_2 }}</div>
-                <div class="fpc__spec">{{ item?.content?.spec_3 }}</div>
+                <div class="fpc__spec">
+                  {{ activeProject?.content?.spec_1 }}
+                </div>
+                <div class="fpc__spec">
+                  {{ activeProject?.content?.spec_2 }}
+                </div>
+                <div class="fpc__spec">
+                  {{ activeProject?.content?.spec_3 }}
+                </div>
               </div>
             </div>
           </div>
