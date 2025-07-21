@@ -166,9 +166,13 @@ export const useLoadingAnimation = () => {
 
     isFirstLoad.value = false
 
+    const treshold = $o.length ? 1200 : 300
+
+    const dur = tl.duration() * 1000 - treshold
+
     setTimeout(() => {
       onComplete()
-    }, 2200)
+    }, dur)
   }
 
   return {
