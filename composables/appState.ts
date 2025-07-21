@@ -6,12 +6,15 @@ export const useAppState = () => {
   const isSlideModalOpened = useState('isSlideModalOpened', () => false)
   const isFormModalOpened = useState('isFormModalOpened', () => false)
   const formModalFrom = useState('formModalFrom', () => '')
-  // const isUseLoader = useState(
-  //   'isUseLoader',
-  //   () => config.public.ENVIROMENT === 'production'
-  // )
 
-  const isUseLoader = useState('isUseLoader', () => true)
+  const config = useRuntimeConfig()
+
+  const isUseLoader = useState(
+    'isUseLoader',
+    () => config.public.ENVIROMENT === 'production'
+  )
+
+  // const isUseLoader = useState('isUseLoader', () => true)
 
   const isFullPage = useState('isFullPage', () => false)
 

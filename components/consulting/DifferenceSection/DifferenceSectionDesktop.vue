@@ -22,103 +22,70 @@ const { activePage } = useFullPageCardSlider(
 </script>
 
 <template>
-  <section class="cons-diff">
-    <div class="cons-diff__wrapper">
-      <div class="cons-diff__title-wrapper container">
-        <h2 class="cons-diff__title">
-          {{ content?.title }}
-        </h2>
+  <div ref="contentRef" class="cons-diff__slider container">
+    <div
+      v-for="(img, idx) in content?.difference_gallery"
+      :key="idx"
+      class="cons-diff__bg-wrapper"
+    >
+      <CustomImage
+        data-f-bg
+        :src="img?.background_asset?.filename"
+        :alt="img?.background_asset?.alt"
+        class="cons-diff__bg"
+        :width="1920"
+      />
+    </div>
+    <DarkLayer />
+
+    <div class="cons-diff__content">
+      <div class="cons-diff__texts">
+        <ul v-if="content?.difference_gallery" class="cons-diff__items">
+          <li
+            v-for="item in content?.difference_gallery"
+            :key="item._uid"
+            class="cons-diff__item"
+          >
+            <h3 data-f-title class="cons-diff__t">
+              {{ item?.title }}
+            </h3>
+            <p data-f-text class="cons-diff__text">
+              {{ item?.text }}
+            </p>
+          </li>
+        </ul>
       </div>
-      <div ref="contentRef" class="cons-diff__slider container">
+      <div class="cons-diff__assets">
         <div
-          v-for="(img, idx) in content?.difference_gallery"
-          :key="idx"
-          class="cons-diff__bg-wrapper"
+          v-for="img in content?.difference_gallery"
+          :key="img._uid"
+          class="cons-diff__img-wrapper"
         >
           <CustomImage
-            data-f-bg
-            :src="img?.background_asset?.filename"
-            :aly="img?.background_asset?.alt"
-            class="cons-diff__bg"
-            :width="1920"
+            data-f-img
+            :src="img?.asset?.filename"
+            :alt="img?.asset?.alt"
+            class="cons-diff__img"
+            :width="700"
           />
-        </div>
-        <DarkLayer />
-
-        <div class="cons-diff__content">
-          <div class="cons-diff__texts">
-            <ul v-if="content?.difference_gallery" class="cons-diff__items">
-              <li
-                v-for="item in content?.difference_gallery"
-                :key="item._uid"
-                class="cons-diff__item"
-              >
-                <h3 data-f-title class="cons-diff__t">
-                  {{ item?.title }}
-                </h3>
-                <p data-f-text class="cons-diff__text">
-                  {{ item?.text }}
-                </p>
-              </li>
-            </ul>
-          </div>
-          <div class="cons-diff__assets">
-            <div
-              v-for="img in content?.difference_gallery"
-              :key="img._uid"
-              class="cons-diff__img-wrapper"
-            >
-              <CustomImage
-                data-f-img
-                :src="img?.asset?.filename"
-                :aly="img?.asset?.alt"
-                class="cons-diff__img"
-                :width="700"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="cons-diff__counter container">
-          <p class="cons-diff__count">{{ activePage }}/{{ count }}</p>
-          <div class="cons-diff__pagination">
-            <span
-              v-for="(_, i) in content?.difference_gallery?.length"
-              :key="i"
-              class="cons-diff__pag-item"
-              :class="{ 'cons-diff__pag-item--active': activePage === i + 1 }"
-            />
-          </div>
         </div>
       </div>
     </div>
-  </section>
+    <div class="cons-diff__counter container">
+      <p class="cons-diff__count">{{ activePage }}/{{ count }}</p>
+      <div class="cons-diff__pagination">
+        <span
+          v-for="(_, i) in content?.difference_gallery?.length"
+          :key="i"
+          class="cons-diff__pag-item"
+          :class="{ 'cons-diff__pag-item--active': activePage === i + 1 }"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
-.cons-diff__title-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: vw(110);
-  padding-bottom: vw(110);
-  background-color: var(--neutral-600);
-  color: var(--neutral-200);
-
-  @media (max-width: $br1) {
-    padding-top: 48px;
-    padding-bottom: 48px;
-  }
-}
-.cons-diff__title {
-  text-align: center;
-  text-transform: uppercase;
-  @include heading-h3;
-
-  @media (min-width: $br1) {
-    max-width: vw(880);
-  }
-}
-
 .cons-diff__slider {
   position: relative;
   width: 100%;
