@@ -167,7 +167,8 @@ useIntersectionObserver($el, ([entry]) => {
 <style scoped lang="scss">
 .full-slider {
   position: relative;
-  height: 100dvh;
+  height: 100vh;
+  height: 100svh;
   width: 100%;
   @media (min-width: $br1) {
     cursor: none;

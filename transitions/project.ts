@@ -16,11 +16,6 @@ const prepareItem = ($item: HTMLElement) => {
   const $clone = $item.cloneNode(true) as HTMLElement
 
   document.body.appendChild($clone)
-  $item.style.opacity = '0'
-
-  if ($parent) {
-    $parent.style.opacity = '0'
-  }
 
   const isDesktop = window.innerWidth > 860
 
@@ -36,6 +31,16 @@ const prepareItem = ($item: HTMLElement) => {
   if (isDesktop) {
     $clone.style.clipPath = `inset(2%)`
   }
+
+  const delay = isDesktop ? 0 : 300
+
+  setTimeout(() => {
+    $item.style.opacity = '0'
+
+    if ($parent) {
+      $parent.style.opacity = '0'
+    }
+  }, delay)
 
   return $clone
 }

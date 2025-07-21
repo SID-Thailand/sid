@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import EmotionScroll from '@emotionagency/emotion-scroll'
-import { resize } from '@emotionagency/utils'
 import { ScrollTrigger } from '~/libs/gsap'
 
-const breakpoint = 1024
+const breakpoint = 860
 
-const onResize = () => {
-  window.escroll?.destroy()
-
-  let friction = 0.05
-  let stepSize = 0.5
-
-  if (window.innerWidth <= breakpoint) {
-    friction = 0.07
-    stepSize = 0.9
-  }
+const initSmoothScroll = () => {
+  const friction = 0.05
+  const stepSize = 0.5
 
   window.escroll = new EmotionScroll({
     el: document.querySelector('#scroll-container'),
@@ -24,6 +16,7 @@ const onResize = () => {
     stepSize,
     scrollbar: true,
     autoRaf: false,
+    breakpoint,
   })
 
   window.escroll.on(ScrollTrigger.update)
@@ -32,12 +25,10 @@ const onResize = () => {
 onMounted(() => {
   document.querySelector('#scroll-container').scrollTop = 0
 
-  resize.match(`<${breakpoint}px`, onResize)
-  resize.match(`>${breakpoint}px`, onResize)
+  initSmoothScroll()
 })
 
 onBeforeUnmount(() => {
-  resize.off(onResize)
   window.escroll && window.escroll.destroy()
 })
 </script>
@@ -57,7 +48,7 @@ onBeforeUnmount(() => {
   will-change: scroll-position;
   position: relative;
   @media (max-width: $br1) {
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
   }
 }
@@ -66,15 +57,17 @@ onBeforeUnmount(() => {
   overflow-anchor: none;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-*::-webkit-scrollbar {
-  display: none;
-}
+@media (min-width: $br1) {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  *::-webkit-scrollbar {
+    display: none;
+  }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-* {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  /* Hide scrollbar for IE, Edge and Firefox */
+  * {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
 
 .scrollbar {

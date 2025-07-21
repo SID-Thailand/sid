@@ -41,16 +41,16 @@ export const useLoadingAnimation = () => {
 
     const delay = isFirstLoad.value ? 1.7 : wait
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        window.escroll.disabled = false
-        titleSplitter?.revert()
-        tl.revert()
+    const onComplete = () => {
+      window.escroll.disabled = false
+      titleSplitter?.revert()
+      tl.revert()
 
-        document.documentElement.style.cursor = 'auto'
-        document.body.style.pointerEvents = 'auto'
-      },
-    })
+      document.documentElement.style.cursor = 'auto'
+      document.body.style.pointerEvents = 'auto'
+    }
+
+    const tl = gsap.timeline()
 
     if ($image) {
       tl.set($image, { width: '100vw', height: '100vh' })
@@ -165,6 +165,10 @@ export const useLoadingAnimation = () => {
     }
 
     isFirstLoad.value = false
+
+    setTimeout(() => {
+      onComplete()
+    }, 2200)
   }
 
   return {
