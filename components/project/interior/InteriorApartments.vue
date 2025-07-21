@@ -25,17 +25,12 @@ const onSelectApartment = (apartment: iApartment) => {
 }
 
 const { story } = await useProjectsStory('projects')
+
+const isModalOpen = ref(false)
 </script>
 
 <template>
-  <div ref="el" class="interior-aparts">
-    <ProjectInteriorDropdown
-      :apartments-list="apartments"
-      :selected-apartment="selectedApartment"
-      :button-text="story?.content?.project_interior_menu_text"
-      class="interior-aparts__dropdown interior-aparts__dropdown--mob"
-      @select="onSelectApartment"
-    />
+  <div ref="el" class="interior-aparts" data-interior-apparts>
     <Transition name="fade" mode="out-in">
       <ProjectInteriorApartment
         :key="selectedApartment?._uid"
@@ -44,11 +39,11 @@ const { story } = await useProjectsStory('projects')
     </Transition>
 
     <div class="interior-aparts__text-wrapper">
-      <ProjectInteriorDropdown
+      <ProjectInteriorModal
+        v-model:open="isModalOpen"
         :apartments-list="apartments"
         :selected-apartment="selectedApartment"
         :button-text="story?.content?.project_interior_menu_text"
-        class="interior-aparts__dropdown"
         @select="onSelectApartment"
       />
       <Transition name="fade" mode="out-in">
@@ -64,6 +59,12 @@ const { story } = await useProjectsStory('projects')
       </Transition>
     </div>
   </div>
+  <div class="interior-aparts__choose-button-wrapper">
+    <Button class="interior-aparts__choose-button" @click="isModalOpen = true">
+      <span> choose APARTMENT </span>
+      <IconsPlus class="interior-aparts__choose-button-icon" />
+    </Button>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -78,23 +79,6 @@ const { story } = await useProjectsStory('projects')
     flex-direction: column;
     gap: 0;
     justify-content: flex-start;
-  }
-}
-
-.interior-aparts__dropdown {
-  width: vw(382);
-  position: relative;
-  &--mob {
-    @media (min-width: $br1) {
-      display: none;
-    }
-  }
-
-  @media (max-width: $br1) {
-    width: 100%;
-    &:not(&--mob) {
-      display: none;
-    }
   }
 }
 
@@ -115,5 +99,26 @@ const { story } = await useProjectsStory('projects')
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.interior-aparts__choose-button-wrapper {
+  position: sticky;
+  bottom: vw(45);
+  // left: 50%;
+  // transform: translate(-50%, 0);
+  z-index: 50;
+  padding-top: vw(40);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  @media (max-width: $br1) {
+    padding-top: 48px;
+    bottom: 48px;
+  }
+}
+
+.interior-aparts__choose-button-icon {
+  flex-shrink: 0;
 }
 </style>

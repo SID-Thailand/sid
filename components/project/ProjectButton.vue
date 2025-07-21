@@ -10,44 +10,35 @@ const link = computed(() => {
 })
 
 const isVisible = ref(false)
-const swipeDownCount = ref(0)
-const startY = ref(0)
-
-const isDesktop = () => window.innerWidth > 860
-
-const onTouchStart = (e: TouchEvent) => {
-  startY.value = e.touches[0].clientY
-}
-
-const onTouchEnd = (e: TouchEvent) => {
-  const deltaY = e.changedTouches[0].clientY - startY.value
-
-  if (deltaY > 50) {
-    isVisible.value = swipeDownCount.value++ >= 2
-  } else if (deltaY < -50) {
-    swipeDownCount.value = 0
-    isVisible.value = false
-  }
-}
+const isDisabled = ref(false)
 
 const setupDesktopScroll = () => {
   window.escroll?.on?.(async (e: IEventArgs) => {
-    !isVisible.value && (await delayPromise(1000))
+    !isVisible.value && (await delayPromise(500))
 
     isVisible.value = e.direction === -1
   })
 }
 
-onMounted(() => {
-  if (isDesktop()) setupDesktopScroll()
+const observer = ref<IntersectionObserver>(null)
 
-  window.addEventListener('touchstart', onTouchStart)
-  window.addEventListener('touchend', onTouchEnd)
+onMounted(async () => {
+  setupDesktopScroll()
+
+  await delayPromise(500)
+  observer.value = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      isDisabled.value = entry.isIntersecting
+    })
+  })
+
+  const interior = document.querySelector('[data-interior-apparts]')
+
+  observer.value.observe(interior)
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('touchstart', onTouchStart)
-  window.removeEventListener('touchend', onTouchEnd)
+  observer.value?.disconnect()
 })
 </script>
 
@@ -58,7 +49,7 @@ onBeforeUnmount(() => {
     tag="a"
     class="project-w-btn"
     :class="{
-      'project-w-btn--visible': isVisible,
+      'project-w-btn--visible': isVisible && !isDisabled,
     }"
   >
     <span>{{ link?.label }}</span>

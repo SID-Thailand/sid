@@ -159,8 +159,6 @@ useSwipe(sliderContainerRef, {
 }
 
 .interior-apart__content {
-  margin-top: vw(24);
-
   @media (min-width: $br1) {
     width: vw(382);
   }
