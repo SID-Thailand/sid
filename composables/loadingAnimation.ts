@@ -173,6 +173,11 @@ export const useLoadingAnimation = () => {
     setTimeout(() => {
       onComplete()
     }, dur)
+
+    setTimeout(() => {
+      document.body.style.pointerEvents = 'auto'
+      window.escroll.disabled = false
+    }, 1000)
   }
 
   return {
