@@ -103,6 +103,23 @@ const onSelect = (item: iApartment) => {
   z-index: 95;
   background-color: var(--basic-white);
   color: var(--basic-black);
+  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+    border-right: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.35);
+    transition: background 120ms ease;
+  }
 
   @media (max-width: $br1) {
     max-width: size(555, 343);
