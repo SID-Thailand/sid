@@ -22,16 +22,6 @@ const videoElements = ref<HTMLVideoElement[]>([])
 
 const st = ref<ScrollTrigger>(null)
 
-const togglePlay = () => {
-  isPlaying.value = !isPlaying.value
-
-  isClicked.value = true
-
-  setTimeout(() => {
-    isClicked.value = false
-  }, 200)
-}
-
 onMounted(() => {
   if (!sectionRef.value) return
 
@@ -87,15 +77,6 @@ onBeforeUnmount(() => {
             >
               <Play />
             </a>
-            <button
-              v-else
-              type="button"
-              class="d-video__phone-btn"
-              :class="{ 'd-video__phone-btn--active': isClicked }"
-              @click="togglePlay"
-            >
-              <span>PLAY</span>
-            </button>
           </div>
         </div>
       </div>
