@@ -90,7 +90,7 @@ export const useLoadingAnimation = () => {
       tl.to(
         $image,
         {
-          duration: 2,
+          duration: 1.6,
           width: imageBounds.width,
           height: imageBounds.height,
           ease: 'power2.out',
@@ -103,7 +103,7 @@ export const useLoadingAnimation = () => {
       tl.to(
         $fullImage,
         {
-          duration: 2,
+          duration: 1.6,
           opacity: 1,
           clipPath: 'inset(0%)',
           ease: 'power2.out',
@@ -125,7 +125,7 @@ export const useLoadingAnimation = () => {
       tl.to(
         $lines,
         {
-          duration: 2,
+          duration: 1.6,
           y: '0%',
           clipPath: 'inset(0 0 -110% 0)',
           stagger: 0.1,
@@ -141,13 +141,13 @@ export const useLoadingAnimation = () => {
       tl.to(
         $t,
         {
-          duration: 1.5,
+          duration: 1.3,
           opacity: 1,
           y: 0,
           stagger: 0.2,
           ease: 'power2.out',
         },
-        delay + 0.3
+        delay + 0.2
       )
     }
 
@@ -155,12 +155,12 @@ export const useLoadingAnimation = () => {
       tl.to(
         $o,
         {
-          duration: 2,
+          duration: 1.6,
           opacity: 1,
           stagger: 0.2,
           ease: 'power2.out',
         },
-        delay + 1.2
+        delay + 1
       )
     }
 
