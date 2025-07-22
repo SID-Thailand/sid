@@ -5,8 +5,8 @@ import { ScrollTrigger } from '~/libs/gsap'
 const breakpoint = 860
 
 const initSmoothScroll = () => {
-  const friction = 0.05
-  const stepSize = 0.5
+  const friction = 0.06
+  const stepSize = 0.6
 
   window.escroll = new EmotionScroll({
     el: document.querySelector('#scroll-container'),
