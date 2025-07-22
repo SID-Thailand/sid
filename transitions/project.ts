@@ -81,7 +81,7 @@ export const projectTransition: TransitionProps = {
     $to.appendChild($photo)
 
     Flip.from(state, {
-      duration: 2.5,
+      duration: 1.5,
       ease: 'power2.inOut',
       absolute: true,
       zIndex: 1,
