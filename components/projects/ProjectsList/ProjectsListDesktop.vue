@@ -615,7 +615,7 @@ $clip-path: inset(0 0 0 100%);
     width: 60px;
     height: 60px;
     background-color: transparent;
-    color: var(--basic-white);
+    color: var(--basic-black);
     border-radius: 50%;
 
     svg {
@@ -649,10 +649,14 @@ $clip-path: inset(0 0 0 100%);
     visibility 0.3s ease;
   transform: scale(0);
 
+  &:deep(svg path) {
+    fill: var(--basic-black);
+  }
+
   &::before {
     content: '';
     border-radius: 50%;
-    background-color: var(--neutral-600);
+    background-color: var(--basic-white);
     position: absolute;
     width: 100%;
     height: 100%;
@@ -668,6 +672,7 @@ $clip-path: inset(0 0 0 100%);
     width: vw(20);
     height: vw(20);
     opacity: 1;
+    fill: var(--basic-black);
   }
 
   &.visible {
