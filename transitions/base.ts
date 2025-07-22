@@ -2,8 +2,8 @@ import type { TransitionProps } from 'vue'
 import { gsap } from '../libs/gsap'
 import { basicObject } from './basicObject'
 
-const duration = 2
-const ease = 'power3.inOut'
+const duration = 1
+const ease = 'power2.inOut'
 
 export const pageTransition: TransitionProps = {
   mode: 'out-in',
