@@ -80,13 +80,9 @@ const onSelect = (item: iApartment) => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: transparent;
-  backdrop-filter: blur(4px);
-  background-image: linear-gradient(
-    180deg,
-    rgba(36, 36, 36, 0) 0%,
-    #242424 100%
-  );
+  background-color: #000;
+  opacity: 0.8;
+  mix-blend-mode: multiply;
 
   transition: opacity 0.6s ease;
 }
@@ -171,11 +167,45 @@ const onSelect = (item: iApartment) => {
   cursor: pointer;
   width: 100%;
   position: relative;
+  // transition: padding-left 0.3s ease;
+  padding-left: vw(10);
 
   &--active {
     .i-modal-item__plus {
       opacity: 1;
     }
+  }
+
+  &:hover {
+    * {
+      color: var(--basic-white);
+    }
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (max-width: $br1) {
+    padding-left: 0;
+  }
+}
+
+.i-modal-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: -1;
+  height: 100%;
+  background-color: var(--neutral-500);
+  // opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s ease;
+
+  @media (max-width: $br1) {
+    display: none;
   }
 }
 
@@ -197,6 +227,8 @@ const onSelect = (item: iApartment) => {
   line-height: 1.25em !important;
   color: var(--neutral-300);
   text-transform: uppercase;
+  transition: color 0.8s ease;
+
   @include med;
 
   @media (max-width: $br1) {
