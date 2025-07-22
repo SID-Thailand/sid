@@ -12,6 +12,8 @@ export class DraggableController implements IController {
   }
 
   private onMousemove(e) {
+    e.preventDefault()
+
     if (state.disabled) return
 
     const left = e.clientX ?? e.targetTouches[0].clientX
@@ -23,10 +25,14 @@ export class DraggableController implements IController {
   }
 
   private onMousedown(e) {
+    e.preventDefault()
+
     if (state.disabled) return
 
     document.documentElement.addEventListener('mousemove', this.onMousemove)
-    document.documentElement.addEventListener('touchmove', this.onMousemove)
+    document.documentElement.addEventListener('touchmove', this.onMousemove, {
+      passive: false,
+    })
 
     this.startX = e.clientX ?? e.targetTouches[0].clientX
 
@@ -58,7 +64,7 @@ export class DraggableController implements IController {
     })
 
     this.$slider.addEventListener('touchstart', this.onMousedown, {
-      passive: true,
+      passive: false,
     })
 
     document.documentElement.addEventListener('mouseup', this.onMouseup)
