@@ -29,7 +29,7 @@ const attrs = computed(() => {
   const obj: any = {
     src: props.src,
     alt: props.alt,
-    placeholder: [50, 25, 75, 5],
+    placeholder: true,
     quality: props.quality,
     preload: props.preload,
     format: 'webp',
@@ -68,13 +68,13 @@ const attrs = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-// .custom-image {
-//   transition: opacity 0.6s ease-in-out;
-//   &--loading {
-//     opacity: 0;
-//   }
-//   &--loaded {
-//     opacity: 1;
-//   }
-// }
+.custom-image {
+  background-color: var(--neutral-200);
+  transition: background-color 0.6s ease-in-out;
+  // &--loading {
+  // }
+  &--loaded {
+    background-color: transparent;
+  }
+}
 </style>

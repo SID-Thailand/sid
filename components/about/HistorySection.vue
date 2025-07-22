@@ -144,7 +144,8 @@ defineProps<IProps>()
 }
 
 .ab-history__img-wrapper {
-  max-width: vw(440);
+  width: vw(440);
+  min-height: vw(294);
 
   @media (max-width: $br1) {
     height: 343px;
