@@ -2,18 +2,18 @@ import type { TransitionProps } from 'vue'
 import { gsap } from '../libs/gsap'
 import { basicObject } from './basicObject'
 
-const duration = 1
-const ease = 'power2.inOut'
+const duration = 0.5
+const ease = 'power3.inOut'
 
 export const pageTransition: TransitionProps = {
   mode: 'out-in',
   onEnter(el, done) {
     const { init } = useLoadingAnimation()
-    const revealer = document.querySelector('.revealer') as HTMLElement
-    if (!revealer) {
-      done()
-      return
-    }
+    // const revealer = document.querySelector('.revealer') as HTMLElement
+    // if (!revealer) {
+    //   done()
+    //   return
+    // }
 
     const tl = gsap.timeline({
       defaults: {
@@ -26,24 +26,22 @@ export const pageTransition: TransitionProps = {
         tl.revert()
         tl.kill()
 
-        revealer.style.display = 'none'
+        // revealer.style.display = 'none'
       },
     })
-    tl.to(revealer, {
-      clipPath: 'inset(0 0 100% 0)',
-    })
+    // tl.to(revealer, {
+    //   clipPath: 'inset(0 0 100% 0)',
+    // })
 
     tl.fromTo(
       el,
       {
-        y: 100,
         opacity: 0,
       },
       {
-        y: 0,
         opacity: 1,
       },
-      0
+      0.3
     )
 
     basicObject.onEnter()
@@ -51,12 +49,12 @@ export const pageTransition: TransitionProps = {
     init()
   },
   async onLeave(el, done) {
-    const revealer = document.querySelector('.revealer') as HTMLElement
+    // const revealer = document.querySelector('.revealer') as HTMLElement
 
-    if (!revealer) {
-      done()
-      return
-    }
+    // if (!revealer) {
+    //   done()
+    //   return
+    // }
 
     const tl = gsap.timeline({
       onComplete: done,
@@ -66,24 +64,24 @@ export const pageTransition: TransitionProps = {
       },
     })
 
-    tl.set(revealer, {
-      clipPath: 'inset(100% 0 0 0)',
-      display: 'block',
-      opacity: 1,
-    })
+    // tl.set(revealer, {
+    //   clipPath: 'inset(100% 0 0 0)',
+    //   display: 'block',
+    //   opacity: 1,
+    // })
 
-    tl.to(
-      revealer,
-      {
-        clipPath: 'inset(0% 0 0 0)',
-      },
-      0.1
-    )
+    // tl.to(
+    //   revealer,
+    //   {
+    //     clipPath: 'inset(0% 0 0 0)',
+    //   },
+    //   0.1
+    // )
 
     tl.to(
       el,
       {
-        y: -200,
+        // y: -200,
         opacity: 0,
       },
       0
