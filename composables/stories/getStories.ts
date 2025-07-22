@@ -30,7 +30,8 @@ export const useGetStories = async (opts: ISbStoriesParams) => {
             config.public.ENVIROMENT === 'development' || isInEditor.value
               ? 'draft'
               : 'published',
-          cv: Date.now(),
+          cv:
+            config.public.ENVIROMENT === 'production' ? Date.now() : undefined,
           ...opts,
           resolve_relations: [
             'project.category',

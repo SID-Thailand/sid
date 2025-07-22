@@ -26,7 +26,8 @@ export const useGetStory = async (route: string) => {
             config.public.ENVIROMENT === 'development' || isInEditor.value
               ? 'draft'
               : 'published',
-          cv: Date.now(),
+          cv:
+            config.public.ENVIROMENT === 'production' ? Date.now() : undefined,
           language: selectedLang.value,
           resolve_relations: [
             'cta_block.manager',

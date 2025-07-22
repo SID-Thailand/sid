@@ -94,6 +94,7 @@ const onSelect = (item: iApartment) => {
   transform: translate(-50%, -50%);
   width: 100%;
   max-height: 80svh;
+  aspect-ratio: 480/440;
   overflow: auto;
   max-width: vw(555);
   padding: vw(12) vw(50);
@@ -124,7 +125,7 @@ const onSelect = (item: iApartment) => {
   @media (max-width: $br1) {
     max-width: size(555, 343);
     padding: 12px 48px;
-    aspect-ratio: 4/5;
+    aspect-ratio: 343/383;
   }
 
   @media (max-width: $br3) {
@@ -193,12 +194,14 @@ const onSelect = (item: iApartment) => {
     }
   }
 
-  &:hover {
-    * {
-      color: var(--basic-white);
-    }
-    &::before {
-      transform: scaleX(1);
+  @media (min-width: $br1) {
+    &:hover {
+      * {
+        color: var(--basic-white);
+      }
+      &::before {
+        transform: scaleX(1);
+      }
     }
   }
 
