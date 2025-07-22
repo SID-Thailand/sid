@@ -197,6 +197,7 @@ onBeforeUnmount(async () => {
   height: 100%;
   img {
     width: 100%;
+    height: fit-content;
   }
 }
 
