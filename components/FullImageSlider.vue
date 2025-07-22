@@ -8,27 +8,7 @@ interface IProps {
 
 const props = defineProps<IProps>()
 
-const cursorX = ref(0)
-const cursorY = ref(0)
-const cursorType = ref<'left' | 'right' | null>(null)
-const isIndicatorVisible = ref(false)
-
 const $items = ref<HTMLElement[]>([])
-const $el = useTemplateRef('el')
-
-const handleMouseMove = (e: MouseEvent) => {
-  cursorX.value = e.clientX
-  cursorY.value = e.clientY
-
-  isIndicatorVisible.value = true
-}
-
-const setCursor = (type: 'left' | 'right' | null) => {
-  if (type === null) {
-    isIndicatorVisible.value = false
-  }
-  cursorType.value = type
-}
 
 const { prev, current, direction, throttledNavigate } = useSlider(
   props.images.length
@@ -89,23 +69,11 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
-
-useIntersectionObserver($el, ([entry]) => {
-  const isIntersecting = entry?.isIntersecting || false
-
-  if (!isIntersecting) {
-    setCursor(null)
-  }
-})
 </script>
 
 <template>
   <div ref="el" class="full-slider">
-    <div
-      class="full-slider__wrapper"
-      @mousemove="handleMouseMove"
-      @mouseleave="setCursor(null)"
-    >
+    <div class="full-slider__wrapper">
       <ul class="full-slider__list">
         <li
           v-for="(img, idx) in images"
@@ -122,44 +90,7 @@ useIntersectionObserver($el, ([entry]) => {
           />
         </li>
       </ul>
-
-      <div class="full-slider__btns">
-        <button
-          type="button"
-          class="full-slider__btn"
-          aria-label="previous slide"
-          :class="{ visible: cursorType === 'left' }"
-          @click="throttledNavigate(-1)"
-          @mouseenter="setCursor('left')"
-        >
-          <IconsArrowLeft />
-        </button>
-        <button
-          type="button"
-          class="full-slider__btn"
-          aria-label="next slide"
-          :class="{ visible: cursorType === 'right' }"
-          @click="throttledNavigate(1)"
-          @mouseenter="setCursor('right')"
-        >
-          <IconsArrowRight />
-        </button>
-      </div>
-
-      <div
-        class="full-slider__cursor"
-        :class="[
-          `full-slider__cursor--${cursorType}`,
-          isIndicatorVisible && 'visible',
-        ]"
-        :style="{
-          '--indicator-x': cursorX + 'px',
-          '--indicator-y': cursorY + 'px',
-        }"
-      >
-        <IconsArrowLeft v-if="cursorType === 'left'" />
-        <IconsArrowRight v-else />
-      </div>
+      <SliderFloatingNavigation @navigate="throttledNavigate" />
     </div>
   </div>
 </template>

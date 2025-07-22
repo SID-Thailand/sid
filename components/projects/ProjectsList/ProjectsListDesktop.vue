@@ -229,43 +229,12 @@ const animate = () => {
 }
 
 watch(current, animate)
-
-const cursorX = ref(0)
-const cursorY = ref(0)
-const cursorType = ref<'left' | 'right' | null>(null)
-const isIndicatorVisible = ref(false)
-
-const handleMouseMove = (e: MouseEvent) => {
-  cursorX.value = e.clientX
-  cursorY.value = e.clientY
-
-  isIndicatorVisible.value = true
-}
-
-const setCursor = (type: 'left' | 'right' | null) => {
-  if (type === null) {
-    isIndicatorVisible.value = false
-  }
-  cursorType.value = type
-}
-
-useIntersectionObserver(contentRef, ([entry]) => {
-  const isIntersecting = entry?.isIntersecting || false
-
-  if (!isIntersecting) {
-    setCursor(null)
-  }
-})
 </script>
 
 <template>
   <section data-o class="projects">
     <div ref="contentRef" class="projects__wrapper">
-      <div
-        class="projects__slider container"
-        @mousemove="handleMouseMove"
-        @mouseleave="setCursor(null)"
-      >
+      <div class="projects__slider container">
         <div class="projects__bgs">
           <div
             v-for="(img, idx) in projects"
@@ -347,45 +316,8 @@ useIntersectionObserver(contentRef, ([entry]) => {
             <IconsArrowTopRight />
           </Button>
         </div>
-
-        <div class="projects__btns">
-          <button
-            type="button"
-            class="projects__btn"
-            aria-label="previous slide"
-            :class="{ visible: cursorType === 'left' }"
-            @click="throttledNavigate(-1)"
-            @mouseenter="setCursor('left')"
-          >
-            <IconsArrowLeft />
-          </button>
-          <button
-            type="button"
-            class="projects__btn"
-            aria-label="next slide"
-            :class="{ visible: cursorType === 'right' }"
-            @click="throttledNavigate(1)"
-            @mouseenter="setCursor('right')"
-          >
-            <IconsArrowRight />
-          </button>
-        </div>
-
-        <div
-          class="projects__cursor"
-          :class="[
-            `projects__cursor--${cursorType}`,
-            isIndicatorVisible && 'visible',
-          ]"
-          :style="{
-            '--indicator-x': cursorX + 'px',
-            '--indicator-y': cursorY + 'px',
-          }"
-        >
-          <IconsArrowLeft v-if="cursorType === 'left'" />
-          <IconsArrowRight v-else />
-        </div>
       </div>
+      <SliderFloatingNavigation @navigate="throttledNavigate" />
     </div>
   </section>
 </template>
@@ -561,128 +493,6 @@ $clip-path: inset(0 0 0 100%);
     padding-top: 16px;
     padding-bottom: 16px;
     margin-top: 24px;
-  }
-}
-
-.projects__btns {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 2;
-
-  cursor: none;
-  * {
-    cursor: none;
-  }
-
-  @media (max-width: $br1) {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    height: fit-content;
-  }
-}
-
-.projects__btn {
-  background-color: transparent;
-  transform: scale(1);
-  transition: transform 0.2s ease;
-  outline: none;
-
-  @media (min-width: $br1) {
-    &:first-child {
-      height: 100%;
-      width: 50%;
-    }
-    &:last-child {
-      height: 100%;
-      width: 50%;
-    }
-
-    svg {
-      display: none;
-    }
-  }
-
-  @media (max-width: $br1) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 60px;
-    height: 60px;
-    background-color: transparent;
-    color: var(--basic-black);
-    border-radius: 50%;
-
-    svg {
-      width: 14px;
-      height: 14px;
-    }
-  }
-
-  &.active {
-    transform: scale(0.8);
-  }
-}
-
-.projects__cursor {
-  pointer-events: none;
-  position: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: vw(44);
-  height: vw(44);
-  top: calc(var(--indicator-y, 0px) - vw(22));
-  left: calc(var(--indicator-x, 0px) - vw(22));
-  background-color: transparent;
-  z-index: 2;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.3s ease,
-    transform 0.5s ease,
-    visibility 0.3s ease;
-  transform: scale(0);
-
-  &:deep(svg path) {
-    fill: var(--basic-black);
-  }
-
-  &::before {
-    content: '';
-    border-radius: 50%;
-    background-color: var(--basic-white);
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform 0.3s ease;
-    z-index: -1;
-  }
-
-  &--left svg,
-  &--right svg {
-    width: vw(20);
-    height: vw(20);
-    opacity: 1;
-    fill: var(--basic-black);
-  }
-
-  &.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-  }
-
-  @media (max-width: $br1) {
-    display: none;
   }
 }
 </style>
