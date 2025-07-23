@@ -49,7 +49,7 @@ useIntersectionObserver($el, ([entry]) => {
         @click="emit('navigate', -1)"
         @mouseenter="setCursor('left')"
       >
-        <IconsArrowLeft />
+        <IconsArrowLeft class="floating-nav__icon" />
       </button>
       <button
         type="button"
@@ -59,7 +59,7 @@ useIntersectionObserver($el, ([entry]) => {
         @click="emit('navigate', 1)"
         @mouseenter="setCursor('right')"
       >
-        <IconsArrowRight />
+        <IconsArrowRight class="floating-nav__icon" />
       </button>
     </div>
 
@@ -118,40 +118,33 @@ useIntersectionObserver($el, ([entry]) => {
   transform: scale(1);
   transition: transform 0.2s ease;
   outline: none;
-
-  @media (min-width: $br1) {
-    &:first-child {
-      height: 100%;
-      width: 50%;
-    }
-    &:last-child {
-      height: 100%;
-      width: 50%;
-    }
-
-    svg {
-      display: none;
-    }
-  }
+  height: 100%;
+  width: 50%;
 
   @media (max-width: $br1) {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60px;
-    height: 60px;
-    background-color: transparent;
+    width: 44px;
+    height: 44px;
+    background-color: var(--basic-white);
     color: var(--basic-black);
     border-radius: 50%;
-
-    svg {
-      width: 14px;
-      height: 14px;
-    }
   }
 
   &.active {
     transform: scale(0.8);
+  }
+}
+
+.floating-nav__icon {
+  width: 14px;
+  height: 14px;
+  &:deep(path) {
+    fill: var(--basic-black);
+  }
+  @media (min-width: $br1) {
+    display: none;
   }
 }
 
