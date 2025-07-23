@@ -39,8 +39,7 @@ const chooseHandler = (e: MouseEvent, item: iImage, idx: number) => {
       :slides-per-view="1.1"
       :space-between="16"
       :loop="true"
-      :speed="1000"
-      :prevent-interaction-on-transition="true"
+      :speed="700"
       :threshold="20"
     >
       <SwiperSlide
