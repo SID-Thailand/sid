@@ -159,6 +159,10 @@ onMounted(() => {
 
 $clip-path: inset(0 0 0 100%);
 
+.projects__wrapper {
+  position: relative;
+}
+
 .projects__slider {
   position: relative;
   width: 100%;
