@@ -13,12 +13,7 @@ const count = computed(() => {
   return props.content?.difference_gallery?.length || 0
 })
 
-const { activePage } = useFullPageCardSlider(
-  contentRef as Ref<HTMLElement>,
-  count
-)
-
-// const activePage = ref(1)
+const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
 </script>
 
 <template>
@@ -26,10 +21,11 @@ const { activePage } = useFullPageCardSlider(
     <div
       v-for="(img, idx) in content?.difference_gallery"
       :key="idx"
+      data-f-bg
       class="cons-diff__bg-wrapper"
     >
       <CustomImage
-        data-f-bg
+        data-f-bg-i
         :src="img?.background_asset?.filename"
         :alt="img?.background_asset?.alt"
         class="cons-diff__bg"
@@ -59,10 +55,11 @@ const { activePage } = useFullPageCardSlider(
         <div
           v-for="img in content?.difference_gallery"
           :key="img._uid"
+          data-f-img
           class="cons-diff__img-wrapper"
         >
           <CustomImage
-            data-f-img
+            data-f-img-i
             :src="img?.asset?.filename"
             :alt="img?.asset?.alt"
             class="cons-diff__img"
@@ -71,17 +68,8 @@ const { activePage } = useFullPageCardSlider(
         </div>
       </div>
     </div>
-    <div class="cons-diff__counter container">
-      <p class="cons-diff__count">{{ activePage }}/{{ count }}</p>
-      <div class="cons-diff__pagination">
-        <span
-          v-for="(_, i) in content?.difference_gallery?.length"
-          :key="i"
-          class="cons-diff__pag-item"
-          :class="{ 'cons-diff__pag-item--active': activePage === i + 1 }"
-        />
-      </div>
-    </div>
+
+    <SliderFloatingNavigation @navigate="throttledNavigate" />
   </div>
 </template>
 
@@ -114,7 +102,7 @@ const { activePage } = useFullPageCardSlider(
   align-items: center;
   width: 100%;
   height: 100%;
-  z-index: 3;
+  z-index: 1;
   position: relative;
   width: vw(784);
   margin: 0 auto;
