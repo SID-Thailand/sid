@@ -4,15 +4,13 @@ import { gsap } from '~/libs/gsap'
 
 export const useSliderAnimation = (
   el: MaybeRefOrGetter<HTMLElement>,
-  count: MaybeRefOrGetter<number>,
-  treshold = 1300
+  count: MaybeRefOrGetter<number>
 ) => {
   const target = toRef(el)
   const itemsCount = toRef(count)
 
   const { current, prev, direction, throttledNavigate } = useSlider(
-    itemsCount.value,
-    treshold
+    itemsCount.value
   )
 
   const $bgs = ref<NodeListOf<HTMLElement> | null>(null)
@@ -67,8 +65,6 @@ export const useSliderAnimation = (
     await delayPromise(500)
     const el = target.value
 
-    console.log(el)
-
     $bgs.value = el?.querySelectorAll('[data-f-bg]') as NodeListOf<HTMLElement>
 
     $bgsImages.value = el?.querySelectorAll(
@@ -110,7 +106,8 @@ export const useSliderAnimation = (
     }
   }
 
-  const animate = () => {
+  const animate = async () => {
+    await nextTick()
     const currentIndex = current.value
     const prevIndex = prev.value
 
@@ -133,13 +130,12 @@ export const useSliderAnimation = (
       },
     }
 
-    const duration = 1.5
+    const duration = 1.3
     const textDuration = 1
 
     const tl = gsap.timeline({
       defaults: {
         duration,
-        ease: 'power2.out',
       },
     })
 
@@ -148,8 +144,13 @@ export const useSliderAnimation = (
     const from = 'inset(0 0 0 100%)'
     const to = 'inset(0 100% 0 0)'
 
-    tl.set(els.current.bg, { clipPath: isForward ? from : to })
-    tl.set(els.current.item, { clipPath: isForward ? from : to })
+    tl.set(els.current.bg, {
+      clipPath: isForward ? from : to,
+    })
+
+    tl.set(els.current.item, {
+      clipPath: isForward ? from : to,
+    })
 
     tl.set(els.current.bgImg, { scale: 1.3 })
     tl.set(els.current.itemImg, { scale: 1.3 })

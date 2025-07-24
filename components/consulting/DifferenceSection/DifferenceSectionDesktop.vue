@@ -13,26 +13,36 @@ const count = computed(() => {
   return props.content?.difference_gallery?.length || 0
 })
 
-const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
+const { throttledNavigate, current, prev } = useSliderAnimation(
+  contentRef,
+  count
+)
+
+onMounted(() => {
+  prev.value = count.value - 1
+})
 </script>
 
 <template>
   <div ref="contentRef" class="cons-diff__slider container">
-    <div
-      v-for="(img, idx) in content?.difference_gallery"
-      :key="idx"
-      data-f-bg
-      class="cons-diff__bg-wrapper"
-    >
-      <CustomImage
-        data-f-bg-i
-        :src="img?.background_asset?.filename"
-        :alt="img?.background_asset?.alt"
-        class="cons-diff__bg"
-        :width="1920"
-      />
+    <div class="cons-diff__bgs">
+      <div
+        v-for="(img, idx) in content?.difference_gallery"
+        :key="idx"
+        data-f-bg
+        class="cons-diff__bg-wrapper"
+        :class="{ active: idx === current, prev: idx === prev }"
+      >
+        <CustomImage
+          data-f-bg-i
+          :src="img?.background_asset?.filename"
+          :alt="img?.background_asset?.alt"
+          class="cons-diff__bg"
+          :width="1920"
+        />
+      </div>
+      <DarkLayer style="z-index: 3" />
     </div>
-    <DarkLayer />
 
     <div class="cons-diff__content">
       <div class="cons-diff__texts">
@@ -53,10 +63,11 @@ const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
       </div>
       <div class="cons-diff__assets">
         <div
-          v-for="img in content?.difference_gallery"
+          v-for="(img, idx) in content?.difference_gallery"
           :key="img._uid"
           data-f-img
           class="cons-diff__img-wrapper"
+          :class="{ active: idx === current, prev: idx === prev }"
         >
           <CustomImage
             data-f-img-i
@@ -80,6 +91,16 @@ const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
   height: 100svh;
 }
 
+.cons-diff__bgs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+  z-index: 1;
+}
+
 .cons-diff__bg-wrapper {
   position: absolute;
   top: 0;
@@ -87,6 +108,18 @@ const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
   width: 100%;
   overflow: hidden;
   height: 100%;
+  clip-path: inset(0px 0px 0px 100%);
+
+  &.active {
+    z-index: 2;
+  }
+  &.prev {
+    z-index: 1;
+  }
+
+  &:first-child {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
 .cons-diff__bg {
@@ -102,7 +135,7 @@ const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
   align-items: center;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
   position: relative;
   width: vw(784);
   margin: 0 auto;
@@ -192,6 +225,12 @@ const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
   position: absolute;
   width: 100%;
   height: 100%;
+  &.active {
+    z-index: 2;
+  }
+  &.prev {
+    z-index: 1;
+  }
 
   @media (max-width: $br2) {
     width: 100%;
@@ -205,82 +244,5 @@ const { throttledNavigate } = useSliderAnimation(contentRef, count, 1600)
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.cons-diff__counter {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  z-index: 2;
-
-  @media (max-width: $br1) {
-    flex-direction: column;
-    height: 100%;
-    padding: 32px 0;
-  }
-}
-
-.cons-diff__count {
-  text-transform: uppercase;
-  line-height: 1.2em;
-  font-size: vw(20);
-  @include med;
-
-  @media (max-width: $br1) {
-    font-size: size(20, 16);
-  }
-
-  @media (max-width: $br4) {
-    font-size: 16px;
-  }
-}
-
-.cons-diff__pagination {
-  display: flex;
-  align-items: center;
-  width: fit-content;
-
-  @media (min-width: $br1) {
-    flex-direction: column;
-    row-gap: vw(8);
-  }
-
-  @media (max-width: $br1) {
-    column-gap: 8px;
-  }
-}
-
-.cons-diff__pag-item {
-  display: block;
-  width: vw(4);
-  height: vw(4);
-  border-radius: 9999px;
-  background-color: var(--neutral-300);
-  transition:
-    height 1s ease,
-    width 1s ease,
-    background-color 1s ease;
-
-  @media (max-width: $br1) {
-    width: 4px;
-    height: 4px;
-  }
-
-  &--active {
-    background-color: var(--basic-white);
-
-    @media (min-width: $br1) {
-      height: vw(16);
-    }
-
-    @media (max-width: $br1) {
-      width: 16px;
-    }
-  }
 }
 </style>
