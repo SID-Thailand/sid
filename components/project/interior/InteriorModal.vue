@@ -98,6 +98,7 @@ const onSelect = (item: iApartment) => {
   overflow: auto;
   max-width: vw(555);
   padding: vw(12) vw(50);
+  padding-bottom: vw(30);
 
   transition: all 0.3s ease;
   transition-property: transform, opacity;
@@ -159,6 +160,14 @@ const onSelect = (item: iApartment) => {
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.i-modal__list {
+  padding-bottom: vw(20);
+
+  @media (max-width: $br1) {
+    padding-bottom: 20px;
+  }
 }
 
 .i-modal-item {
