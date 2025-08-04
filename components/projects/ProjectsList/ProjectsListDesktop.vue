@@ -149,7 +149,7 @@ onMounted(() => {
           </Button>
         </div>
       </div>
-      <SliderFloatingNavigation @navigate="throttledNavigate" />
+      <SliderNavigation @navigate="throttledNavigate" />
     </div>
   </section>
 </template>

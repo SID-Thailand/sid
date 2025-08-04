@@ -90,7 +90,7 @@ onUnmounted(() => {
           />
         </li>
       </ul>
-      <SliderFloatingNavigation @navigate="throttledNavigate" />
+      <SliderNavigation @navigate="throttledNavigate" />
     </div>
   </div>
 </template>
@@ -101,12 +101,6 @@ onUnmounted(() => {
   height: 100vh;
   height: 100svh;
   width: 100%;
-  @media (min-width: $br1) {
-    cursor: none;
-    * {
-      cursor: none;
-    }
-  }
 }
 
 .full-slider__wrapper {

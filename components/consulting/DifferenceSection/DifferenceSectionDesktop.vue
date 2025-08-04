@@ -80,7 +80,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <SliderFloatingNavigation @navigate="throttledNavigate" />
+    <SliderNavigation @navigate="throttledNavigate" />
   </div>
 </template>
 
