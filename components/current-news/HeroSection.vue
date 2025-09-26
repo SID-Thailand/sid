@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import formatDate from '~/utils/formatDate'
 import type { iImage } from '~/types/story'
 
 interface IProps {
@@ -67,6 +68,10 @@ defineProps<IProps>()
 
   @media (max-width: $br1) {
     max-width: 100%;
+  }
+
+  @media (max-width: $br3) {
+    hyphens: auto;
   }
 }
 

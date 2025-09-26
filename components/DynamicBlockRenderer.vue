@@ -34,7 +34,7 @@ onMounted(() => {
       v-if="resolveSectionByName(blok?.component)"
       v-editable="blok?.content"
       :blok="blok"
-      is-privacy
+      :is-privacy="isPrivacy"
     />
     <div v-else>
       <p>Unknown component: {{ blok?.component }}</p>
