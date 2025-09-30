@@ -56,6 +56,8 @@ const { headerColor, $headerRef } = useHeaderColor()
     transform 1s ease,
     opacity 1s ease;
 
+  will-change: transform, opacity, color;
+
   @media (max-width: $br1) {
     padding: 32px 0;
   }
