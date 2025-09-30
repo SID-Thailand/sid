@@ -9,6 +9,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  will-change: auto;
   background-image: linear-gradient(
     180deg,
     #3a3838 0%,

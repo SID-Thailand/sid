@@ -157,7 +157,7 @@ onMounted(() => {
   background: var(--gradient-secondary);
   transform-origin: top;
   overflow: hidden;
-  will-change: transform, opacity;
+  will-change: transform, opacity, box-shadow;
   transition: box-shadow 1.5s ease;
   &:not(&--active) {
     .quiz-step__overlay {
