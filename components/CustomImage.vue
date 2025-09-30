@@ -38,7 +38,6 @@ const attrs = computed(() => {
     densities: '1x',
     sizes: `sm:100vw md:${props.width || 1920}px`,
     onLoad: () => {
-      console.log('loaded')
       loaded.value = true
     },
   }
@@ -72,6 +71,7 @@ const attrs = computed(() => {
 .custom-image {
   background-color: var(--neutral-200);
   transition: background-color 0.6s ease-in-out;
+  will-change: background-color;
   // &--loading {
   // }
   &--loaded {

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { IEventArgs } from '@emotionagency/emotion-scroll'
 import { useMenuStory } from '~/composables/stories/menuStory'
 
 const { story } = await useMenuStory()
@@ -6,20 +7,93 @@ const { selectedLang, defaultLocale } = useLang()
 const { isMenuOpened } = useAppState()
 
 // const $el = ref(null)
-let navbarPos
 
 const onClick = () => {
   isMenuOpened.value = false
 }
 
+const isVisible = ref(true)
+const isHovered = ref(false)
+const mousePaused = ref(true)
+
+watch(isVisible, value => {
+  if (value) {
+    document.body.classList.remove('nav-hidden')
+  } else {
+    document.body.classList.add('nav-hidden')
+  }
+})
+
+const isFixed = () => {
+  if (getScrollEl().classList.contains('full-page')) {
+    return false
+  }
+  return window.escroll ? window.escroll.disabled : false
+}
+
+const toggleVisible = (value: boolean) => {
+  if (isVisible.value !== value) {
+    isVisible.value = value
+  }
+}
+
+const toggleMousePaused = (value: boolean) => {
+  if (mousePaused.value !== value) {
+    mousePaused.value = value
+  }
+}
+
+const onScroll = (e: IEventArgs) => {
+  if (isHovered.value) {
+    return
+  }
+
+  const isDisabledClass =
+    document.documentElement.classList.contains('header-disabled')
+  if ((e.direction === 1 && !isFixed() && e.position > 0) || isDisabledClass) {
+    toggleVisible(false)
+    toggleMousePaused(false)
+  } else {
+    toggleMousePaused(true)
+    toggleVisible(true)
+  }
+}
+
+const onMouseMove = (e: MouseEvent) => {
+  if (isFixed()) {
+    return
+  }
+
+  if (mousePaused.value) {
+    return
+  }
+  if (window.innerWidth < 560) {
+    return
+  }
+
+  if (document.documentElement.classList.contains('header-disabled')) {
+    toggleVisible(false)
+    isHovered.value = false
+    return
+  }
+
+  if (e.screenY <= 200) {
+    toggleVisible(true)
+    isHovered.value = true
+  } else {
+    toggleVisible(false)
+    isHovered.value = false
+  }
+}
+
 onMounted(async () => {
-  const { default: NavbarPos } = await import('~/utils/navbarPos')
-  navbarPos = new NavbarPos()
-  navbarPos.init()
+  window.escroll.on(onScroll)
+
+  document.addEventListener('mousemove', onMouseMove)
 })
 
 onBeforeUnmount(() => {
-  navbarPos && navbarPos.destroy()
+  document.removeEventListener('mousemove', onMouseMove)
 })
 
 const { headerColor, $headerRef } = useHeaderColor()
