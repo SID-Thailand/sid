@@ -8,8 +8,8 @@ definePageMeta({
 
 <template>
   <div>
-    <meta robots="noindex" />
-    <meta name="googlebot" content="noindex" />
+    <Meta name="robots" content="noindex" />
+    <Meta name="googlebot" content="noindex" />
     <HomeContent />
   </div>
 </template>
