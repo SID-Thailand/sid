@@ -72,6 +72,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       ENVIROMENT: process.env.NODE_ENV,
+      MAIL_RU_ID: process.env.MAIL_RU_ID || '',
       value: encodeConfig({
         FORMSPREE_KEY: process.env.FORMSPREE_KEY,
       }),
