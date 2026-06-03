@@ -18,19 +18,25 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
   const isValidForm = (data: IData) => {
     const items = Object.entries(data)
-    const pick = (k: string) => items.find(e => e[0] === k || e[1]?.name === k || (e[1] as any)?._key === k)?.[1]?.value
+    const pick = (k: string) =>
+      items.find(
+        e => e[0] === k || e[1]?.name === k || (e[1] as any)?._key === k
+      )?.[1]?.value
 
-    const email = pick('email') || items.find(e => /email/i.test((e[1] as any)?.name || ''))?.[1]?.value
-    const phone = pick('phone') || items.find(e => /(phone|tel)/i.test((e[1] as any)?.name || ''))?.[1]?.value
-    const name = pick('name') || items.find(e => /name/i.test((e[1] as any)?.name || ''))?.[1]?.value
+    const email =
+      pick('email') ||
+      items.find(e => /email/i.test((e[1] as any)?.name || ''))?.[1]?.value
+    const phone =
+      pick('phone') ||
+      items.find(e => /(phone|tel)/i.test((e[1] as any)?.name || ''))?.[1]
+        ?.value
+    const name =
+      pick('name') ||
+      items.find(e => /name/i.test((e[1] as any)?.name || ''))?.[1]?.value
     const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i
     const PHONE_RE = /^\+?[0-9\s\-()]{7,}$/
 
-    return Boolean(
-      name &&
-      EMAIL_RE.test(email) &&
-      PHONE_RE.test(phone)
-    )
+    return Boolean(name && EMAIL_RE.test(email) && PHONE_RE.test(phone))
   }
 
   const submitHandler = async (data: IData, thankyouDelay = 300) => {
@@ -47,6 +53,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     formData.append('sitelang', selectedLang.value || '-')
     formData.append('from', toValue(from) || route.path)
+    formData.append('url', route.fullPath)
 
     items.forEach(item => {
       const [key, value] = item
@@ -72,7 +79,9 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
       if (!res.ok) {
         const text = await res.text().catch(() => '')
-        throw new Error(`Form submit failed: ${res.status} ${text?.slice(0, 200)}`)
+        throw new Error(
+          `Form submit failed: ${res.status} ${text?.slice(0, 200)}`
+        )
       }
 
       let okFlag = true
@@ -81,7 +90,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
         // Formspree response { ok: true, ... }
         if (typeof json?.ok !== 'undefined') okFlag = !!json.ok
       } catch {
-        console.log('Error parsing Formspree response JSON');
+        console.log('Error parsing Formspree response JSON')
       }
 
       if (!okFlag) {
@@ -90,11 +99,11 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
       // Send GTM event for successful form submission
       if (okFlag && typeof window !== 'undefined') {
-        console.log('Pushing GTM event: Generated_lead');
-        (window as any).dataLayer = (window as any).dataLayer || [];
-        (window as any).dataLayer.push({
-          event: 'Generated_lead'
-        });
+        console.log('Pushing GTM event: Generated_lead')
+        ;(window as any).dataLayer = (window as any).dataLayer || []
+        ;(window as any).dataLayer.push({
+          event: 'Generated_lead',
+        })
       }
 
       await delayPromise(thankyouDelay)
