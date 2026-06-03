@@ -77,7 +77,3 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ## This template contains @vueuse
 
 Check documentation here: https://vueuse.org/guide/
-
-## Also this template has own headless ui component
-
-Details here: https://github.com/Emotion-Agency/nuxt3-emotion-template/components/headless
