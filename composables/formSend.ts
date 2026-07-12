@@ -14,6 +14,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
   const config = useDecocedRuntimeConfig()
   const { toast } = useToasts()
+  const { pushDataLayerEvent } = useDataLayerEvents()
 
   const route = useRoute()
 
@@ -30,24 +31,6 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
     if (route.path.includes('/contact')) return 'contact'
 
     return 'lead'
-  }
-
-  const pushDataLayerEvent = (
-    event: string,
-    params: Record<string, unknown> = {}
-  ) => {
-    if (typeof window === 'undefined') return
-
-    ;(window as any).dataLayer = (window as any).dataLayer || []
-    ;(window as any).dataLayer.push({
-      event,
-      form_type: getFormType(),
-      form_context: getFormContext(),
-      page_path: route.path,
-      page_location: window.location.href,
-      page_language: selectedLang.value || '-',
-      ...params,
-    })
   }
 
   const isValidForm = (data: IData) => {
@@ -103,7 +86,11 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     try {
       isFetching.value = true
-      pushDataLayerEvent('form_submit', trafficSource)
+      pushDataLayerEvent('form_submit', {
+        form_type: getFormType(),
+        form_context: getFormContext(),
+        ...trafficSource,
+      })
       const key = config.public.FORMSPREE_KEY
 
       if (!key) {
@@ -139,7 +126,11 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
       }
 
       if (okFlag && typeof window !== 'undefined') {
-        pushDataLayerEvent('generate_lead', trafficSource)
+        pushDataLayerEvent('generate_lead', {
+          form_type: getFormType(),
+          form_context: getFormContext(),
+          ...trafficSource,
+        })
       }
 
       await delayPromise(thankyouDelay)
@@ -147,6 +138,8 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
     } catch (error) {
       console.log(error)
       pushDataLayerEvent('form_error', {
+        form_type: getFormType(),
+        form_context: getFormContext(),
         error_type: error instanceof Error ? error.name : 'unknown_error',
       })
       toast.error('something went wrong, please try again later')
