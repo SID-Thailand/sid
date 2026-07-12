@@ -6,10 +6,35 @@ import Validation from '~/utils/Validation'
 const { story } = await useFooterStory()
 
 const { submitHandler, isFetching } = useFormSend('Footer')
+const { pushDataLayerEvent } = useDataLayerEvents()
 
 const formData = ref<IData>({
   email: { value: '', error: false },
 })
+const formEl = ref<HTMLFormElement | null>(null)
+const hasTrackedFormView = ref(false)
+const hasTrackedFormStart = ref(false)
+
+let formObserver: IntersectionObserver | undefined
+
+const formParams = {
+  form_id: 'footer-form',
+  form_type: 'newsletter',
+}
+
+const pushFormView = () => {
+  if (hasTrackedFormView.value) return
+
+  hasTrackedFormView.value = true
+  pushDataLayerEvent('form_view', formParams)
+}
+
+const pushFormStart = () => {
+  if (hasTrackedFormStart.value) return
+
+  hasTrackedFormStart.value = true
+  pushDataLayerEvent('form_start', formParams)
+}
 
 const onSubmit = async () => {
   if (formData.value.email.error || !formData.value.email.value) return
@@ -18,6 +43,31 @@ const onSubmit = async () => {
 
   formData.value.email.value = ''
 }
+
+onMounted(() => {
+  if (!formEl.value) return
+
+  if (!('IntersectionObserver' in window)) {
+    pushFormView()
+    return
+  }
+
+  formObserver = new IntersectionObserver(
+    entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        pushFormView()
+        formObserver?.disconnect()
+      }
+    },
+    { threshold: 0.3 }
+  )
+
+  formObserver.observe(formEl.value)
+})
+
+onBeforeUnmount(() => {
+  formObserver?.disconnect()
+})
 </script>
 
 <template>
@@ -103,7 +153,14 @@ const onSubmit = async () => {
             </a>
           </div>
         </div>
-        <form class="footer__form" novalidate @submit.prevent="onSubmit">
+        <form
+          ref="formEl"
+          class="footer__form"
+          novalidate
+          @focusin="pushFormStart"
+          @input="pushFormStart"
+          @submit.prevent="onSubmit"
+        >
           <legend class="footer__title">
             {{ story?.content?.newsletter_title }}
           </legend>
