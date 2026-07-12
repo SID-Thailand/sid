@@ -43,7 +43,7 @@ export default defineNuxtConfig({
   },
 
   gtm: {
-    id: process.env.GTM_ID || 'GTM-XXXXXXX',
+    id: 'GTM-KB2PNB9X',
     enabled: process.env.NODE_ENV === 'production',
     debug: false,
     defer: true,
@@ -72,7 +72,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       ENVIROMENT: process.env.NODE_ENV,
-      MAIL_RU_ID: process.env.MAIL_RU_ID || '',
       value: encodeConfig({
         FORMSPREE_KEY: process.env.FORMSPREE_KEY,
       }),
