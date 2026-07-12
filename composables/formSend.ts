@@ -1,5 +1,6 @@
 import { delayPromise } from '@emotionagency/utils'
 import type { iInputData } from '~/types/headless/input'
+import { captureTrafficSource } from '~/utils/trafficSource'
 
 export interface IData {
   [key: string]: Omit<iInputData, 'id'>
@@ -15,6 +16,39 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
   const { toast } = useToasts()
 
   const route = useRoute()
+
+  const getFormContext = () => toValue(from) || route.path
+
+  const getFormType = () => {
+    const context = getFormContext()
+
+    if (/quiz/i.test(context)) return 'quiz'
+    if (/project/i.test(context) || route.path.includes('/projects/')) {
+      return 'project'
+    }
+    if (/newsletter|subscribe/i.test(context)) return 'newsletter'
+    if (route.path.includes('/contact')) return 'contact'
+
+    return 'lead'
+  }
+
+  const pushDataLayerEvent = (
+    event: string,
+    params: Record<string, unknown> = {}
+  ) => {
+    if (typeof window === 'undefined') return
+
+    ;(window as any).dataLayer = (window as any).dataLayer || []
+    ;(window as any).dataLayer.push({
+      event,
+      form_type: getFormType(),
+      form_context: getFormContext(),
+      page_path: route.path,
+      page_location: window.location.href,
+      page_language: selectedLang.value || '-',
+      ...params,
+    })
+  }
 
   const isValidForm = (data: IData) => {
     const items = Object.entries(data)
@@ -50,10 +84,16 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
     const items = Object.entries(data)
 
     const formData = new FormData()
+    const trafficSource = captureTrafficSource()
 
     formData.append('sitelang', selectedLang.value || '-')
-    formData.append('from', toValue(from) || route.path)
+    formData.append('from', getFormContext())
     formData.append('url', route.fullPath)
+    formData.append('form_type', getFormType())
+
+    Object.entries(trafficSource).forEach(([key, value]) => {
+      if (value) formData.append(key, value)
+    })
 
     items.forEach(item => {
       const [key, value] = item
@@ -63,6 +103,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     try {
       isFetching.value = true
+      pushDataLayerEvent('form_submit', trafficSource)
       const key = config.public.FORMSPREE_KEY
 
       if (!key) {
@@ -97,19 +138,17 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
         throw new Error('FORMSPREE responded with ok=false')
       }
 
-      // Send GTM event for successful form submission
       if (okFlag && typeof window !== 'undefined') {
-        console.log('Pushing GTM event: Generated_lead')
-        ;(window as any).dataLayer = (window as any).dataLayer || []
-        ;(window as any).dataLayer.push({
-          event: 'Generated_lead',
-        })
+        pushDataLayerEvent('generate_lead', trafficSource)
       }
 
       await delayPromise(thankyouDelay)
       showThankYou()
     } catch (error) {
       console.log(error)
+      pushDataLayerEvent('form_error', {
+        error_type: error instanceof Error ? error.name : 'unknown_error',
+      })
       toast.error('something went wrong, please try again later')
     } finally {
       setTimeout(() => {
