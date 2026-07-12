@@ -21,8 +21,41 @@ const props = withDefaults(defineProps<IProps>(), {
 const emit = defineEmits(['submit'])
 
 const { story } = await useFormStory()
+const { pushDataLayerEvent } = useDataLayerEvents()
 
 const model = defineModel<IForm>()
+const formEl = ref<HTMLFormElement | null>(null)
+const hasTrackedFormView = ref(false)
+const hasTrackedFormStart = ref(false)
+
+let formObserver: IntersectionObserver | undefined
+
+const getFormType = () => {
+  if (/quiz|feedback/i.test(props.formId)) return 'quiz'
+  if (/project/i.test(props.formId)) return 'project'
+  if (/contact/i.test(props.formId)) return 'contact'
+
+  return 'lead'
+}
+
+const getFormParams = () => ({
+  form_id: props.formId,
+  form_type: getFormType(),
+})
+
+const pushFormView = () => {
+  if (hasTrackedFormView.value) return
+
+  hasTrackedFormView.value = true
+  pushDataLayerEvent('form_view', getFormParams())
+}
+
+const pushFormStart = () => {
+  if (hasTrackedFormStart.value) return
+
+  hasTrackedFormStart.value = true
+  pushDataLayerEvent('form_start', getFormParams())
+}
 
 const inputs = reactiveComputed(() => [
   {
@@ -73,10 +106,42 @@ const onSubmit = () => {
     // Handle form validation errors
   }
 }
+
+onMounted(() => {
+  if (!formEl.value) return
+
+  if (!('IntersectionObserver' in window)) {
+    pushFormView()
+    return
+  }
+
+  formObserver = new IntersectionObserver(
+    entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        pushFormView()
+        formObserver?.disconnect()
+      }
+    },
+    { threshold: 0.3 }
+  )
+
+  formObserver.observe(formEl.value)
+})
+
+onBeforeUnmount(() => {
+  formObserver?.disconnect()
+})
 </script>
 
 <template>
-  <form class="form" novalidate @submit.prevent="onSubmit">
+  <form
+    ref="formEl"
+    class="form"
+    novalidate
+    @focusin="pushFormStart"
+    @input="pushFormStart"
+    @submit.prevent="onSubmit"
+  >
     <div
       class="form__wrapper"
       :class="{
