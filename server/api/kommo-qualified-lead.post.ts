@@ -191,7 +191,7 @@ const sendGoogleQualifiedLead = async (input: {
       accountType: 'GOOGLE_ADS',
       accountId: String(config.googleAdsOperatingAccountId).replace(/\D/g, ''),
     },
-    productDestinationId: config.googleAdsConversionActionId,
+    productDestinationId: String(config.googleAdsConversionActionId),
   }
   if (config.googleAdsLoginAccountId) {
     Object.assign(destination, {
@@ -224,11 +224,6 @@ const sendGoogleQualifiedLead = async (input: {
   })
 
   if (!response.ok) {
-    const details = await response.text().catch(() => '')
-    console.error('Google Data Manager rejected qualified lead', {
-      status: response.status,
-      details: details.slice(0, 800),
-    })
     throw createError({
       statusCode: 502,
       statusMessage: `Google Data Manager error: ${response.status}`,
