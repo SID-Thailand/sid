@@ -189,7 +189,7 @@ const sendGoogleQualifiedLead = async (input: {
   const destination: Record<string, unknown> = {
     operatingAccount: {
       accountType: 'GOOGLE_ADS',
-      accountId: config.googleAdsOperatingAccountId.replace(/\D/g, ''),
+      accountId: String(config.googleAdsOperatingAccountId).replace(/\D/g, ''),
     },
     productDestinationId: config.googleAdsConversionActionId,
   }
@@ -197,7 +197,7 @@ const sendGoogleQualifiedLead = async (input: {
     Object.assign(destination, {
       loginAccount: {
         accountType: 'GOOGLE_ADS',
-        accountId: config.googleAdsLoginAccountId.replace(/\D/g, ''),
+        accountId: String(config.googleAdsLoginAccountId).replace(/\D/g, ''),
       },
     })
   }
