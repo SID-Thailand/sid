@@ -12,7 +12,6 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
   const { showThankYou } = useThankyouScreen()
   const { selectedLang } = useLang()
 
-  const config = useDecocedRuntimeConfig()
   const { toast } = useToasts()
   const { pushDataLayerEvent } = useDataLayerEvents()
 
@@ -66,23 +65,10 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     const items = Object.entries(data)
 
-    const formData = new FormData()
     const trafficSource = captureTrafficSource()
-
-    formData.append('sitelang', selectedLang.value || '-')
-    formData.append('from', getFormContext())
-    formData.append('url', route.fullPath)
-    formData.append('form_type', getFormType())
-
-    Object.entries(trafficSource).forEach(([key, value]) => {
-      if (value) formData.append(key, value)
-    })
-
-    items.forEach(item => {
-      const [key, value] = item
-
-      formData.append(key, value?.value ?? '')
-    })
+    const fields = Object.fromEntries(
+      items.map(([key, value]) => [key, String(value?.value ?? '')])
+    )
 
     try {
       isFetching.value = true
@@ -91,18 +77,19 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
         form_context: getFormContext(),
         ...trafficSource,
       })
-      const key = config.public.FORMSPREE_KEY
-
-      if (!key) {
-        throw new Error('FORMSPREE is not connected')
-      }
-
-      const res = await fetch('https://formspree.io/f/' + key, {
+      const res = await fetch('/api/kommo-lead', {
         method: 'POST',
-        body: formData,
         headers: {
-          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          fields,
+          formType: getFormType(),
+          formContext: getFormContext(),
+          pageUrl: window.location.href,
+          siteLanguage: selectedLang.value || '-',
+          trafficSource,
+        }),
       })
 
       if (!res.ok) {
@@ -112,17 +99,16 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
         )
       }
 
-      let okFlag = true
+      let okFlag = false
       try {
         const json = await res.json()
-        // Formspree response { ok: true, ... }
-        if (typeof json?.ok !== 'undefined') okFlag = !!json.ok
+        okFlag = json?.ok === true
       } catch {
-        console.log('Error parsing Formspree response JSON')
+        console.log('Error parsing Kommo response JSON')
       }
 
       if (!okFlag) {
-        throw new Error('FORMSPREE responded with ok=false')
+        throw new Error('Kommo responded with ok=false')
       }
 
       if (okFlag && typeof window !== 'undefined') {
