@@ -42,6 +42,13 @@ const value = (input: unknown) => String(input || '').trim()
 const numberValue = (input: unknown) => Number(value(input))
 
 const findWebhookLead = (body: Record<string, any>): KommoWebhookLead | undefined => {
+  // Kommo may send webhook bodies as URL-encoded bracket keys instead of a
+  // nested object, for example `leads[status][0][id]=123`.
+  const flatLeadId = Object.entries(body).find(([key, fieldValue]) =>
+    /^(?:lead|leads)\[[^\]]+\]\[\d+\]\[id\]$/.test(key) && value(fieldValue)
+  )?.[1]
+  if (flatLeadId) return { id: value(flatLeadId) }
+
   const lead = body.lead || body.leads
 
   if (!lead || typeof lead !== 'object') return undefined
@@ -54,15 +61,7 @@ const findWebhookLead = (body: Record<string, any>): KommoWebhookLead | undefine
     }
   }
 
-  if (lead?.id) return lead
-
-  // Kommo may send webhook bodies as URL-encoded bracket keys instead of a
-  // nested object, for example `leads[status][0][id]=123`.
-  const flatLeadId = Object.entries(body).find(([key, fieldValue]) =>
-    /^(?:lead|leads)\[[^\]]+\]\[\d+\]\[id\]$/.test(key) && value(fieldValue)
-  )?.[1]
-
-  return flatLeadId ? { id: value(flatLeadId) } : undefined
+  return lead.id ? lead : undefined
 }
 
 const getLeadFieldValue = (lead: KommoLead, fieldId: number | undefined) =>
