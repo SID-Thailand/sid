@@ -75,6 +75,9 @@ export default defineNuxtConfig({
       pipelineId: '',
       statusId: '',
       responsibleUserId: '',
+      qualifiedWebhookSecret: '',
+      metaPixelId: '',
+      metaConversionsApiToken: '',
     },
     public: {
       ENVIROMENT: process.env.NODE_ENV,
