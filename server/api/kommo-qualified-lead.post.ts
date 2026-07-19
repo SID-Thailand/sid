@@ -145,11 +145,6 @@ const getGoogleAccessToken = async (config: Record<string, string>) => {
   })
 
   if (!response.ok) {
-    const details = await response.text().catch(() => '')
-    console.error('Google Data Manager rejected qualified lead', {
-      status: response.status,
-      details: details.slice(0, 800),
-    })
     throw createError({
       statusCode: 502,
       statusMessage: `Google OAuth error: ${response.status}`,
@@ -229,6 +224,11 @@ const sendGoogleQualifiedLead = async (input: {
   })
 
   if (!response.ok) {
+    const details = await response.text().catch(() => '')
+    console.error('Google Data Manager rejected qualified lead', {
+      status: response.status,
+      details: details.slice(0, 800),
+    })
     throw createError({
       statusCode: 502,
       statusMessage: `Google Data Manager error: ${response.status}`,
