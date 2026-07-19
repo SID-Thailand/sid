@@ -72,11 +72,6 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     try {
       isFetching.value = true
-      pushDataLayerEvent('form_submit', {
-        form_type: getFormType(),
-        form_context: getFormContext(),
-        ...trafficSource,
-      })
       const res = await fetch('/api/kommo-lead', {
         method: 'POST',
         headers: {
@@ -123,11 +118,6 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
       showThankYou()
     } catch (error) {
       console.log(error)
-      pushDataLayerEvent('form_error', {
-        form_type: getFormType(),
-        form_context: getFormContext(),
-        error_type: error instanceof Error ? error.name : 'unknown_error',
-      })
       toast.error('something went wrong, please try again later')
     } finally {
       setTimeout(() => {
