@@ -11,22 +11,11 @@ const { pushDataLayerEvent } = useDataLayerEvents()
 const formData = ref<IData>({
   email: { value: '', error: false },
 })
-const formEl = ref<HTMLFormElement | null>(null)
-const hasTrackedFormView = ref(false)
 const hasTrackedFormStart = ref(false)
-
-let formObserver: IntersectionObserver | undefined
 
 const formParams = {
   form_id: 'footer-form',
   form_type: 'newsletter',
-}
-
-const pushFormView = () => {
-  if (hasTrackedFormView.value) return
-
-  hasTrackedFormView.value = true
-  pushDataLayerEvent('form_view', formParams)
 }
 
 const pushFormStart = () => {
@@ -44,30 +33,6 @@ const onSubmit = async () => {
   formData.value.email.value = ''
 }
 
-onMounted(() => {
-  if (!formEl.value) return
-
-  if (!('IntersectionObserver' in window)) {
-    pushFormView()
-    return
-  }
-
-  formObserver = new IntersectionObserver(
-    entries => {
-      if (entries.some(entry => entry.isIntersecting)) {
-        pushFormView()
-        formObserver?.disconnect()
-      }
-    },
-    { threshold: 0.3 }
-  )
-
-  formObserver.observe(formEl.value)
-})
-
-onBeforeUnmount(() => {
-  formObserver?.disconnect()
-})
 </script>
 
 <template>
@@ -154,7 +119,6 @@ onBeforeUnmount(() => {
           </div>
         </div>
         <form
-          ref="formEl"
           class="footer__form"
           novalidate
           @focusin="pushFormStart"
