@@ -54,7 +54,15 @@ const findWebhookLead = (body: Record<string, any>): KommoWebhookLead | undefine
     }
   }
 
-  return lead.id ? lead : undefined
+  if (lead?.id) return lead
+
+  // Kommo may send webhook bodies as URL-encoded bracket keys instead of a
+  // nested object, for example `leads[status][0][id]=123`.
+  const flatLeadId = Object.entries(body).find(([key, fieldValue]) =>
+    /^(?:lead|leads)\[[^\]]+\]\[\d+\]\[id\]$/.test(key) && value(fieldValue)
+  )?.[1]
+
+  return flatLeadId ? { id: value(flatLeadId) } : undefined
 }
 
 const getLeadFieldValue = (lead: KommoLead, fieldId: number | undefined) =>
@@ -283,7 +291,11 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized webhook' })
   }
 
-  const body = (await readBody(event)) as Record<string, any>
+  const incomingBody = await readBody(event)
+  const body =
+    typeof incomingBody === 'string'
+      ? Object.fromEntries(new URLSearchParams(incomingBody))
+      : (incomingBody as Record<string, any>)
   const webhookLead = findWebhookLead(body)
   const leadId = numberValue(webhookLead?.id)
   if (!leadId) {
