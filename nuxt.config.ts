@@ -42,7 +42,7 @@ export default defineNuxtConfig({
   },
 
   gtm: {
-    id: 'GTM-KB2PNB9X',
+    id: 'GTM-MHK8J5FT',
     enabled: process.env.NODE_ENV === 'production',
     debug: false,
     defer: true,
