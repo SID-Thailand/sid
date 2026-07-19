@@ -148,16 +148,25 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 502, statusMessage: 'Kommo did not return a lead ID' })
   }
 
-  await kommoRequest(config, '/api/v4/leads/notes', {
-    method: 'POST',
-    body: JSON.stringify([
+  try {
+    await kommoRequest(
+      config,
+      '/api/v4/leads/notes',
       {
-        entity_id: leadId,
-        note_type: 'common',
-        params: { text: formatLeadNote(payload, payload.fields || {}) },
+        method: 'POST',
+        body: JSON.stringify([
+          {
+            entity_id: leadId,
+            note_type: 'common',
+            params: { text: formatLeadNote(payload, payload.fields || {}) },
+          },
+        ]),
       },
-    ]),
-  })
+      3_000
+    )
+  } catch (error) {
+    console.warn('Kommo lead note was not created', error)
+  }
 
   return { ok: true, leadId }
 })
