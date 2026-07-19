@@ -5,6 +5,12 @@ type KommoConfig = {
   statusId: string
   responsibleUserId: string
   qualifiedWebhookSecret?: string
+  googleDataManagerClientId?: string
+  googleDataManagerClientSecret?: string
+  googleDataManagerRefreshToken?: string
+  googleAdsOperatingAccountId?: string
+  googleAdsLoginAccountId?: string
+  googleAdsConversionActionId?: string
   metaPixelId?: string
   metaConversionsApiToken?: string
 }
@@ -30,7 +36,8 @@ export const KOMMO_TRACKING_FIELD_NAMES = {
   fbp: 'fbp',
   fbc: 'fbc',
   firstLandingPage: 'first_landing_page',
-  qualifiedExportedAt: 'qlead_exported_at',
+  qualifiedGoogleSentAt: 'qlead_google_sent_at',
+  qualifiedMetaSentAt: 'qlead_meta_sent_at',
 } as const
 
 export const getKommoConfig = (): KommoConfig => {
