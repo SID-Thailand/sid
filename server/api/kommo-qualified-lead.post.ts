@@ -291,11 +291,12 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized webhook' })
   }
 
-  const incomingBody = await readBody(event)
-  const body =
-    typeof incomingBody === 'string'
-      ? Object.fromEntries(new URLSearchParams(incomingBody))
-      : (incomingBody as Record<string, any>)
+  const rawBody = await readRawBody(event, 'utf8')
+  const body = rawBody
+    ? rawBody.trim().startsWith('{')
+      ? (JSON.parse(rawBody) as Record<string, any>)
+      : Object.fromEntries(new URLSearchParams(rawBody))
+    : {}
   const webhookLead = findWebhookLead(body)
   const leadId = numberValue(webhookLead?.id)
   if (!leadId) {
