@@ -32,10 +32,11 @@ export const useContactClickTracking = () => {
       })
     }
 
-    document.addEventListener('click', onClick)
+    // Capture the interaction before tel:/mailto: handlers hand control to the browser.
+    document.addEventListener('click', onClick, true)
 
     onBeforeUnmount(() => {
-      document.removeEventListener('click', onClick)
+      document.removeEventListener('click', onClick, true)
     })
   })
 }
