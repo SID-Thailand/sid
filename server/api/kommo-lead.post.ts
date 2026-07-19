@@ -14,8 +14,21 @@ type LeadRequest = {
   trafficSource: Record<string, string | undefined>
 }
 
+type CreatedEntity = { id?: number }
+type CreatedEntityResponse =
+  | CreatedEntity[]
+  | (CreatedEntity & { _embedded?: Record<string, CreatedEntity[]> })
+
 const clean = (value: unknown) => String(value || '').trim()
 const normalizedPhone = (value: string) => value.replace(/\D/g, '')
+
+const getCreatedEntityId = (
+  result: CreatedEntityResponse,
+  collection: 'contacts' | 'leads'
+) => {
+  if (Array.isArray(result)) return result[0]?.id
+  return result.id || result._embedded?.[collection]?.[0]?.id
+}
 
 const findField = (fields: Record<string, string>, expression: RegExp) =>
   Object.entries(fields).find(([key]) => expression.test(key))?.[1] || ''
@@ -80,7 +93,7 @@ export default defineEventHandler(async event => {
 
   const contact = existingContact
     ? { id: existingContact.id }
-    : await kommoRequest<{ id: number }[]>(config, '/api/v4/contacts', {
+    : await kommoRequest<CreatedEntityResponse>(config, '/api/v4/contacts', {
         method: 'POST',
         body: JSON.stringify([
           {
@@ -91,7 +104,11 @@ export default defineEventHandler(async event => {
             ],
           },
         ]),
-      }).then(result => result[0])
+      }).then(result => ({ id: getCreatedEntityId(result, 'contacts') }))
+
+  if (!contact.id) {
+    throw createError({ statusCode: 502, statusMessage: 'Kommo did not return a contact ID' })
+  }
 
   const traffic = payload.trafficSource || {}
   const values: Array<[keyof typeof KOMMO_TRACKING_FIELD_NAMES, string]> = [
@@ -109,7 +126,7 @@ export default defineEventHandler(async event => {
     .map(([key, value]) => ({ fieldId: leadFields.get(KOMMO_TRACKING_FIELD_NAMES[key]), value }))
     .filter((field): field is { fieldId: number; value: string } => Boolean(field.fieldId && field.value))
 
-  const lead = await kommoRequest<{ id: number }[]>(config, '/api/v4/leads', {
+  const lead = await kommoRequest<CreatedEntityResponse>(config, '/api/v4/leads', {
     method: 'POST',
     body: JSON.stringify([
       {
@@ -126,7 +143,7 @@ export default defineEventHandler(async event => {
     ]),
   })
 
-  const leadId = lead[0]?.id
+  const leadId = getCreatedEntityId(lead, 'leads')
   if (!leadId) {
     throw createError({ statusCode: 502, statusMessage: 'Kommo did not return a lead ID' })
   }
