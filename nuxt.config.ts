@@ -1,4 +1,3 @@
-import { encodeConfig } from './cli/decodeEnv'
 import { pageTransition } from './transitions/base'
 
 export default defineNuxtConfig({
@@ -70,11 +69,15 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    kommo: {
+      subdomain: '',
+      longLivedToken: '',
+      pipelineId: '',
+      statusId: '',
+      responsibleUserId: '',
+    },
     public: {
       ENVIROMENT: process.env.NODE_ENV,
-      value: encodeConfig({
-        FORMSPREE_KEY: process.env.FORMSPREE_KEY,
-      }),
     },
   },
 })
