@@ -120,7 +120,13 @@ export default defineEventHandler(async event => {
     ['utmReferrer', clean(traffic.first_referrer)],
     ['referrer', clean(traffic.first_referrer)],
     ['gclid', clean(traffic.gclid)],
+    ['gclientid', clean(traffic.gclientid)],
+    ['wbraid', clean(traffic.wbraid)],
+    ['gbraid', clean(traffic.gbraid)],
     ['fbclid', clean(traffic.fbclid)],
+    ['fbp', clean(traffic.fbp)],
+    ['fbc', clean(traffic.fbc)],
+    ['firstLandingPage', clean(traffic.first_landing_page)],
   ]
   const trackingFields = values
     .map(([key, value]) => ({ fieldId: leadFields.get(KOMMO_TRACKING_FIELD_NAMES[key]), value }))
