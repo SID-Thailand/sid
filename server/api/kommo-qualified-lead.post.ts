@@ -87,6 +87,26 @@ const updateLeadField = async (
   })
 }
 
+const ensureLeadField = async (
+  config: RuntimeKommoConfig,
+  fieldMap: Map<string, number>,
+  name: string
+) => {
+  const existingFieldId = fieldMap.get(name)
+  if (existingFieldId) return existingFieldId
+
+  const field = await kommoRequest<{ id?: number }>(config, '/api/v4/leads/custom_fields', {
+    method: 'POST',
+    body: JSON.stringify({ name, type: 'text', is_api_only: true }),
+  })
+  if (!field.id) {
+    throw createError({ statusCode: 502, statusMessage: `Kommo did not create ${name}` })
+  }
+
+  fieldMap.set(name, field.id)
+  return field.id
+}
+
 const sha256 = async (raw: string) => {
   if (!raw) return undefined
   const bytes = new TextEncoder().encode(raw.trim().toLowerCase())
@@ -287,7 +307,11 @@ export default defineEventHandler(async event => {
   )
 
   const destinations: Record<string, 'sent' | 'duplicate' | 'not_configured' | 'not_attributable'> = {}
-  const googleFieldId = fieldMap.get(KOMMO_TRACKING_FIELD_NAMES.qualifiedGoogleSentAt)
+  const googleFieldId = await ensureLeadField(
+    config,
+    fieldMap,
+    KOMMO_TRACKING_FIELD_NAMES.qualifiedGoogleSentAt
+  )
   const googleConfigured = hasGoogleConfiguration(
     useRuntimeConfig().kommo as Record<string, string>
   )
@@ -301,10 +325,12 @@ export default defineEventHandler(async event => {
     if (googleSent) await updateLeadField(config, lead, googleFieldId)
   }
 
-  const metaFieldId = fieldMap.get(KOMMO_TRACKING_FIELD_NAMES.qualifiedMetaSentAt)
-  if (!metaFieldId) {
-    destinations.meta = 'not_configured'
-  } else if (getLeadFieldValue(lead, metaFieldId)) {
+  const metaFieldId = await ensureLeadField(
+    config,
+    fieldMap,
+    KOMMO_TRACKING_FIELD_NAMES.qualifiedMetaSentAt
+  )
+  if (getLeadFieldValue(lead, metaFieldId)) {
     destinations.meta = 'duplicate'
   } else {
     const metaSent = await sendMetaQualifiedLead({ lead, contact, tracking })
