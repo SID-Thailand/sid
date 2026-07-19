@@ -4,6 +4,9 @@ type KommoConfig = {
   pipelineId: string
   statusId: string
   responsibleUserId: string
+  qualifiedWebhookSecret?: string
+  metaPixelId?: string
+  metaConversionsApiToken?: string
 }
 
 type KommoField = {
@@ -20,14 +23,25 @@ export const KOMMO_TRACKING_FIELD_NAMES = {
   utmReferrer: 'utm_referrer',
   referrer: 'referrer',
   gclid: 'gclid',
+  gclientid: 'gclientid',
+  wbraid: 'wbraid',
+  gbraid: 'gbraid',
   fbclid: 'fbclid',
+  fbp: 'fbp',
+  fbc: 'fbc',
+  firstLandingPage: 'first_landing_page',
+  qualifiedExportedAt: 'qlead_exported_at',
 } as const
 
 export const getKommoConfig = (): KommoConfig => {
   const config = useRuntimeConfig().kommo as KommoConfig
-  const missing = Object.entries(config)
-    .filter(([, value]) => !value)
-    .map(([key]) => key)
+  const missing = [
+    'subdomain',
+    'longLivedToken',
+    'pipelineId',
+    'statusId',
+    'responsibleUserId',
+  ].filter(key => !config[key as keyof KommoConfig])
 
   if (missing.length) {
     throw createError({
