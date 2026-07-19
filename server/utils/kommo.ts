@@ -42,16 +42,32 @@ export const getKommoConfig = (): KommoConfig => {
 export const kommoRequest = async <T>(
   config: KommoConfig,
   path: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  timeoutMs = 10_000
 ) => {
-  const response = await fetch(`https://${config.subdomain}.kommo.com${path}`, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${config.longLivedToken}`,
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+
+  let response: Response
+  try {
+    response = await fetch(`https://${config.subdomain}.kommo.com${path}`, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${config.longLivedToken}`,
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown request error'
+    throw createError({
+      statusCode: 502,
+      statusMessage: `Kommo API request failed: ${message}`,
+    })
+  } finally {
+    clearTimeout(timeout)
+  }
 
   if (!response.ok) {
     const body = await response.text().catch(() => '')
