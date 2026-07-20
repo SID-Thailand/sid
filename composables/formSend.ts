@@ -1,6 +1,6 @@
 import { delayPromise } from '@emotionagency/utils'
 import type { iInputData } from '~/types/headless/input'
-import { captureTrafficSource } from '~/utils/trafficSource'
+import { resolveTrafficSource } from '~/utils/trafficSource'
 
 export interface IData {
   [key: string]: Omit<iInputData, 'id'>
@@ -65,7 +65,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
 
     const items = Object.entries(data)
 
-    const trafficSource = captureTrafficSource()
+    const trafficSource = await resolveTrafficSource()
     const fields = Object.fromEntries(
       items.map(([key, value]) => [key, String(value?.value ?? '')])
     )
