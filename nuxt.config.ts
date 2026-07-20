@@ -87,7 +87,7 @@ export default defineNuxtConfig({
       metaPixelId: '',
       metaConversionsApiToken: '',
       yandexMetrikaCounterId: '110873210',
-      yandexMetrikaOAuthToken: '',
+      yandexMetrikaOAuthToken: process.env.NUXT_KOMMO_YANDEX_METRIKA_OAUTH_TOKEN || '',
       yandexMetrikaQualifiedGoalId: '586798746',
     },
     public: {
