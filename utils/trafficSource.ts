@@ -74,32 +74,40 @@ const captureYandexClientId = (stored: TrafficSource) => {
 
 const waitForYandexClientId = () =>
   new Promise<string>(resolve => {
-    const fromCookie = getCookie('_ym_uid')
-    if (fromCookie) {
-      resolve(fromCookie)
-      return
-    }
-
-    if (typeof window.ym !== 'function') {
-      resolve('')
-      return
-    }
-
+    const deadline = Date.now() + 5_000
     let settled = false
-    const finish = (value = '') => {
+
+    const finish = (clientId = '') => {
       if (settled) return
       settled = true
-      clearTimeout(timeout)
-      resolve(value || getCookie('_ym_uid'))
+      resolve(clientId || getCookie('_ym_uid'))
     }
 
-    const timeout = window.setTimeout(() => finish(), 1200)
+    const read = () => {
+      const fromCookie = getCookie('_ym_uid')
+      if (fromCookie) {
+        finish(fromCookie)
+        return
+      }
 
-    try {
-      window.ym(110873210, 'getClientID', (clientId: string) => finish(clientId))
-    } catch {
-      finish()
+      if (typeof window.ym === 'function') {
+        try {
+          window.ym(110873210, 'getClientID', (clientId: string) => {
+            if (clientId) finish(clientId)
+          })
+        } catch {
+          // The counter can still be loading through GTM.
+        }
+      }
+
+      if (Date.now() < deadline && !settled) {
+        window.setTimeout(read, 250)
+      } else {
+        finish()
+      }
     }
+
+    read()
   })
 
 export const captureTrafficSource = (): TrafficSource => {
