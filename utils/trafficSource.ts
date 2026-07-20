@@ -71,6 +71,37 @@ const captureYandexClientId = (stored: TrafficSource) => {
   }
 }
 
+
+const waitForYandexClientId = () =>
+  new Promise<string>(resolve => {
+    const fromCookie = getCookie('_ym_uid')
+    if (fromCookie) {
+      resolve(fromCookie)
+      return
+    }
+
+    if (typeof window.ym !== 'function') {
+      resolve('')
+      return
+    }
+
+    let settled = false
+    const finish = (value = '') => {
+      if (settled) return
+      settled = true
+      clearTimeout(timeout)
+      resolve(value || getCookie('_ym_uid'))
+    }
+
+    const timeout = window.setTimeout(() => finish(), 1200)
+
+    try {
+      window.ym(110873210, 'getClientID', (clientId: string) => finish(clientId))
+    } catch {
+      finish()
+    }
+  })
+
 export const captureTrafficSource = (): TrafficSource => {
   if (typeof window === 'undefined') return {}
 
@@ -107,5 +138,18 @@ export const captureTrafficSource = (): TrafficSource => {
     writeStoredTrafficSource(next)
   }
 
+  return next
+}
+
+
+export const resolveTrafficSource = async (): Promise<TrafficSource> => {
+  const current = captureTrafficSource()
+  if (current.ymclientid) return current
+
+  const ymclientid = await waitForYandexClientId()
+  if (!ymclientid) return current
+
+  const next = { ...current, ymclientid }
+  writeStoredTrafficSource(next)
   return next
 }
