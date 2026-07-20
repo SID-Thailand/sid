@@ -126,27 +126,45 @@ export default defineEventHandler(async event => {
     ['fbclid', clean(traffic.fbclid)],
     ['fbp', clean(traffic.fbp)],
     ['fbc', clean(traffic.fbc)],
+    ['yclid', clean(traffic.yclid)],
+    ['ymclientid', clean(traffic.ymclientid)],
     ['firstLandingPage', clean(traffic.first_landing_page)],
   ]
+  const utmFieldKeys = new Set<keyof typeof KOMMO_TRACKING_FIELD_NAMES>([
+    'utmSource',
+    'utmMedium',
+    'utmCampaign',
+    'utmContent',
+    'utmTerm',
+  ])
   const trackingFields = values
-    .map(([key, value]) => ({ fieldId: leadFields.get(KOMMO_TRACKING_FIELD_NAMES[key]), value }))
-    .filter((field): field is { fieldId: number; value: string } => Boolean(field.fieldId && field.value))
+    .map(([key, value]) => ({
+      fieldId: leadFields.get(KOMMO_TRACKING_FIELD_NAMES[key]),
+      value,
+      // Explicitly overwrite any CRM-side template value when this is a
+      // direct lead without a UTM parameter.
+      includeEmptyValue: utmFieldKeys.has(key),
+    }))
+    .filter(
+      (field): field is { fieldId: number; value: string; includeEmptyValue: boolean } =>
+        Boolean(field.fieldId && (field.value || field.includeEmptyValue))
+    )
+
+  const leadPayload = {
+    name: getLeadName(payload, name, phone),
+    pipeline_id: Number(config.pipelineId),
+    ...(config.statusId ? { status_id: Number(config.statusId) } : {}),
+    responsible_user_id: Number(config.responsibleUserId),
+    _embedded: { contacts: [{ id: contact.id }] },
+    custom_fields_values: trackingFields.map(({ fieldId, value }) => ({
+      field_id: fieldId,
+      values: [{ value }],
+    })),
+  }
 
   const lead = await kommoRequest<CreatedEntityResponse>(config, '/api/v4/leads', {
     method: 'POST',
-    body: JSON.stringify([
-      {
-        name: getLeadName(payload, name, phone),
-        pipeline_id: Number(config.pipelineId),
-        status_id: Number(config.statusId),
-        responsible_user_id: Number(config.responsibleUserId),
-        _embedded: { contacts: [{ id: contact.id }] },
-        custom_fields_values: trackingFields.map(({ fieldId, value }) => ({
-          field_id: fieldId,
-          values: [{ value }],
-        })),
-      },
-    ]),
+    body: JSON.stringify([leadPayload]),
   })
 
   const leadId = getCreatedEntityId(lead, 'leads')
