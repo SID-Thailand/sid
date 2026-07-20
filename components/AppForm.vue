@@ -102,8 +102,7 @@ const onSubmit = () => {
   <form
     class="form"
     novalidate
-    @focusin="pushFormStart"
-    @input="pushFormStart"
+    @focusin.once="pushFormStart"
     @submit.prevent="onSubmit"
   >
     <div
