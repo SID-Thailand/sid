@@ -339,9 +339,17 @@ const sendYandexQualifiedLead = async (input: {
     !config.yandexMetrikaOAuthToken ||
     !config.yandexMetrikaQualifiedGoalId
   ) {
+    console.warn('Yandex qualified lead is not configured', {
+      counter: Boolean(config.yandexMetrikaCounterId),
+      token: Boolean(config.yandexMetrikaOAuthToken),
+      goal: Boolean(config.yandexMetrikaQualifiedGoalId),
+    })
     return false
   }
-  if (!input.tracking.ymclientid && !input.tracking.yclid) return false
+  if (!input.tracking.ymclientid && !input.tracking.yclid) {
+    console.info('Yandex qualified lead has no identifier', { leadId: input.lead.id })
+    return false
+  }
 
   const headers = ['Target', 'DateTime', 'ClientId', 'Yclid']
   const record = [
@@ -364,6 +372,10 @@ const sendYandexQualifiedLead = async (input: {
   )
 
   if (!response.ok) {
+    console.error('Yandex qualified lead upload failed', {
+      leadId: input.lead.id,
+      status: response.status,
+    })
     throw createError({
       statusCode: 502,
       statusMessage: `Yandex Metrika offline conversion error: ${response.status}`,
@@ -477,5 +489,6 @@ export default defineEventHandler(async event => {
     if (yandexSent) await updateLeadField(config, lead, yandexFieldId)
   }
 
+  console.info('Qualified lead delivery result', { leadId, destinations })
   return { ok: true, qualified: true, destinations }
 })
