@@ -42,6 +42,14 @@ export const KOMMO_TRACKING_FIELD_NAMES = {
   qualifiedMetaSentAt: 'qlead_meta_sent_at',
   qualifiedGa4SentAt: 'qlead_ga4_sent_at',
   qualifiedYandexSentAt: 'qlead_yandex_sent_at',
+  qualifiedGoogleStatus: 'qlead_google_status',
+  qualifiedGoogleDetail: 'qlead_google_detail',
+  qualifiedMetaStatus: 'qlead_meta_status',
+  qualifiedMetaDetail: 'qlead_meta_detail',
+  qualifiedGa4Status: 'qlead_ga4_status',
+  qualifiedGa4Detail: 'qlead_ga4_detail',
+  qualifiedYandexStatus: 'qlead_yandex_status',
+  qualifiedYandexDetail: 'qlead_yandex_detail',
 } as const
 
 export const getKommoConfig = (): KommoConfig => {
