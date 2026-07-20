@@ -68,6 +68,27 @@ const formatLeadNote = (payload: LeadRequest, fields: Record<string, string>) =>
     .join('\n')
 }
 
+
+const ensureLeadField = async (
+  config: ReturnType<typeof getKommoConfig>,
+  fields: Map<string, number>,
+  name: string
+) => {
+  const existingId = fields.get(name)
+  if (existingId) return existingId
+
+  const created = await kommoRequest<{ id?: number }>(config, '/api/v4/leads/custom_fields', {
+    method: 'POST',
+    body: JSON.stringify({ name, type: 'text', is_api_only: true }),
+  })
+  if (!created.id) {
+    throw createError({ statusCode: 502, statusMessage: `Kommo did not create ${name}` })
+  }
+
+  fields.set(name, created.id)
+  return created.id
+}
+
 export default defineEventHandler(async event => {
   const payload = (await readBody(event)) as LeadRequest
   const name = clean(findField(payload.fields || {}, /name/i))
@@ -137,6 +158,12 @@ export default defineEventHandler(async event => {
     'utmContent',
     'utmTerm',
   ])
+  for (const [key, value] of values) {
+    const includeEmptyValue = utmFieldKeys.has(key)
+    if (!value && !includeEmptyValue) continue
+    await ensureLeadField(config, leadFields, KOMMO_TRACKING_FIELD_NAMES[key])
+  }
+
   const trackingFields = values
     .map(([key, value]) => ({
       fieldId: leadFields.get(KOMMO_TRACKING_FIELD_NAMES[key]),
