@@ -44,6 +44,7 @@
     "split-type": "^0.3.4",
     "swiper": "^11.2.6",
     "ua-parser-js": "^2.0.4",
-    "vue": "latest"
+    "vue": "latest",
+    "@vercel/queue": "^0.1.3"
   }
 }
