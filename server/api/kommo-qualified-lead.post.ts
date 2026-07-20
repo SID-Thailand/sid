@@ -421,74 +421,69 @@ export default defineEventHandler(async event => {
       .map(([key, fieldName]) => [key, getLeadFieldValue(lead, fieldMap.get(fieldName))])
   )
 
-  const destinations: Record<string, 'sent' | 'duplicate' | 'not_configured' | 'not_attributable'> = {}
-  const googleFieldId = await ensureLeadField(
-    config,
-    fieldMap,
-    KOMMO_TRACKING_FIELD_NAMES.qualifiedGoogleSentAt
-  )
-  const googleConfigured = hasGoogleConfiguration(
-    useRuntimeConfig().kommo as Record<string, string>
-  )
-  if (!googleFieldId || !googleConfigured) {
-    destinations.google = 'not_configured'
-  } else if (getLeadFieldValue(lead, googleFieldId)) {
-    destinations.google = 'duplicate'
-  } else {
-    const googleSent = await sendGoogleQualifiedLead({ lead, contact, tracking })
-    destinations.google = googleSent ? 'sent' : 'not_attributable'
-    if (googleSent) await updateLeadField(config, lead, googleFieldId)
+  type DestinationStatus =
+    | 'sent'
+    | 'duplicate'
+    | 'not_configured'
+    | 'not_attributable'
+    | 'failed'
+  const [googleFieldId, metaFieldId, ga4FieldId, yandexFieldId] = await Promise.all([
+    ensureLeadField(config, fieldMap, KOMMO_TRACKING_FIELD_NAMES.qualifiedGoogleSentAt),
+    ensureLeadField(config, fieldMap, KOMMO_TRACKING_FIELD_NAMES.qualifiedMetaSentAt),
+    ensureLeadField(config, fieldMap, KOMMO_TRACKING_FIELD_NAMES.qualifiedGa4SentAt),
+    ensureLeadField(config, fieldMap, KOMMO_TRACKING_FIELD_NAMES.qualifiedYandexSentAt),
+  ])
+
+  const send = async (
+    channel: string,
+    action: () => Promise<DestinationStatus>
+  ): Promise<[string, DestinationStatus]> => {
+    try {
+      return [channel, await action()]
+    } catch (error) {
+      console.error('Qualified lead delivery failed', {
+        leadId,
+        channel,
+        message: error instanceof Error ? error.message : String(error),
+      })
+      return [channel, 'failed']
+    }
   }
 
-  const metaFieldId = await ensureLeadField(
-    config,
-    fieldMap,
-    KOMMO_TRACKING_FIELD_NAMES.qualifiedMetaSentAt
-  )
-  if (getLeadFieldValue(lead, metaFieldId)) {
-    destinations.meta = 'duplicate'
-  } else {
-    const metaSent = await sendMetaQualifiedLead({ lead, contact, tracking })
-    destinations.meta = metaSent ? 'sent' : 'not_configured'
-    if (metaSent) await updateLeadField(config, lead, metaFieldId)
-  }
-
-  const ga4FieldId = await ensureLeadField(
-    config,
-    fieldMap,
-    KOMMO_TRACKING_FIELD_NAMES.qualifiedGa4SentAt
-  )
-  const ga4Configured = Boolean(
-    value((useRuntimeConfig().kommo as Record<string, string>).ga4MeasurementProtocolApiSecret)
-  )
-  if (!ga4Configured) {
-    destinations.ga4 = 'not_configured'
-  } else if (getLeadFieldValue(lead, ga4FieldId)) {
-    destinations.ga4 = 'duplicate'
-  } else {
-    const ga4Sent = await sendGa4QualifiedLead({ lead, tracking })
-    destinations.ga4 = ga4Sent ? 'sent' : 'not_attributable'
-    if (ga4Sent) await updateLeadField(config, lead, ga4FieldId)
-  }
-
-  const yandexFieldId = await ensureLeadField(
-    config,
-    fieldMap,
-    KOMMO_TRACKING_FIELD_NAMES.qualifiedYandexSentAt
-  )
-  const yandexConfigured = Boolean(
-    value((useRuntimeConfig().kommo as Record<string, string>).yandexMetrikaOAuthToken)
-  )
-  if (!yandexConfigured) {
-    destinations.yandex = 'not_configured'
-  } else if (getLeadFieldValue(lead, yandexFieldId)) {
-    destinations.yandex = 'duplicate'
-  } else {
-    const yandexSent = await sendYandexQualifiedLead({ lead, tracking })
-    destinations.yandex = yandexSent ? 'sent' : 'not_attributable'
-    if (yandexSent) await updateLeadField(config, lead, yandexFieldId)
-  }
-
+  const runtimeConfig = useRuntimeConfig().kommo as Record<string, string>
+  const deliveries = await Promise.all([
+    send('google', async () => {
+      if (!hasGoogleConfiguration(runtimeConfig)) return 'not_configured'
+      if (getLeadFieldValue(lead, googleFieldId)) return 'duplicate'
+      const sent = await sendGoogleQualifiedLead({ lead, contact, tracking })
+      if (sent) await updateLeadField(config, lead, googleFieldId)
+      return sent ? 'sent' : 'not_attributable'
+    }),
+    send('meta', async () => {
+      if (!runtimeConfig.metaPixelId || !runtimeConfig.metaConversionsApiToken) {
+        return 'not_configured'
+      }
+      if (getLeadFieldValue(lead, metaFieldId)) return 'duplicate'
+      const sent = await sendMetaQualifiedLead({ lead, contact, tracking })
+      if (sent) await updateLeadField(config, lead, metaFieldId)
+      return sent ? 'sent' : 'not_attributable'
+    }),
+    send('ga4', async () => {
+      if (!runtimeConfig.ga4MeasurementProtocolApiSecret) return 'not_configured'
+      if (getLeadFieldValue(lead, ga4FieldId)) return 'duplicate'
+      const sent = await sendGa4QualifiedLead({ lead, tracking })
+      if (sent) await updateLeadField(config, lead, ga4FieldId)
+      return sent ? 'sent' : 'not_attributable'
+    }),
+    send('yandex', async () => {
+      if (!runtimeConfig.yandexMetrikaOAuthToken) return 'not_configured'
+      if (getLeadFieldValue(lead, yandexFieldId)) return 'duplicate'
+      const sent = await sendYandexQualifiedLead({ lead, tracking })
+      if (sent) await updateLeadField(config, lead, yandexFieldId)
+      return sent ? 'sent' : 'not_attributable'
+    }),
+  ])
+  const destinations = Object.fromEntries(deliveries) as Record<string, DestinationStatus>
   console.info('Qualified lead delivery result', { leadId, destinations })
   return { ok: true, qualified: true, destinations }
 })
