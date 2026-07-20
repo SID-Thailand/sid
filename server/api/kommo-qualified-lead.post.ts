@@ -79,6 +79,102 @@ const getContactValue = (contact: KommoContact | undefined, code: string) =>
       ?.values?.[0]?.value
   )
 
+const getTrackingValueFromNotes = async (
+  config: RuntimeKommoConfig,
+  leadId: number,
+  key: 'ymclientid' | 'yclid'
+) => {
+  try {
+    const result = await kommoRequest<{
+      _embedded?: { notes?: Array<{ params?: { text?: string } }> }
+    }>(config, `/api/v4/leads/${leadId}/notes?limit=50`)
+    const pattern = new RegExp(`^${key}:\\s*(.+)import {
+  getKommoConfig,
+  getLeadFieldMap,
+  KOMMO_TRACKING_FIELD_NAMES,
+  kommoRequest,
+} from '~/server/utils/kommo'
+
+const QUALIFIED_PIPELINES = new Map([
+  [9000268, 'Workflow (Consultancy)'],
+  [9007500, 'Workflow (Development)'],
+])
+
+type KommoWebhookLead = {
+  id?: string | number
+  pipeline_id?: string | number
+  status_id?: string | number
+}
+
+type KommoLead = {
+  id: number
+  pipeline_id: number
+  status_id: number
+  created_at: number
+  custom_fields_values?: Array<{
+    field_id: number
+    values?: Array<{ value?: string }>
+  }>
+  _embedded?: { contacts?: Array<{ id: number }> }
+}
+
+type KommoContact = {
+  name?: string
+  custom_fields_values?: Array<{
+    field_code?: string
+    values?: Array<{ value?: string }>
+  }>
+}
+
+type RuntimeKommoConfig = ReturnType<typeof getKommoConfig>
+
+const value = (input: unknown) => String(input || '').trim()
+const numberValue = (input: unknown) => Number(value(input))
+
+const findWebhookLead = (body: Record<string, any>): KommoWebhookLead | undefined => {
+  // Kommo may send webhook bodies as URL-encoded bracket keys instead of a
+  // nested object, for example `leads[status][0][id]=123`.
+  const flatLeadId = Object.entries(body).find(([key, fieldValue]) =>
+    /^(?:lead|leads)\[[^\]]+\]\[\d+\]\[id\]$/.test(key) && value(fieldValue)
+  )?.[1]
+  if (flatLeadId) return { id: value(flatLeadId) }
+
+  const lead = body.lead || body.leads
+
+  if (!lead || typeof lead !== 'object') return undefined
+
+  for (const webhookEvent of Object.values(lead)) {
+    if (Array.isArray(webhookEvent) && webhookEvent[0]?.id) return webhookEvent[0]
+    if (webhookEvent && typeof webhookEvent === 'object') {
+      const first = Object.values(webhookEvent as Record<string, KommoWebhookLead>)[0]
+      if (first?.id) return first
+    }
+  }
+
+  return lead.id ? lead : undefined
+}
+
+const getLeadFieldValue = (lead: KommoLead, fieldId: number | undefined) =>
+  fieldId
+    ? value(
+        lead.custom_fields_values?.find(field => field.field_id === fieldId)
+          ?.values?.[0]?.value
+      )
+    : ''
+
+, 'mi')
+
+    for (const note of result._embedded?.notes || []) {
+      const match = value(note.params?.text).match(pattern)
+      if (match?.[1]) return value(match[1])
+    }
+  } catch {
+    // The direct lead fields remain the primary attribution source.
+  }
+
+  return ''
+}
+
 const updateLeadField = async (
   config: RuntimeKommoConfig,
   lead: KommoLead,
@@ -420,6 +516,10 @@ export default defineEventHandler(async event => {
       .filter(([, fieldName]) => !fieldName.startsWith('qlead_'))
       .map(([key, fieldName]) => [key, getLeadFieldValue(lead, fieldMap.get(fieldName))])
   )
+
+  if (!tracking.ymclientid && !tracking.yclid) {
+    tracking.ymclientid = await getTrackingValueFromNotes(config, lead.id, 'ymclientid')
+  }
 
   const destinations: Record<string, 'sent' | 'duplicate' | 'not_configured' | 'not_attributable'> = {}
   const googleFieldId = await ensureLeadField(
