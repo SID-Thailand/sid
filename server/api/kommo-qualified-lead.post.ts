@@ -287,6 +287,92 @@ const sendMetaQualifiedLead = async (input: {
   return true
 }
 
+const sendGa4QualifiedLead = async (input: {
+  lead: KommoLead
+  tracking: Record<string, string>
+}) => {
+  const config = useRuntimeConfig().kommo as Record<string, string>
+  if (!config.ga4MeasurementId || !config.ga4MeasurementProtocolApiSecret) return false
+  if (!input.tracking.gclientid) return false
+
+  const query = new URLSearchParams({
+    measurement_id: config.ga4MeasurementId,
+    api_secret: config.ga4MeasurementProtocolApiSecret,
+  })
+  const response = await fetch(`https://www.google-analytics.com/mp/collect?${query}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id: input.tracking.gclientid,
+      events: [
+        {
+          name: 'qualify_lead',
+          params: {
+            engagement_time_msec: 1,
+            kommo_lead_id: String(input.lead.id),
+            pipeline: QUALIFIED_PIPELINES.get(input.lead.pipeline_id) || '',
+          },
+        },
+      ],
+    }),
+  })
+
+  if (!response.ok) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: `GA4 Measurement Protocol error: ${response.status}`,
+    })
+  }
+
+  return true
+}
+
+const csvValue = (value: string) => `"${value.replaceAll('"', '""')}"`
+
+const sendYandexQualifiedLead = async (input: {
+  lead: KommoLead
+  tracking: Record<string, string>
+}) => {
+  const config = useRuntimeConfig().kommo as Record<string, string>
+  if (
+    !config.yandexMetrikaCounterId ||
+    !config.yandexMetrikaOAuthToken ||
+    !config.yandexMetrikaQualifiedGoalId
+  ) {
+    return false
+  }
+  if (!input.tracking.ymclientid && !input.tracking.yclid) return false
+
+  const headers = ['Target', 'DateTime', 'ClientId', 'Yclid']
+  const record = [
+    config.yandexMetrikaQualifiedGoalId,
+    String(Math.floor(Date.now() / 1000)),
+    input.tracking.ymclientid || '',
+    input.tracking.yclid || '',
+  ]
+  const csv = `${headers.join(',')}\n${record.map(csvValue).join(',')}\n`
+  const form = new FormData()
+  form.set('file', new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'qualified-lead.csv')
+
+  const response = await fetch(
+    `https://api-metrika.yandex.net/management/v1/counter/${config.yandexMetrikaCounterId}/offline_conversions/upload?type=BASIC&comment=Kommo%20qualified%20lead`,
+    {
+      method: 'POST',
+      headers: { Authorization: `OAuth ${config.yandexMetrikaOAuthToken}` },
+      body: form,
+    }
+  )
+
+  if (!response.ok) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: `Yandex Metrika offline conversion error: ${response.status}`,
+    })
+  }
+
+  return true
+}
+
 export default defineEventHandler(async event => {
   const config = getKommoConfig()
   const secret = getQuery(event).key
@@ -353,6 +439,42 @@ export default defineEventHandler(async event => {
     const metaSent = await sendMetaQualifiedLead({ lead, contact, tracking })
     destinations.meta = metaSent ? 'sent' : 'not_configured'
     if (metaSent) await updateLeadField(config, lead, metaFieldId)
+  }
+
+  const ga4FieldId = await ensureLeadField(
+    config,
+    fieldMap,
+    KOMMO_TRACKING_FIELD_NAMES.qualifiedGa4SentAt
+  )
+  const ga4Configured = Boolean(
+    value((useRuntimeConfig().kommo as Record<string, string>).ga4MeasurementProtocolApiSecret)
+  )
+  if (!ga4Configured) {
+    destinations.ga4 = 'not_configured'
+  } else if (getLeadFieldValue(lead, ga4FieldId)) {
+    destinations.ga4 = 'duplicate'
+  } else {
+    const ga4Sent = await sendGa4QualifiedLead({ lead, tracking })
+    destinations.ga4 = ga4Sent ? 'sent' : 'not_attributable'
+    if (ga4Sent) await updateLeadField(config, lead, ga4FieldId)
+  }
+
+  const yandexFieldId = await ensureLeadField(
+    config,
+    fieldMap,
+    KOMMO_TRACKING_FIELD_NAMES.qualifiedYandexSentAt
+  )
+  const yandexConfigured = Boolean(
+    value((useRuntimeConfig().kommo as Record<string, string>).yandexMetrikaOAuthToken)
+  )
+  if (!yandexConfigured) {
+    destinations.yandex = 'not_configured'
+  } else if (getLeadFieldValue(lead, yandexFieldId)) {
+    destinations.yandex = 'duplicate'
+  } else {
+    const yandexSent = await sendYandexQualifiedLead({ lead, tracking })
+    destinations.yandex = yandexSent ? 'sent' : 'not_attributable'
+    if (yandexSent) await updateLeadField(config, lead, yandexFieldId)
   }
 
   return { ok: true, qualified: true, destinations }
