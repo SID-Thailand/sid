@@ -84,6 +84,9 @@ export const captureTrafficSource = (): TrafficSource => {
     gclientid: stored.gclientid || getGoogleClientId(),
     fbp: stored.fbp || getCookie('_fbp'),
     fbc: stored.fbc || getCookie('_fbc'),
+    // `_ym_uid` is available synchronously, while the Metrika callback may
+    // arrive after a visitor submits a form.
+    ymclientid: stored.ymclientid || getCookie('_ym_uid'),
   }
 
   let hasNewSource = false
