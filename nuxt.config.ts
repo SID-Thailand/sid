@@ -88,7 +88,7 @@ export default defineNuxtConfig({
       metaConversionsApiToken: '',
       yandexMetrikaCounterId: '110873210',
       yandexMetrikaOAuthToken: '',
-      yandexMetrikaQualifiedGoalId: 'qualify_lead',
+      yandexMetrikaQualifiedGoalId: '586798746',
     },
     public: {
       ENVIROMENT: process.env.NODE_ENV,
