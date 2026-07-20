@@ -41,6 +41,19 @@ export default defineNuxtConfig({
     },
   },
 
+  nitro: {
+    vercel: {
+      queues: {
+        triggers: [
+          { topic: 'sid-qlead-google', retryAfterSeconds: 60 },
+          { topic: 'sid-qlead-meta', retryAfterSeconds: 60 },
+          { topic: 'sid-qlead-ga4', retryAfterSeconds: 60 },
+          { topic: 'sid-qlead-yandex', retryAfterSeconds: 60 },
+        ],
+      },
+    },
+  },
+
   gtm: {
     id: 'GTM-MHK8J5FT',
     enabled: process.env.NODE_ENV === 'production',
