@@ -82,8 +82,13 @@ export default defineNuxtConfig({
       googleAdsOperatingAccountId: '',
       googleAdsLoginAccountId: '',
       googleAdsConversionActionId: '',
+      ga4MeasurementId: 'G-F4VRTJKMFH',
+      ga4MeasurementProtocolApiSecret: '',
       metaPixelId: '',
       metaConversionsApiToken: '',
+      yandexMetrikaCounterId: '110873210',
+      yandexMetrikaOAuthToken: '',
+      yandexMetrikaQualifiedGoalId: 'qualify_lead',
     },
     public: {
       ENVIROMENT: process.env.NODE_ENV,

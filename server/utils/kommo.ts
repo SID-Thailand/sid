@@ -2,7 +2,7 @@ type KommoConfig = {
   subdomain: string
   longLivedToken: string
   pipelineId: string
-  statusId: string
+  statusId?: string
   responsibleUserId: string
   qualifiedWebhookSecret?: string
   googleDataManagerClientId?: string
@@ -35,9 +35,13 @@ export const KOMMO_TRACKING_FIELD_NAMES = {
   fbclid: 'fbclid',
   fbp: 'fbp',
   fbc: 'fbc',
+  yclid: 'yclid',
+  ymclientid: 'ymclientid',
   firstLandingPage: 'first_landing_page',
   qualifiedGoogleSentAt: 'qlead_google_sent_at',
   qualifiedMetaSentAt: 'qlead_meta_sent_at',
+  qualifiedGa4SentAt: 'qlead_ga4_sent_at',
+  qualifiedYandexSentAt: 'qlead_yandex_sent_at',
 } as const
 
 export const getKommoConfig = (): KommoConfig => {
@@ -46,7 +50,6 @@ export const getKommoConfig = (): KommoConfig => {
     'subdomain',
     'longLivedToken',
     'pipelineId',
-    'statusId',
     'responsibleUserId',
   ].filter(key => !config[key as keyof KommoConfig])
 

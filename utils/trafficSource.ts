@@ -21,6 +21,7 @@ export type TrafficSource = Partial<
   gclientid?: string
   fbp?: string
   fbc?: string
+  ymclientid?: string
 }
 
 const getCookie = (name: string) =>
@@ -40,7 +41,9 @@ const getGoogleClientId = () => {
 
 const readStoredTrafficSource = (): TrafficSource => {
   try {
-    const raw = window.localStorage.getItem(TRAFFIC_SOURCE_STORAGE_KEY)
+    // Attribution must not leak into a later direct visit. Keep it only while
+    // the visitor stays in the current browser session.
+    const raw = window.sessionStorage.getItem(TRAFFIC_SOURCE_STORAGE_KEY)
     return raw ? JSON.parse(raw) : {}
   } catch {
     return {}
@@ -49,9 +52,22 @@ const readStoredTrafficSource = (): TrafficSource => {
 
 const writeStoredTrafficSource = (value: TrafficSource) => {
   try {
-    window.localStorage.setItem(TRAFFIC_SOURCE_STORAGE_KEY, JSON.stringify(value))
+    window.sessionStorage.setItem(TRAFFIC_SOURCE_STORAGE_KEY, JSON.stringify(value))
   } catch {
     // Ignore storage errors; current URL data can still be attached to leads.
+  }
+}
+
+const captureYandexClientId = (stored: TrafficSource) => {
+  if (stored.ymclientid || typeof window.ym !== 'function') return
+
+  try {
+    window.ym(110873210, 'getClientID', (clientId: string) => {
+      if (!clientId) return
+      writeStoredTrafficSource({ ...readStoredTrafficSource(), ymclientid: clientId })
+    })
+  } catch {
+    // The Metrika counter can be unavailable during an early page load.
   }
 }
 
@@ -60,6 +76,7 @@ export const captureTrafficSource = (): TrafficSource => {
 
   const params = new URLSearchParams(window.location.search)
   const stored = readStoredTrafficSource()
+  captureYandexClientId(stored)
   const next: TrafficSource = {
     ...stored,
     first_landing_page: stored.first_landing_page || window.location.href,
