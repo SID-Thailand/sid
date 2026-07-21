@@ -19,7 +19,7 @@ All six website events are generated once by the site, pushed to the data layer,
 | --- | --- | --- | --- | --- |
 | Page loaded | `page_view` | `GA4 - page_view`, `Meta - page_view`, `Yandex Metrika - page_view` | `PageView` | `586747594` |
 | First meaningful interaction with a form | `form_start` | `GA4 - form_start`, `Meta - form_start`, `Yandex Metrika - form_start` | custom `form_start` | `586747659` |
-| Lead form successfully sent to Kommo | `generate_lead` | `GA4 - generate_lead`, `Meta - generate_lead`, `Yandex Metrika - generate_lead` | custom `generate_lead` | `586747821` |
+| Lead form successfully sent to Kommo | `generate_lead` | `GA4 - generate_lead`, `Meta - generate_lead`, `Yandex Metrika - generate_lead` | standard `Lead` | `586747821` |
 | WhatsApp link clicked | `click_whatsapp` | `GA4 - click_whatsapp`, `Meta - click_whatsapp`, `Yandex Metrika - click_whatsapp` | custom `click_whatsapp` | `586747856` |
 | Phone link clicked | `click_phone` | `GA4 - click_phone`, `Meta - click_phone`, `Yandex Metrika - click_phone` | custom `click_phone` | `586747857` |
 | Email link clicked | `click_email` | `GA4 - click_email`, `Meta - click_email`, `Yandex Metrika - click_email` | custom `click_email` | `586747987` |
