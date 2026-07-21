@@ -5,14 +5,9 @@ import {
   kommoRequest,
 } from '~/server/utils/kommo'
 
-export const QLEAD_QUEUE_TOPICS = {
-  google: 'sid-qlead-google',
-  meta: 'sid-qlead-meta',
-  ga4: 'sid-qlead-ga4',
-  yandex: 'sid-qlead-yandex',
-} as const
+export const QLEAD_CHANNELS = ['google', 'meta', 'ga4', 'yandex'] as const
 
-export type QLeadChannel = keyof typeof QLEAD_QUEUE_TOPICS
+export type QLeadChannel = (typeof QLEAD_CHANNELS)[number]
 
 const QUALIFIED_PIPELINES = new Map([
   [9000268, 'Workflow (Consultancy)'],
@@ -580,7 +575,7 @@ export default defineEventHandler(async event => {
   }
 
   const deliveries = await Promise.allSettled(
-    (Object.keys(QLEAD_QUEUE_TOPICS) as QLeadChannel[]).map(async channel => {
+    QLEAD_CHANNELS.map(async channel => {
       const status = await processQualifiedLeadDelivery(
         leadId,
         channel,
@@ -592,7 +587,7 @@ export default defineEventHandler(async event => {
 
   const results = Object.fromEntries(
     deliveries.map((delivery, index) => {
-      const channel = (Object.keys(QLEAD_QUEUE_TOPICS) as QLeadChannel[])[index]
+      const channel = QLEAD_CHANNELS[index]
       return [
         channel,
         delivery.status === 'fulfilled'
