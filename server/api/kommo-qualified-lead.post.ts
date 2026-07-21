@@ -4,7 +4,6 @@ import {
   KOMMO_TRACKING_FIELD_NAMES,
   kommoRequest,
 } from '~/server/utils/kommo'
-import { send } from '@vercel/queue'
 
 export const QLEAD_QUEUE_TOPICS = {
   google: 'sid-qlead-google',
@@ -580,23 +579,38 @@ export default defineEventHandler(async event => {
     return { ok: true, ignored: 'pipeline' }
   }
 
-  const queued = await Promise.all(
+  const deliveries = await Promise.allSettled(
     (Object.keys(QLEAD_QUEUE_TOPICS) as QLeadChannel[]).map(async channel => {
-      const result = await send(
-        QLEAD_QUEUE_TOPICS[channel],
-        { leadId, channel },
-        {
-          idempotencyKey: `sid-qlead-${leadId}-${channel}`,
-          retentionSeconds: 86_400,
-        }
+      const status = await processQualifiedLeadDelivery(
+        leadId,
+        channel,
+        `webhook:${leadId}:${channel}`
       )
-      return [channel, result.messageId] as const
+      return [channel, status] as const
+    })
+  )
+
+  const results = Object.fromEntries(
+    deliveries.map((delivery, index) => {
+      const channel = (Object.keys(QLEAD_QUEUE_TOPICS) as QLeadChannel[])[index]
+      return [
+        channel,
+        delivery.status === 'fulfilled'
+          ? delivery.value[1]
+          : {
+              status: 'failed',
+              detail:
+                delivery.reason instanceof Error
+                  ? delivery.reason.message
+                  : String(delivery.reason),
+            },
+      ]
     })
   )
 
   return {
     ok: true,
     qualified: true,
-    queued: Object.fromEntries(queued),
+    deliveries: results,
   }
 })
