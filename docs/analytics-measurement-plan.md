@@ -1,6 +1,6 @@
 # SID Thailand: measurement plan
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21
 
 ## Platform identifiers
 
@@ -38,11 +38,11 @@ A qualified lead is server-side only. It is not a seventh browser event and does
 ## Delivery design
 
 1. Kommo sends a webhook after the lead enters a qualified pipeline.
-2. The endpoint validates the webhook and immediately places four independent jobs into Vercel Queues.
-3. Each job has one deterministic idempotency key: `sid-qlead-<lead-id>-<channel>`.
-4. Each provider is processed independently, with retry on technical error.
-5. The lead stores `queued`, `processing`, `sent`, `retrying`, `not_attributable`, or `not_configured` for each channel.
-6. A successful send writes `qlead_<channel>_sent_at`, which blocks subsequent duplicate sends for that lead and channel.
+2. The endpoint validates the webhook and immediately starts four independent provider deliveries.
+3. Each delivery uses the deterministic key `webhook:<lead-id>:<channel>` in the Kommo journal; Google Ads and Meta also receive `kommo-qualified-<lead-id>` as their provider-side deduplication identifier.
+4. Each provider is processed independently with `Promise.allSettled`, so one provider failure does not block the other deliveries.
+5. The lead stores `processing`, `sent`, `retrying`, `not_attributable`, or `not_configured` for each channel.
+6. A successful send writes `qlead_<channel>_sent_at`, which blocks subsequent duplicate sends for that lead and channel. Kommo can therefore retry the webhook safely.
 
 ## Attribution fields retained with every website lead
 
