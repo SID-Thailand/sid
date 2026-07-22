@@ -11,9 +11,12 @@ import {
   setAtomicValue,
 } from '~/server/utils/atomicStore'
 import {
+  buildQleadJournalState,
   buildQleadSentState,
   getQleadDedupeKey,
+  getQleadJournalKey,
   parseQleadSentState,
+  QLEAD_JOURNAL_TTL_SECONDS,
   QLEAD_LOCK_TTL_SECONDS,
   QLEAD_SENT_TTL_SECONDS,
 } from '~/server/utils/qleadDedupe'
@@ -62,7 +65,6 @@ type KommoContact = {
   }>
 }
 
-type RuntimeKommoConfig = ReturnType<typeof getKommoConfig>
 type ProviderDelivery = { sent: boolean; detail: string }
 
 const value = (input: unknown) => String(input || '').trim()
@@ -113,42 +115,6 @@ const getContactValue = (contact: KommoContact | undefined, code: string) =>
       ?.find(field => field.field_code === code)
       ?.values?.[0]?.value
   )
-
-const updateLeadFields = async (
-  config: RuntimeKommoConfig,
-  lead: KommoLead,
-  fields: Array<{ fieldId: number; value: string }>
-) => {
-  await kommoRequest(config, `/api/v4/leads/${lead.id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      custom_fields_values: fields.map(field => ({
-        field_id: field.fieldId,
-        values: [{ value: field.value }],
-      })),
-    }),
-  })
-}
-
-const ensureLeadField = async (
-  config: RuntimeKommoConfig,
-  fieldMap: Map<string, number>,
-  name: string
-) => {
-  const existingFieldId = fieldMap.get(name)
-  if (existingFieldId) return existingFieldId
-
-  const field = await kommoRequest<{ id?: number }>(config, '/api/v4/leads/custom_fields', {
-    method: 'POST',
-    body: JSON.stringify({ name, type: 'text', is_api_only: true }),
-  })
-  if (!field.id) {
-    throw createError({ statusCode: 502, statusMessage: `Kommo did not create ${name}` })
-  }
-
-  fieldMap.set(name, field.id)
-  return field.id
-}
 
 const sha256 = async (raw: string) => {
   if (!raw) return undefined
@@ -465,29 +431,6 @@ const sendYandexQualifiedLead = async (input: {
   }
 }
 
-const QLEAD_STATUS_FIELDS: Record<QLeadChannel, { sentAt: keyof typeof KOMMO_TRACKING_FIELD_NAMES; status: keyof typeof KOMMO_TRACKING_FIELD_NAMES; detail: keyof typeof KOMMO_TRACKING_FIELD_NAMES }> = {
-  google: {
-    sentAt: 'qualifiedGoogleSentAt',
-    status: 'qualifiedGoogleStatus',
-    detail: 'qualifiedGoogleDetail',
-  },
-  meta: {
-    sentAt: 'qualifiedMetaSentAt',
-    status: 'qualifiedMetaStatus',
-    detail: 'qualifiedMetaDetail',
-  },
-  ga4: {
-    sentAt: 'qualifiedGa4SentAt',
-    status: 'qualifiedGa4Status',
-    detail: 'qualifiedGa4Detail',
-  },
-  yandex: {
-    sentAt: 'qualifiedYandexSentAt',
-    status: 'qualifiedYandexStatus',
-    detail: 'qualifiedYandexDetail',
-  },
-}
-
 type DeliveryStatus =
   | 'sent'
   | 'duplicate'
@@ -520,37 +463,25 @@ const getChannelConfigurationStatus = (
   )
 }
 
-const qleadDetail = (message: string) => message.slice(0, 240)
-
-const ensureQleadJournal = async (
-  config: RuntimeKommoConfig,
-  fieldMap: Map<string, number>,
-  channel: QLeadChannel
-) => {
-  const fields = QLEAD_STATUS_FIELDS[channel]
-  const names = KOMMO_TRACKING_FIELD_NAMES
-  const [sentAt, status, detail] = await Promise.all([
-    ensureLeadField(config, fieldMap, names[fields.sentAt]),
-    ensureLeadField(config, fieldMap, names[fields.status]),
-    ensureLeadField(config, fieldMap, names[fields.detail]),
-  ])
-  return { sentAt, status, detail }
-}
-
 const updateQleadJournal = async (
-  config: RuntimeKommoConfig,
-  lead: KommoLead,
-  journal: { sentAt: number; status: number; detail: number },
+  leadId: number,
+  channel: QLeadChannel,
   status: string,
-  detail: string,
-  sentAt?: string
+  detail: string
 ) => {
-  const fields = [
-    { fieldId: journal.status, value: status },
-    { fieldId: journal.detail, value: qleadDetail(detail) },
-  ]
-  if (sentAt) fields.push({ fieldId: journal.sentAt, value: sentAt })
-  await updateLeadFields(config, lead, fields)
+  const updatedAt = new Date().toISOString()
+  await setAtomicValue(
+    getQleadJournalKey(leadId, channel),
+    buildQleadJournalState(status, detail.slice(0, 500), updatedAt),
+    QLEAD_JOURNAL_TTL_SECONDS
+  )
+  console.info('Qualified lead channel state', {
+    leadId,
+    channel,
+    status,
+    detail: detail.slice(0, 240),
+    updatedAt,
+  })
 }
 
 const inFlightDeliveries = new Map<string, Promise<DeliveryStatus>>()
@@ -566,18 +497,15 @@ const processQualifiedLeadDeliveryInternal = async (
   if (!isQualifiedPipeline(lead)) return 'ignored'
 
   const fieldMap = await getLeadFieldMap(config)
-  const journal = await ensureQleadJournal(config, fieldMap, channel)
-  if (getLeadFieldValue(lead, journal.sentAt)) {
-    return 'duplicate'
-  }
+  const dedupeKey = getQleadDedupeKey(leadId, channel)
+  if (parseQleadSentState(await getAtomicValue(dedupeKey))) return 'duplicate'
 
   const runtimeConfig = useRuntimeConfig().kommo as Record<string, string>
   if (!getChannelConfigurationStatus(channel, runtimeConfig)) {
-    await updateQleadJournal(config, lead, journal, 'not_configured', `queue:${queueMessageId}`)
+    await updateQleadJournal(leadId, channel, 'not_configured', `queue:${queueMessageId}`)
     return 'not_configured'
   }
 
-  const dedupeKey = getQleadDedupeKey(leadId, channel)
   const lockToken = `processing:${crypto.randomUUID()}`
   const lockAcquired = await acquireAtomicLock(
     dedupeKey,
@@ -586,19 +514,7 @@ const processQualifiedLeadDeliveryInternal = async (
   )
   if (!lockAcquired) {
     const sentState = parseQleadSentState(await getAtomicValue(dedupeKey))
-    if (sentState) {
-      if (!getLeadFieldValue(lead, journal.sentAt)) {
-        await updateQleadJournal(
-          config,
-          lead,
-          journal,
-          'sent',
-          sentState.detail,
-          sentState.sentAt
-        ).catch(() => {})
-      }
-      return 'duplicate'
-    }
+    if (sentState) return 'duplicate'
     return 'in_progress'
   }
 
@@ -613,13 +529,7 @@ const processQualifiedLeadDeliveryInternal = async (
         .map(([key, fieldName]) => [key, getLeadFieldValue(lead, fieldMap.get(fieldName))])
     )
 
-    await updateQleadJournal(
-      config,
-      lead,
-      journal,
-      'processing',
-      `delivery:${queueMessageId}`
-    )
+    await updateQleadJournal(leadId, channel, 'processing', `delivery:${queueMessageId}`)
 
     const delivery =
       channel === 'google'
@@ -631,13 +541,7 @@ const processQualifiedLeadDeliveryInternal = async (
             : await sendYandexQualifiedLead({ lead, tracking, qualifiedAt })
 
     if (!delivery.sent) {
-      await updateQleadJournal(
-        config,
-        lead,
-        journal,
-        'not_attributable',
-        delivery.detail
-      )
+      await updateQleadJournal(leadId, channel, 'not_attributable', delivery.detail)
       await releaseAtomicLock(dedupeKey, lockToken).catch(() => {})
       return 'not_attributable'
     }
@@ -648,11 +552,11 @@ const processQualifiedLeadDeliveryInternal = async (
       buildQleadSentState(sentAt, delivery.detail),
       QLEAD_SENT_TTL_SECONDS
     )
-    await updateQleadJournal(config, lead, journal, 'sent', delivery.detail, sentAt)
+    await updateQleadJournal(leadId, channel, 'sent', delivery.detail)
     return 'sent'
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    await updateQleadJournal(config, lead, journal, 'retrying', message).catch(() => {})
+    await updateQleadJournal(leadId, channel, 'retrying', message).catch(() => {})
     await releaseAtomicLock(dedupeKey, lockToken).catch(() => {})
     throw error
   }
