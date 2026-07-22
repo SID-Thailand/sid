@@ -4,8 +4,26 @@ import {
   KOMMO_TRACKING_FIELD_NAMES,
   kommoRequest,
 } from '~/server/utils/kommo'
+import {
+  acquireAtomicLock,
+  getAtomicValue,
+  incrementRateLimit,
+  releaseAtomicLock,
+  setAtomicValue,
+} from '~/server/utils/atomicStore'
+import {
+  getClientAddress,
+  getCompletedLeadId,
+  isAllowedLeadOrigin,
+  isValidRequestId,
+  LEAD_RATE_LIMIT,
+  LEAD_RATE_WINDOW_SECONDS,
+  MAX_LEAD_BODY_BYTES,
+} from '~/server/utils/leadProtection'
 
 type LeadRequest = {
+  requestId: string
+  website?: string
   fields: Record<string, string>
   formType: string
   formContext: string
@@ -89,8 +107,7 @@ const ensureLeadField = async (
   return created.id
 }
 
-export default defineEventHandler(async event => {
-  const payload = (await readBody(event)) as LeadRequest
+const createLead = async (payload: LeadRequest) => {
   const name = clean(findField(payload.fields || {}, /name/i))
   const email = clean(findField(payload.fields || {}, /email/i)).toLowerCase()
   const phone = clean(findField(payload.fields || {}, /(phone|tel)/i))
@@ -220,4 +237,89 @@ export default defineEventHandler(async event => {
   }
 
   return { ok: true, leadId }
+}
+
+export default defineEventHandler(async event => {
+  const contentType = getHeader(event, 'content-type') || ''
+  const contentLength = Number(getHeader(event, 'content-length') || 0)
+  if (!contentType.toLowerCase().startsWith('application/json')) {
+    throw createError({ statusCode: 415, statusMessage: 'JSON request required' })
+  }
+  if (contentLength > MAX_LEAD_BODY_BYTES) {
+    throw createError({ statusCode: 413, statusMessage: 'Request is too large' })
+  }
+
+  const forwardedHost =
+    getHeader(event, 'x-forwarded-host') || getHeader(event, 'host')
+  if (
+    !isAllowedLeadOrigin(
+      getHeader(event, 'origin'),
+      forwardedHost,
+      process.env.NODE_ENV !== 'production'
+    )
+  ) {
+    throw createError({ statusCode: 403, statusMessage: 'Untrusted form origin' })
+  }
+
+  const rawBody = (await readRawBody(event, 'utf8')) || ''
+  if (Buffer.byteLength(rawBody, 'utf8') > MAX_LEAD_BODY_BYTES) {
+    throw createError({ statusCode: 413, statusMessage: 'Request is too large' })
+  }
+
+  let payload: LeadRequest
+  try {
+    payload = JSON.parse(rawBody) as LeadRequest
+  } catch {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid JSON request' })
+  }
+
+  const requestId = getHeader(event, 'idempotency-key')
+  if (
+    !isValidRequestId(requestId) ||
+    !isValidRequestId(payload.requestId) ||
+    requestId !== payload.requestId
+  ) {
+    throw createError({ statusCode: 400, statusMessage: 'Valid idempotency key required' })
+  }
+  if (clean(payload.website)) {
+    return { ok: true, filtered: true }
+  }
+
+  const address = getClientAddress({
+    'x-forwarded-for': getHeader(event, 'x-forwarded-for'),
+    'x-real-ip': getHeader(event, 'x-real-ip'),
+  })
+  const rateKey = `lead-rate:${address.replace(/[^a-z0-9:._-]/gi, '_')}`
+  const requestCount = await incrementRateLimit(
+    rateKey,
+    LEAD_RATE_WINDOW_SECONDS
+  )
+  if (requestCount > LEAD_RATE_LIMIT) {
+    setResponseHeader(event, 'Retry-After', LEAD_RATE_WINDOW_SECONDS)
+    throw createError({ statusCode: 429, statusMessage: 'Too many form requests' })
+  }
+
+  const stateKey = `lead-form:${requestId}`
+  const existingState = await getAtomicValue(stateKey)
+  const existingLeadId = getCompletedLeadId(existingState)
+  if (existingLeadId) return { ok: true, leadId: existingLeadId, duplicate: true }
+
+  const lockToken = `processing:${crypto.randomUUID()}`
+  const lockAcquired = await acquireAtomicLock(stateKey, lockToken, 300)
+  if (!lockAcquired) {
+    const currentLeadId = getCompletedLeadId(await getAtomicValue(stateKey))
+    if (currentLeadId) {
+      return { ok: true, leadId: currentLeadId, duplicate: true }
+    }
+    throw createError({ statusCode: 409, statusMessage: 'Form request is already processing' })
+  }
+
+  try {
+    const result = await createLead(payload)
+    await setAtomicValue(stateKey, `completed:${result.leadId}`, 86_400)
+    return result
+  } catch (error) {
+    await releaseAtomicLock(stateKey, lockToken).catch(() => {})
+    throw error
+  }
 })

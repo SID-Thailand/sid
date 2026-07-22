@@ -41,19 +41,6 @@ export default defineNuxtConfig({
     },
   },
 
-  nitro: {
-    vercel: {
-      queues: {
-        triggers: [
-          { topic: 'sid-qlead-google', retryAfterSeconds: 60 },
-          { topic: 'sid-qlead-meta', retryAfterSeconds: 60 },
-          { topic: 'sid-qlead-ga4', retryAfterSeconds: 60 },
-          { topic: 'sid-qlead-yandex', retryAfterSeconds: 60 },
-        ],
-      },
-    },
-  },
-
   gtm: {
     id: 'GTM-MHK8J5FT',
     enabled: process.env.NODE_ENV === 'production',
@@ -102,6 +89,8 @@ export default defineNuxtConfig({
       yandexMetrikaCounterId: '110873210',
       yandexMetrikaOAuthToken: process.env.NUXT_KOMMO_YANDEX_METRIKA_OAUTH_TOKEN || '',
       yandexMetrikaQualifiedGoalId: '586798746',
+      dedupeRedisUrl: '',
+      dedupeRedisToken: '',
     },
     public: {
       ENVIROMENT: process.env.NODE_ENV,

@@ -4,6 +4,24 @@ import {
   KOMMO_TRACKING_FIELD_NAMES,
   kommoRequest,
 } from '~/server/utils/kommo'
+import {
+  acquireAtomicLock,
+  getAtomicValue,
+  releaseAtomicLock,
+  setAtomicValue,
+} from '~/server/utils/atomicStore'
+import {
+  buildQleadSentState,
+  getQleadDedupeKey,
+  parseQleadSentState,
+  QLEAD_LOCK_TTL_SECONDS,
+  QLEAD_SENT_TTL_SECONDS,
+} from '~/server/utils/qleadDedupe'
+import {
+  normalizeGoogleEmail,
+  normalizeGooglePhone,
+  normalizeMetaPhone,
+} from '~/server/utils/providerUserData'
 
 export const QLEAD_CHANNELS = ['google', 'meta', 'ga4', 'yandex'] as const
 
@@ -18,6 +36,8 @@ type KommoWebhookLead = {
   id?: string | number
   pipeline_id?: string | number
   status_id?: string | number
+  last_modified?: string | number
+  updated_at?: string | number
 }
 
 type KommoLead = {
@@ -25,6 +45,7 @@ type KommoLead = {
   pipeline_id: number
   status_id: number
   created_at: number
+  updated_at?: number
   custom_fields_values?: Array<{
     field_id: number
     values?: Array<{ value?: string }>
@@ -41,6 +62,7 @@ type KommoContact = {
 }
 
 type RuntimeKommoConfig = ReturnType<typeof getKommoConfig>
+type ProviderDelivery = { sent: boolean; detail: string }
 
 const value = (input: unknown) => String(input || '').trim()
 const numberValue = (input: unknown) => Number(value(input))
@@ -48,10 +70,18 @@ const numberValue = (input: unknown) => Number(value(input))
 const findWebhookLead = (body: Record<string, any>): KommoWebhookLead | undefined => {
   // Kommo may send webhook bodies as URL-encoded bracket keys instead of a
   // nested object, for example `leads[status][0][id]=123`.
-  const flatLeadId = Object.entries(body).find(([key, fieldValue]) =>
+  const flatLeadEntry = Object.entries(body).find(([key, fieldValue]) =>
     /^(?:lead|leads)\[[^\]]+\]\[\d+\]\[id\]$/.test(key) && value(fieldValue)
-  )?.[1]
-  if (flatLeadId) return { id: value(flatLeadId) }
+  )
+  if (flatLeadEntry) {
+    const [idKey, flatLeadId] = flatLeadEntry
+    const prefix = idKey.slice(0, -'[id]'.length)
+    return {
+      id: value(flatLeadId),
+      updated_at: value(body[`${prefix}[updated_at]`]),
+      last_modified: value(body[`${prefix}[last_modified]`]),
+    }
+  }
 
   const lead = body.lead || body.leads
 
@@ -95,21 +125,6 @@ const updateLeadFields = async (
         field_id: field.fieldId,
         values: [{ value: field.value }],
       })),
-    }),
-  })
-}
-
-const updateLeadField = async (
-  config: RuntimeKommoConfig,
-  lead: KommoLead,
-  fieldId: number
-) => {
-  await kommoRequest(config, `/api/v4/leads/${lead.id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      custom_fields_values: [
-        { field_id: fieldId, values: [{ value: new Date().toISOString() }] },
-      ],
     }),
   })
 }
@@ -183,7 +198,8 @@ const sendGoogleQualifiedLead = async (input: {
   lead: KommoLead
   contact?: KommoContact
   tracking: Record<string, string>
-}) => {
+  qualifiedAt: number
+}): Promise<ProviderDelivery> => {
   const config = useRuntimeConfig().kommo as Record<string, string>
 
   const identifiers = Object.fromEntries(
@@ -193,8 +209,8 @@ const sendGoogleQualifiedLead = async (input: {
       wbraid: input.tracking.wbraid,
     }).filter(([, identifier]) => identifier)
   )
-  const email = getContactValue(input.contact, 'EMAIL').toLowerCase()
-  const phone = getContactValue(input.contact, 'PHONE').replace(/\D/g, '')
+  const email = normalizeGoogleEmail(getContactValue(input.contact, 'EMAIL'))
+  const phone = normalizeGooglePhone(getContactValue(input.contact, 'PHONE'))
   const userIdentifiers: Array<{ emailAddress?: string; phoneNumber?: string }> = []
   const emailHash = await sha256(email)
   const phoneHash = await sha256(phone)
@@ -202,7 +218,7 @@ const sendGoogleQualifiedLead = async (input: {
   if (phoneHash) userIdentifiers.push({ phoneNumber: phoneHash })
 
   if (!Object.keys(identifiers).length && !userIdentifiers.length) {
-    return false
+    return { sent: false, detail: 'No Google attribution or user identifier' }
   }
 
   const accessToken = await getGoogleAccessToken(config)
@@ -234,7 +250,7 @@ const sendGoogleQualifiedLead = async (input: {
       events: [
         {
           transactionId: `kommo-qualified-${input.lead.id}`,
-          eventTimestamp: new Date().toISOString(),
+          eventTimestamp: new Date(input.qualifiedAt * 1000).toISOString(),
           eventSource: 'WEB',
           adIdentifiers: Object.keys(identifiers).length ? identifiers : undefined,
           userData: userIdentifiers.length ? { userIdentifiers } : undefined,
@@ -255,29 +271,38 @@ const sendGoogleQualifiedLead = async (input: {
     })
   }
 
-  return true
+  return {
+    sent: true,
+    detail: `transaction:kommo-qualified-${input.lead.id}`,
+  }
 }
 
 const sendMetaQualifiedLead = async (input: {
   lead: KommoLead
   contact?: KommoContact
   tracking: Record<string, string>
-}) => {
+  qualifiedAt: number
+}): Promise<ProviderDelivery> => {
   const config = useRuntimeConfig().kommo as Record<string, string>
-  if (!config.metaPixelId || !config.metaConversionsApiToken) return false
+  if (!config.metaPixelId || !config.metaConversionsApiToken) {
+    return { sent: false, detail: 'Meta CAPI is not configured' }
+  }
 
   const email = getContactValue(input.contact, 'EMAIL').toLowerCase()
-  const phone = getContactValue(input.contact, 'PHONE').replace(/\D/g, '')
+  const phone = normalizeMetaPhone(getContactValue(input.contact, 'PHONE'))
   const response = await fetch(
-    `https://graph.facebook.com/v25.0/${config.metaPixelId}/events?access_token=${config.metaConversionsApiToken}`,
+    `https://graph.facebook.com/v25.0/${config.metaPixelId}/events`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        Authorization: `Bearer ${config.metaConversionsApiToken}`,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         data: [
           {
             event_name: 'Lead',
-            event_time: Math.floor(Date.now() / 1000),
+            event_time: input.qualifiedAt,
             event_id: `kommo-qualified-${input.lead.id}`,
             action_source: 'system_generated',
             user_data: {
@@ -297,23 +322,36 @@ const sendMetaQualifiedLead = async (input: {
     }
   )
 
-  if (!response.ok) {
+  const responseBody = (await response.json().catch(() => ({}))) as {
+    events_received?: number
+    fbtrace_id?: string
+    error?: { message?: string }
+  }
+  if (!response.ok || responseBody.events_received !== 1) {
     throw createError({
       statusCode: 502,
-      statusMessage: `Meta Conversions API error: ${response.status}`,
+      statusMessage: `Meta Conversions API error: ${response.status} ${responseBody.error?.message || ''}`.trim(),
     })
   }
 
-  return true
+  return {
+    sent: true,
+    detail: `event:kommo-qualified-${input.lead.id}; trace:${responseBody.fbtrace_id || '-'}`,
+  }
 }
 
 const sendGa4QualifiedLead = async (input: {
   lead: KommoLead
   tracking: Record<string, string>
-}) => {
+  qualifiedAt: number
+}): Promise<ProviderDelivery> => {
   const config = useRuntimeConfig().kommo as Record<string, string>
-  if (!config.ga4MeasurementId || !config.ga4MeasurementProtocolApiSecret) return false
-  if (!input.tracking.gclientid) return false
+  if (!config.ga4MeasurementId || !config.ga4MeasurementProtocolApiSecret) {
+    return { sent: false, detail: 'GA4 Measurement Protocol is not configured' }
+  }
+  if (!input.tracking.gclientid) {
+    return { sent: false, detail: 'No GA4 client_id' }
+  }
 
   const query = new URLSearchParams({
     measurement_id: config.ga4MeasurementId,
@@ -324,11 +362,13 @@ const sendGa4QualifiedLead = async (input: {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       client_id: input.tracking.gclientid,
+      timestamp_micros: input.qualifiedAt * 1_000_000,
       events: [
         {
           name: 'qualify_lead',
           params: {
             engagement_time_msec: 1,
+            event_id: `kommo-qualified-${input.lead.id}`,
             kommo_lead_id: String(input.lead.id),
             pipeline: QUALIFIED_PIPELINES.get(input.lead.pipeline_id) || '',
           },
@@ -344,7 +384,10 @@ const sendGa4QualifiedLead = async (input: {
     })
   }
 
-  return true
+  return {
+    sent: true,
+    detail: `event:qualify_lead; id:kommo-qualified-${input.lead.id}`,
+  }
 }
 
 const csvValue = (value: string) => `"${value.replaceAll('"', '""')}"`
@@ -352,7 +395,8 @@ const csvValue = (value: string) => `"${value.replaceAll('"', '""')}"`
 const sendYandexQualifiedLead = async (input: {
   lead: KommoLead
   tracking: Record<string, string>
-}) => {
+  qualifiedAt: number
+}): Promise<ProviderDelivery> => {
   const config = useRuntimeConfig().kommo as Record<string, string>
   if (
     !config.yandexMetrikaCounterId ||
@@ -364,17 +408,17 @@ const sendYandexQualifiedLead = async (input: {
       token: Boolean(config.yandexMetrikaOAuthToken),
       goal: Boolean(config.yandexMetrikaQualifiedGoalId),
     })
-    return false
+    return { sent: false, detail: 'Yandex offline conversion is not configured' }
   }
   if (!input.tracking.ymclientid && !input.tracking.yclid) {
     console.info('Yandex qualified lead has no identifier', { leadId: input.lead.id })
-    return false
+    return { sent: false, detail: 'No Yandex ClientID or yclid' }
   }
 
   const headers = ['Target', 'DateTime', 'ClientId', 'Yclid']
   const record = [
     config.yandexMetrikaQualifiedGoalId,
-    String(Math.floor(Date.now() / 1000)),
+    String(input.qualifiedAt),
     input.tracking.ymclientid || '',
     input.tracking.yclid || '',
   ]
@@ -391,18 +435,29 @@ const sendYandexQualifiedLead = async (input: {
     }
   )
 
-  if (!response.ok) {
+  const responseBody = (await response.json().catch(() => ({}))) as {
+    uploading?: { id?: number; status?: string; line_quantity?: number }
+    message?: string
+  }
+  if (
+    !response.ok ||
+    !responseBody.uploading?.id ||
+    Number(responseBody.uploading.line_quantity || 0) < 1
+  ) {
     console.error('Yandex qualified lead upload failed', {
       leadId: input.lead.id,
       status: response.status,
     })
     throw createError({
       statusCode: 502,
-      statusMessage: `Yandex Metrika offline conversion error: ${response.status}`,
+      statusMessage: `Yandex Metrika offline conversion error: ${response.status} ${responseBody.message || ''}`.trim(),
     })
   }
 
-  return true
+  return {
+    sent: true,
+    detail: `upload:${responseBody.uploading.id}; status:${responseBody.uploading.status || 'UPLOADED'}`,
+  }
 }
 
 const QLEAD_STATUS_FIELDS: Record<QLeadChannel, { sentAt: keyof typeof KOMMO_TRACKING_FIELD_NAMES; status: keyof typeof KOMMO_TRACKING_FIELD_NAMES; detail: keyof typeof KOMMO_TRACKING_FIELD_NAMES }> = {
@@ -431,6 +486,7 @@ const QLEAD_STATUS_FIELDS: Record<QLeadChannel, { sentAt: keyof typeof KOMMO_TRA
 type DeliveryStatus =
   | 'sent'
   | 'duplicate'
+  | 'in_progress'
   | 'not_configured'
   | 'not_attributable'
   | 'ignored'
@@ -485,10 +541,13 @@ const updateQleadJournal = async (
   await updateLeadFields(config, lead, fields)
 }
 
-export const processQualifiedLeadDelivery = async (
+const inFlightDeliveries = new Map<string, Promise<DeliveryStatus>>()
+
+const processQualifiedLeadDeliveryInternal = async (
   leadId: number,
   channel: QLeadChannel,
-  queueMessageId: string
+  queueMessageId: string,
+  qualifiedAt: number
 ): Promise<DeliveryStatus> => {
   const config = getKommoConfig()
   const lead = await kommoRequest<KommoLead>(config, `/api/v4/leads/${leadId}?with=contacts`)
@@ -506,47 +565,107 @@ export const processQualifiedLeadDelivery = async (
     return 'not_configured'
   }
 
-  const contactId = lead._embedded?.contacts?.[0]?.id
-  const contact = contactId
-    ? await kommoRequest<KommoContact>(config, `/api/v4/contacts/${contactId}`)
-    : undefined
-  const tracking = Object.fromEntries(
-    Object.entries(KOMMO_TRACKING_FIELD_NAMES)
-      .filter(([, fieldName]) => !fieldName.startsWith('qlead_'))
-      .map(([key, fieldName]) => [key, getLeadFieldValue(lead, fieldMap.get(fieldName))])
+  const dedupeKey = getQleadDedupeKey(leadId, channel)
+  const lockToken = `processing:${crypto.randomUUID()}`
+  const lockAcquired = await acquireAtomicLock(
+    dedupeKey,
+    lockToken,
+    QLEAD_LOCK_TTL_SECONDS
   )
-
-  await updateQleadJournal(config, lead, journal, 'processing', `queue:${queueMessageId}`)
+  if (!lockAcquired) {
+    const sentState = parseQleadSentState(await getAtomicValue(dedupeKey))
+    if (sentState) {
+      if (!getLeadFieldValue(lead, journal.sentAt)) {
+        await updateQleadJournal(
+          config,
+          lead,
+          journal,
+          'sent',
+          sentState.detail,
+          sentState.sentAt
+        ).catch(() => {})
+      }
+      return 'duplicate'
+    }
+    return 'in_progress'
+  }
 
   try {
-    const sent =
-      channel === 'google'
-        ? await sendGoogleQualifiedLead({ lead, contact, tracking })
-        : channel === 'meta'
-          ? await sendMetaQualifiedLead({ lead, contact, tracking })
-          : channel === 'ga4'
-            ? await sendGa4QualifiedLead({ lead, tracking })
-            : await sendYandexQualifiedLead({ lead, tracking })
+    const contactId = lead._embedded?.contacts?.[0]?.id
+    const contact = contactId
+      ? await kommoRequest<KommoContact>(config, `/api/v4/contacts/${contactId}`)
+      : undefined
+    const tracking = Object.fromEntries(
+      Object.entries(KOMMO_TRACKING_FIELD_NAMES)
+        .filter(([, fieldName]) => !fieldName.startsWith('qlead_'))
+        .map(([key, fieldName]) => [key, getLeadFieldValue(lead, fieldMap.get(fieldName))])
+    )
 
-    if (!sent) {
+    await updateQleadJournal(
+      config,
+      lead,
+      journal,
+      'processing',
+      `delivery:${queueMessageId}`
+    )
+
+    const delivery =
+      channel === 'google'
+        ? await sendGoogleQualifiedLead({ lead, contact, tracking, qualifiedAt })
+        : channel === 'meta'
+          ? await sendMetaQualifiedLead({ lead, contact, tracking, qualifiedAt })
+          : channel === 'ga4'
+            ? await sendGa4QualifiedLead({ lead, tracking, qualifiedAt })
+            : await sendYandexQualifiedLead({ lead, tracking, qualifiedAt })
+
+    if (!delivery.sent) {
       await updateQleadJournal(
         config,
         lead,
         journal,
         'not_attributable',
-        `queue:${queueMessageId}`
+        delivery.detail
       )
+      await releaseAtomicLock(dedupeKey, lockToken).catch(() => {})
       return 'not_attributable'
     }
 
     const sentAt = new Date().toISOString()
-    await updateQleadJournal(config, lead, journal, 'sent', `queue:${queueMessageId}`, sentAt)
+    await setAtomicValue(
+      dedupeKey,
+      buildQleadSentState(sentAt, delivery.detail),
+      QLEAD_SENT_TTL_SECONDS
+    )
+    await updateQleadJournal(config, lead, journal, 'sent', delivery.detail, sentAt)
     return 'sent'
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     await updateQleadJournal(config, lead, journal, 'retrying', message).catch(() => {})
+    await releaseAtomicLock(dedupeKey, lockToken).catch(() => {})
     throw error
   }
+}
+
+export const processQualifiedLeadDelivery = async (
+  leadId: number,
+  channel: QLeadChannel,
+  queueMessageId: string,
+  qualifiedAt: number
+): Promise<DeliveryStatus> => {
+  const deliveryKey = `${leadId}:${channel}`
+  const existingDelivery = inFlightDeliveries.get(deliveryKey)
+  if (existingDelivery) return existingDelivery
+
+  const delivery = processQualifiedLeadDeliveryInternal(
+    leadId,
+    channel,
+    queueMessageId,
+    qualifiedAt
+  ).finally(() => {
+    inFlightDeliveries.delete(deliveryKey)
+  })
+  inFlightDeliveries.set(deliveryKey, delivery)
+  return delivery
 }
 
 export default defineEventHandler(async event => {
@@ -574,12 +693,18 @@ export default defineEventHandler(async event => {
     return { ok: true, ignored: 'pipeline' }
   }
 
+  const qualifiedAt =
+    numberValue(webhookLead?.updated_at || webhookLead?.last_modified) ||
+    lead.updated_at ||
+    Math.floor(Date.now() / 1000)
+
   const deliveries = await Promise.allSettled(
     QLEAD_CHANNELS.map(async channel => {
       const status = await processQualifiedLeadDelivery(
         leadId,
         channel,
-        `webhook:${leadId}:${channel}`
+        `webhook:${leadId}:${channel}`,
+        qualifiedAt
       )
       return [channel, status] as const
     })
@@ -602,6 +727,20 @@ export default defineEventHandler(async event => {
       ]
     })
   )
+
+  const failedChannels = deliveries
+    .map((delivery, index) =>
+      delivery.status === 'rejected' ? QLEAD_CHANNELS[index] : undefined
+    )
+    .filter((channel): channel is QLeadChannel => Boolean(channel))
+
+  if (failedChannels.length) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: `Qualified lead delivery failed: ${failedChannels.join(', ')}`,
+      data: { deliveries: results },
+    })
+  }
 
   return {
     ok: true,

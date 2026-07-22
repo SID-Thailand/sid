@@ -1,5 +1,10 @@
 import { delayPromise } from '@emotionagency/utils'
 import type { iInputData } from '~/types/headless/input'
+import {
+  clearSubmissionId,
+  getOrCreateSubmissionId,
+  readHoneypotValue,
+} from '~/utils/formProtection'
 import { resolveTrafficSource } from '~/utils/trafficSource'
 
 export interface IData {
@@ -18,6 +23,9 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
   const route = useRoute()
 
   const getFormContext = () => toValue(from) || route.path
+
+  const getSubmissionStorageKey = () =>
+    `sid-form-submission:${getFormContext()}`
 
   const getFormType = () => {
     const context = getFormContext()
@@ -63,21 +71,28 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
       return
     }
 
-    const items = Object.entries(data)
-
-    const trafficSource = await resolveTrafficSource()
-    const fields = Object.fromEntries(
-      items.map(([key, value]) => [key, String(value?.value ?? '')])
-    )
-
+    isFetching.value = true
     try {
-      isFetching.value = true
+      const storageKey = getSubmissionStorageKey()
+      const requestId = getOrCreateSubmissionId(
+        window.sessionStorage,
+        storageKey,
+        () => crypto.randomUUID()
+      )
+      const items = Object.entries(data)
+      const trafficSource = await resolveTrafficSource()
+      const fields = Object.fromEntries(
+        items.map(([key, value]) => [key, String(value?.value ?? '')])
+      )
       const res = await fetch('/api/kommo-lead', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Idempotency-Key': requestId,
         },
         body: JSON.stringify({
+          requestId,
+          website: readHoneypotValue(document),
           fields,
           formType: getFormType(),
           formContext: getFormContext(),
@@ -97,7 +112,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
       let okFlag = false
       try {
         const json = await res.json()
-        okFlag = json?.ok === true
+        okFlag = json?.ok === true && json?.filtered !== true
       } catch {
         console.log('Error parsing Kommo response JSON')
       }
@@ -107,6 +122,7 @@ export const useFormSend = (from?: MaybeRefOrGetter<string>) => {
       }
 
       if (okFlag && typeof window !== 'undefined') {
+        clearSubmissionId(window.sessionStorage, storageKey)
         pushDataLayerEvent('generate_lead', {
           form_type: getFormType(),
           form_context: getFormContext(),

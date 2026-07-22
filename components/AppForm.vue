@@ -24,7 +24,7 @@ const { story } = await useFormStory()
 const { pushDataLayerEvent } = useDataLayerEvents()
 
 const model = defineModel<IForm>()
-const hasTrackedFormStart = ref(false)
+const website = ref('')
 
 const getFormType = () => {
   if (/quiz|feedback/i.test(props.formId)) return 'quiz'
@@ -40,9 +40,6 @@ const getFormParams = () => ({
 })
 
 const pushFormStart = () => {
-  if (hasTrackedFormStart.value) return
-
-  hasTrackedFormStart.value = true
   pushDataLayerEvent('form_start', getFormParams())
 }
 
@@ -89,6 +86,8 @@ const isFormValid = computed(() => {
 })
 
 const onSubmit = () => {
+  if (website.value) return
+
   if (isFormValid.value) {
     emit('submit', model.value)
   } else {
@@ -102,9 +101,18 @@ const onSubmit = () => {
   <form
     class="form"
     novalidate
-    @focusin.once="pushFormStart"
+    @focusin="pushFormStart"
     @submit.prevent="onSubmit"
   >
+    <input
+      v-model="website"
+      class="form__honeypot"
+      name="website"
+      type="text"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+    />
     <div
       class="form__wrapper"
       :class="{
@@ -153,6 +161,16 @@ const onSubmit = () => {
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.form__honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .form__wrapper {
