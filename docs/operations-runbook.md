@@ -128,6 +128,11 @@ QLead не является браузерным событием и не про
   Conversion `QLead`.
 - Яндекс: offline conversion в цель `586798746`.
 
+Для offline conversion Метрики сервер отправляет ровно один идентификатор:
+`Yclid`, если он есть, иначе `ClientId` (`ymclientid`). `DateTime` всегда
+нормализуется в прошедшее время, как требует API Метрики. ID загрузки и тип
+использованного идентификатора сохраняются в `qlead_yandex_detail`.
+
 ## 6. Где лежат настройки и секреты
 
 - Публичные ID находятся в `nuxt.config.ts` и в этом документе. Для Google Ads
@@ -205,6 +210,8 @@ QLead не является браузерным событием и не про
 4. Повторно сохранить стадию и убедиться, что вторых отправок нет.
 5. Проверить диагностику Google Ads, GA4 Realtime/DebugView, Meta Test Events и
    историю offline upload Метрики. Обработка Метрики может быть асинхронной.
+6. В Vercel Runtime Logs найти запись `Qualified lead delivery result` по ID
+   лида. В ней должны быть результаты всех четырёх каналов без значений секретов.
 
 ## 10. Диагностика
 
@@ -217,6 +224,7 @@ QLead не является браузерным событием и не про
 | QLead `not_configured` | соответствующая Production env variable |
 | QLead `retrying` | `qlead_*_detail` и Vercel runtime logs |
 | Метрика не показывает QLead сразу | проверить upload ID и статус обработки |
+| Метрика отклонила offline conversion | проверить `id:Yclid` или `id:ClientId` в `qlead_yandex_detail` и что `DateTime` не находится в будущем |
 
 ## 11. Ответственность и резервный доступ
 
