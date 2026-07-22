@@ -1,0 +1,93 @@
+name: Cleanup verified stale branches
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/cleanup-stale-branches.yml
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    name: Delete verified merged branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete verified stale branches
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          branches=(
+            "backup/interior-animation"
+            "chore/analytics-finalization"
+            "chore/qlead-yandex-observability"
+            "codex/qlead-cleanup"
+            "dev"
+            "docs/analytics-measurement-plan"
+            "feat/add-selected-lang-to-formdata"
+            "feat/facilities-hover"
+            "feat/form-back-valid-gmt-event"
+            "feat/full-page-slider"
+            "feat/google-ads-qualified-leads"
+            "feat/gtm-tag"
+            "feat/mailru-tag"
+            "feat/privacy"
+            "feat/project-slider"
+            "feat/project-transition"
+            "feat/qlead-ga4-yandex"
+            "feat/qlead-queue-journal"
+            "feat/transition-fade"
+            "feat/updates"
+            "fix/kommo-field-freeze"
+            "fix/qlead-direct-delivery-20260721"
+            "fix/qualified-lead-delivery-markers"
+            "fix/ui-changes"
+            "fix/ui-small-fix"
+            "fix/vw-layout"
+            "fix/yandex-client-id-capture"
+            "fix/yandex-qlead-client-id"
+            "fix/yandex-qlead-delivery-20260722"
+            "fix/yandex-qlead-goal-id"
+            "chore/branch-cleanup-run"
+          )
+
+          for branch in "${branches[@]}"; do
+            if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+              git push origin --delete "$branch"
+            else
+              echo "Already absent: $branch"
+            fi
+          done
+
+      - name: Verify only approved branches remain
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t actual < <(
+            git ls-remote --heads origin |
+              sed 's#.*refs/heads/##' |
+              sort
+          )
+          expected=(
+            "codex/analytics-capi-release"
+            "feat/transition-fast"
+            "master"
+          )
+
+          if ! diff -u \
+            <(printf '%s\n' "${expected[@]}" | sort) \
+            <(printf '%s\n' "${actual[@]}" | sort); then
+            echo "Unexpected branch set after cleanup."
+            exit 1
+          fi
+
