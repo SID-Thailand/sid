@@ -133,6 +133,9 @@ QLead не является браузерным событием и не про
 - Публичные ID находятся в `nuxt.config.ts` и в этом документе.
 - Все токены, OAuth secrets и webhook secret находятся только в Vercel:
   `Project -> Settings -> Environment Variables`.
+- Redis лучше подключать через Vercel Marketplace / Upstash. Приложение принимает
+  стандартные `UPSTASH_REDIS_REST_URL` и `UPSTASH_REDIS_REST_TOKEN`; вручную
+  копировать их в другие переменные не требуется.
 - Production-секреты доступны только окружению **Production**. Preview не должен
   иметь доступ к production Kommo, рекламным API и Redis.
 - Названия обязательных переменных перечислены в `.env.example`; значений там
