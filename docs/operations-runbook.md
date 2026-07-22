@@ -46,8 +46,8 @@ flowchart LR
 | --- | --- | --- |
 | GTM | SID Thailand - Web | `GTM-MHK8J5FT` |
 | GA4 | SID Thailand | `G-F4VRTJKMFH` |
-| Google Ads | SID Consultancy | `536-992-2031` |
-| Google Ads | QLead conversion | Заполнить после создания |
+| Google Ads | SID \| Google ADS | `318-045-1827` |
+| Google Ads | QLead conversion | `7693506448` |
 | Meta | Pixel / dataset | `27845610791699424` |
 | Meta | QLead Custom Conversion | Заполнить после создания |
 | Яндекс.Метрика | Счётчик | `110873210` |
@@ -130,7 +130,9 @@ QLead не является браузерным событием и не про
 
 ## 6. Где лежат настройки и секреты
 
-- Публичные ID находятся в `nuxt.config.ts` и в этом документе.
+- Публичные ID находятся в `nuxt.config.ts` и в этом документе. Для Google Ads
+  production использует аккаунт `3180451827` и conversion action `7693506448`;
+  отдельный login/MCC account не используется.
 - Все токены, OAuth secrets и webhook secret находятся только в Vercel:
   `Project -> Settings -> Environment Variables`.
 - Redis лучше подключать через Vercel Marketplace / Upstash. Приложение принимает
