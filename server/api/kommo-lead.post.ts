@@ -87,26 +87,6 @@ const formatLeadNote = (payload: LeadRequest, fields: Record<string, string>) =>
 }
 
 
-const ensureLeadField = async (
-  config: ReturnType<typeof getKommoConfig>,
-  fields: Map<string, number>,
-  name: string
-) => {
-  const existingId = fields.get(name)
-  if (existingId) return existingId
-
-  const created = await kommoRequest<{ id?: number }>(config, '/api/v4/leads/custom_fields', {
-    method: 'POST',
-    body: JSON.stringify({ name, type: 'text', is_api_only: true }),
-  })
-  if (!created.id) {
-    throw createError({ statusCode: 502, statusMessage: `Kommo did not create ${name}` })
-  }
-
-  fields.set(name, created.id)
-  return created.id
-}
-
 const createLead = async (payload: LeadRequest) => {
   const name = clean(findField(payload.fields || {}, /name/i))
   const email = clean(findField(payload.fields || {}, /email/i)).toLowerCase()
@@ -175,13 +155,19 @@ const createLead = async (payload: LeadRequest) => {
     'utmContent',
     'utmTerm',
   ])
-  for (const [key, value] of values) {
-    const includeEmptyValue = utmFieldKeys.has(key)
-    if (!value && !includeEmptyValue) continue
-    await ensureLeadField(config, leadFields, KOMMO_TRACKING_FIELD_NAMES[key])
+  const applicableValues = values.filter(
+    ([key, fieldValue]) => Boolean(fieldValue) || utmFieldKeys.has(key)
+  )
+  const missingTrackingFields = applicableValues
+    .filter(([key]) => !leadFields.has(KOMMO_TRACKING_FIELD_NAMES[key]))
+    .map(([key]) => KOMMO_TRACKING_FIELD_NAMES[key])
+  if (missingTrackingFields.length) {
+    console.warn('Kommo tracking fields are missing; values were skipped', {
+      fields: missingTrackingFields,
+    })
   }
 
-  const trackingFields = values
+  const trackingFields = applicableValues
     .map(([key, value]) => ({
       fieldId: leadFields.get(KOMMO_TRACKING_FIELD_NAMES[key]),
       value,
