@@ -22,6 +22,7 @@ import {
   normalizeGooglePhone,
   normalizeMetaPhone,
 } from '~/server/utils/providerUserData'
+import { buildYandexOfflineConversionCsv } from '~/server/utils/yandexOfflineConversion'
 
 export const QLEAD_CHANNELS = ['google', 'meta', 'ga4', 'yandex'] as const
 
@@ -390,8 +391,6 @@ const sendGa4QualifiedLead = async (input: {
   }
 }
 
-const csvValue = (value: string) => `"${value.replaceAll('"', '""')}"`
-
 const sendYandexQualifiedLead = async (input: {
   lead: KommoLead
   tracking: Record<string, string>
@@ -415,16 +414,22 @@ const sendYandexQualifiedLead = async (input: {
     return { sent: false, detail: 'No Yandex ClientID or yclid' }
   }
 
-  const headers = ['Target', 'DateTime', 'ClientId', 'Yclid']
-  const record = [
-    config.yandexMetrikaQualifiedGoalId,
-    String(input.qualifiedAt),
-    input.tracking.ymclientid || '',
-    input.tracking.yclid || '',
-  ]
-  const csv = `${headers.join(',')}\n${record.map(csvValue).join(',')}\n`
+  const offlineConversion = buildYandexOfflineConversionCsv({
+    goalId: config.yandexMetrikaQualifiedGoalId,
+    qualifiedAt: input.qualifiedAt,
+    clientId: input.tracking.ymclientid,
+    yclid: input.tracking.yclid,
+  })
+  if (!offlineConversion) {
+    return { sent: false, detail: 'No Yandex ClientID or yclid' }
+  }
+
   const form = new FormData()
-  form.set('file', new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'qualified-lead.csv')
+  form.set(
+    'file',
+    new Blob([offlineConversion.csv], { type: 'text/csv;charset=utf-8' }),
+    'qualified-lead.csv'
+  )
 
   const response = await fetch(
     `https://api-metrika.yandex.net/management/v1/counter/${config.yandexMetrikaCounterId}/offline_conversions/upload?type=BASIC&comment=Kommo%20qualified%20lead`,
@@ -456,7 +461,7 @@ const sendYandexQualifiedLead = async (input: {
 
   return {
     sent: true,
-    detail: `upload:${responseBody.uploading.id}; status:${responseBody.uploading.status || 'UPLOADED'}`,
+    detail: `upload:${responseBody.uploading.id}; status:${responseBody.uploading.status || 'UPLOADED'}; id:${offlineConversion.identifierType}`,
   }
 }
 
@@ -503,9 +508,16 @@ const getChannelConfigurationStatus = (
     return Boolean(runtimeConfig.metaPixelId && runtimeConfig.metaConversionsApiToken)
   }
   if (channel === 'ga4') {
-    return Boolean(runtimeConfig.ga4MeasurementProtocolApiSecret)
+    return Boolean(
+      runtimeConfig.ga4MeasurementId &&
+      runtimeConfig.ga4MeasurementProtocolApiSecret
+    )
   }
-  return Boolean(runtimeConfig.yandexMetrikaOAuthToken)
+  return Boolean(
+    runtimeConfig.yandexMetrikaCounterId &&
+    runtimeConfig.yandexMetrikaOAuthToken &&
+    runtimeConfig.yandexMetrikaQualifiedGoalId
+  )
 }
 
 const qleadDetail = (message: string) => message.slice(0, 240)
@@ -730,9 +742,14 @@ export default defineEventHandler(async event => {
 
   const failedChannels = deliveries
     .map((delivery, index) =>
-      delivery.status === 'rejected' ? QLEAD_CHANNELS[index] : undefined
+      delivery.status === 'rejected' ||
+      (delivery.status === 'fulfilled' && delivery.value[1] === 'not_configured')
+        ? QLEAD_CHANNELS[index]
+        : undefined
     )
     .filter((channel): channel is QLeadChannel => Boolean(channel))
+
+  console.info('Qualified lead delivery result', { leadId, results })
 
   if (failedChannels.length) {
     throw createError({
