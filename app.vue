@@ -7,6 +7,7 @@ const { isInEditor, isUseLoader } = useAppState()
 const { isFirstLoad, init } = useLoadingAnimation()
 
 useContactClickTracking()
+usePageViewTracking()
 
 const loadingAnimation = async () => {
   window.escroll.disabled = true

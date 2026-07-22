@@ -41,19 +41,6 @@ export default defineNuxtConfig({
     },
   },
 
-  nitro: {
-    vercel: {
-      queues: {
-        triggers: [
-          { topic: 'sid-qlead-google', retryAfterSeconds: 60 },
-          { topic: 'sid-qlead-meta', retryAfterSeconds: 60 },
-          { topic: 'sid-qlead-ga4', retryAfterSeconds: 60 },
-          { topic: 'sid-qlead-yandex', retryAfterSeconds: 60 },
-        ],
-      },
-    },
-  },
-
   gtm: {
     id: 'GTM-MHK8J5FT',
     enabled: process.env.NODE_ENV === 'production',
@@ -92,16 +79,24 @@ export default defineNuxtConfig({
       googleDataManagerClientId: '',
       googleDataManagerClientSecret: '',
       googleDataManagerRefreshToken: '',
-      googleAdsOperatingAccountId: '',
+      googleAdsOperatingAccountId: '3180451827',
       googleAdsLoginAccountId: '',
-      googleAdsConversionActionId: '',
+      googleAdsConversionActionId: '7693506448',
       ga4MeasurementId: 'G-F4VRTJKMFH',
       ga4MeasurementProtocolApiSecret: '',
-      metaPixelId: '',
+      metaPixelId: '27845610791699424',
       metaConversionsApiToken: '',
       yandexMetrikaCounterId: '110873210',
       yandexMetrikaOAuthToken: process.env.NUXT_KOMMO_YANDEX_METRIKA_OAUTH_TOKEN || '',
       yandexMetrikaQualifiedGoalId: '586798746',
+      dedupeRedisUrl:
+        process.env.UPSTASH_REDIS_REST_URL ||
+        process.env.KV_REST_API_URL ||
+        '',
+      dedupeRedisToken:
+        process.env.UPSTASH_REDIS_REST_TOKEN ||
+        process.env.KV_REST_API_TOKEN ||
+        '',
     },
     public: {
       ENVIROMENT: process.env.NODE_ENV,

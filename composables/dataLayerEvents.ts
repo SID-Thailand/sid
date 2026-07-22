@@ -1,8 +1,10 @@
+import type { WebsiteEvent } from '~/utils/analyticsEvents'
+
 type DataLayerParams = Record<string, unknown>
 
 declare global {
   interface Window {
-    __sidTrackedFormStarts?: Set<string>
+    __sidFormStartTracked?: boolean
   }
 }
 
@@ -10,17 +12,19 @@ export const useDataLayerEvents = () => {
   const route = useRoute()
   const { selectedLang } = useLang()
 
-  const pushDataLayerEvent = (event: string, params: DataLayerParams = {}) => {
+  const pushDataLayerEvent = (
+    event: WebsiteEvent,
+    params: DataLayerParams = {}
+  ) => {
     if (typeof window === 'undefined') return
 
-    if (event === 'form_start') {
-      const trackedForms = (window.__sidTrackedFormStarts ||= new Set<string>())
-      // A route can render the same lead form in multiple surfaces. Keep a
-      // single visit-level form_start signal for each page view.
-      const formKey = route.fullPath
+    if (event === 'page_view') {
+      window.__sidFormStartTracked = false
+    }
 
-      if (trackedForms.has(formKey)) return
-      trackedForms.add(formKey)
+    if (event === 'form_start') {
+      if (window.__sidFormStartTracked) return
+      window.__sidFormStartTracked = true
     }
 
     ;(window as any).dataLayer = (window as any).dataLayer || []
@@ -34,4 +38,31 @@ export const useDataLayerEvents = () => {
   }
 
   return { pushDataLayerEvent }
+}
+
+export const usePageViewTracking = () => {
+  const route = useRoute()
+  const router = useRouter()
+  const { pushDataLayerEvent } = useDataLayerEvents()
+  let removeAfterEach: (() => void) | undefined
+  let lastFullPath = ''
+
+  const trackPageView = async () => {
+    await nextTick()
+    if (route.fullPath === lastFullPath) return
+
+    lastFullPath = route.fullPath
+    pushDataLayerEvent('page_view', {
+      page_title: document.title,
+    })
+  }
+
+  onMounted(() => {
+    void trackPageView()
+    removeAfterEach = router.afterEach(() => {
+      void trackPageView()
+    })
+  })
+
+  onBeforeUnmount(() => removeAfterEach?.())
 }

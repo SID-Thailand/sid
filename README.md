@@ -1,4 +1,10 @@
-# Nuxt 3 Minimal Starter
+# SID Thailand website
+
+Production Nuxt application for [sidthailand.com](https://sidthailand.com).
+The operational source of truth is
+[`docs/operations-runbook.md`](docs/operations-runbook.md). It explains the
+architecture, analytics events, Kommo integration, access model, secrets,
+deployment, testing, and incident procedures.
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
