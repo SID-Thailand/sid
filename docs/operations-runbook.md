@@ -49,7 +49,7 @@ flowchart LR
 | Google Ads | SID \| Google ADS | `318-045-1827` |
 | Google Ads | QLead conversion | `7693506448` |
 | Meta | Pixel / dataset | `27845610791699424` |
-| Meta | QLead Custom Conversion | Заполнить после создания |
+| Meta | QLead Custom Conversion | `1360859062858336` |
 | Яндекс.Метрика | Счётчик | `110873210` |
 | Яндекс.Метрика | QLead goal | `586798746` |
 | Kommo | Аккаунт | `29042692` |
@@ -225,10 +225,35 @@ Logs.
    статусом `sent`: `google`, `ga4`, `meta`, `yandex`.
 4. Повторно сохранить стадию и убедиться, что в итоговой записи статусы стали
    `duplicate`, а вторых отправок нет.
-5. Проверить диагностику Google Ads, GA4 Realtime, Meta Test Events и
-   историю offline upload Метрики. Обработка Метрики может быть асинхронной.
+5. Проверить диагностику Google Ads, GA4 Realtime, Meta Overview / Custom
+   Conversions и историю offline upload Метрики. Серверный QLead не появляется
+   в GA4 DebugView и Meta Test Events без специальных debug/test-параметров.
+   Обычные отчёты и offline conversion Метрики обновляются асинхронно.
 6. В Vercel Runtime Logs найти запись `Qualified lead delivery result` по ID
    лида. В ней должны быть результаты всех четырёх каналов без значений секретов.
+
+### Контрольный production-тест
+
+22 июля 2026 года в 10:29 по Москве проверена тестовая сделка Kommo `15612775`.
+После перевода в `Workflow (Consultancy)` сервер получил webhook и записал:
+
+```text
+Qualified lead delivery result {
+  leadId: 15612775,
+  results: { google: 'sent', meta: 'sent', ga4: 'sent', yandex: 'sent' }
+}
+```
+
+- Google Ads принял transaction ID `kommo-qualified-15612775`.
+- GA4 принял `qualify_lead` с event ID `kommo-qualified-15612775`.
+- Meta приняла один CAPI event `Lead` с `lead_type=qualified` и тем же event ID.
+- Метрика приняла offline conversion: upload ID `1167103149`, идентификатор
+  `ClientId`.
+
+`sent` в журнале означает успешный ответ API платформы. Появление события в
+интерфейсе платформы может произойти позже. Для Meta диапазон дат обязан
+включать день теста; для GA4 QLead сначала ищут в Realtime, а затем в Events;
+для Метрики ждут завершения обработки offline upload.
 
 ## 10. Диагностика
 
