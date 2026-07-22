@@ -89,8 +89,14 @@ export default defineNuxtConfig({
       yandexMetrikaCounterId: '110873210',
       yandexMetrikaOAuthToken: process.env.NUXT_KOMMO_YANDEX_METRIKA_OAUTH_TOKEN || '',
       yandexMetrikaQualifiedGoalId: '586798746',
-      dedupeRedisUrl: '',
-      dedupeRedisToken: '',
+      dedupeRedisUrl:
+        process.env.UPSTASH_REDIS_REST_URL ||
+        process.env.KV_REST_API_URL ||
+        '',
+      dedupeRedisToken:
+        process.env.UPSTASH_REDIS_REST_TOKEN ||
+        process.env.KV_REST_API_TOKEN ||
+        '',
     },
     public: {
       ENVIROMENT: process.env.NODE_ENV,
